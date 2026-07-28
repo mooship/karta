@@ -268,8 +268,7 @@
         "commuteMinutes": 20.76,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 32.93352514264988,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 6.717817494536395
       }
     },
     {
@@ -627,8 +626,7 @@
         "commuteMinutes": 20.18,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 31.953466502838275,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 6.487060741239653
       }
     },
     {
@@ -1906,8 +1904,7 @@
         "commuteMinutes": 20.58,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 30.02824023766169,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 3.503846347557797
       }
     },
     {
@@ -2825,8 +2822,7 @@
         "commuteMinutes": 20.02,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 30.077058497167236,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 3.205182567715936
       }
     },
     {
@@ -3160,8 +3156,7 @@
         "commuteMinutes": 21.7,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 31.065401845602356,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 3.4256760463490474
       }
     },
     {
@@ -3575,8 +3570,7 @@
         "commuteMinutes": 19.84,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 30.319323675195957,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.095840407186326
       }
     },
     {
@@ -3774,8 +3768,7 @@
         "commuteMinutes": 19.54,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 30.213435506316472,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.3230556144739244
       }
     },
     {
@@ -4077,8 +4070,7 @@
         "commuteMinutes": 16.39,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 28.54942732398413,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.47697461378117867
       }
     },
     {
@@ -4420,8 +4412,7 @@
         "commuteMinutes": 20.38,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 29.227129068389843,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.5303490573385852
       }
     },
     {
@@ -4963,8 +4954,7 @@
         "commuteMinutes": 16.62,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 27.674740884537012,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.3934571101300617
       }
     },
     {
@@ -5186,8 +5176,7 @@
         "commuteMinutes": 18.77,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 30.949186645650116,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 5.682463781828211
       }
     },
     {
@@ -5365,8 +5354,7 @@
         "commuteMinutes": 23.78,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 35.15386729366208,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 8.358396971497692
       }
     },
     {
@@ -5476,8 +5464,7 @@
         "commuteMinutes": 12.1,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 7.589705782567657,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.058888691061929
       }
     },
     {
@@ -5659,8 +5646,7 @@
         "commuteMinutes": 13.07,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 8.182317529654995,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.6763148642703836
       }
     },
     {
@@ -6034,8 +6020,7 @@
         "commuteMinutes": 13.9,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 10.326631101523661,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.4028598028711834
       }
     },
     {
@@ -6469,8 +6454,7 @@
         "commuteMinutes": 16.08,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 11.773729993885228,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.4062047913871882
       }
     },
     {
@@ -8164,8 +8148,7 @@
         "commuteMinutes": 18.59,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 14.535036380837845,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.4456130280876571
       }
     },
     {
@@ -8383,8 +8366,7 @@
         "commuteMinutes": 13.7,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 7.505972382253769,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.7261159011526217
       }
     },
     {
@@ -9102,8 +9084,7 @@
         "commuteMinutes": 11.67,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 5.135557710155672,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.6109969986831858
       }
     },
     {
@@ -9673,8 +9654,7 @@
         "commuteMinutes": 5.13,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 3.3139055254074363,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.018229275463631574
       }
     },
     {
@@ -9812,8 +9792,7 @@
         "commuteMinutes": 4.44,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 2.6112173812859982,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.09200494458824215
       }
     },
     {
@@ -10439,8 +10418,7 @@
         "commuteMinutes": 3.4,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 1.2070689650338038,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.04533771629350815
       }
     },
     {
@@ -10862,8 +10840,7 @@
         "commuteMinutes": 7.3,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 3.017602557632266,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.2203651606832671
       }
     },
     {
@@ -11289,8 +11266,7 @@
         "commuteMinutes": 7.53,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 3.0150489248164107,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.8447864477311275
       }
     },
     {
@@ -11912,8 +11888,7 @@
         "commuteMinutes": 47.82,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 43.543010258343266,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 18.779845654172288
       }
     },
     {
@@ -12507,8 +12482,7 @@
         "commuteMinutes": 46.64,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 42.833088700839745,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 19.33778926323097
       }
     },
     {
@@ -13670,8 +13644,7 @@
         "commuteMinutes": 44.71,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 43.70131570176104,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 22.85003175529584
       }
     },
     {
@@ -14725,8 +14698,7 @@
         "commuteMinutes": 41.54,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 43.50552205486595,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 23.97805349294776
       }
     },
     {
@@ -15792,8 +15764,7 @@
         "commuteMinutes": 40.25,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 42.44423428899296,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 24.80576091412597
       }
     },
     {
@@ -16403,8 +16374,7 @@
         "commuteMinutes": 36.6,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 41.97895354995823,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 25.4643535976814
       }
     },
     {
@@ -17758,8 +17728,7 @@
         "commuteMinutes": 36.83,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 40.954499721632054,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 23.458726184962522
       }
     },
     {
@@ -18377,8 +18346,7 @@
         "commuteMinutes": 42.09,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 42.75158601337154,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 23.203889396905872
       }
     },
     {
@@ -18668,8 +18636,7 @@
         "commuteMinutes": 44.17,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 42.60373166256572,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 22.180439488332993
       }
     },
     {
@@ -19291,8 +19258,7 @@
         "commuteMinutes": 44.46,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 41.80363760715776,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 20.282900976084882
       }
     },
     {
@@ -19590,8 +19556,7 @@
         "commuteMinutes": 40.54,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 41.26814373013343,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 21.664752415718976
       }
     },
     {
@@ -19969,8 +19934,7 @@
         "commuteMinutes": 40.49,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 41.5506604273847,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 22.7430073788246
       }
     },
     {
@@ -20720,8 +20684,7 @@
         "commuteMinutes": 37.32,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 39.31659013231619,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 20.894267572721628
       }
     },
     {
@@ -20991,8 +20954,7 @@
         "commuteMinutes": 40.52,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 40.00717285202915,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 19.63461925832234
       }
     },
     {
@@ -21470,8 +21432,7 @@
         "commuteMinutes": 44.13,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 40.86883647784324,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 19.64517526038493
       }
     },
     {
@@ -21669,8 +21630,7 @@
         "commuteMinutes": 42.95,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 41.042535058749145,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 20.064397377780747
       }
     },
     {
@@ -21908,8 +21868,7 @@
         "commuteMinutes": 41.9,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 40.6715982955584,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 20.09404862810598
       }
     },
     {
@@ -22075,8 +22034,7 @@
         "commuteMinutes": 42.47,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 40.27502872632059,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 18.82232114220871
       }
     },
     {
@@ -22466,8 +22424,7 @@
         "commuteMinutes": 39.3,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 39.28306135691151,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 18.667584196181668
       }
     },
     {
@@ -22965,8 +22922,7 @@
         "commuteMinutes": 42.82,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 40.91343670635214,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 18.129843074426475
       }
     },
     {
@@ -23472,8 +23428,7 @@
         "commuteMinutes": 36.31,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 40.0677868764702,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 15.341036668566067
       }
     },
     {
@@ -23975,8 +23930,7 @@
         "commuteMinutes": 35.42,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 41.0264906152022,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 14.417085713923354
       }
     },
     {
@@ -24250,8 +24204,7 @@
         "commuteMinutes": 33.82,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 40.72635716982007,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 13.554856915964532
       }
     },
     {
@@ -25037,8 +24990,7 @@
         "commuteMinutes": 35.49,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 39.57988093533398,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 13.650106389272455
       }
     },
     {
@@ -25884,8 +25836,7 @@
         "commuteMinutes": 35.68,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 39.121516816305096,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 13.015109286501295
       }
     },
     {
@@ -26407,8 +26358,7 @@
         "commuteMinutes": 34.46,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 38.33657672501905,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 11.996874078748487
       }
     },
     {
@@ -27002,8 +26952,7 @@
         "commuteMinutes": 32.01,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 39.065830015358664,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 10.698947845573283
       }
     },
     {
@@ -27605,8 +27554,7 @@
         "commuteMinutes": 29.04,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 38.93342534038412,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 8.956353670545575
       }
     },
     {
@@ -28136,8 +28084,7 @@
         "commuteMinutes": 43.5,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 40.12184934805519,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 9.301204691659773
       }
     },
     {
@@ -28751,8 +28698,7 @@
         "commuteMinutes": 26.91,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 36.613442691326476,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 7.074549395777631
       }
     },
     {
@@ -29206,8 +29152,7 @@
         "commuteMinutes": 27.34,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 36.11143121682173,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 6.695836018443509
       }
     },
     {
@@ -29637,8 +29582,7 @@
         "commuteMinutes": 25.58,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 36.18547085425324,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 6.41123855834084
       }
     },
     {
@@ -30512,8 +30456,7 @@
         "commuteMinutes": 26.96,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 35.97983771470071,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 5.634706936072123
       }
     },
     {
@@ -31439,8 +31382,7 @@
         "commuteMinutes": 26.43,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 36.37942528424094,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 5.761969859009846
       }
     },
     {
@@ -31686,8 +31628,7 @@
         "commuteMinutes": 27.31,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 36.85046971265912,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 5.8946708361143765
       }
     },
     {
@@ -31893,8 +31834,7 @@
         "commuteMinutes": 26.18,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 35.72693765069125,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 4.714808419865044
       }
     },
     {
@@ -32216,8 +32156,7 @@
         "commuteMinutes": 26.61,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 35.751427702252776,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 4.952126823754104
       }
     },
     {
@@ -32927,8 +32866,7 @@
         "commuteMinutes": 25.95,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 35.6221397436657,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 5.220569135448348
       }
     },
     {
@@ -33850,8 +33788,7 @@
         "commuteMinutes": 23.98,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 33.53063996097549,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 3.2566070003907934
       }
     },
     {
@@ -34437,8 +34374,7 @@
         "commuteMinutes": 24.17,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 33.67312735390112,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.690062751681049
       }
     },
     {
@@ -35228,8 +35164,7 @@
         "commuteMinutes": 23.06,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 33.09625283822813,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.057674730195745
       }
     },
     {
@@ -35963,8 +35898,7 @@
         "commuteMinutes": 21.32,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 32.711793637680884,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.7208903785170917
       }
     },
     {
@@ -36250,8 +36184,7 @@
         "commuteMinutes": 22.74,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 32.788895066984175,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.397281874418286
       }
     },
     {
@@ -36981,8 +36914,7 @@
         "commuteMinutes": 25.28,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 33.32227344454973,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 3.529353205335638
       }
     },
     {
@@ -37156,8 +37088,7 @@
         "commuteMinutes": 24.21,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 34.32453836025553,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 5.0598682099381636
       }
     },
     {
@@ -37479,8 +37410,7 @@
         "commuteMinutes": 25.88,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 34.586405632760915,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 5.93110917099703
       }
     },
     {
@@ -37790,8 +37720,7 @@
         "commuteMinutes": 24.97,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 32.879781369679264,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 5.310409744448594
       }
     },
     {
@@ -38069,8 +37998,7 @@
         "commuteMinutes": 22.31,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 32.90061080519581,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 4.351855056585409
       }
     },
     {
@@ -38428,8 +38356,7 @@
         "commuteMinutes": 22.78,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 30.995060895671703,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 4.861239062073306
       }
     },
     {
@@ -38719,8 +38646,7 @@
         "commuteMinutes": 21.78,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 31.134245097811025,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 3.9063484506367074
       }
     },
     {
@@ -38982,8 +38908,7 @@
         "commuteMinutes": 20.87,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 31.236004367004345,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.9232371445020586
       }
     },
     {
@@ -39181,8 +39106,7 @@
         "commuteMinutes": 20.61,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 31.149373300318747,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.4231560632938898
       }
     },
     {
@@ -39344,8 +39268,7 @@
         "commuteMinutes": 21.35,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 31.075978266834902,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.2749174471200007
       }
     },
     {
@@ -39615,8 +39538,7 @@
         "commuteMinutes": 19.86,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 29.530952857220527,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.7089957516466265
       }
     },
     {
@@ -39958,8 +39880,7 @@
         "commuteMinutes": 21.18,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 29.853918062044784,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 4.468768832562429
       }
     },
     {
@@ -40441,8 +40362,7 @@
         "commuteMinutes": 20.7,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 29.64978455397234,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.2052260455578003
       }
     },
     {
@@ -40624,8 +40544,7 @@
         "commuteMinutes": 19.75,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 29.475047703741627,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.2958806964871506
       }
     },
     {
@@ -41247,8 +41166,7 @@
         "commuteMinutes": 19.19,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 29.155380397159668,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.325050509440372
       }
     },
     {
@@ -41522,8 +41440,7 @@
         "commuteMinutes": 18.99,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 28.91691182688521,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.5466477673735035
       }
     },
     {
@@ -41817,8 +41734,7 @@
         "commuteMinutes": 16.28,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 27.7812401730204,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.5254777353677045
       }
     },
     {
@@ -41948,8 +41864,7 @@
         "commuteMinutes": 14.35,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 26.85287336505796,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 3.2196659386071076
       }
     },
     {
@@ -42311,8 +42226,7 @@
         "commuteMinutes": 17.1,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 25.69822356569653,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.8055829271766504
       }
     },
     {
@@ -42918,8 +42832,7 @@
         "commuteMinutes": 17.19,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 25.808210295895165,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.226204348926877
       }
     },
     {
@@ -43605,8 +43518,7 @@
         "commuteMinutes": 17.93,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 27.209065814730447,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.261859660646781
       }
     },
     {
@@ -44140,8 +44052,7 @@
         "commuteMinutes": 17.78,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 27.06600384233087,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.8958332350690656
       }
     },
     {
@@ -44535,8 +44446,7 @@
         "commuteMinutes": 17.1,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 25.411130149429557,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.5002349303755245
       }
     },
     {
@@ -44666,8 +44576,7 @@
         "commuteMinutes": 15.3,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 24.863194629685584,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.4703371808728702
       }
     },
     {
@@ -44937,8 +44846,7 @@
         "commuteMinutes": 15.6,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 24.80621705129732,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.5812114712841526
       }
     },
     {
@@ -45204,8 +45112,7 @@
         "commuteMinutes": 15.3,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 24.89476653413523,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.35339888330781283
       }
     },
     {
@@ -45503,8 +45410,7 @@
         "commuteMinutes": 11.22,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 25.305432585174813,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.5392759233225791
       }
     },
     {
@@ -45866,8 +45772,7 @@
         "commuteMinutes": 12.29,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 26.475284878876618,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.6748369686889715
       }
     },
     {
@@ -46041,8 +45946,7 @@
         "commuteMinutes": 10.95,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 25.23584810586067,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.603522261288573
       }
     },
     {
@@ -46268,8 +46172,7 @@
         "commuteMinutes": 12.56,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 25.740587218235607,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.775724243703369
       }
     },
     {
@@ -46719,8 +46622,7 @@
         "commuteMinutes": 10.5,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 24.147782844442634,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.875927807409814
       }
     },
     {
@@ -47078,8 +46980,7 @@
         "commuteMinutes": 9.53,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 24.87083469476488,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.199975875846874
       }
     },
     {
@@ -47329,8 +47230,7 @@
         "commuteMinutes": 8.17,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 24.061980715088932,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.7271190838671501
       }
     },
     {
@@ -47812,8 +47712,7 @@
         "commuteMinutes": 12.43,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 22.19032668797298,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.895022938899246
       }
     },
     {
@@ -47935,8 +47834,7 @@
         "commuteMinutes": 14.35,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 23.99777699244916,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.0966881942143711
       }
     },
     {
@@ -48078,8 +47976,7 @@
         "commuteMinutes": 14.5,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 24.476815038493168,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.9718573939633317
       }
     },
     {
@@ -48305,8 +48202,7 @@
         "commuteMinutes": 12.11,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 22.82410109300122,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.1856409510842763
       }
     },
     {
@@ -48700,8 +48596,7 @@
         "commuteMinutes": 7.56,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 22.72131169718166,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.2268946894756825
       }
     },
     {
@@ -48855,8 +48750,7 @@
         "commuteMinutes": 10.66,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 21.81567825362945,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.45773772500199705
       }
     },
     {
@@ -49566,8 +49460,7 @@
         "commuteMinutes": 6.77,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 21.35916948746051,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.5783277501079939
       }
     },
     {
@@ -49893,8 +49786,7 @@
         "commuteMinutes": 7.34,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 22.399812467586894,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.3396647601162623
       }
     },
     {
@@ -50296,8 +50188,7 @@
         "commuteMinutes": 9.24,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 23.036651861539404,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 3.0202905735230723
       }
     },
     {
@@ -50695,8 +50586,7 @@
         "commuteMinutes": 11.19,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 23.780983787790927,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 4.0267399686804195
       }
     },
     {
@@ -51962,8 +51852,7 @@
         "commuteMinutes": 6.19,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 21.048300569982164,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.2244292219299555
       }
     },
     {
@@ -52585,8 +52474,7 @@
         "commuteMinutes": 11.96,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 20.558695669915963,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.6048140122799196
       }
     },
     {
@@ -52916,8 +52804,7 @@
         "commuteMinutes": 12.55,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 20.84237552555691,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.145524627148283
       }
     },
     {
@@ -53223,8 +53110,7 @@
         "commuteMinutes": 14.45,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 19.734130373021838,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.6465950175171802
       }
     },
     {
@@ -53490,8 +53376,7 @@
         "commuteMinutes": 8.6,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 19.717921500395153,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.2532040290289074
       }
     },
     {
@@ -54297,8 +54182,7 @@
         "commuteMinutes": 34.21,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 43.208940188410324,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 12.940978879974734
       }
     },
     {
@@ -55192,8 +55076,7 @@
         "commuteMinutes": 23.8,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 34.93537539587814,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 4.132260546015316
       }
     },
     {
@@ -55731,8 +55614,7 @@
         "commuteMinutes": 23.04,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 33.43174736515145,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 3.418342451661684
       }
     },
     {
@@ -56170,8 +56052,7 @@
         "commuteMinutes": 26.68,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 34.81852156246887,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 6.0285396755819765
       }
     },
     {
@@ -56337,8 +56218,7 @@
         "commuteMinutes": 24.21,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 32.970315790366605,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 3.812595973644478
       }
     },
     {
@@ -56484,8 +56364,7 @@
         "commuteMinutes": 22.75,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 32.497825274441155,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 3.115205181250409
       }
     },
     {
@@ -57171,8 +57050,7 @@
         "commuteMinutes": 24.01,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 34.52915009052978,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 6.504989862895819
       }
     },
     {
@@ -57482,8 +57360,7 @@
         "commuteMinutes": 24.6,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 34.486312054289975,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 8.058432499977789
       }
     },
     {
@@ -57741,8 +57618,7 @@
         "commuteMinutes": 21.52,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 31.756697713048315,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.7750100961975768
       }
     },
     {
@@ -57868,8 +57744,7 @@
         "commuteMinutes": 19.99,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 31.46786100072121,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.46154033431775415
       }
     },
     {
@@ -58171,8 +58046,7 @@
         "commuteMinutes": 19.95,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 30.938142546229642,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.5748062019725633
       }
     },
     {
@@ -58554,8 +58428,7 @@
         "commuteMinutes": 21.68,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 31.457436937002274,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.4542922225958606
       }
     },
     {
@@ -59457,8 +59330,7 @@
         "commuteMinutes": 21.6,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 32.65578434166502,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 5.5961886785538
       }
     },
     {
@@ -60240,8 +60112,7 @@
         "commuteMinutes": 21.21,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 32.807878302868474,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 5.897704516666725
       }
     },
     {
@@ -60851,8 +60722,7 @@
         "commuteMinutes": 22.72,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 34.105879731322815,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 7.487581465622256
       }
     },
     {
@@ -61874,8 +61744,7 @@
         "commuteMinutes": 33.9,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 39.97212883782026,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 24.326783427523907
       }
     },
     {
@@ -62305,8 +62174,7 @@
         "commuteMinutes": 32.48,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 38.28618478662486,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 22.195867909661708
       }
     },
     {
@@ -62968,8 +62836,7 @@
         "commuteMinutes": 37.3,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 37.6093492165144,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 19.05113742590178
       }
     },
     {
@@ -63855,8 +63722,7 @@
         "commuteMinutes": 44.91,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 33.617970698773384,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 15.652605422991309
       }
     },
     {
@@ -64450,8 +64316,7 @@
         "commuteMinutes": 37.21,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 25.078190325931654,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 14.44391314347716
       }
     },
     {
@@ -65093,8 +64958,7 @@
         "commuteMinutes": 29.72,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 24.398580741329162,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 16.39765574845405
       }
     },
     {
@@ -66340,8 +66204,7 @@
         "commuteMinutes": 30.78,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 24.562773763126387,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 19.51651725923115
       }
     },
     {
@@ -67731,8 +67594,7 @@
         "commuteMinutes": 26.28,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 23.913976226079615,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 18.80488602618038
       }
     },
     {
@@ -68326,8 +68188,7 @@
         "commuteMinutes": 40.62,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 32.774880111811754,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 26.400715326129355
       }
     },
     {
@@ -69185,8 +69046,7 @@
         "commuteMinutes": 21.64,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 20.424878548875967,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 12.823515176978628
       }
     },
     {
@@ -69912,8 +69772,7 @@
         "commuteMinutes": 27.61,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 18.169001049318034,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 9.831366176734088
       }
     },
     {
@@ -70523,8 +70382,7 @@
         "commuteMinutes": 26.35,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 20.49984336881892,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 12.902154367776598
       }
     },
     {
@@ -71422,8 +71280,7 @@
         "commuteMinutes": 18.66,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 22.299859824387994,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 4.272245081920407
       }
     },
     {
@@ -72097,8 +71954,7 @@
         "commuteMinutes": 23,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 19.68087032201058,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 7.848504391299589
       }
     },
     {
@@ -72980,8 +72836,7 @@
         "commuteMinutes": 24.7,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 14.73224901249736,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.8239126124648504
       }
     },
     {
@@ -73487,8 +73342,7 @@
         "commuteMinutes": 19.52,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 12.914006588351969,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 3.6169344419782092
       }
     },
     {
@@ -87796,8 +87650,7 @@
         "commuteMinutes": 45.81,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 33.97470520145025,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 14.704707233069776
       }
     },
     {
@@ -88291,8 +88144,7 @@
         "commuteMinutes": 53.29,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 36.96319014687433,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 18.981624032036127
       }
     },
     {
@@ -89094,8 +88946,7 @@
         "commuteMinutes": 60.64,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 39.9280230795788,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 21.44399233697553
       }
     },
     {
@@ -89449,8 +89300,7 @@
         "commuteMinutes": 20.07,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 30.439940259699696,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 7.675058589871417
       }
     },
     {
@@ -89940,8 +89790,7 @@
         "commuteMinutes": 21.41,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 31.01387264228663,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 7.777154122389216
       }
     },
     {
@@ -90287,8 +90136,7 @@
         "commuteMinutes": 21.81,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 30.474385320115566,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 6.960829117907881
       }
     },
     {
@@ -90878,8 +90726,7 @@
         "commuteMinutes": 21.31,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 28.408058612024398,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 5.726045875155819
       }
     },
     {
@@ -91077,8 +90924,7 @@
         "commuteMinutes": 21.03,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 27.766992322007088,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 5.946378961800157
       }
     },
     {
@@ -91348,8 +91194,7 @@
         "commuteMinutes": 20.99,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 27.289406371219478,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 5.196205408644728
       }
     },
     {
@@ -91619,8 +91464,7 @@
         "commuteMinutes": 22.88,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 27.89358480054427,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 4.837605317144935
       }
     },
     {
@@ -91794,8 +91638,7 @@
         "commuteMinutes": 21.33,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 29.038445802051296,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 5.458538839059473
       }
     },
     {
@@ -92121,8 +91964,7 @@
         "commuteMinutes": 23.77,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 29.841989893774407,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 5.703506570981074
       }
     },
     {
@@ -92572,8 +92414,7 @@
         "commuteMinutes": 24.02,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 29.974649351521567,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 5.118166859640135
       }
     },
     {
@@ -92967,8 +92808,7 @@
         "commuteMinutes": 21.4,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 29.157308674811937,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 4.6198817658570155
       }
     },
     {
@@ -93306,8 +93146,7 @@
         "commuteMinutes": 19.36,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 28.553559797264388,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 3.0459951408706605
       }
     },
     {
@@ -93553,8 +93392,7 @@
         "commuteMinutes": 16.81,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 27.40182502345353,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.148736484511184
       }
     },
     {
@@ -93828,8 +93666,7 @@
         "commuteMinutes": 16.11,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 26.44155672959945,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.4338078218011074
       }
     },
     {
@@ -94107,8 +93944,7 @@
         "commuteMinutes": 20.65,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 26.860313842385132,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 4.435512851899161
       }
     },
     {
@@ -94366,8 +94202,7 @@
         "commuteMinutes": 20.58,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 26.592982290836815,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 5.044323030763823
       }
     },
     {
@@ -95581,8 +95416,7 @@
         "commuteMinutes": 19.13,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 26.666446339779238,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 5.205551284097216
       }
     },
     {
@@ -95756,8 +95590,7 @@
         "commuteMinutes": 16.79,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 25.763684993767487,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.94916025431822
       }
     },
     {
@@ -96107,8 +95940,7 @@
         "commuteMinutes": 15.51,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 24.599593094967183,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.669590738122939
       }
     },
     {
@@ -96410,8 +96242,7 @@
         "commuteMinutes": 14.36,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 25.279151263012327,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.1870434334128548
       }
     },
     {
@@ -96709,8 +96540,7 @@
         "commuteMinutes": 17.08,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 26.54172617361835,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.9277809395184647
       }
     },
     {
@@ -97084,8 +96914,7 @@
         "commuteMinutes": 12.61,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 23.477905399428874,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.0273029609197233
       }
     },
     {
@@ -97447,8 +97276,7 @@
         "commuteMinutes": 21.11,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 29.005468702939687,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 3.1607631212930616
       }
     },
     {
@@ -97714,8 +97542,7 @@
         "commuteMinutes": 68.89,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 66.8104550261869,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 46.621602332668935
       }
     },
     {
@@ -98105,8 +97932,7 @@
         "commuteMinutes": 35.88,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 21.70392614976372,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 12.775413183264702
       }
     },
     {
@@ -98576,8 +98402,7 @@
         "commuteMinutes": 31.65,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 22.64869363883134,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 12.122385014523072
       }
     },
     {
@@ -99011,8 +98836,7 @@
         "commuteMinutes": 28.21,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 19.38508847296394,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 10.099887305736267
       }
     },
     {
@@ -99274,8 +99098,7 @@
         "commuteMinutes": 26.21,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 18.25659995559663,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 7.877882818310318
       }
     },
     {
@@ -100681,8 +100504,7 @@
         "commuteMinutes": 23,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 17.192981779324594,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 5.893311785513971
       }
     },
     {
@@ -101460,8 +101282,7 @@
         "commuteMinutes": 17.55,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 12.747146430394494,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 6.762360387260972
       }
     },
     {
@@ -101999,8 +101820,7 @@
         "commuteMinutes": 13.39,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 10.07240090878104,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 4.652637268984264
       }
     },
     {
@@ -103502,8 +103322,7 @@
         "commuteMinutes": 23.38,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 14.245796167570218,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 3.133321658683769
       }
     },
     {
@@ -103805,8 +103624,7 @@
         "commuteMinutes": 23.35,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 18.887385748380655,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 4.497829972544487
       }
     },
     {
@@ -104476,8 +104294,7 @@
         "commuteMinutes": 22.74,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 18.269050229553986,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 3.9088191613641285
       }
     },
     {
@@ -105615,8 +105432,7 @@
         "commuteMinutes": 22.22,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 17.657328171724256,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 3.1020288853349722
       }
     },
     {
@@ -106458,8 +106274,7 @@
         "commuteMinutes": 22.77,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 15.92244487790555,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.8722810946083213
       }
     },
     {
@@ -106893,8 +106708,7 @@
         "commuteMinutes": 23.3,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 15.263112522242446,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.4437792957274564
       }
     },
     {
@@ -107084,8 +106898,7 @@
         "commuteMinutes": 22.03,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 15.908143191556713,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.5186198041937584
       }
     },
     {
@@ -107547,8 +107360,7 @@
         "commuteMinutes": 21.46,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 14.612560752740928,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.016026558857928
       }
     },
     {
@@ -108022,8 +107834,7 @@
         "commuteMinutes": 21.53,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 13.544029465280808,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.1505293265969154
       }
     },
     {
@@ -108393,8 +108204,7 @@
         "commuteMinutes": 20.68,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 12.282702519296139,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.2490177995321012
       }
     },
     {
@@ -108572,8 +108382,7 @@
         "commuteMinutes": 20.22,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 12.142762643867727,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.0482516859993996
       }
     },
     {
@@ -108891,8 +108700,7 @@
         "commuteMinutes": 19.57,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 11.62047606517765,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.6541333728044987
       }
     },
     {
@@ -109662,8 +109470,7 @@
         "commuteMinutes": 15.36,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 10.432373646995833,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.8178288080418278
       }
     },
     {
@@ -109793,8 +109600,7 @@
         "commuteMinutes": 16.77,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 10.469643706508963,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.3234545171897272
       }
     },
     {
@@ -109960,8 +109766,7 @@
         "commuteMinutes": 16.78,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 10.703153681565858,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.2715628756826893
       }
     },
     {
@@ -110167,8 +109972,7 @@
         "commuteMinutes": 15.14,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 10.54348196233028,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.8309461534297906
       }
     },
     {
@@ -110294,8 +110098,7 @@
         "commuteMinutes": 15.01,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 10.868770883836223,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.718958093073794
       }
     },
     {
@@ -110381,8 +110184,7 @@
         "commuteMinutes": 16.15,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 11.315907451562719,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.870793159091458
       }
     },
     {
@@ -110532,8 +110334,7 @@
         "commuteMinutes": 17.23,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 11.834325995894226,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.1088568579759568
       }
     },
     {
@@ -110727,8 +110528,7 @@
         "commuteMinutes": 18.39,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 12.03253876361255,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.5215889015955346
       }
     },
     {
@@ -110902,8 +110702,7 @@
         "commuteMinutes": 19.86,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 12.928897530077847,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.7115053585343192
       }
     },
     {
@@ -111217,8 +111016,7 @@
         "commuteMinutes": 20.17,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 13.642008858279329,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.5770639067293697
       }
     },
     {
@@ -111672,8 +111470,7 @@
         "commuteMinutes": 20.32,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 13.951076060525983,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.302438171598178
       }
     },
     {
@@ -112027,8 +111824,7 @@
         "commuteMinutes": 21.4,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 15.650677091783281,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.848034717686866
       }
     },
     {
@@ -112510,8 +112306,7 @@
         "commuteMinutes": 19.61,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 16.700455396424662,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.9299657165924258
       }
     },
     {
@@ -113253,8 +113048,7 @@
         "commuteMinutes": 20.52,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 17.737761614754557,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.585277207334813
       }
     },
     {
@@ -114100,8 +113894,7 @@
         "commuteMinutes": 20.91,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 18.214928963294454,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.566948585990295
       }
     },
     {
@@ -114239,8 +114032,7 @@
         "commuteMinutes": 21.58,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 18.680422089793776,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 3.4247416724928024
       }
     },
     {
@@ -114730,8 +114522,7 @@
         "commuteMinutes": 21.77,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 18.068119621085977,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 3.342142134163969
       }
     },
     {
@@ -116727,8 +116518,7 @@
         "commuteMinutes": 21.51,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 18.921076077731573,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.8160907177199088
       }
     },
     {
@@ -117798,8 +117588,7 @@
         "commuteMinutes": 24.93,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 20.1295642410056,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.4016878119658938
       }
     },
     {
@@ -119557,8 +119346,7 @@
         "commuteMinutes": 22.21,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 19.029112174166627,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.1424233543105984
       }
     },
     {
@@ -120496,8 +120284,7 @@
         "commuteMinutes": 21.27,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 18.442319735158772,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.5666545603730502
       }
     },
     {
@@ -120727,8 +120514,7 @@
         "commuteMinutes": 19.25,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 18.193000720691057,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.1901540597473126
       }
     },
     {
@@ -121750,8 +121536,7 @@
         "commuteMinutes": 19.23,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 17.48971958804268,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.2644215548759385
       }
     },
     {
@@ -122013,8 +121798,7 @@
         "commuteMinutes": 19.4,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 16.028770159133426,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.2916468050886663
       }
     },
     {
@@ -122860,8 +122644,7 @@
         "commuteMinutes": 19.16,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 16.064114996937,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.4641832476486862
       }
     },
     {
@@ -123695,8 +123478,7 @@
         "commuteMinutes": 19.93,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 15.688121381527733,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.9816874532812266
       }
     },
     {
@@ -123954,8 +123736,7 @@
         "commuteMinutes": 21.06,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 14.91306631855394,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.1384389685254226
       }
     },
     {
@@ -124157,8 +123938,7 @@
         "commuteMinutes": 19.99,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 14.340445318956904,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.8589432013427604
       }
     },
     {
@@ -124332,8 +124112,7 @@
         "commuteMinutes": 20.36,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 13.906660059639691,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.9693375411127445
       }
     },
     {
@@ -124787,8 +124566,7 @@
         "commuteMinutes": 18.76,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 13.277743604918104,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.6357399175394749
       }
     },
     {
@@ -125110,8 +124888,7 @@
         "commuteMinutes": 19.71,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 13.240833175644907,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.87261989038436
       }
     },
     {
@@ -125305,8 +125082,7 @@
         "commuteMinutes": 18.15,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 12.404070828394012,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.2178139776017454
       }
     },
     {
@@ -125532,8 +125308,7 @@
         "commuteMinutes": 17.87,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 12.590174444297903,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.7801869085519053
       }
     },
     {
@@ -125823,8 +125598,7 @@
         "commuteMinutes": 16.42,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 11.55922011511326,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.6579104837856363
       }
     },
     {
@@ -126094,8 +125868,7 @@
         "commuteMinutes": 15.95,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 10.800310459819904,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.10447388696865058
       }
     },
     {
@@ -126309,8 +126082,7 @@
         "commuteMinutes": 16.62,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 11.818454922258232,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.35934832586634263
       }
     },
     {
@@ -127100,8 +126872,7 @@
         "commuteMinutes": 20.44,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 14.111196095538512,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.2065472409607455
       }
     },
     {
@@ -127291,8 +127062,7 @@
         "commuteMinutes": 21.42,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 14.83367954182611,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.7801532579581733
       }
     },
     {
@@ -127658,8 +127428,7 @@
         "commuteMinutes": 20.11,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 14.98940474082912,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.32095461121185026
       }
     },
     {
@@ -127873,8 +127642,7 @@
         "commuteMinutes": 15.91,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 9.940202634785413,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.6839464019253205
       }
     },
     {
@@ -128524,8 +128292,7 @@
         "commuteMinutes": 22.68,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 18.396982180164557,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.5961049573618211
       }
     },
     {
@@ -129603,8 +129370,7 @@
         "commuteMinutes": 24.79,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 19.51535927265294,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.6809152496843752
       }
     },
     {
@@ -130478,8 +130244,7 @@
         "commuteMinutes": 18.57,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 14.342185310418143,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.49311318271735927
       }
     },
     {
@@ -132009,8 +131774,7 @@
         "commuteMinutes": 15.25,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 8.226300122966693,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.5271257862469245
       }
     },
     {
@@ -132156,8 +131920,7 @@
         "commuteMinutes": 15.43,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 9.604345823032476,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.036651809707881
       }
     },
     {
@@ -133083,8 +132846,7 @@
         "commuteMinutes": 15.28,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 8.776791513846943,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.7382741277316669
       }
     },
     {
@@ -133246,8 +133008,7 @@
         "commuteMinutes": 14.56,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 9.396222344112589,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.5068996052788924
       }
     },
     {
@@ -134345,8 +134106,7 @@
         "commuteMinutes": 14.56,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 8.536330094906935,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.4560288673227049
       }
     },
     {
@@ -137780,8 +137540,7 @@
         "commuteMinutes": 37.37,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 25.127625080217413,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 3.621416847413192
       }
     },
     {
@@ -137915,8 +137674,7 @@
         "commuteMinutes": 13.67,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 18.632112324930915,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 3.968482699364683
       }
     },
     {
@@ -138114,8 +137872,7 @@
         "commuteMinutes": 14.51,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 16.38797801318253,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 4.333512408906423
       }
     },
     {
@@ -138541,8 +138298,7 @@
         "commuteMinutes": 23.77,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 14.192848231911254,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 6.923719349848349
       }
     },
     {
@@ -140396,8 +140152,7 @@
         "commuteMinutes": 15.72,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 7.084897456105878,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.6999462919871131
       }
     },
     {
@@ -141079,8 +140834,7 @@
         "commuteMinutes": 15.97,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 9.158237257568276,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.159243767961877
       }
     },
     {
@@ -141358,8 +141112,7 @@
         "commuteMinutes": 22.96,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 10.22704829934182,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 4.3185870060347895
       }
     },
     {
@@ -141709,8 +141462,7 @@
         "commuteMinutes": 18.25,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 10.579487448992502,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 6.523729851057302
       }
     },
     {
@@ -142112,8 +141864,7 @@
         "commuteMinutes": 15.44,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 8.754159464884983,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 5.6336480437964145
       }
     },
     {
@@ -142553,8 +142304,7 @@
         "commuteMinutes": 16.34,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 9.020538048560743,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 5.902923131107394
       }
     },
     {
@@ -142792,8 +142542,7 @@
         "commuteMinutes": 14.05,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 8.661756372698523,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 5.529115239476638
       }
     },
     {
@@ -142999,8 +142748,7 @@
         "commuteMinutes": 14.04,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 7.428673579584302,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 4.308217137032982
       }
     },
     {
@@ -143742,8 +143490,7 @@
         "commuteMinutes": 13.63,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 7.272618410343947,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 4.102244439536152
       }
     },
     {
@@ -144161,8 +143908,7 @@
         "commuteMinutes": 16.6,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 6.71474218511504,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 3.6095915461573056
       }
     },
     {
@@ -144996,8 +144742,7 @@
         "commuteMinutes": 17.44,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 7.996871809382132,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 3.4715648457054433
       }
     },
     {
@@ -145371,8 +145116,7 @@
         "commuteMinutes": 15.56,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 7.63262137443945,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.3651839895976154
       }
     },
     {
@@ -145522,8 +145266,7 @@
         "commuteMinutes": 14.87,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 11.207917394367547,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.7617096056550238
       }
     },
     {
@@ -145837,8 +145580,7 @@
         "commuteMinutes": 14.71,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 10.59433332127931,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.546182177807106
       }
     },
     {
@@ -146212,8 +145954,7 @@
         "commuteMinutes": 14.9,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 9.55377869425415,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.9939162603198558
       }
     },
     {
@@ -146467,8 +146208,7 @@
         "commuteMinutes": 15.22,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 9.411510147899603,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 4.030891565931172
       }
     },
     {
@@ -146714,8 +146454,7 @@
         "commuteMinutes": 13.22,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 8.515804487172865,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.9010012472686237
       }
     },
     {
@@ -147101,8 +146840,7 @@
         "commuteMinutes": 12.16,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 6.922874693688447,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.6255731605075329
       }
     },
     {
@@ -147316,8 +147054,7 @@
         "commuteMinutes": 10.84,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 6.469622141588884,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.41163436215638577
       }
     },
     {
@@ -147887,8 +147624,7 @@
         "commuteMinutes": 9.85,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 5.947453757546685,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.2452944456509002
       }
     },
     {
@@ -148770,8 +148506,7 @@
         "commuteMinutes": 10.61,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 5.991339282536311,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.7393163334328685
       }
     },
     {
@@ -150001,8 +149736,7 @@
         "commuteMinutes": 11.4,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 4.390674951802812,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.809644251507779
       }
     },
     {
@@ -151400,8 +151134,7 @@
         "commuteMinutes": 8.85,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 3.783155960644866,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.672450864688281
       }
     },
     {
@@ -152255,8 +151988,7 @@
         "commuteMinutes": 11.04,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 5.406872044306924,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.2805822178351693
       }
     },
     {
@@ -153210,8 +152942,7 @@
         "commuteMinutes": 9.43,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 6.12242067564065,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.221008106349406
       }
     },
     {
@@ -155121,8 +154852,7 @@
         "commuteMinutes": 16.34,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 7.746362895953761,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.91590493059256
       }
     },
     {
@@ -155400,8 +155130,7 @@
         "commuteMinutes": 10.58,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 6.965223760698993,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.7996216781711865
       }
     },
     {
@@ -155963,8 +155692,7 @@
         "commuteMinutes": 11.04,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 6.902173840713122,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.771529400206691
       }
     },
     {
@@ -156362,8 +156090,7 @@
         "commuteMinutes": 12.03,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 6.827796172203004,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.5648621752967167
       }
     },
     {
@@ -156881,8 +156608,7 @@
         "commuteMinutes": 13.1,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 8.301712885976652,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.8425964973976426
       }
     },
     {
@@ -157024,8 +156750,7 @@
         "commuteMinutes": 15.43,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 9.316409159856859,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.08885888644130764
       }
     },
     {
@@ -157363,8 +157088,7 @@
         "commuteMinutes": 13.29,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 10.059727618408392,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.8021462057513389
       }
     },
     {
@@ -157550,8 +157274,7 @@
         "commuteMinutes": 13.62,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 9.130526273256358,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.627600135461496
       }
     },
     {
@@ -157665,8 +157388,7 @@
         "commuteMinutes": 12.04,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 8.351656572009224,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.7623938356685565
       }
     },
     {
@@ -158720,8 +158442,7 @@
         "commuteMinutes": 10.22,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 6.299913092587076,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.5744318678265685
       }
     },
     {
@@ -159671,8 +159392,7 @@
         "commuteMinutes": 11.46,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 5.00698600452654,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.41870143467993737
       }
     },
     {
@@ -159986,8 +159706,7 @@
         "commuteMinutes": 9.24,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 5.36148423427542,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.3878131457992933
       }
     },
     {
@@ -161425,8 +161144,7 @@
         "commuteMinutes": 33.81,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 20.864867174049966,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 8.020600370888149
       }
     },
     {
@@ -161772,8 +161490,7 @@
         "commuteMinutes": 25.55,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 16.441710981943665,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 5.960896760529459
       }
     },
     {
@@ -161899,8 +161616,7 @@
         "commuteMinutes": 22.01,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 14.166077555449421,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 5.111008513085155
       }
     },
     {
@@ -163146,8 +162862,7 @@
         "commuteMinutes": 22.7,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 13.295992547324332,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 3.5017394810337366
       }
     },
     {
@@ -163397,8 +163112,7 @@
         "commuteMinutes": 19.17,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 12.067581772060194,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 6.502857175925022
       }
     },
     {
@@ -163760,8 +163474,7 @@
         "commuteMinutes": 17.57,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 10.012195563860082,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 5.692496013458878
       }
     },
     {
@@ -164107,8 +163820,7 @@
         "commuteMinutes": 14.5,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 8.253306234848154,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 3.9689059849553074
       }
     },
     {
@@ -164542,8 +164254,7 @@
         "commuteMinutes": 11.64,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 7.386649450513756,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 3.168658464154475
       }
     },
     {
@@ -164905,8 +164616,7 @@
         "commuteMinutes": 11.04,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 6.493437906795486,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.375306613503266
       }
     },
     {
@@ -165064,8 +164774,7 @@
         "commuteMinutes": 11.09,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 6.785236847144569,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.3205839566967041
       }
     },
     {
@@ -165307,8 +165016,7 @@
         "commuteMinutes": 8.5,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 5.583643975918202,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.11761279583795137
       }
     },
     {
@@ -165642,8 +165350,7 @@
         "commuteMinutes": 8.23,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 5.198413422829799,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.25653433107173773
       }
     },
     {
@@ -166057,8 +165764,7 @@
         "commuteMinutes": 6.99,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 4.883983968622107,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.05873081548496531
       }
     },
     {
@@ -166796,8 +166502,7 @@
         "commuteMinutes": 8.82,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 4.521335837306047,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.3815541562622162
       }
     },
     {
@@ -167515,8 +167220,7 @@
         "commuteMinutes": 5.81,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 3.4588848450423972,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.29452807967318534
       }
     },
     {
@@ -167722,8 +167426,7 @@
         "commuteMinutes": 8.57,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 4.91407005462474,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.12369191090456877
       }
     },
     {
@@ -168257,8 +167960,7 @@
         "commuteMinutes": 11.4,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 5.314566327486529,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.5374060342320182
       }
     },
     {
@@ -168764,8 +168466,7 @@
         "commuteMinutes": 6.53,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 3.2088430718983845,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.4534961829324733
       }
     },
     {
@@ -169519,8 +169220,7 @@
         "commuteMinutes": 8.24,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 5.102087352834273,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.4996344035086844
       }
     },
     {
@@ -169786,8 +169486,7 @@
         "commuteMinutes": 11.1,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 6.944265489160387,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 3.4008310914787323
       }
     },
     {
@@ -170001,8 +169700,7 @@
         "commuteMinutes": 12.44,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 7.1608396274486354,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.974328254610695
       }
     },
     {
@@ -170212,8 +169910,7 @@
         "commuteMinutes": 14.29,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 8.336548264608583,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.3120337322289615
       }
     },
     {
@@ -170327,8 +170024,7 @@
         "commuteMinutes": 11.92,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 7.090494341859513,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.256425212518222
       }
     },
     {
@@ -170542,8 +170238,7 @@
         "commuteMinutes": 10.81,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 6.434999356556326,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.803248395588608
       }
     },
     {
@@ -170721,8 +170416,7 @@
         "commuteMinutes": 10.62,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 6.355485033785081,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.1501254148356483
       }
     },
     {
@@ -171664,8 +171358,7 @@
         "commuteMinutes": 7.26,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 2.228353632746351,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.6909615833310421
       }
     },
     {
@@ -172263,8 +171956,7 @@
         "commuteMinutes": 4.81,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 2.0696727280519327,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.030299360290875668
       }
     },
     {
@@ -172454,8 +172146,7 @@
         "commuteMinutes": 8.62,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 3.7075535447570824,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.5083654914483154
       }
     },
     {
@@ -173069,8 +172760,7 @@
         "commuteMinutes": 8.1,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 4.083727899806299,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.9587325593484257
       }
     },
     {
@@ -173252,8 +172942,7 @@
         "commuteMinutes": 8.71,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 3.501561903224271,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.36950805230074835
       }
     },
     {
@@ -173767,8 +173456,7 @@
         "commuteMinutes": 15.55,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 9.511471633261419,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 4.812066950458308
       }
     },
     {
@@ -174162,8 +173850,7 @@
         "commuteMinutes": 9.21,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 3.7444852358835274,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.1468539137043144
       }
     },
     {
@@ -174369,8 +174056,7 @@
         "commuteMinutes": 8.53,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 3.7608922493934123,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.41777881567628705
       }
     },
     {
@@ -174860,8 +174546,7 @@
         "commuteMinutes": 4.72,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 1.4850704928448155,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.31491995513361
       }
     },
     {
@@ -175171,8 +174856,7 @@
         "commuteMinutes": 5.8,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 1.4087945383260359,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.4314962825210505
       }
     },
     {
@@ -175854,8 +175538,7 @@
         "commuteMinutes": 5.05,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 2.2637591653072366,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.07970354836854743
       }
     },
     {
@@ -176489,8 +176172,7 @@
         "commuteMinutes": 3.08,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 0.17160541554512776,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.009818514546443509
       }
     },
     {
@@ -176912,8 +176594,7 @@
         "commuteMinutes": 5.9,
         "nearestJobCenter": "Waterkloof/Brooklyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 1.7244274650350966,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.9975021160876122
       }
     },
     {
@@ -177075,8 +176756,7 @@
         "commuteMinutes": 8.61,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 3.40616000902684,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.25038155112004906
       }
     },
     {
@@ -177430,8 +177110,7 @@
         "commuteMinutes": 8.91,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 4.35155346691091,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.6300386345377539
       }
     },
     {
@@ -177833,8 +177512,7 @@
         "commuteMinutes": 9.14,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 4.811576304885655,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.2273575899872837
       }
     },
     {
@@ -178184,8 +177862,7 @@
         "commuteMinutes": 8.83,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 5.223882856743463,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.6183778697026951
       }
     },
     {
@@ -179035,8 +178712,7 @@
         "commuteMinutes": 8.39,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 5.703695472960242,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.015161346187106
       }
     },
     {
@@ -179942,8 +179618,7 @@
         "commuteMinutes": 10.64,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 7.468955835516749,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.1298407634837373
       }
     },
     {
@@ -180973,8 +180648,7 @@
         "commuteMinutes": 13.43,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 9.814172863389542,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.7432501319394107
       }
     },
     {
@@ -181756,8 +181430,7 @@
         "commuteMinutes": 11.09,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 8.081130304540551,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.9412410896200947
       }
     },
     {
@@ -182335,8 +182008,7 @@
         "commuteMinutes": 9.06,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 6.9407848760382365,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.531458493668913
       }
     },
     {
@@ -182974,8 +182646,7 @@
         "commuteMinutes": 8.56,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 6.373742589051004,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.6995212252851435
       }
     },
     {
@@ -183941,8 +183612,7 @@
         "commuteMinutes": 5.44,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 5.199101814861716,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.9710852650181503
       }
     },
     {
@@ -184716,8 +184386,7 @@
         "commuteMinutes": 5.15,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 3.132223421216299,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.13553321674763585
       }
     },
     {
@@ -184967,8 +184636,7 @@
         "commuteMinutes": 6.98,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 2.7643425052899167,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.6579853526662605
       }
     },
     {
@@ -185814,8 +185482,7 @@
         "commuteMinutes": 13.55,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 10.186089657402691,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.6579750963575233
       }
     },
     {
@@ -186409,8 +186076,7 @@
         "commuteMinutes": 9.67,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 9.714489278009946,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 4.19616175094514
       }
     },
     {
@@ -186512,8 +186178,7 @@
         "commuteMinutes": 15.65,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 13.05002646404239,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 3.6729953941632503
       }
     },
     {
@@ -186623,8 +186288,7 @@
         "commuteMinutes": 13.23,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 12.655105197999164,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 4.7762037999084805
       }
     },
     {
@@ -187006,8 +186670,7 @@
         "commuteMinutes": 14.84,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 13.775968323693158,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 5.37963140898385
       }
     },
     {
@@ -187205,8 +186868,7 @@
         "commuteMinutes": 17.67,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 14.897935941094232,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 5.355666847855218
       }
     },
     {
@@ -187452,8 +187114,7 @@
         "commuteMinutes": 27.65,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 14.950128408593155,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 6.159411335773492
       }
     },
     {
@@ -188091,8 +187752,7 @@
         "commuteMinutes": 12.7,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 13.155371919417744,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 7.149663670669378
       }
     },
     {
@@ -188282,8 +187942,7 @@
         "commuteMinutes": 13.08,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 12.215342712378588,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 5.836615615150838
       }
     },
     {
@@ -188353,8 +188012,7 @@
         "commuteMinutes": 12.91,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 12.350674620096925,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 6.433062409579521
       }
     },
     {
@@ -188484,8 +188142,7 @@
         "commuteMinutes": 13.68,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 12.887086405534456,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 6.91975364490863
       }
     },
     {
@@ -188543,8 +188200,7 @@
         "commuteMinutes": 14.15,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 13.333158236419875,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 6.579405104739014
       }
     },
     {
@@ -188626,8 +188282,7 @@
         "commuteMinutes": 14.26,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 13.692276699258432,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 5.9753685229890285
       }
     },
     {
@@ -188789,8 +188444,7 @@
         "commuteMinutes": 4.85,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 1.4626593728512467,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.1681374186815341
       }
     },
     {
@@ -189452,8 +189106,7 @@
         "commuteMinutes": 4.72,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 2.0345762548085773,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.18740625766369326
       }
     },
     {
@@ -189847,8 +189500,7 @@
         "commuteMinutes": 2.53,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 1.6963406006941055,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.028869240609651778
       }
     },
     {
@@ -190246,8 +189898,7 @@
         "commuteMinutes": 2.36,
         "nearestJobCenter": "Waterkloof/Brooklyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 0.8208676675225782,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.3126062683252565
       }
     },
     {
@@ -190969,8 +190620,7 @@
         "commuteMinutes": 1.13,
         "nearestJobCenter": "Waterkloof/Brooklyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 2.4161131989249003,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.6365668307963352
       }
     },
     {
@@ -191324,8 +190974,7 @@
         "commuteMinutes": 1.96,
         "nearestJobCenter": "Waterkloof/Brooklyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 2.1737755600203736,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.07007975311269235
       }
     },
     {
@@ -191923,8 +191572,7 @@
         "commuteMinutes": 5.08,
         "nearestJobCenter": "Waterkloof/Brooklyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 1.7167907306412196,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.15901218498406844
       }
     },
     {
@@ -192210,8 +191858,7 @@
         "commuteMinutes": 4.66,
         "nearestJobCenter": "Waterkloof/Brooklyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 2.5111188886882494,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.511839645081781
       }
     },
     {
@@ -192821,8 +192468,7 @@
         "commuteMinutes": 3.59,
         "nearestJobCenter": "Waterkloof/Brooklyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 2.828264977806431,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.10276139670988771
       }
     },
     {
@@ -193220,8 +192866,7 @@
         "commuteMinutes": 10.94,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 1.0708403510883167,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.8579948612055276
       }
     },
     {
@@ -193591,8 +193236,7 @@
         "commuteMinutes": 9.18,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 3.1200662694915566,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.0414329341383377
       }
     },
     {
@@ -193774,8 +193418,7 @@
         "commuteMinutes": 13.74,
         "nearestJobCenter": "Waterkloof/Brooklyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 1.954325438837465,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.9511295560111773
       }
     },
     {
@@ -194945,8 +194588,7 @@
         "commuteMinutes": 14.61,
         "nearestJobCenter": "Waterkloof/Brooklyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 5.89347947147961,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.2610562560296428
       }
     },
     {
@@ -195248,8 +194890,7 @@
         "commuteMinutes": 8.72,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 5.150960882228936,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.0816874769940277
       }
     },
     {
@@ -196007,8 +195648,7 @@
         "commuteMinutes": 8.98,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 7.791369952067544,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.427533448160335
       }
     },
     {
@@ -197202,8 +196842,7 @@
         "commuteMinutes": 5.04,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 6.3153190075698316,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.7234818263776356
       }
     },
     {
@@ -197617,8 +197256,7 @@
         "commuteMinutes": 4.02,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 5.5068672086453585,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.6045421209191959
       }
     },
     {
@@ -198404,8 +198042,7 @@
         "commuteMinutes": 3.06,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 3.4704884383774655,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.12253810308949974
       }
     },
     {
@@ -199671,8 +199308,7 @@
         "commuteMinutes": 5.1,
         "nearestJobCenter": "Waterkloof/Brooklyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 3.781745277867584,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.7909856354649188
       }
     },
     {
@@ -199954,8 +199590,7 @@
         "commuteMinutes": 2.17,
         "nearestJobCenter": "Waterkloof/Brooklyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 2.900600990741873,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.11468879962604481
       }
     },
     {
@@ -200161,8 +199796,7 @@
         "commuteMinutes": 7.14,
         "nearestJobCenter": "Waterkloof/Brooklyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 1.2190716406212163,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.06984203361782264
       }
     },
     {
@@ -201308,8 +200942,7 @@
         "commuteMinutes": 7.39,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 8.202602862222395,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.3607789853979444
       }
     },
     {
@@ -201491,8 +201124,7 @@
         "commuteMinutes": 4.08,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 6.394404295372121,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.20588766704419015
       }
     },
     {
@@ -202578,8 +202210,7 @@
         "commuteMinutes": 5.54,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 8.586148270270686,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.403311275929851
       }
     },
     {
@@ -202961,8 +202592,7 @@
         "commuteMinutes": 1.25,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 5.70443721200921,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.02885760579955613
       }
     },
     {
@@ -203700,8 +203330,7 @@
         "commuteMinutes": 3.91,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 4.730826545412163,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.2210987437373322
       }
     },
     {
@@ -203919,8 +203548,7 @@
         "commuteMinutes": 4.06,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 5.408336218430862,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.8088194445706739
       }
     },
     {
@@ -204702,8 +204330,7 @@
         "commuteMinutes": 1.72,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 5.967223437598662,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.4927963977897634
       }
     },
     {
@@ -205069,8 +204696,7 @@
         "commuteMinutes": 6.14,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 5.57797985236724,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.409938078109423
       }
     },
     {
@@ -206424,8 +206050,7 @@
         "commuteMinutes": 5.49,
         "nearestJobCenter": "Waterkloof/Brooklyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 5.286901048954248,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.188798684105718
       }
     },
     {
@@ -207123,8 +206748,7 @@
         "commuteMinutes": 13.66,
         "nearestJobCenter": "Waterkloof/Brooklyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 3.7961576216916155,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.671545171350427
       }
     },
     {
@@ -207494,8 +207118,7 @@
         "commuteMinutes": 9.68,
         "nearestJobCenter": "Waterkloof/Brooklyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 4.906174263036573,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.505825833544035
       }
     },
     {
@@ -207909,8 +207532,7 @@
         "commuteMinutes": 8.21,
         "nearestJobCenter": "Waterkloof/Brooklyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 6.300050414606937,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.999094538296835
       }
     },
     {
@@ -208060,8 +207682,7 @@
         "commuteMinutes": 8.85,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 6.526160679267848,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 3.750012516497244
       }
     },
     {
@@ -208947,8 +208568,7 @@
         "commuteMinutes": 6.14,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 8.075144501067161,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.8809062013853453
       }
     },
     {
@@ -210178,8 +209798,7 @@
         "commuteMinutes": 4.53,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 6.865213442164331,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.7381171839274395
       }
     },
     {
@@ -211497,8 +211116,7 @@
         "commuteMinutes": 6.33,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 8.401839616947978,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.023306386447965
       }
     },
     {
@@ -211740,8 +211358,7 @@
         "commuteMinutes": 10.21,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 11.701217850580774,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 5.509868353815015
       }
     },
     {
@@ -212079,8 +211696,7 @@
         "commuteMinutes": 9.8,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 11.177148980156947,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 5.00756741140301
       }
     },
     {
@@ -212886,8 +212502,7 @@
         "commuteMinutes": 4.52,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 7.8820425476376474,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.5043347860180005
       }
     },
     {
@@ -214121,8 +213736,7 @@
         "commuteMinutes": 9.77,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 10.419310637508193,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 4.055865832077611
       }
     },
     {
@@ -214760,8 +214374,7 @@
         "commuteMinutes": 11.39,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 10.55531099957735,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 3.9851766095676666
       }
     },
     {
@@ -214939,8 +214552,7 @@
         "commuteMinutes": 12.37,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 11.97664013683866,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 5.550584453722391
       }
     },
     {
@@ -215756,8 +215368,7 @@
         "commuteMinutes": 8.15,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 10.560336728359495,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 3.9524953609473594
       }
     },
     {
@@ -215911,8 +215522,7 @@
         "commuteMinutes": 9.69,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 10.818755810513485,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 4.2213261292901
       }
     },
     {
@@ -216266,8 +215876,7 @@
         "commuteMinutes": 6.18,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 7.274513479253143,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 3.2894812723837688
       }
     },
     {
@@ -216953,8 +216562,7 @@
         "commuteMinutes": 9.46,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 8.706293072030977,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 4.279624758112774
       }
     },
     {
@@ -217668,8 +217276,7 @@
         "commuteMinutes": 10.22,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 7.335980770957556,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 3.339022873756679
       }
     },
     {
@@ -217839,8 +217446,7 @@
         "commuteMinutes": 10.32,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 6.476235464718231,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.8238507332251386
       }
     },
     {
@@ -218784,8 +218390,7 @@
         "commuteMinutes": 27.34,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 10.037908598568087,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 4.6500433087658735
       }
     },
     {
@@ -218907,8 +218512,7 @@
         "commuteMinutes": 10.86,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 13.361647525780052,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 6.907367754608235
       }
     },
     {
@@ -219186,8 +218790,7 @@
         "commuteMinutes": 14.12,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 14.302928866549127,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 7.69624179272351
       }
     },
     {
@@ -219313,8 +218916,7 @@
         "commuteMinutes": 13.42,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 7.725859692691128,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.4461064320476065
       }
     },
     {
@@ -219504,8 +219106,7 @@
         "commuteMinutes": 12.92,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 7.039517809550081,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.7713768599771893
       }
     },
     {
@@ -220279,8 +219880,7 @@
         "commuteMinutes": 17.3,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 8.978324591874532,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 3.2949313947892165
       }
     },
     {
@@ -220518,8 +220118,7 @@
         "commuteMinutes": 21.42,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 15.640952839352769,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 10.008866469560235
       }
     },
     {
@@ -220801,8 +220400,7 @@
         "commuteMinutes": 2.4,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 18.344991655117497,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.4669363512774973
       }
     },
     {
@@ -220940,8 +220538,7 @@
         "commuteMinutes": 6.57,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 20.02834123504811,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.21952907196008611
       }
     },
     {
@@ -221091,8 +220688,7 @@
         "commuteMinutes": 10.26,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 16.81447796032935,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.3256391560734571
       }
     },
     {
@@ -221326,8 +220922,7 @@
         "commuteMinutes": 12.76,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 16.88624135679472,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.0706506476203084
       }
     },
     {
@@ -221501,8 +221096,7 @@
         "commuteMinutes": 10.27,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 16.640295069441574,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.601433056910261
       }
     },
     {
@@ -221852,8 +221446,7 @@
         "commuteMinutes": 8.69,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 15.352309660119804,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.1862819268801865
       }
     },
     {
@@ -222007,8 +221600,7 @@
         "commuteMinutes": 9.37,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 14.919853431033161,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.7051048014966721
       }
     },
     {
@@ -222134,8 +221726,7 @@
         "commuteMinutes": 9.39,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 14.329911120983107,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.5148573770293484
       }
     },
     {
@@ -222385,8 +221976,7 @@
         "commuteMinutes": 10.51,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 13.372721008752771,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.8666416315829756
       }
     },
     {
@@ -222528,8 +222118,7 @@
         "commuteMinutes": 11.04,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 12.740934758403176,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.6673770045220095
       }
     },
     {
@@ -222883,8 +222472,7 @@
         "commuteMinutes": 13.32,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 11.385620862260001,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.638543057995533
       }
     },
     {
@@ -223086,8 +222674,7 @@
         "commuteMinutes": 12.72,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 12.14232968941181,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.1531456214616274
       }
     },
     {
@@ -223229,8 +222816,7 @@
         "commuteMinutes": 10.31,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 13.227465778104083,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.737880463881803
       }
     },
     {
@@ -223416,8 +223002,7 @@
         "commuteMinutes": 10.77,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 14.381581074166162,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.980092128245058
       }
     },
     {
@@ -223715,8 +223300,7 @@
         "commuteMinutes": 10.63,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 15.369624850932006,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.7541726069310624
       }
     },
     {
@@ -223954,8 +223538,7 @@
         "commuteMinutes": 12.02,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 13.239625105766079,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 4.0134862521621235
       }
     },
     {
@@ -224141,8 +223724,7 @@
         "commuteMinutes": 13.01,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 10.817981127760465,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 3.658154194852062
       }
     },
     {
@@ -224388,8 +223970,7 @@
         "commuteMinutes": 13.52,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 9.873005102025244,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 3.376578792340992
       }
     },
     {
@@ -224487,8 +224068,7 @@
         "commuteMinutes": 14.43,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 9.823700619249854,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.4679673783094067
       }
     },
     {
@@ -224746,8 +224326,7 @@
         "commuteMinutes": 17.2,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 8.986670352829128,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.2855809131351505
       }
     },
     {
@@ -225281,8 +224860,7 @@
         "commuteMinutes": 45.98,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 31.4159993411133,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 13.413765332263381
       }
     },
     {
@@ -225608,8 +225186,7 @@
         "commuteMinutes": 41.73,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 32.21872792244982,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 13.062049826337594
       }
     },
     {
@@ -226615,8 +226192,7 @@
         "commuteMinutes": 56.32,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 30.275563390578494,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 11.716841193421102
       }
     },
     {
@@ -227302,8 +226878,7 @@
         "commuteMinutes": 38.58,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 30.36912392135238,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 10.805681492305778
       }
     },
     {
@@ -228897,8 +228472,7 @@
         "commuteMinutes": 33.08,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 22.392281637661714,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.988239275529376
       }
     },
     {
@@ -229176,8 +228750,7 @@
         "commuteMinutes": 30.63,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 29.650996787097515,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 9.081834806095491
       }
     },
     {
@@ -229939,8 +229512,7 @@
         "commuteMinutes": 18.57,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 23.815344674021368,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 6.263085441643419
       }
     },
     {
@@ -230610,8 +230182,7 @@
         "commuteMinutes": 25.5,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 17.476836160461414,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 6.943885260051393
       }
     },
     {
@@ -231389,8 +230960,7 @@
         "commuteMinutes": 18.7,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 9.748818156769822,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 5.005324711458222
       }
     },
     {
@@ -231676,8 +231246,7 @@
         "commuteMinutes": 18.28,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 13.868303357764676,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.6111849921658726
       }
     },
     {
@@ -232015,8 +231584,7 @@
         "commuteMinutes": 18.44,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 14.468166916843868,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.8416456700097044
       }
     },
     {
@@ -232282,8 +231850,7 @@
         "commuteMinutes": 16.22,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 13.158090063269329,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.5666902776398108
       }
     },
     {
@@ -232857,8 +232424,7 @@
         "commuteMinutes": 17.35,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 12.198885443043515,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.5137268983064613
       }
     },
     {
@@ -233504,8 +233070,7 @@
         "commuteMinutes": 15.73,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 10.947428205381172,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.2835990049757158
       }
     },
     {
@@ -234227,8 +233792,7 @@
         "commuteMinutes": 14.28,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 11.074886442152025,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.184516653031826
       }
     },
     {
@@ -234482,8 +234046,7 @@
         "commuteMinutes": 16.49,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 14.806088922585529,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.0457285255546995
       }
     },
     {
@@ -235853,8 +235416,7 @@
         "commuteMinutes": 53.69,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 50.21660280369862,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 29.678142353580323
       }
     },
     {
@@ -236360,8 +235922,7 @@
         "commuteMinutes": 53.11,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 49.921985451032405,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 29.43958837254208
       }
     },
     {
@@ -236847,8 +236408,7 @@
         "commuteMinutes": 54.85,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 51.009475378826856,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 30.483499140029505
       }
     },
     {
@@ -236950,8 +236510,7 @@
         "commuteMinutes": 55.57,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 51.74111209983024,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 31.17507788902792
       }
     },
     {
@@ -237353,8 +236912,7 @@
         "commuteMinutes": 54.82,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 50.75476060043449,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 30.173148729796704
       }
     },
     {
@@ -237812,8 +237370,7 @@
         "commuteMinutes": 57.03,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 51.59510874952927,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 30.996987266062334
       }
     },
     {
@@ -238363,8 +237920,7 @@
         "commuteMinutes": 52.34,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 45.66865494870353,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 25.13088715723564
       }
     },
     {
@@ -238690,8 +238246,7 @@
         "commuteMinutes": 48.52,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 47.633609707244844,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 27.02191108144219
       }
     },
     {
@@ -238849,8 +238404,7 @@
         "commuteMinutes": 49.39,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 47.93265242017257,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 27.321237197082603
       }
     },
     {
@@ -239044,8 +238598,7 @@
         "commuteMinutes": 49.96,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 48.26236077397721,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 27.651934501322255
       }
     },
     {
@@ -239515,8 +239068,7 @@
         "commuteMinutes": 48.15,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 47.847209578362715,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 27.24161969178097
       }
     },
     {
@@ -240042,8 +239594,7 @@
         "commuteMinutes": 17.26,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 11.759341111220147,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.561573519919533
       }
     },
     {
@@ -240465,8 +240016,7 @@
         "commuteMinutes": 20.86,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 14.598671263697511,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.085927614622142
       }
     },
     {
@@ -241016,8 +240566,7 @@
         "commuteMinutes": 22.17,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 15.55749341044965,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.9355201136133813
       }
     },
     {
@@ -241679,8 +241228,7 @@
         "commuteMinutes": 19.49,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 13.690729525470227,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.383973748116816
       }
     },
     {
@@ -242186,8 +241734,7 @@
         "commuteMinutes": 21.07,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 12.845933980883279,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.0619118019442144
       }
     },
     {
@@ -242929,8 +242476,7 @@
         "commuteMinutes": 22.26,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 13.862725880620637,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.512356826069083
       }
     },
     {
@@ -243736,8 +243282,7 @@
         "commuteMinutes": 23.29,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 14.69167836329403,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 3.065191514041274
       }
     },
     {
@@ -244567,8 +244112,7 @@
         "commuteMinutes": 25.11,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 15.930751564409604,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 3.9572918987964
       }
     },
     {
@@ -244846,8 +244390,7 @@
         "commuteMinutes": 25.39,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 16.922889881135426,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 4.447022384832417
       }
     },
     {
@@ -245205,8 +244748,7 @@
         "commuteMinutes": 15.95,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 9.000584760350337,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.6176344274195744
       }
     },
     {
@@ -245484,8 +245026,7 @@
         "commuteMinutes": 22.07,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 11.522933766123481,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.4432816607082732
       }
     },
     {
@@ -245907,8 +245448,7 @@
         "commuteMinutes": 16.69,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 9.5012115446766,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.594164034746683
       }
     },
     {
@@ -246354,8 +245894,7 @@
         "commuteMinutes": 14.82,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 8.793295031522899,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.6933039021518916
       }
     },
     {
@@ -249807,8 +249346,7 @@
         "commuteMinutes": 31.38,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 12.847690928996684,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 7.578966800077024
       }
     },
     {
@@ -250958,8 +250496,7 @@
         "commuteMinutes": 23.81,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 13.473898056354264,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 3.1076545093948513
       }
     },
     {
@@ -251361,8 +250898,7 @@
         "commuteMinutes": 18.02,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 10.700713421172487,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 5.049952491582877
       }
     },
     {
@@ -251708,8 +251244,7 @@
         "commuteMinutes": 12.91,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 4.900137431103347,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.5204522955446702
       }
     },
     {
@@ -251843,8 +251378,7 @@
         "commuteMinutes": 10.03,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 4.773845979978452,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.4762222000558432
       }
     },
     {
@@ -252466,8 +252000,7 @@
         "commuteMinutes": 15.87,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 4.798113688537628,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.8138665326466599
       }
     },
     {
@@ -253157,8 +252690,7 @@
         "commuteMinutes": 4.97,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 2.5021327964960602,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.34220940524465976
       }
     },
     {
@@ -253988,8 +253520,7 @@
         "commuteMinutes": 10.7,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 4.9656848243071545,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.8350225076363893
       }
     },
     {
@@ -254303,8 +253834,7 @@
         "commuteMinutes": 12.74,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 5.405821397327741,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.800099170691579
       }
     },
     {
@@ -254558,8 +254088,7 @@
         "commuteMinutes": 13.06,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 6.68932099705954,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.211277730653182
       }
     },
     {
@@ -255369,8 +254898,7 @@
         "commuteMinutes": 11.17,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 5.39999031394781,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.3441975882333149
       }
     },
     {
@@ -255784,8 +255312,7 @@
         "commuteMinutes": 5.2,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 2.1602445552457517,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.2931693075376679
       }
     },
     {
@@ -256695,8 +256222,7 @@
         "commuteMinutes": 3.95,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 0.3934225027279757,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.23208017199929476
       }
     },
     {
@@ -257126,8 +256652,7 @@
         "commuteMinutes": 13.35,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 4.9755928400494405,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.164886655027829
       }
     },
     {
@@ -257777,8 +257302,7 @@
         "commuteMinutes": 12.84,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 5.729039803914747,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.9255645371944987
       }
     },
     {
@@ -258688,8 +258212,7 @@
         "commuteMinutes": 21.34,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 6.382051809782202,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 3.5673063607132196
       }
     },
     {
@@ -258983,8 +258506,7 @@
         "commuteMinutes": 11.7,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 4.910307668345434,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 3.1295951100709294
       }
     },
     {
@@ -259278,8 +258800,7 @@
         "commuteMinutes": 15.13,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 5.50917230305328,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 3.0206512733364503
       }
     },
     {
@@ -259493,8 +259014,7 @@
         "commuteMinutes": 12.56,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 5.8639906514504,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.786104236877886
       }
     },
     {
@@ -259624,8 +259144,7 @@
         "commuteMinutes": 11.93,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 5.094054461130936,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.4936141230639914
       }
     },
     {
@@ -259819,8 +259338,7 @@
         "commuteMinutes": 12.82,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 5.552421440084739,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.9890057324529038
       }
     },
     {
@@ -260130,8 +259648,7 @@
         "commuteMinutes": 14.75,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 6.341766653669555,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.7908258687617864
       }
     },
     {
@@ -260233,8 +259750,7 @@
         "commuteMinutes": 13.64,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 6.24208665313957,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.2414092523488827
       }
     },
     {
@@ -260408,8 +259924,7 @@
         "commuteMinutes": 15.71,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 7.661553355279831,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 3.1571987024618777
       }
     },
     {
@@ -260599,8 +260114,7 @@
         "commuteMinutes": 16.49,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 8.577204354956628,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 4.08597066949378
       }
     },
     {
@@ -261278,8 +260792,7 @@
         "commuteMinutes": 12.88,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 6.360083279759647,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.4737455050566661
       }
     },
     {
@@ -261457,8 +260970,7 @@
         "commuteMinutes": 12.26,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 5.119717496734894,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.448812407720839
       }
     },
     {
@@ -261896,8 +261408,7 @@
         "commuteMinutes": 9.71,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 4.106699730020392,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.7038893386924412
       }
     },
     {
@@ -262327,8 +261838,7 @@
         "commuteMinutes": 8.56,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 3.4190439520378284,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.354950551381163
       }
     },
     {
@@ -262994,8 +262504,7 @@
         "commuteMinutes": 6.26,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 2.3342706034092253,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.2973242564927572
       }
     },
     {
@@ -263715,8 +263224,7 @@
         "commuteMinutes": 7.33,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 1.9610968819420391,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.947768426853625
       }
     },
     {
@@ -263878,8 +263386,7 @@
         "commuteMinutes": 5.47,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 2.2563595416753874,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.3652006711468102
       }
     },
     {
@@ -264257,8 +263764,7 @@
         "commuteMinutes": 5.51,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 3.256398241009658,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.04775438581050982
       }
     },
     {
@@ -264416,8 +263922,7 @@
         "commuteMinutes": 9.68,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 3.632375041876132,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.9978119963651446
       }
     },
     {
@@ -264713,8 +264218,7 @@
         "commuteMinutes": 8.61,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 3.6524385537479827,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.5081111081746817
       }
     },
     {
@@ -264848,8 +264352,7 @@
         "commuteMinutes": 8.28,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 3.664173114158286,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.44686108802679925
       }
     },
     {
@@ -265383,8 +264886,7 @@
         "commuteMinutes": 8.26,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 4.6225192069830765,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.03497289505400858
       }
     },
     {
@@ -265738,8 +265240,7 @@
         "commuteMinutes": 10.55,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 4.841115678456874,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.768594131304705
       }
     },
     {
@@ -265937,8 +265438,7 @@
         "commuteMinutes": 24.62,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 15.862871854062293,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 10.075669998673934
       }
     },
     {
@@ -266288,8 +265788,7 @@
         "commuteMinutes": 3.86,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 0.8891853236679982,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.25033680719217727
       }
     },
     {
@@ -267083,8 +266582,7 @@
         "commuteMinutes": 2.93,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 0.9462893458127866,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.11190915376223727
       }
     },
     {
@@ -267458,8 +266956,7 @@
         "commuteMinutes": 7.63,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 2.823629664609704,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.5088955385288726
       }
     },
     {
@@ -267845,8 +267342,7 @@
         "commuteMinutes": 7.51,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 3.415983410371567,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.5666028563724069
       }
     },
     {
@@ -268800,8 +268296,7 @@
         "commuteMinutes": 8.53,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 5.212164826149745,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.15368624358049085
       }
     },
     {
@@ -269031,8 +268526,7 @@
         "commuteMinutes": 13.06,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 5.5242989250373045,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.7238246878981732
       }
     },
     {
@@ -269314,8 +268808,7 @@
         "commuteMinutes": 12.51,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 6.17719472245803,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.2385252963791467
       }
     },
     {
@@ -269593,8 +269086,7 @@
         "commuteMinutes": 17.65,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 6.5997575086395965,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.6970484287540677
       }
     },
     {
@@ -271188,8 +270680,7 @@
         "commuteMinutes": 19.42,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 7.131292966854225,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.1357201609016536
       }
     },
     {
@@ -272163,8 +271654,7 @@
         "commuteMinutes": 10.58,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 6.805294185576372,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.4409804114084032
       }
     },
     {
@@ -272438,8 +271928,7 @@
         "commuteMinutes": 5.71,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 3.5914894980653935,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.15258995360514674
       }
     },
     {
@@ -272621,8 +272110,7 @@
         "commuteMinutes": 4.62,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 2.7609575230959074,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.3916894884656427
       }
     },
     {
@@ -272804,8 +272292,7 @@
         "commuteMinutes": 7.53,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 4.012335888127529,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.45544256927294957
       }
     },
     {
@@ -273307,8 +272794,7 @@
         "commuteMinutes": 10.45,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 6.5599006340766355,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.3565142354543038
       }
     },
     {
@@ -274560,8 +274046,7 @@
         "commuteMinutes": 11.49,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 6.00216042436768,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.24562856764133492
       }
     },
     {
@@ -274983,8 +274468,7 @@
         "commuteMinutes": 14.58,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 7.724735480180534,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.2230794808138663
       }
     },
     {
@@ -275218,8 +274702,7 @@
         "commuteMinutes": 13.55,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 8.126648837299953,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.9408976567222005
       }
     },
     {
@@ -275537,8 +275020,7 @@
         "commuteMinutes": 13.58,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 8.845650157353493,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.688225493577172
       }
     },
     {
@@ -275924,8 +275406,7 @@
         "commuteMinutes": 13.39,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 8.155241180818939,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.5290908619187007
       }
     },
     {
@@ -276235,8 +275716,7 @@
         "commuteMinutes": 11.6,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 9.967853423840376,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 3.377760957694682
       }
     },
     {
@@ -276670,8 +276150,7 @@
         "commuteMinutes": 16.35,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 12.182165172577989,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 5.665129580903091
       }
     },
     {
@@ -277261,8 +276740,7 @@
         "commuteMinutes": 19.27,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 14.46255656227312,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 7.844074520336114
       }
     },
     {
@@ -277416,8 +276894,7 @@
         "commuteMinutes": 6.12,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 3.5652856307242806,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.023594029569708984
       }
     },
     {
@@ -277555,8 +277032,7 @@
         "commuteMinutes": 8.17,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 3.828044201445633,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.5606283383400562
       }
     },
     {
@@ -278046,8 +277522,7 @@
         "commuteMinutes": 6.79,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 4.323839846187323,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.04403532248634106
       }
     },
     {
@@ -278229,8 +277704,7 @@
         "commuteMinutes": 10.87,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 6.392930382616792,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.09936919683999439
       }
     },
     {
@@ -278428,8 +277902,7 @@
         "commuteMinutes": 11.28,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 5.8914374251593165,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.4097455483429785
       }
     },
     {
@@ -278627,8 +278100,7 @@
         "commuteMinutes": 10.38,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 6.241681972676048,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.26418342547051604
       }
     },
     {
@@ -278750,8 +278222,7 @@
         "commuteMinutes": 10.61,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 6.862229939625111,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.2332690184942731
       }
     },
     {
@@ -278905,8 +278376,7 @@
         "commuteMinutes": 10.21,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 6.4774873809024855,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.1656327942916285
       }
     },
     {
@@ -279040,8 +278510,7 @@
         "commuteMinutes": 11.71,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 7.329288474144134,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.9207647576747066
       }
     },
     {
@@ -279239,8 +278708,7 @@
         "commuteMinutes": 11.83,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 7.4291254606560875,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.387174859194419
       }
     },
     {
@@ -279458,8 +278926,7 @@
         "commuteMinutes": 13.52,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 8.430931112968,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.0459564067182185
       }
     },
     {
@@ -279781,8 +279248,7 @@
         "commuteMinutes": 12.84,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 9.57830257958667,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 3.095974728357448
       }
     },
     {
@@ -279932,8 +279398,7 @@
         "commuteMinutes": 25.33,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 14.30549365005656,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 8.159276420649892
       }
     },
     {
@@ -280171,8 +279636,7 @@
         "commuteMinutes": 11.37,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 5.239409723833587,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.2235815121480593
       }
     },
     {
@@ -280498,8 +279962,7 @@
         "commuteMinutes": 11.65,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 7.335745287966762,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.8398466530432473
       }
     },
     {
@@ -281017,8 +280480,7 @@
         "commuteMinutes": 11.9,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 8.449790771071182,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.4159833589162156
       }
     },
     {
@@ -281268,8 +280730,7 @@
         "commuteMinutes": 13.24,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 7.991369176796612,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.5337494794869384
       }
     },
     {
@@ -281599,8 +281060,7 @@
         "commuteMinutes": 11.87,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 7.192503274748951,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.3619830686830146
       }
     },
     {
@@ -281758,8 +281218,7 @@
         "commuteMinutes": 12.73,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 7.991016000876323,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.6614478342712333
       }
     },
     {
@@ -281985,8 +281444,7 @@
         "commuteMinutes": 13.87,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 8.89572845576449,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 3.107662594600829
       }
     },
     {
@@ -282160,8 +281618,7 @@
         "commuteMinutes": 14.62,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 9.15050198794776,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.224960946145231
       }
     },
     {
@@ -282335,8 +281792,7 @@
         "commuteMinutes": 14.72,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 8.612229327277369,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.43490536855438
       }
     },
     {
@@ -282678,8 +282134,7 @@
         "commuteMinutes": 11.27,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 6.741263972163808,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.735608412207445
       }
     },
     {
@@ -282777,8 +282232,7 @@
         "commuteMinutes": 13.89,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 6.240391284526709,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.3975151433329103
       }
     },
     {
@@ -283392,8 +282846,7 @@
         "commuteMinutes": 17.73,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 18.631061278284584,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 12.065910322751467
       }
     },
     {
@@ -283575,8 +283028,7 @@
         "commuteMinutes": 36.08,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 28.48055804609349,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 21.44299125669167
       }
     },
     {
@@ -283778,8 +283230,7 @@
         "commuteMinutes": 12,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 7.48839219059238,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.8135979800534769
       }
     },
     {
@@ -284237,8 +283688,7 @@
         "commuteMinutes": 16.34,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 10.452201171911,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.863636310107485
       }
     },
     {
@@ -284412,8 +283862,7 @@
         "commuteMinutes": 13.61,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 9.71497452062182,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 0.7012544166729785
       }
     },
     {
@@ -284551,8 +284000,7 @@
         "commuteMinutes": 14.04,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 10.656134539546116,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 1.2787152176752132
       }
     },
     {
@@ -284782,8 +284230,7 @@
         "commuteMinutes": 16.12,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 11.587863084050024,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 2.6795788557075237
       }
     },
     {
@@ -284885,8 +284332,7 @@
         "commuteMinutes": 39.29,
         "nearestJobCenter": "Pretoria CBD",
         "distanceKm": null,
-        "nearestGautrainStationKm": 21.518919920862906,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 8.886442886997783
       }
     },
     {
@@ -285732,8 +285178,7 @@
         "commuteMinutes": 44.29,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 48.57727777388136,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 28.36463777610766
       }
     },
     {
@@ -286439,8 +285884,7 @@
         "commuteMinutes": 42.01,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 51.920200709544766,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 31.761613645097516
       }
     },
     {
@@ -286802,8 +286246,7 @@
         "commuteMinutes": 56.38,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 56.28544460390956,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 36.151525269434764
       }
     },
     {
@@ -287365,8 +286808,7 @@
         "commuteMinutes": 32.9,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 37.165747100369714,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 17.38330917783852
       }
     },
     {
@@ -287484,8 +286926,7 @@
         "commuteMinutes": 30.05,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 25.800320624149325,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 8.565461639075622
       }
     },
     {
@@ -288003,8 +287444,7 @@
         "commuteMinutes": 59.61,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 26.353277680420714,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 9.84995861644295
       }
     },
     {
@@ -288286,8 +287726,7 @@
         "commuteMinutes": 27.12,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 24.75886772154757,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 12.036848462431616
       }
     },
     {
@@ -288977,8 +288416,7 @@
         "commuteMinutes": 21.57,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 17.61811608228643,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 11.267798261023856
       }
     },
     {
@@ -289300,8 +288738,7 @@
         "commuteMinutes": 13.66,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 15.040115174220901,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 9.316890896123208
       }
     },
     {
@@ -289475,8 +288912,7 @@
         "commuteMinutes": 21.75,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 17.136826784753513,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 11.454783290467518
       }
     },
     {
@@ -289966,8 +289402,7 @@
         "commuteMinutes": 37.77,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 49.015027870553226,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 29.13145740999653
       }
     },
     {
@@ -290309,8 +289744,7 @@
         "commuteMinutes": 40.25,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 50.91586583106392,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 30.993054943906955
       }
     },
     {
@@ -290512,8 +289946,7 @@
         "commuteMinutes": 39.83,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 52.0867180095135,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 32.312507775485294
       }
     },
     {
@@ -290807,8 +290240,7 @@
         "commuteMinutes": 42.13,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 50.734594888438,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 31.128880032651217
       }
     },
     {
@@ -291014,8 +290446,7 @@
         "commuteMinutes": 44.41,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 49.410514206248635,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 29.752768059608638
       }
     },
     {
@@ -291197,8 +290628,7 @@
         "commuteMinutes": 56.49,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 47.95223163173802,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 30.279507257209705
       }
     },
     {
@@ -291272,8 +290702,7 @@
         "commuteMinutes": 51.07,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 50.19886397722309,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 32.501880317032416
       }
     },
     {
@@ -291479,8 +290908,7 @@
         "commuteMinutes": 76.15,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 49.06147067128387,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 32.28607880741385
       }
     },
     {
@@ -291554,8 +290982,7 @@
         "commuteMinutes": 47.56,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 52.32745306598984,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 34.14840723986116
       }
     },
     {
@@ -291933,8 +291360,7 @@
         "commuteMinutes": 43.26,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 30.15317761107217,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 18.746940469579865
       }
     },
     {
@@ -292052,8 +291478,7 @@
         "commuteMinutes": 52.02,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 51.93126668211628,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 34.99069275073452
       }
     },
     {
@@ -292523,8 +291948,7 @@
         "commuteMinutes": 27.53,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 21.263294468788843,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 14.897243208803705
       }
     },
     {
@@ -292942,8 +292366,7 @@
         "commuteMinutes": 25.64,
         "nearestJobCenter": "Menlyn",
         "distanceKm": null,
-        "nearestGautrainStationKm": 25.470953926569862,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 19.80917417563155
       }
     },
     {
@@ -293025,8 +292448,7 @@
         "commuteMinutes": 37.98,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 34.255832461741406,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 20.58869611687997
       }
     },
     {
@@ -293140,8 +292562,7 @@
         "commuteMinutes": 36.96,
         "nearestJobCenter": "Hatfield",
         "distanceKm": null,
-        "nearestGautrainStationKm": 34.029253670860406,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 20.601880388324872
       }
     },
     {
@@ -293439,8 +292860,7 @@
         "commuteMinutes": 13.4,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 10.980328266583099,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 4.366994970773068
       }
     },
     {
@@ -293750,8 +293170,7 @@
         "commuteMinutes": 14.6,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 12.030186758845439,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 5.458649184759505
       }
     },
     {
@@ -293881,8 +293300,7 @@
         "commuteMinutes": 13.88,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 11.655333232931754,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 5.116981715243831
       }
     },
     {
@@ -294236,8 +293654,7 @@
         "commuteMinutes": 13.9,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 11.3129499764951,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 4.861732748487984
       }
     },
     {
@@ -295207,8 +294624,7 @@
         "commuteMinutes": 15.2,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 9.786215218470334,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 3.64236432161217
       }
     },
     {
@@ -295502,8 +294918,7 @@
         "commuteMinutes": 14.49,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 12.349808191389748,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 5.724637470977881
       }
     },
     {
@@ -295737,8 +295152,7 @@
         "commuteMinutes": 14.37,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 12.145822262595697,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 5.725682124425559
       }
     },
     {
@@ -296044,8 +295458,7 @@
         "commuteMinutes": 14.39,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 11.632410413312575,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 5.158639301961016
       }
     },
     {
@@ -296235,8 +295648,7 @@
         "commuteMinutes": 14.82,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 12.149624121073877,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 5.637502610634844
       }
     },
     {
@@ -296554,8 +295966,7 @@
         "commuteMinutes": 15.92,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 12.968646478652573,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 6.5025506962787665
       }
     },
     {
@@ -296669,8 +296080,7 @@
         "commuteMinutes": 14.12,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 12.199713885534457,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 5.3844147903870585
       }
     },
     {
@@ -296768,8 +296178,7 @@
         "commuteMinutes": 14.27,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestGautrainStationKm": 12.61316819883392,
-        "nearestAReYengStopKm": null
+        "nearestTransitKm": 5.484014264033599
       }
     }
   ]
