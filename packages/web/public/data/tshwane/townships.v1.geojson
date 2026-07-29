@@ -94202,7 +94202,7 @@
         "commuteMinutes": 20.58,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestTransitKm": 5.044323030763823
+        "nearestTransitKm": 5.037844364704661
       }
     },
     {
@@ -96914,7 +96914,7 @@
         "commuteMinutes": 12.61,
         "nearestJobCenter": "Rosslyn",
         "distanceKm": null,
-        "nearestTransitKm": 1.0273029609197233
+        "nearestTransitKm": 1.0202453775500966
       }
     },
     {
@@ -276740,7 +276740,7 @@
         "commuteMinutes": 19.27,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestTransitKm": 7.844074520336114
+        "nearestTransitKm": 7.076934384634663
       }
     },
     {
@@ -282846,7 +282846,7 @@
         "commuteMinutes": 17.73,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestTransitKm": 12.065910322751467
+        "nearestTransitKm": 11.916545755570759
       }
     },
     {
@@ -283028,7 +283028,7 @@
         "commuteMinutes": 36.08,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestTransitKm": 21.44299125669167
+        "nearestTransitKm": 16.94121891274955
       }
     },
     {
@@ -284230,7 +284230,7 @@
         "commuteMinutes": 16.12,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestTransitKm": 2.6795788557075237
+        "nearestTransitKm": 2.014493118931854
       }
     },
     {
@@ -294918,7 +294918,7 @@
         "commuteMinutes": 14.49,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestTransitKm": 5.724637470977881
+        "nearestTransitKm": 4.670459929063156
       }
     },
     {
@@ -295152,7 +295152,7 @@
         "commuteMinutes": 14.37,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestTransitKm": 5.725682124425559
+        "nearestTransitKm": 5.010531102587041
       }
     },
     {
@@ -295648,7 +295648,7 @@
         "commuteMinutes": 14.82,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestTransitKm": 5.637502610634844
+        "nearestTransitKm": 5.523643624520907
       }
     },
     {
@@ -295966,7 +295966,7 @@
         "commuteMinutes": 15.92,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestTransitKm": 6.5025506962787665
+        "nearestTransitKm": 5.249971926305292
       }
     },
     {
@@ -296080,7 +296080,7 @@
         "commuteMinutes": 14.12,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestTransitKm": 5.3844147903870585
+        "nearestTransitKm": 4.360854752094836
       }
     },
     {
@@ -296178,7 +296178,7 @@
         "commuteMinutes": 14.27,
         "nearestJobCenter": "Centurion",
         "distanceKm": null,
-        "nearestTransitKm": 5.484014264033599
+        "nearestTransitKm": 4.224275502245014
       }
     }
   ]
