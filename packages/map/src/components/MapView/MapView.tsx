@@ -841,11 +841,7 @@ function MapViewComponent<
             <GeoJSON
               key={layer.id}
               data={data}
-              // Leaflet's default smoothFactor (1) simplifies just enough to
-              // round off the jagged real-world turns in OSM-derived transit
-              // route geometry; unlike the area outline below, there's
-              // no boundary-fidelity reason to disable it here.
-              smoothFactor={1}
+              smoothFactor={isChoropleth ? 0 : 1}
               style={config.styleFn}
               pathOptions={layerPathOptionsById.get(layer.id)}
               onEachFeature={
