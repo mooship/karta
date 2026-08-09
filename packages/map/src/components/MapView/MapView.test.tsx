@@ -1,4 +1,5 @@
 import type { DomainConfig } from "@karta/core";
+import { clearFeatureCollectionCache } from "@karta/core";
 import {
   act,
   fireEvent,
@@ -30,6 +31,7 @@ const mapMocks = vi.hoisted(() => ({
       style?: (feature?: any) => Record<string, unknown>;
       // biome-ignore lint/suspicious/noExplicitAny: see above
       pointToLayer?: (feature: any, latlng: any) => unknown;
+      smoothFactor?: number;
     }
   >,
   zoom: 9,
@@ -116,43 +118,53 @@ vi.mock("react-leaflet", () => ({
       style?: (feature?: any) => Record<string, unknown>;
       // biome-ignore lint/suspicious/noExplicitAny: see above
       pointToLayer?: (feature: any, latlng: any) => unknown;
+      smoothFactor?: number;
     }
-  >(({ data, pathOptions, onEachFeature, style, pointToLayer }, ref) => {
-    if (pathOptions?.pane) {
-      mapMocks.geoJsonProps[pathOptions.pane] = { style, pointToLayer };
-    }
-
-    useEffect(() => {
-      const layers = data.features.map((feature) => createMockLayer(feature));
-      mapMocks.featureLayers = layers;
-      for (const [index, feature] of data.features.entries()) {
-        const layer = layers[index];
-        if (layer) {
-          onEachFeature?.(feature, layer);
-        }
-      }
-      if (ref && typeof ref === "object") {
-        ref.current = {
-          eachLayer: (cb: (layer: unknown) => void) => {
-            for (const layer of layers) {
-              cb(layer);
-            }
-          },
+  >(
+    (
+      { data, pathOptions, onEachFeature, style, pointToLayer, smoothFactor },
+      ref,
+    ) => {
+      if (pathOptions?.pane) {
+        mapMocks.geoJsonProps[pathOptions.pane] = {
+          style,
+          pointToLayer,
+          smoothFactor,
         };
       }
-      return () => {
-        if (ref && typeof ref === "object") {
-          ref.current = null;
-        }
-      };
-    }, [data.features, onEachFeature, ref]);
 
-    return (
-      <div data-testid="geojson-layer" data-pane={pathOptions?.pane}>
-        {data.features.length} features
-      </div>
-    );
-  }),
+      useEffect(() => {
+        const layers = data.features.map((feature) => createMockLayer(feature));
+        mapMocks.featureLayers = layers;
+        for (const [index, feature] of data.features.entries()) {
+          const layer = layers[index];
+          if (layer) {
+            onEachFeature?.(feature, layer);
+          }
+        }
+        if (ref && typeof ref === "object") {
+          ref.current = {
+            eachLayer: (cb: (layer: unknown) => void) => {
+              for (const layer of layers) {
+                cb(layer);
+              }
+            },
+          };
+        }
+        return () => {
+          if (ref && typeof ref === "object") {
+            ref.current = null;
+          }
+        };
+      }, [data.features, onEachFeature, ref]);
+
+      return (
+        <div data-testid="geojson-layer" data-pane={pathOptions?.pane}>
+          {data.features.length} features
+        </div>
+      );
+    },
+  ),
   useMap: () => ({
     fitBounds: mapMocks.fitBounds,
     invalidateSize: mapMocks.invalidateSize,
@@ -288,6 +300,7 @@ describe("MapView", () => {
     vi.useRealTimers();
     setThemePreference("system");
     resetBasemapRegistry();
+    clearFeatureCollectionCache();
   });
 
   it("passes bounds to MapContainer", () => {
@@ -688,6 +701,44 @@ describe("MapView", () => {
     );
 
     expect(screen.getByTestId("geojson-layer")).toHaveTextContent("1 features");
+  });
+
+  it("renders choropleth GeoJSON with exact geometry and transit overlays with smoothing", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({
+          type: "FeatureCollection",
+          features: [{ type: "Feature", properties: {}, geometry: null }],
+        }),
+      }),
+    );
+
+    render(
+      withDomain(
+        <MapView
+          {...DEFAULT_MAP_VIEW_PROPS}
+          areas={areas}
+          visibleLayerIds={["areas"]}
+        />,
+      ),
+    );
+
+    expect(mapMocks.geoJsonProps.areas?.smoothFactor).toBe(0);
+
+    render(
+      withDomain(
+        <MapView
+          {...DEFAULT_MAP_VIEW_PROPS}
+          areas={[]}
+          visibleLayerIds={["rail"]}
+        />,
+      ),
+    );
+
+    expect(await screen.findByText("1 features")).toBeInTheDocument();
+    expect(mapMocks.geoJsonProps.transit?.smoothFactor).toBe(1);
   });
 
   it("does not render a layer that has no data available yet", () => {
