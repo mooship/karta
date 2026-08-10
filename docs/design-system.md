@@ -1,15 +1,14 @@
 # Karta Design System
 
 Karta adopts Google's Material 3 (M3) design language directly, rather than
-an app-owned system with its own vocabulary. Structural chrome is built on
-real `@material/web` components wherever practical, and Karta's own
-hand-rolled chrome (Leaflet's popup/control markup, which this app styles
-globally rather than replacing) themes itself from the same M3 tokens.
-Tokens use Material's own naming (`--md-sys-color-primary`,
-`--md-sys-shape-corner-medium`, …) rather than app-invented names, so the
-system stays legible to anyone who already knows Material 3, and so
-`@material/web` components pick up Karta's theme automatically — they read
-these exact custom property names with no per-component configuration.
+an app-owned system with its own vocabulary. Every component is Karta's own
+plain React + CSS Modules, styled entirely from M3 tokens — colour roles,
+shape scale, elevation, state layers — so the visual result is faithfully
+Material 3 without depending on Google's own component library (see
+"Component library" below for why). Tokens use Material's own naming
+(`--md-sys-color-primary`, `--md-sys-shape-corner-medium`, …) rather than
+app-invented names, so the system stays legible to anyone who already
+knows Material 3.
 
 ## Design direction
 
@@ -39,8 +38,7 @@ re-run `npm run generate:theme --workspace @karta/web` — never hand-edit
 the hex values inside the `/* GENERATED M3 ... TOKENS */` markers directly,
 since the next run overwrites them.
 
-The generated role set covers the full M3 2021+ scheme, including the
-surface-container tiers `@material/web` components expect:
+The generated role set covers the full M3 2021+ scheme:
 
 `primary`/`onPrimary`/`primaryContainer`/`onPrimaryContainer`,
 `secondary`/`onSecondary`/`secondaryContainer`/`onSecondaryContainer`,
@@ -78,58 +76,44 @@ M3 roles rather than raw hex values, so they stay theme-adaptive:
 - **Shape**: `--md-sys-shape-corner-none` through `-extra-large` and `-full`
 	use M3's own baseline shape scale (4/8/12/16/28px, 9999px for pills),
 	rather than app-chosen radii.
-- **Elevation**: real `@material/web` components compute their own shadow
-	via an internal `<md-elevation>` keyed to `--md-sys-color-shadow` and an
-	interaction-driven level — no configuration needed. For Karta's own
-	hand-rolled chrome (Leaflet popups/controls), `--md-sys-elevation-shadow-1/2/3`
-	holds the equivalent static box-shadow, computed with the identical
-	two-layer 30%/15%-opacity formula `@material/web` itself uses
-	(`node_modules/@material/web/elevation/internal/elevation-styles.css`),
+- **Elevation**: `--md-sys-elevation-shadow-1/2/3` holds a static box-shadow
+	computed with the same two-layer 30%/15%-opacity formula Material 3's own
+	`<md-elevation>` component uses internally (studied from
+	`@material/web/elevation/internal/elevation-styles.css` — see
+	"Component library" below for why that's a reference, not a dependency),
 	not an invented approximation.
 - **State layers**: `--state-hover` (8%), `--state-pressed` (12%), and
 	`--state-selected` (12%, tinted with `--md-sys-color-primary` instead of
-	`--md-sys-color-on-surface`) match M3's own ripple/state-layer opacities,
-	for chrome that isn't a real `md-*` component (which handles its own
-	state layer internally).
+	`--md-sys-color-on-surface`) match M3's own ripple/state-layer opacities.
 
 ## Typography
 
 Karta keeps its own type families — Inter Variable and Martian Mono
-Variable — rather than switching to Roboto. `--md-ref-typeface-plain` and
-`--md-ref-typeface-brand` (the M3 tokens components read for their
-typescale) point at `--font-body`/`--font-display`, so every `@material/web`
-component renders in Karta's fonts automatically. The compact
+Variable — rather than switching to Roboto. The compact
 `--font-size-xs` → `--font-size-lg` scale stays app-specific rather than
 adopting M3's full typescale (display/headline/title roles sized for hero
 text this dense map-chrome app never shows).
 
 ## Component library
 
-`@material/web` is a real dependency (`packages/map`), used directly for
-interactive primitives — buttons, icon buttons, segmented buttons, menus,
-text fields, switches — via thin `@lit/react` wrapper components
-(`packages/map/src/components/md/`) so they compose naturally as React
-components with typed props and proper event binding, rather than raw
-custom-element JSX. Structural panels this app renders itself (the info
-panel, bottom sheet, legend) stay Karta's own markup, themed with the same
-M3 tokens, since they're app-shaped surfaces rather than generic controls
-Material ships an equivalent for.
-
-### Server rendering
-
-`@material/web` components are Shadow DOM custom elements and do not
-render their internal shadow content during SSR (React Router's server
-render emits the custom element tag and its light-DOM children/attributes,
-not Material's internal shadow markup). Every wrapped `md-*` primitive
-therefore reserves its own layout box via `--control-height`/
-`--control-height-compact` in the wrapper's CSS *before* the custom element
-upgrades client-side, so hydration cannot shift layout (no CLS) even though
-the control's Material chrome (ripple, elevation, exact shape) only paints
-in after the browser executes `@material/web`'s registration JS. This is a
-deliberate, accepted tradeoff — full SSR of Material's shadow DOM would
-need `@lit-labs/ssr`'s declarative-shadow-DOM pipeline running alongside
-React's, which is not worth the integration complexity for a control layer
-this small.
+Karta implements Material 3 components itself, as plain React + CSS
+Modules against the tokens above, rather than depending on
+`@material/web` (Google's own Shadow DOM custom element library). That
+was tried first and reverted: `@material/web`'s components are Lit-based
+custom elements, and getting them safe under this app's Cloudflare
+Workers SSR required a real workaround (importing them at all throws
+`ReferenceError: HTMLElement is not defined` under workerd), which in
+turn meant a client-only-mount gate for every single primitive to avoid a
+React hydration mismatch, an `ElementInternals` polyfill for unit tests
+(happy-dom has none), and unit tests that couldn't use ARIA-role queries
+at all (`getByRole` can't see into a Shadow DOM happy-dom never renders).
+That's real, compounding friction for every future component, not a
+one-off cost — and none of it is specific to Material 3 as a *design
+system*, only to `@material/web`'s specific Shadow DOM delivery
+mechanism. A plain React implementation gets the same HCT-generated
+colours, same shape scale, same elevation formula, with none of it:
+normal SSR, normal hydration, normal `getByRole` tests, no extra runtime
+weight.
 
 ## Accessibility policy
 
@@ -138,9 +122,7 @@ this small.
 - Honour reduced motion: `prefers-reduced-motion` collapses animation/transition
 	durations globally.
 - `prefers-contrast: more` strengthens `--md-sys-color-outline`/`-outline-variant`
-	to `--md-sys-color-on-surface` for structural chrome outside `md-*`
-	components; Material Web's own components manage their own high-contrast
-	behaviour.
+	to `--md-sys-color-on-surface`.
 - Preserve or improve current Lighthouse accessibility score.
 
 ## Implementation guardrails
@@ -150,10 +132,9 @@ this small.
 	instead.
 - Don't hand-edit generated hex values in `index.css`'s `GENERATED M3 ...
 	TOKENS` blocks; change the seed colour and re-run `generate:theme`.
-- Prefer a real `@material/web` component (via the `md/` wrapper layer)
-	over hand-rolled chrome for anything Material already ships an
-	equivalent for; reserve custom CSS for genuinely app-specific surfaces
-	(the map itself, the bottom sheet, the legend).
+- No `@material/web` (or any other Shadow DOM custom element component
+	library) dependency — see "Component library" above. Build new controls
+	as plain React + CSS Modules against the M3 tokens.
 - Avoid visual novelty that competes with evidence layers.
 
 ## Success criteria

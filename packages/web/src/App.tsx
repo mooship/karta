@@ -230,7 +230,7 @@ export function App() {
   const { width } = useWindowSize({ initializeWithValue: false });
   const isDesktopViewport =
     (width ?? MOBILE_BREAKPOINT_PX) > MOBILE_BREAKPOINT_PX;
-  const panelTriggerRef = useRef<HTMLElement>(null);
+  const panelTriggerRef = useRef<HTMLButtonElement>(null);
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const suppressNextHandleClickRef = useRef(false);
   const activeSheetPointerIdRef = useRef<number | null>(null);

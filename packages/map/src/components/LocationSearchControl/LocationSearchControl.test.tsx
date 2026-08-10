@@ -462,7 +462,7 @@ describe("LocationSearchControl", () => {
     fireEvent.change(input, { target: { value: "Query" } });
     await screen.findByRole("option", { name: "First" });
 
-    fireEvent.click(screen.getByTestId("location-search-clear"));
+    fireEvent.click(screen.getByRole("button", { name: /clear search/i }));
 
     expect(input).toHaveValue("");
     expect(
