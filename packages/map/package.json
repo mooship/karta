@@ -16,6 +16,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@lit/react": "^1.0.8",
+    "@material/web": "^2.5.0",
     "@maplibre/maplibre-gl-leaflet": "^0.1.3",
     "@karta/core": "file:../core",
     "@karta/react": "file:../react",

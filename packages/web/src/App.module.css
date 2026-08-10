@@ -15,8 +15,8 @@
   inset: 0;
   display: grid;
   place-items: center;
-  background: var(--color-ink);
-  color: var(--color-muted);
+  background: var(--md-sys-color-surface);
+  color: var(--md-sys-color-on-surface-variant);
   font-family: var(--font-mono);
   font-size: var(--font-size-sm);
   text-transform: uppercase;
@@ -43,11 +43,11 @@
   gap: 0.75rem;
   width: min(22rem, calc(100% - 2rem));
   padding: 1rem;
-  border: 1px solid var(--color-redearth);
-  border-radius: var(--shape-medium);
-  background: var(--color-panel);
-  color: var(--color-paper);
-  box-shadow: var(--elevation-3);
+  border: 1px solid var(--md-sys-color-error);
+  border-radius: var(--md-sys-shape-corner-medium);
+  background: var(--md-sys-color-surface-container-low);
+  color: var(--md-sys-color-on-surface);
+  box-shadow: var(--md-sys-elevation-shadow-3);
   transform: translate(-50%, -50%);
 }
 
@@ -57,10 +57,10 @@
 
 .dataError button {
   min-height: 48px;
-  border: 1px solid var(--color-line);
-  border-radius: var(--shape-small);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: var(--md-sys-shape-corner-small);
   background: transparent;
-  color: var(--color-paper);
+  color: var(--md-sys-color-on-surface);
   font: inherit;
   cursor: pointer;
 }
@@ -70,7 +70,7 @@
 }
 
 .dataError button:focus-visible {
-  outline: var(--focus-ring-width) solid var(--color-paper);
+  outline: var(--focus-ring-width) solid var(--md-sys-color-on-surface);
   outline-offset: 2px;
 }
 
@@ -80,11 +80,11 @@
   left: 0.5rem;
   z-index: 2000;
   padding: 0.75rem 1rem;
-  border-radius: var(--shape-small);
-  background: var(--color-paper);
-  color: var(--color-ink);
+  border-radius: var(--md-sys-shape-corner-small);
+  background: var(--md-sys-color-on-surface);
+  color: var(--md-sys-color-surface);
   font-weight: 700;
-  box-shadow: var(--elevation-3);
+  box-shadow: var(--md-sys-elevation-shadow-3);
   transform: translateY(-160%);
 }
 
@@ -106,10 +106,10 @@
 
 .surface {
   position: relative;
-  border-radius: var(--shape-large);
-  border: 1px solid var(--color-outline);
-  background: var(--color-surface-container-high);
-  box-shadow: var(--elevation-3);
+  border-radius: var(--md-sys-shape-corner-large);
+  border: 1px solid var(--md-sys-color-outline);
+  background: var(--md-sys-color-surface-container-high);
+  box-shadow: var(--md-sys-elevation-shadow-3);
 }
 
 .panel {
@@ -143,7 +143,7 @@
   overflow-y: auto;
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
-  scrollbar-color: var(--color-line) transparent;
+  scrollbar-color: var(--md-sys-color-outline-variant) transparent;
   scrollbar-width: thin;
   animation: panelViewportIn var(--motion-duration-medium) ease;
 }
@@ -158,8 +158,8 @@
 
 .panelViewport::-webkit-scrollbar-thumb {
   border: 2px solid transparent;
-  border-radius: var(--shape-full);
-  background: var(--color-muted);
+  border-radius: var(--md-sys-shape-corner-full);
+  background: var(--md-sys-color-on-surface-variant);
   background-clip: padding-box;
 }
 
@@ -175,7 +175,7 @@
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   flex-shrink: 0;
-  border-bottom: 1px solid var(--color-outline);
+  border-bottom: 1px solid var(--md-sys-color-outline);
 }
 
 .panelTab {
@@ -183,9 +183,10 @@
   padding: 0.625rem 0.75rem;
   border: 0;
   border-bottom: 3px solid transparent;
-  border-radius: var(--shape-small) var(--shape-small) 0 0;
+  border-radius: var(--md-sys-shape-corner-small)
+    var(--md-sys-shape-corner-small) 0 0;
   background: transparent;
-  color: var(--color-muted);
+  color: var(--md-sys-color-on-surface-variant);
   font-family: var(--font-mono);
   font-size: var(--font-size-sm);
   letter-spacing: 0.06em;
@@ -201,13 +202,13 @@
 }
 
 .panelTab[aria-selected="true"] {
-  border-bottom-color: var(--color-primary);
+  border-bottom-color: var(--md-sys-color-primary);
   background: var(--state-selected);
-  color: var(--color-paper);
+  color: var(--md-sys-color-on-surface);
 }
 
 .panelTab:focus-visible {
-  outline: var(--focus-ring-width) solid var(--color-paper);
+  outline: var(--focus-ring-width) solid var(--md-sys-color-on-surface);
   outline-offset: -2px;
 }
 
@@ -223,7 +224,7 @@
   font-size: var(--font-size-xs);
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--color-muted);
+  color: var(--md-sys-color-on-surface-variant);
 }
 
 .panelTrigger {
@@ -260,7 +261,7 @@
 .outOfCoverage {
   display: block;
   margin: 0.5rem 0 0;
-  color: var(--color-muted);
+  color: var(--md-sys-color-on-surface-variant);
   font-size: var(--font-size-md);
 }
 
@@ -288,7 +289,8 @@
     gap: 0.75rem;
     border-inline: 0;
     border-bottom: 0;
-    border-radius: var(--shape-large) var(--shape-large) 0 0;
+    border-radius: var(--md-sys-shape-corner-large)
+      var(--md-sys-shape-corner-large) 0 0;
     transform: translateY(calc(var(--panel-drag-offset, 0px) * 0.14));
     transition:
       height 320ms cubic-bezier(0.2, 0.9, 0.24, 1),
@@ -298,7 +300,7 @@
   }
 
   .panel[data-panel-dragging="true"] {
-    box-shadow: var(--elevation-3);
+    box-shadow: var(--md-sys-elevation-shadow-3);
     transition: none;
   }
 
@@ -320,7 +322,7 @@
     min-height: var(--mobile-control-size);
     padding: 0;
     overflow: hidden;
-    border-radius: var(--shape-full);
+    border-radius: var(--md-sys-shape-corner-full);
     gap: 0;
     justify-content: center;
     align-items: center;
@@ -351,7 +353,7 @@
     min-height: 40px;
     padding: 0;
     border: 0;
-    border-radius: var(--shape-small);
+    border-radius: var(--md-sys-shape-corner-small);
     background: transparent;
     cursor: pointer;
     touch-action: none;
@@ -362,15 +364,23 @@
   }
 
   .sheetHandleButton[data-drag-direction="up"] .sheetHandle {
-    background: color-mix(in srgb, var(--color-primary) 38%, var(--color-line));
+    background: color-mix(
+      in srgb,
+      var(--md-sys-color-primary) 38%,
+      var(--md-sys-color-outline-variant)
+    );
   }
 
   .sheetHandleButton[data-drag-direction="down"] .sheetHandle {
-    background: color-mix(in srgb, var(--color-paper) 20%, var(--color-line));
+    background: color-mix(
+      in srgb,
+      var(--md-sys-color-on-surface) 20%,
+      var(--md-sys-color-outline-variant)
+    );
   }
 
   .sheetHandleButton:focus-visible {
-    outline: var(--focus-ring-width) solid var(--color-paper);
+    outline: var(--focus-ring-width) solid var(--md-sys-color-on-surface);
     outline-offset: 2px;
   }
 
@@ -379,8 +389,8 @@
     width: var(--drag-handle-width);
     height: var(--drag-handle-height);
     margin: 0 auto;
-    border-radius: var(--shape-full);
-    background: var(--color-line);
+    border-radius: var(--md-sys-shape-corner-full);
+    background: var(--md-sys-color-outline-variant);
     transition:
       width 120ms ease,
       background-color 120ms ease;
