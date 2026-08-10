@@ -40,11 +40,7 @@
 }
 
 .button:hover {
-  background: color-mix(
-    in srgb,
-    var(--md-sys-color-surface-container) 92%,
-    var(--md-sys-color-on-surface) 8%
-  );
+  background: var(--md-sys-color-surface-container-hover);
   box-shadow: var(--md-sys-elevation-shadow-2);
   translate: 0 -0.5px;
 }
