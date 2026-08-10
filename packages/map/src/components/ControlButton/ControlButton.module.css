@@ -1,35 +1,8 @@
-/*
- * `<md-*>` elements own their own visual chrome (background, border,
- * shape, elevation, ripple, hover/pressed/focus state layers) internally,
- * themed from the --md-sys-color-* tokens in packages/web/src/index.css.
- * This class only carries host-level layout concerns Material doesn't
- * already handle — icon sizing for the SVGs this app slots in as
- * children, and the pill shape's icon/label gap.
- */
 .button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
-}
-
-.button svg {
-  width: 1.125rem;
-  height: 1.125rem;
-}
-
-.button[data-shape="pill"] {
-  gap: var(--space-2);
-}
-
-/*
- * `ControlButtonFallback`-only chrome: shown before the real `md-*`
- * element's chunk loads (including the whole of SSR), so it needs its
- * own background/border/shape/elevation rather than relying on Material's
- * internal styling. Sized identically to the real element
- * (--control-height) so swapping between them causes no layout shift.
- */
-.fallback {
   min-height: var(--control-height);
   min-width: var(--control-height);
   padding: 0;
@@ -46,34 +19,38 @@
   transition:
     background-color var(--motion-duration-short) ease,
     border-color var(--motion-duration-short) ease,
-    box-shadow var(--motion-duration-short) ease;
+    box-shadow var(--motion-duration-short) ease,
+    translate 120ms ease,
+    scale 120ms ease;
 }
 
-.fallback[data-shape="icon"] {
+.button[data-shape="icon"] {
   width: var(--control-height);
 }
 
-.fallback[data-shape="pill"] {
+.button[data-shape="pill"] {
   padding: 0 1.125rem;
   border-radius: var(--md-sys-shape-corner-full);
 }
 
-.fallback[data-variant="embedded"] {
+.button[data-variant="embedded"] {
   border-color: transparent;
   background: transparent;
   box-shadow: none;
 }
 
-.fallback:hover {
+.button:hover {
   background: color-mix(
     in srgb,
     var(--md-sys-color-surface-container) 92%,
     var(--md-sys-color-on-surface) 8%
   );
   box-shadow: var(--md-sys-elevation-shadow-2);
+  translate: 0 -0.5px;
 }
 
-.fallback:active {
+.button:active {
+  scale: 0.97;
   background: color-mix(
     in srgb,
     var(--md-sys-color-surface-container) 88%,
@@ -81,12 +58,18 @@
   );
 }
 
-.fallback[data-variant="embedded"]:hover {
+.button[data-variant="embedded"]:hover {
   background: var(--state-selected);
   box-shadow: none;
+  translate: none;
 }
 
-.fallback:focus-visible {
+.button:focus-visible {
   outline: var(--focus-ring-width) solid var(--md-sys-color-on-surface);
   outline-offset: 2px;
+}
+
+.button svg {
+  width: 1.125rem;
+  height: 1.125rem;
 }

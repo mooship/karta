@@ -13,7 +13,7 @@ interface IconButtonProps
 }
 
 /** A `ControlButton` preset for icon-only, accessibly-labelled actions. */
-export const IconButton = forwardRef<HTMLElement, IconButtonProps>(
+export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
   function IconButton({ children, label, variant = "surface", ...props }, ref) {
     return (
       <ControlButton
