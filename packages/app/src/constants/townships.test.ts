@@ -25,7 +25,7 @@ describe("township groups", () => {
       "Olievenhoutbosch",
     );
     expect(getTownshipGroup("Plastic View", "799014063")).toBe("Plastic View");
-    expect(TOWNSHIP_AREA_DEFINITIONS).toHaveLength(133);
+    expect(TOWNSHIP_AREA_DEFINITIONS).toHaveLength(127);
   });
 
   it("tags each area with its metro and includes Johannesburg's townships", () => {
