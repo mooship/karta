@@ -161,7 +161,15 @@ export async function fetchReverseGeocodeResult(
   return toLocationSearchResult(payload);
 }
 
-/** A pluggable place-search / reverse-geocoding backend. */
+/**
+ * A pluggable place-search / reverse-geocoding backend.
+ * @remarks Whichever provider a host app wires up issues `fetch` requests
+ *   from the browser, so its origin must be allowlisted in that app's own
+ *   Content-Security-Policy `connect-src` directive — the SDK has no
+ *   runtime hook into a host's CSP, so this is a deploy-config step the
+ *   host is responsible for. `nominatimGeocoderProvider` requires
+ *   `https://nominatim.openstreetmap.org`.
+ */
 export interface GeocoderProvider {
   search(query: string, signal?: AbortSignal): Promise<LocationSearchResult[]>;
   reverse(
@@ -171,7 +179,11 @@ export interface GeocoderProvider {
   ): Promise<LocationSearchResult | null>;
 }
 
-/** The default `GeocoderProvider`, backed by OpenStreetMap Nominatim. */
+/**
+ * The default `GeocoderProvider`, backed by OpenStreetMap Nominatim.
+ * @remarks Requires `https://nominatim.openstreetmap.org` in the host app's
+ *   CSP `connect-src` — see `GeocoderProvider`.
+ */
 export const nominatimGeocoderProvider: GeocoderProvider = {
   search: fetchLocationSearchResults,
   reverse: fetchReverseGeocodeResult,
