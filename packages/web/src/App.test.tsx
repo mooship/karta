@@ -64,7 +64,7 @@ async function renderMobilePanel() {
   await waitFor(() =>
     expect(screen.getByTestId("geojson-layer")).toBeInTheDocument(),
   );
-  fireEvent.click(screen.getByRole("button", { name: /explore/i }));
+  fireEvent.click(screen.getByTestId("panel-toggle"));
 
   return {
     panel: screen.getByTestId("panel-container"),
@@ -257,7 +257,7 @@ describe("App", () => {
   it("collapses and restores the controls panel", async () => {
     render(<App />);
 
-    const trigger = screen.getByRole("button", { name: /close/i });
+    const trigger = screen.getByTestId("panel-toggle");
     expect(trigger).toHaveAttribute("aria-expanded", "true");
 
     fireEvent.click(trigger);
@@ -266,7 +266,7 @@ describe("App", () => {
       screen.queryByRole("checkbox", { name: "Modelled car time" }),
     ).not.toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole("button", { name: /explore/i }));
+    fireEvent.click(screen.getByTestId("panel-toggle"));
 
     expect(
       screen.getByRole("checkbox", { name: "Modelled car time" }),
@@ -303,10 +303,10 @@ describe("App", () => {
       expect(screen.getByTestId("geojson-layer")).toBeInTheDocument(),
     );
 
-    const exploreButton = screen.getByRole("button", { name: /explore/i });
+    const exploreButton = screen.getByTestId("panel-toggle");
     expect(exploreButton).toHaveAttribute("aria-expanded", "false");
 
-    const openLegend = screen.getByRole("button", { name: /open map legend/i });
+    const openLegend = screen.getByTestId("mobile-legend-trigger");
     expect(openLegend).toHaveAttribute("aria-expanded", "false");
 
     fireEvent.click(openLegend);
@@ -337,7 +337,7 @@ describe("App", () => {
       expect(screen.getByTestId("geojson-layer")).toBeInTheDocument(),
     );
 
-    const openPanel = screen.getByRole("button", { name: /explore/i });
+    const openPanel = screen.getByTestId("panel-toggle");
     fireEvent.click(openPanel);
 
     const panel = screen.getByTestId("panel-container");
@@ -444,7 +444,7 @@ describe("App", () => {
     });
 
     expect(panel).toHaveAttribute("data-panel-closing", "true");
-    expect(screen.getByRole("button", { name: /close/i })).toHaveAttribute(
+    expect(screen.getByTestId("panel-toggle")).toHaveAttribute(
       "aria-expanded",
       "true",
     );
@@ -452,7 +452,7 @@ describe("App", () => {
     fireEvent.animationEnd(panel);
 
     await waitFor(() => expect(panel).not.toBeVisible());
-    expect(screen.getByRole("button", { name: /explore/i })).toHaveAttribute(
+    expect(screen.getByTestId("panel-toggle")).toHaveAttribute(
       "aria-expanded",
       "false",
     );
@@ -519,7 +519,7 @@ describe("App", () => {
     });
 
     expect(panel).not.toBeVisible();
-    expect(screen.getByRole("button", { name: /explore/i })).toHaveAttribute(
+    expect(screen.getByTestId("panel-toggle")).toHaveAttribute(
       "aria-expanded",
       "false",
     );
