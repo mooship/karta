@@ -19,7 +19,7 @@
 }
 
 .rows dt {
-  color: var(--color-muted);
+  color: var(--md-sys-color-on-surface-variant);
   text-transform: uppercase;
   letter-spacing: 0.04em;
   font-size: var(--font-size-sm);

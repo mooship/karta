@@ -3,76 +3,137 @@
   --font-body: "Inter Variable", sans-serif;
   --font-mono: "Martian Mono Variable", monospace;
 
-  --color-ink: #f5f1e6;
-  --color-panel: #fffdf8;
-  --color-line: #ddd3bd;
-  --color-paper: #241d14;
-  --color-ochre: #8a5a1e;
-  --color-redearth: #b23a2a;
-  --color-muted: #6e6250;
+  /* GENERATED M3 LIGHT TOKENS — see scripts/generateM3Theme.ts */
+  --md-sys-color-primary: #845415;
+  --md-sys-color-on-primary: #ffffff;
+  --md-sys-color-primary-container: #ffddbb;
+  --md-sys-color-on-primary-container: #673d00;
+  --md-sys-color-secondary: #725a41;
+  --md-sys-color-on-secondary: #ffffff;
+  --md-sys-color-secondary-container: #feddbd;
+  --md-sys-color-on-secondary-container: #58432c;
+  --md-sys-color-tertiary: #56633b;
+  --md-sys-color-on-tertiary: #ffffff;
+  --md-sys-color-tertiary-container: #d9e9b6;
+  --md-sys-color-on-tertiary-container: #3f4b26;
+  --md-sys-color-error: #ba1a1a;
+  --md-sys-color-on-error: #ffffff;
+  --md-sys-color-error-container: #ffdad6;
+  --md-sys-color-on-error-container: #93000a;
+  --md-sys-color-background: #fff8f4;
+  --md-sys-color-on-background: #211a14;
+  --md-sys-color-surface: #fff8f4;
+  --md-sys-color-on-surface: #211a14;
+  --md-sys-color-surface-variant: #f1dfd0;
+  --md-sys-color-on-surface-variant: #50453a;
+  --md-sys-color-outline: #827568;
+  --md-sys-color-outline-variant: #d4c4b5;
+  --md-sys-color-surface-container-lowest: #ffffff;
+  --md-sys-color-surface-container-low: #fff1e6;
+  --md-sys-color-surface-container: #faebe0;
+  --md-sys-color-surface-container-high: #f4e6da;
+  --md-sys-color-surface-container-highest: #eee0d5;
+  --md-sys-color-surface-dim: #e5d8cc;
+  --md-sys-color-surface-bright: #fff8f4;
+  --md-sys-color-inverse-surface: #372f27;
+  --md-sys-color-inverse-on-surface: #fdeee3;
+  --md-sys-color-inverse-primary: #faba73;
+  --md-sys-color-scrim: #000000;
+  --md-sys-color-shadow: #000000;
+  --md-sys-color-surface-tint: #845415;
+  /* END GENERATED M3 LIGHT TOKENS */
 
-  --color-surface: #f7f2e6;
-  --color-surface-hover: #ece3cf;
+  /* M3 baseline shape scale. */
+  --md-sys-shape-corner-none: 0px;
+  --md-sys-shape-corner-extra-small: 4px;
+  --md-sys-shape-corner-small: 8px;
+  --md-sys-shape-corner-medium: 12px;
+  --md-sys-shape-corner-large: 16px;
+  --md-sys-shape-corner-extra-large: 28px;
+  --md-sys-shape-corner-full: 9999px;
 
-  --shape-small: 8px;
-  --shape-medium: 12px;
-  --shape-large: 20px;
-  --shape-full: 999px;
-
-  --elevation-1: 0 1px 2px rgb(35 27 17 / 10%), 0 3px 8px rgb(30 24 15 / 8%);
-  --elevation-2: 0 8px 22px rgb(36 28 17 / 16%), 0 2px 8px rgb(30 24 15 / 10%);
-  --elevation-3:
-    0 18px 44px rgb(38 29 17 / 22%), 0 6px 20px rgb(28 22 13 / 16%);
-
-  --color-primary: var(--color-ochre);
-  --color-on-primary: var(--color-ink);
-  --color-on-surface: var(--color-paper);
-  --color-on-surface-variant: var(--color-muted);
-  --color-outline: color-mix(in srgb, var(--color-line) 52%, transparent);
-  --leaflet-zoom-divider: color-mix(
+  /* Elevation levels 1-3 as static box-shadow values, for Leaflet's own
+   * popup/control markup (which this app styles globally rather than
+   * replacing). The two-shadow, 30%/15% opacity split mirrors Material
+   * 3's own elevation formula (a key shadow plus a softer ambient one)
+   * rather than an invented approximation; the two tint tokens below
+   * factor out the repeated color-mix() calls all three tiers share. */
+  --md-sys-elevation-tint-key: color-mix(
     in srgb,
-    var(--color-line) 35%,
+    var(--md-sys-color-shadow) 30%,
+    transparent
+  );
+  --md-sys-elevation-tint-ambient: color-mix(
+    in srgb,
+    var(--md-sys-color-shadow) 15%,
+    transparent
+  );
+  --md-sys-elevation-shadow-1:
+    0px 1px 2px 0px var(--md-sys-elevation-tint-key),
+    0px 1px 3px 1px var(--md-sys-elevation-tint-ambient);
+  --md-sys-elevation-shadow-2:
+    0px 1px 2px 0px var(--md-sys-elevation-tint-key),
+    0px 2px 6px 2px var(--md-sys-elevation-tint-ambient);
+  --md-sys-elevation-shadow-3:
+    0px 1px 3px 0px var(--md-sys-elevation-tint-key),
+    0px 4px 8px 3px var(--md-sys-elevation-tint-ambient);
+
+  /* State layers: a flat opacity overlay tinting whatever surface it's
+   * applied to, using the same hover/pressed/selected opacities Material 3
+   * ripples use internally, for chrome that isn't a real md-* component
+   * (which handles its own state layer). */
+  --state-hover: color-mix(
+    in srgb,
+    var(--md-sys-color-on-surface) 8%,
+    transparent
+  );
+  --state-pressed: color-mix(
+    in srgb,
+    var(--md-sys-color-on-surface) 12%,
+    transparent
+  );
+  --state-selected: color-mix(
+    in srgb,
+    var(--md-sys-color-primary) 12%,
     transparent
   );
 
-  /* Tonal surfaces: a small tint of the accent colour mixed into the base
-   * panel colour, standing in for elevation instead of translucency/blur.
-   * Derived from --color-panel/--color-primary, which are redeclared per
-   * theme below, so these don't need separate light/dark values. */
-  --color-surface-container: color-mix(
+  /* A resting `--md-sys-color-surface-container` tinted towards
+   * on-surface, for hover states on opaque controls (a plain button, a
+   * search result row) that can't use --state-hover's transparent tint
+   * without the surface underneath showing through. Shared by every
+   * hand-rolled control that needs it, rather than each one re-deriving
+   * the same color-mix(). */
+  --md-sys-color-surface-container-hover: color-mix(
     in srgb,
-    var(--color-panel) 95%,
-    var(--color-primary) 5%
-  );
-  --color-surface-container-high: color-mix(
-    in srgb,
-    var(--color-panel) 88%,
-    var(--color-primary) 12%
+    var(--md-sys-color-surface-container) 92%,
+    var(--md-sys-color-on-surface) 8%
   );
 
-  /* State layers: a flat opacity overlay tinting whatever surface it's
-   * applied to, rather than each component picking its own ad hoc hover
-   * percentage. Also theme-adaptive via --color-on-surface/--color-primary. */
-  --state-hover: color-mix(in srgb, var(--color-on-surface) 8%, transparent);
-  --state-pressed: color-mix(in srgb, var(--color-on-surface) 12%, transparent);
-  --state-selected: color-mix(in srgb, var(--color-primary) 12%, transparent);
-
+  /* App-specific composite tokens layered on the M3 roles above — not
+   * part of the M3 spec itself, but built from it rather than from raw
+   * hex values, so they stay theme-adaptive automatically. */
   --color-map-label-surface: color-mix(
     in srgb,
-    var(--color-panel) 92%,
+    var(--md-sys-color-surface-container-low) 92%,
     transparent
   );
   --color-map-label-surface-secondary: color-mix(
     in srgb,
-    var(--color-panel) 78%,
+    var(--md-sys-color-surface-container-low) 78%,
     transparent
   );
   --color-map-label-outline: color-mix(
     in srgb,
-    var(--color-paper) 16%,
-    var(--color-line)
+    var(--md-sys-color-on-surface) 16%,
+    var(--md-sys-color-outline-variant)
   );
-  --color-map-label-text: var(--color-paper);
+  --color-map-label-text: var(--md-sys-color-on-surface);
+  --leaflet-zoom-divider: color-mix(
+    in srgb,
+    var(--md-sys-color-outline-variant) 65%,
+    transparent
+  );
 
   --space-1: 0.25rem;
   --space-2: 0.5rem;
@@ -80,8 +141,9 @@
   --space-4: 1rem;
 
   /* Compact UI-chrome type scale. This app has no long-form reading
-   * typography, only dense map controls/labels, so the scale stays small
-   * and stops at --font-size-lg (popup heading emphasis). */
+   * typography, only dense map controls/labels, so it stays a small
+   * app-specific scale rather than the full M3 typescale (display/
+   * headline/title roles sized for hero text this app never shows). */
   --font-size-xs: 0.625rem;
   --font-size-sm: 0.6875rem;
   --font-size-md: 0.75rem;
@@ -109,40 +171,90 @@
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --color-ink: #15110b;
-    --color-panel: #282219;
-    --color-line: #6b6046;
-    --color-paper: #f5efe1;
-    --color-ochre: #d9a441;
-    --color-redearth: #e8846c;
-    --color-muted: #c3b79e;
-
-    --color-surface: #241f17;
-    --color-surface-hover: #332c21;
-
-    --elevation-1: 0 2px 4px rgb(0 0 0 / 42%), 0 4px 10px rgb(0 0 0 / 30%);
-    --elevation-2: 0 10px 26px rgb(10 7 3 / 52%), 0 4px 12px rgb(0 0 0 / 34%);
-    --elevation-3: 0 24px 56px rgb(8 6 2 / 62%), 0 8px 24px rgb(0 0 0 / 42%);
+    /* GENERATED M3 DARK TOKENS — see scripts/generateM3Theme.ts */
+    --md-sys-color-primary: #faba73;
+    --md-sys-color-on-primary: #482900;
+    --md-sys-color-primary-container: #673d00;
+    --md-sys-color-on-primary-container: #ffddbb;
+    --md-sys-color-secondary: #e0c1a3;
+    --md-sys-color-on-secondary: #402d17;
+    --md-sys-color-secondary-container: #58432c;
+    --md-sys-color-on-secondary-container: #feddbd;
+    --md-sys-color-tertiary: #bdcc9c;
+    --md-sys-color-on-tertiary: #293411;
+    --md-sys-color-tertiary-container: #3f4b26;
+    --md-sys-color-on-tertiary-container: #d9e9b6;
+    --md-sys-color-error: #ffb4ab;
+    --md-sys-color-on-error: #690005;
+    --md-sys-color-error-container: #93000a;
+    --md-sys-color-on-error-container: #ffdad6;
+    --md-sys-color-background: #18120c;
+    --md-sys-color-on-background: #eee0d5;
+    --md-sys-color-surface: #18120c;
+    --md-sys-color-on-surface: #eee0d5;
+    --md-sys-color-surface-variant: #50453a;
+    --md-sys-color-on-surface-variant: #d4c4b5;
+    --md-sys-color-outline: #9d8e81;
+    --md-sys-color-outline-variant: #50453a;
+    --md-sys-color-surface-container-lowest: #130d07;
+    --md-sys-color-surface-container-low: #211a14;
+    --md-sys-color-surface-container: #251e17;
+    --md-sys-color-surface-container-high: #302921;
+    --md-sys-color-surface-container-highest: #3b332c;
+    --md-sys-color-surface-dim: #18120c;
+    --md-sys-color-surface-bright: #403830;
+    --md-sys-color-inverse-surface: #eee0d5;
+    --md-sys-color-inverse-on-surface: #372f27;
+    --md-sys-color-inverse-primary: #845415;
+    --md-sys-color-scrim: #000000;
+    --md-sys-color-shadow: #000000;
+    --md-sys-color-surface-tint: #faba73;
+    /* END GENERATED M3 DARK TOKENS */
 
     color-scheme: dark;
   }
 }
 
 :root[data-theme="dark"] {
-  --color-ink: #15110b;
-  --color-panel: #282219;
-  --color-line: #6b6046;
-  --color-paper: #f5efe1;
-  --color-ochre: #d9a441;
-  --color-redearth: #e8846c;
-  --color-muted: #c3b79e;
-
-  --color-surface: #241f17;
-  --color-surface-hover: #332c21;
-
-  --elevation-1: 0 2px 4px rgb(0 0 0 / 42%), 0 4px 10px rgb(0 0 0 / 30%);
-  --elevation-2: 0 10px 26px rgb(10 7 3 / 52%), 0 4px 12px rgb(0 0 0 / 34%);
-  --elevation-3: 0 24px 56px rgb(8 6 2 / 62%), 0 8px 24px rgb(0 0 0 / 42%);
+  /* GENERATED M3 DARK TOKENS — see scripts/generateM3Theme.ts */
+  --md-sys-color-primary: #faba73;
+  --md-sys-color-on-primary: #482900;
+  --md-sys-color-primary-container: #673d00;
+  --md-sys-color-on-primary-container: #ffddbb;
+  --md-sys-color-secondary: #e0c1a3;
+  --md-sys-color-on-secondary: #402d17;
+  --md-sys-color-secondary-container: #58432c;
+  --md-sys-color-on-secondary-container: #feddbd;
+  --md-sys-color-tertiary: #bdcc9c;
+  --md-sys-color-on-tertiary: #293411;
+  --md-sys-color-tertiary-container: #3f4b26;
+  --md-sys-color-on-tertiary-container: #d9e9b6;
+  --md-sys-color-error: #ffb4ab;
+  --md-sys-color-on-error: #690005;
+  --md-sys-color-error-container: #93000a;
+  --md-sys-color-on-error-container: #ffdad6;
+  --md-sys-color-background: #18120c;
+  --md-sys-color-on-background: #eee0d5;
+  --md-sys-color-surface: #18120c;
+  --md-sys-color-on-surface: #eee0d5;
+  --md-sys-color-surface-variant: #50453a;
+  --md-sys-color-on-surface-variant: #d4c4b5;
+  --md-sys-color-outline: #9d8e81;
+  --md-sys-color-outline-variant: #50453a;
+  --md-sys-color-surface-container-lowest: #130d07;
+  --md-sys-color-surface-container-low: #211a14;
+  --md-sys-color-surface-container: #251e17;
+  --md-sys-color-surface-container-high: #302921;
+  --md-sys-color-surface-container-highest: #3b332c;
+  --md-sys-color-surface-dim: #18120c;
+  --md-sys-color-surface-bright: #403830;
+  --md-sys-color-inverse-surface: #eee0d5;
+  --md-sys-color-inverse-on-surface: #372f27;
+  --md-sys-color-inverse-primary: #845415;
+  --md-sys-color-scrim: #000000;
+  --md-sys-color-shadow: #000000;
+  --md-sys-color-surface-tint: #faba73;
+  /* END GENERATED M3 DARK TOKENS */
 
   color-scheme: dark;
 }
@@ -180,17 +292,17 @@ input {
 body {
   margin: 0;
   font-family: var(--font-body);
-  background: var(--color-ink);
-  color: var(--color-paper);
+  background: var(--md-sys-color-surface);
+  color: var(--md-sys-color-on-surface);
 }
 
 .leaflet-popup-content-wrapper,
 .leaflet-popup-tip {
-  background: var(--color-surface-container-high);
-  color: var(--color-paper);
-  border: 1px solid var(--color-outline);
-  border-radius: var(--shape-medium);
-  box-shadow: var(--elevation-2);
+  background: var(--md-sys-color-surface-container-high);
+  color: var(--md-sys-color-on-surface);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: var(--md-sys-shape-corner-medium);
+  box-shadow: var(--md-sys-elevation-shadow-2);
 }
 
 .leaflet-popup-content {
@@ -198,25 +310,29 @@ body {
 }
 
 .leaflet-container a.leaflet-popup-close-button {
-  color: var(--color-line);
+  color: var(--md-sys-color-outline-variant);
 }
 
 .leaflet-control-scale-line {
-  border: 1px solid var(--color-line);
+  border: 1px solid var(--md-sys-color-outline-variant);
   padding: 2px 8px;
-  border-radius: var(--shape-small);
-  background: color-mix(in srgb, var(--color-panel) 85%, transparent);
-  color: var(--color-paper);
+  border-radius: var(--md-sys-shape-corner-small);
+  background: color-mix(
+    in srgb,
+    var(--md-sys-color-surface-container-low) 85%,
+    transparent
+  );
+  color: var(--md-sys-color-on-surface);
   font-family: var(--font-mono);
   font-size: var(--font-size-md);
-  box-shadow: var(--elevation-1);
+  box-shadow: var(--md-sys-elevation-shadow-1);
 }
 
 .leaflet-control-zoom {
   /* biome-ignore lint/complexity/noImportantStyles: overrides Leaflet's own bundled control stylesheet, which loads after this file and sets these properties directly */
-  border-radius: var(--shape-small) !important;
+  border-radius: var(--md-sys-shape-corner-small) !important;
   /* biome-ignore lint/complexity/noImportantStyles: overrides Leaflet's own bundled control stylesheet, which loads after this file and sets these properties directly */
-  box-shadow: var(--elevation-2) !important;
+  box-shadow: var(--md-sys-elevation-shadow-2) !important;
   overflow: hidden;
   /* biome-ignore lint/complexity/noImportantStyles: overrides Leaflet's own bundled control stylesheet, which loads after this file and sets these properties directly */
   border: none !important;
@@ -228,15 +344,15 @@ body {
   width: 44px;
   height: 44px;
   border: none;
-  background: var(--color-surface);
-  color: var(--color-paper);
+  background: var(--md-sys-color-surface-container);
+  color: var(--md-sys-color-on-surface);
   font-size: 1.375rem;
   line-height: 1;
   transition: background-color var(--motion-duration-short) ease;
 }
 
 .leaflet-container .leaflet-control-zoom a:hover {
-  background: var(--color-surface-hover);
+  background: var(--md-sys-color-surface-container-hover);
 }
 
 .leaflet-container .leaflet-control-zoom-in {
@@ -248,12 +364,12 @@ body {
  * unpredictable map tile colour rather than a themed surface, so they need
  * extra contrast margin. */
 .leaflet-container .leaflet-control-zoom a:focus-visible {
-  outline: 3px solid var(--color-paper);
+  outline: 3px solid var(--md-sys-color-on-surface);
   outline-offset: -3px;
 }
 
 .leaflet-container:focus-visible {
-  outline: 3px solid var(--color-paper);
+  outline: 3px solid var(--md-sys-color-on-surface);
   outline-offset: 2px;
 }
 
@@ -289,6 +405,7 @@ body {
 
 @media (prefers-contrast: more) {
   :root {
-    --color-outline: var(--color-paper);
+    --md-sys-color-outline: var(--md-sys-color-on-surface);
+    --md-sys-color-outline-variant: var(--md-sys-color-on-surface);
   }
 }
