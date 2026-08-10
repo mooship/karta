@@ -1,6 +1,10 @@
+import { TOWNSHIP_AREA_DEFINITIONS } from "@karta/app";
 import { describe, expect, it } from "vitest";
 import type { NormalizedTownship } from "./adapters/boundaries";
-import { createTownshipAreas } from "./townshipAreas";
+import {
+  assertNoUnmatchedTownshipAreas,
+  createTownshipAreas,
+} from "./townshipAreas";
 
 function township(name: string, offset: number, id = name): NormalizedTownship {
   return {
@@ -114,5 +118,37 @@ describe("createTownshipAreas", () => {
       (feature) => feature.properties.name === "Lotus Gardens",
     );
     expect(lotusGardens?.properties.subPlaceCount).toBe(2);
+  });
+});
+
+describe("assertNoUnmatchedTownshipAreas", () => {
+  it("throws listing every defined area that matched no sub-place", () => {
+    const areas = createTownshipAreas([township("Mamelodi SP", 0)]);
+
+    expect(() => assertNoUnmatchedTownshipAreas(areas)).toThrow(
+      /Township areas with zero matched sub-places:.*atteridgeville/,
+    );
+  });
+
+  it("does not throw once every defined area has at least one matched sub-place", () => {
+    const townships: NormalizedTownship[] = [];
+    let offset = 0;
+    for (const area of TOWNSHIP_AREA_DEFINITIONS) {
+      const code = area.censusMainPlaceCodes?.[0];
+      // A prefix-matched name always wins over a census-code match (see
+      // resolveTownshipAreaDefinition), so a code-only area needs a name
+      // that can't accidentally prefix-match some other area's own
+      // subPlaceNamePrefixes/name elsewhere in the list.
+      const name =
+        area.subPlaceNamePrefixes?.[0] ?? `Synthetic sub-place for ${area.id}`;
+      townships.push(
+        township(name, offset, code ? `${code}001` : `synthetic-${offset}`),
+      );
+      offset += 1;
+    }
+
+    const areas = createTownshipAreas(townships);
+
+    expect(() => assertNoUnmatchedTownshipAreas(areas)).not.toThrow();
   });
 });
