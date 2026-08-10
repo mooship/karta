@@ -1,130 +1,119 @@
 # Karta Design System
 
-Karta uses an app-owned design system built on tonal, elevation-driven
-surfaces rather than translucent "glass" materials. The app remains plain
-React, CSS Modules, and CSS custom properties; no framework design library is
-introduced, and no token is named after a specific vendor's design language —
-token names describe what a value *is* (a surface tier, an elevation, a
-shape, a state layer), not where the idea came from.
+Karta adopts Google's Material 3 (M3) design language directly, rather than
+an app-owned system with its own vocabulary. Every component is Karta's own
+plain React + CSS Modules, styled entirely from M3 tokens — colour roles,
+shape scale, elevation, state layers — so the visual result is faithfully
+Material 3 without depending on Google's own component library (see
+"Component library" below for why). Tokens use Material's own naming
+(`--md-sys-color-primary`, `--md-sys-shape-corner-medium`, …) rather than
+app-invented names, so the system stays legible to anyone who already
+knows Material 3.
 
 ## Design direction
 
-- Separate content from controls: map content fills the view, controls float
-	as a functional layer above it.
-- Surfaces are opaque and tonal: floating chrome (panels, sheets, menus,
-	chips) is a flat, elevated colour — a small tint of the accent colour
-	mixed into the base surface — differentiated by shadow and tone, never by
-	blur or transparency.
-- Elevation communicates hierarchy: higher-priority or more transient
-	surfaces (a bottom sheet mid-drag, a dropdown menu) sit at a heavier
-	elevation tier than resting chrome.
-- Keep hierarchy obvious: one accent for emphasis, semantic text contrast,
-	and progressive disclosure instead of always-visible complexity.
+- Adopt Material 3's system wholesale rather than reinventing it: colour
+	roles, shape scale, elevation, and state layers all follow the M3 spec's
+	own token names and values.
+- Brand identity lives in one place — the seed colour a theme is generated
+	from, and the typeface tokens — not in bespoke token architecture.
 - Preserve map-first communication: interface chrome must support evidence
 	and place-reading, never dominate it. Floating controls, rounded pill
 	search fields, and a bottom-sheet-style info panel take cues from
 	consumer map products' conventions for this — content fills the frame,
 	controls float, and a drag handle exposes more detail on demand.
 
-## Token architecture
+## Colour tokens — generated from a single seed
 
-Core token source of truth remains `packages/web/src/index.css`.
+Every `--md-sys-color-*` role is generated from one brand seed colour (the
+historical `--color-ochre` accent, `#8a5a1e`) using Material Color
+Utilities' HCT-based tonal palette algorithm — the same engine behind
+Android's Material You dynamic theming. `packages/web/scripts/generateM3Theme.ts`
+owns this: it builds a `SchemeTonalSpot` (light and dark) from the seed via
+`MaterialDynamicColors`, and writes the resolved hex values into the
+generated token block in `packages/web/src/index.css`.
 
-### Foundation tokens
+To change Karta's brand colour, edit `SEED_COLOR_HEX` in that script and
+re-run `npm run generate:theme --workspace @karta/web` — never hand-edit
+the hex values inside the `/* GENERATED M3 ... TOKENS */` markers directly,
+since the next run overwrites them.
 
-- Typeface tokens: `--font-display`, `--font-body`, `--font-mono`
-- Type scale tokens: `--font-size-xs` (10px) through `--font-size-lg`
-	(16.8px, popup heading emphasis) — a compact scale for dense map chrome,
-	not long-form reading typography. Every component's text font-size
-	references one of these rather than a one-off `rem`/`px` value; the one
-	exception is `.leaflet-control-zoom a`'s `1.375rem` glyph size in
-	`index.css`, which sizes a single +/- icon character rather than UI copy
-	and isn't part of the text scale. The smallest tier stops at 10px
-	deliberately — anything conveying real status information (e.g. a
-	layer's "Not yet available" badge) uses `--font-size-sm` (11px) or
-	larger, never smaller, for legibility.
-- Spacing tokens: `--space-1` to `--space-4`
-- Shape (corner radius) tokens: `--shape-small`, `--shape-medium`,
-	`--shape-large`, `--shape-full` (999px, for pills, circular controls, and
-	scrollbar thumbs)
-- Control sizing: `--control-height`, `--control-height-compact`
-- Focus ring: `--focus-ring-width` (2px) is the single source of truth for
-	ring thickness; colour and offset stay per-component since they depend on
-	the surface a control sits on and whether its ring is inset or outset. The
-	two `.leaflet-control-zoom`/`.leaflet-container` rings in `index.css` are
-	a documented exception at 3px, since those controls sit directly on
-	unpredictable map tile colour rather than a themed surface and need extra
-	contrast margin.
+The generated role set covers the full M3 2021+ scheme:
 
-### Elevation tokens
+`primary`/`onPrimary`/`primaryContainer`/`onPrimaryContainer`,
+`secondary`/`onSecondary`/`secondaryContainer`/`onSecondaryContainer`,
+`tertiary`/`onTertiary`/`tertiaryContainer`/`onTertiaryContainer`,
+`error`/`onError`/`errorContainer`/`onErrorContainer`,
+`background`/`onBackground`, `surface`/`onSurface`,
+`surfaceVariant`/`onSurfaceVariant`, `outline`/`outlineVariant`,
+`surfaceContainerLowest` → `surfaceContainerHighest`, `surfaceDim`/`surfaceBright`,
+`inverseSurface`/`inverseOnSurface`/`inversePrimary`, `scrim`, `shadow`,
+`surfaceTint`.
 
-A three-tier shadow scale stands in for physical elevation. Each tier has
-separate light/dark values (heavier, higher-contrast shadows in dark mode).
+Karta's old semantic names (`--color-primary`, `--color-paper`, `--color-line`, …)
+have been fully retired in favour of the M3 role names directly — there is
+no alias layer, so a component either uses an M3 role or an explicit
+app-specific composite token (below).
 
-- `--elevation-1`: resting compact chrome (scale control, map labels)
-- `--elevation-2`: raised controls and popups (zoom control, leaflet popups)
-- `--elevation-3`: floating panels, sheets, and menus (the info panel,
-	settings menu, legend, dragging bottom sheet)
+### Redearth → error
 
-### Surface tokens
+The old `--color-redearth` accent was only ever used to signal a failure or
+warning state (a data-load-failure badge, an out-of-coverage message), so
+it maps directly onto M3's `error`/`errorContainer` roles rather than
+surviving as a separate custom colour — the semantic role already existed
+in M3, Karta just hadn't been using it.
 
-Replacing per-component blur/gradient "glass" values with two reusable tonal
-surface tiers, both derived from `--color-panel` and `--color-primary` so
-they adapt automatically across light, dark, and `data-theme` overrides
-without separate per-theme declarations:
+### App-specific composite tokens
 
-- `--color-surface-container`: compact controls — buttons, search inputs,
-	suggestion chips
-- `--color-surface-container-high`: larger floating surfaces — the info
-	panel, bottom sheet, settings menu, legend, popups
+A handful of tokens are genuinely app-specific (map label rendering isn't
+part of the M3 spec) and stay under Karta's own names, but are built from
+M3 roles rather than raw hex values, so they stay theme-adaptive:
+`--color-map-label-surface`, `--color-map-label-surface-secondary`,
+`--color-map-label-outline`, `--color-map-label-text`, `--leaflet-zoom-divider`.
 
-Borders on these surfaces use the existing `--color-outline` token (a
-hairline tint of `--color-line`), strengthened to `--color-paper` under
-`prefers-contrast: more`.
+## Shape, elevation, and state
 
-### State layer tokens
+- **Shape**: `--md-sys-shape-corner-none` through `-extra-large` and `-full`
+	use M3's own baseline shape scale (4/8/12/16/28px, 9999px for pills),
+	rather than app-chosen radii.
+- **Elevation**: `--md-sys-elevation-shadow-1/2/3` holds a static box-shadow
+	computed with the same two-layer 30%/15%-opacity formula Material 3's own
+	`<md-elevation>` component uses internally (studied from
+	`@material/web/elevation/internal/elevation-styles.css` — see
+	"Component library" below for why that's a reference, not a dependency),
+	not an invented approximation.
+- **State layers**: `--state-hover` (8%), `--state-pressed` (12%), and
+	`--state-selected` (12%, tinted with `--md-sys-color-primary` instead of
+	`--md-sys-color-on-surface`) match M3's own ripple/state-layer opacities.
 
-Hover, pressed, and selected states use flat opacity-tint tokens instead of
-each component picking its own translucency percentage:
+## Typography
 
-- `--state-hover`: 8% `--color-on-surface` tint
-- `--state-pressed`: 12% `--color-on-surface` tint
-- `--state-selected`: 12% `--color-primary` tint
+Karta keeps its own type families — Inter Variable and Martian Mono
+Variable — rather than switching to Roboto. The compact
+`--font-size-xs` → `--font-size-lg` scale stays app-specific rather than
+adopting M3's full typescale (display/headline/title roles sized for hero
+text this dense map-chrome app never shows).
 
-Apply these directly as a `background` on elements whose resting background
-is `transparent` and that sit on a known opaque parent (list rows, tabs,
-menu options). For an element whose own resting background is already an
-opaque tonal surface (e.g. `ControlButton`), blend the tint into that same
-surface with `color-mix()` instead, so hover never introduces transparency
-against the map.
+## Component library
 
-### Colour tokens
-
-Keep existing semantic colour naming and extend where needed.
-
-- Base: `--color-ink`, `--color-panel`, `--color-line`, `--color-paper`
-- Accent/status: `--color-ochre`, `--color-redearth`
-- Secondary text: `--color-muted`
-- Surface states: `--color-surface`, `--color-surface-hover`
-- Semantic roles: `--color-primary`, `--color-on-primary`,
-	`--color-on-surface`, `--color-on-surface-variant`, `--color-outline`
-
-Rules:
-
-- One accent colour is used for primary emphasis only.
-- Secondary labels remain monochrome or near-monochrome.
-- Any new colour token requires light and dark values plus a high-contrast
-	strategy.
-
-### Motion tokens
-
-Duration-only transitions cover this app's static state changes (colour,
-shadow, height). There is no gesture/spring system — the one gesture-driven
-interaction (the mobile bottom-sheet drag) tracks pointer position directly
-and projects a velocity-based snap target on release, rather than delegating
-to a token-driven spring.
-
-- `--motion-duration-short`, `--motion-duration-medium`
+Karta implements Material 3 components itself, as plain React + CSS
+Modules against the tokens above, rather than depending on
+`@material/web` (Google's own Shadow DOM custom element library). That
+was tried first and reverted: `@material/web`'s components are Lit-based
+custom elements, and getting them safe under this app's Cloudflare
+Workers SSR required a real workaround (importing them at all throws
+`ReferenceError: HTMLElement is not defined` under workerd), which in
+turn meant a client-only-mount gate for every single primitive to avoid a
+React hydration mismatch, an `ElementInternals` polyfill for unit tests
+(happy-dom has none), and unit tests that couldn't use ARIA-role queries
+at all (`getByRole` can't see into a Shadow DOM happy-dom never renders).
+That's real, compounding friction for every future component, not a
+one-off cost — and none of it is specific to Material 3 as a *design
+system*, only to `@material/web`'s specific Shadow DOM delivery
+mechanism. A plain React implementation gets the same HCT-generated
+colours, same shape scale, same elevation formula, with none of it:
+normal SSR, normal hydration, normal `getByRole` tests, no extra runtime
+weight.
 
 ## Accessibility policy
 
@@ -132,36 +121,25 @@ to a token-driven spring.
 - Keyboard operation and visible focus remain mandatory for all controls.
 - Honour reduced motion: `prefers-reduced-motion` collapses animation/transition
 	durations globally.
-- Because surfaces are opaque tonal colours rather than translucent
-	materials, there is no `prefers-reduced-transparency` handling to
-	maintain — there is no transparency on structural chrome to reduce.
+- `prefers-contrast: more` strengthens `--md-sys-color-outline`/`-outline-variant`
+	to `--md-sys-color-on-surface`.
 - Preserve or improve current Lighthouse accessibility score.
-
-## Component primitives
-
-Preferred primitives and ownership:
-
-- `ControlButton`: surface/state-layer behaviour, press feedback, focus
-	treatment
-- `SegmentedControl`: mutually exclusive option groups
-- `IconButton`: icon-specific semantics and sizing, built on `ControlButton`
-- `LocationSearchControl`: search affordance and input hierarchy
-
-If a new control replicates these behaviours, extend a primitive before
-adding new standalone CSS.
 
 ## Implementation guardrails
 
-- No second parallel design system.
-- No backdrop-filter/blur on structural chrome — elevation and tonal surface
-	colour carry that job instead.
-- No token or class name references a specific vendor's design language by
-	name; describe the value, not its inspiration.
+- One design system: don't reintroduce app-invented token names for
+	anything the M3 spec already names — extend the generated M3 tokens
+	instead.
+- Don't hand-edit generated hex values in `index.css`'s `GENERATED M3 ...
+	TOKENS` blocks; change the seed colour and re-run `generate:theme`.
+- No `@material/web` (or any other Shadow DOM custom element component
+	library) dependency — see "Component library" above. Build new controls
+	as plain React + CSS Modules against the M3 tokens.
 - Avoid visual novelty that competes with evidence layers.
 
 ## Success criteria
 
-- Chrome feels cohesive as one floating control layer over the map.
+- Chrome feels cohesive as one floating Material control layer over the map.
 - Mobile sheet drag and snap feel physically continuous and interruptible.
 - Typography hierarchy is clearer at all sizes without visual noise.
 - Reduced-motion mode remains fully usable.
