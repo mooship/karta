@@ -87,11 +87,13 @@ These are enforced in review, and some in CI:
   change. The project holds a Lighthouse accessibility score of 100.
 - **British English** in user-facing copy — UI text, labels, error messages. Code
   identifiers stay as they are.
-- **Use the existing design system.** Colour tokens are CSS custom properties
-  (`--color-ink`, `--color-paper`, `--color-panel`, and friends) defined in
-  `packages/web/src/index.css` with light and dark values. Fonts are Inter
-  Variable and Martian Mono Variable, self-hosted. Don't introduce new ad hoc
-  colours or fonts.
+- **Use the existing design system.** Karta adopts Google's Material 3 (M3)
+  directly — colour tokens are `--md-sys-color-*` CSS custom properties
+  (`--md-sys-color-primary`, `--md-sys-color-surface`, and friends) generated
+  from a single brand seed colour into `packages/web/src/index.css` with light
+  and dark values (see `docs/design-system.md`). Fonts are Inter Variable and
+  Martian Mono Variable, self-hosted. Don't introduce new ad hoc colours or
+  fonts.
 
 ## Contributing data or claims
 

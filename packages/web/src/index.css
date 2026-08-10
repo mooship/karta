@@ -3,12 +3,6 @@
   --font-body: "Inter Variable", sans-serif;
   --font-mono: "Martian Mono Variable", monospace;
 
-  /* @material/web components read these typeface refs for their own
-   * typescale tokens, so Material Web controls render in Karta's own
-   * fonts instead of falling back to Roboto. */
-  --md-ref-typeface-plain: var(--font-body);
-  --md-ref-typeface-brand: var(--font-display);
-
   /* GENERATED M3 LIGHT TOKENS — see scripts/generateM3Theme.ts */
   --md-sys-color-primary: #845415;
   --md-sys-color-on-primary: #ffffff;
@@ -58,29 +52,31 @@
   --md-sys-shape-corner-extra-large: 28px;
   --md-sys-shape-corner-full: 9999px;
 
-  /* Elevation levels 1-3 as static box-shadow values, for chrome that
-   * isn't a real `<md-*>` custom element (Leaflet's own popup/control
-   * markup, which this app styles globally rather than replacing).
-   * Real md-* components compute the identical shadow themselves via an
-   * internal <md-elevation> and don't need these. The two-shadow, 30%/15%
-   * opacity split mirrors @material/web's own elevation formula
-   * (node_modules/@material/web/elevation/internal/elevation-styles.css)
-   * rather than an invented approximation. */
+  /* Elevation levels 1-3 as static box-shadow values, for Leaflet's own
+   * popup/control markup (which this app styles globally rather than
+   * replacing). The two-shadow, 30%/15% opacity split mirrors Material
+   * 3's own elevation formula (a key shadow plus a softer ambient one)
+   * rather than an invented approximation; the two tint tokens below
+   * factor out the repeated color-mix() calls all three tiers share. */
+  --md-sys-elevation-tint-key: color-mix(
+    in srgb,
+    var(--md-sys-color-shadow) 30%,
+    transparent
+  );
+  --md-sys-elevation-tint-ambient: color-mix(
+    in srgb,
+    var(--md-sys-color-shadow) 15%,
+    transparent
+  );
   --md-sys-elevation-shadow-1:
-    0px 1px 2px 0px
-    color-mix(in srgb, var(--md-sys-color-shadow) 30%, transparent),
-    0px 1px 3px 1px
-    color-mix(in srgb, var(--md-sys-color-shadow) 15%, transparent);
+    0px 1px 2px 0px var(--md-sys-elevation-tint-key),
+    0px 1px 3px 1px var(--md-sys-elevation-tint-ambient);
   --md-sys-elevation-shadow-2:
-    0px 1px 2px 0px
-    color-mix(in srgb, var(--md-sys-color-shadow) 30%, transparent),
-    0px 2px 6px 2px
-    color-mix(in srgb, var(--md-sys-color-shadow) 15%, transparent);
+    0px 1px 2px 0px var(--md-sys-elevation-tint-key),
+    0px 2px 6px 2px var(--md-sys-elevation-tint-ambient);
   --md-sys-elevation-shadow-3:
-    0px 1px 3px 0px
-    color-mix(in srgb, var(--md-sys-color-shadow) 30%, transparent),
-    0px 4px 8px 3px
-    color-mix(in srgb, var(--md-sys-color-shadow) 15%, transparent);
+    0px 1px 3px 0px var(--md-sys-elevation-tint-key),
+    0px 4px 8px 3px var(--md-sys-elevation-tint-ambient);
 
   /* State layers: a flat opacity overlay tinting whatever surface it's
    * applied to, using the same hover/pressed/selected opacities Material 3
@@ -100,6 +96,18 @@
     in srgb,
     var(--md-sys-color-primary) 12%,
     transparent
+  );
+
+  /* A resting `--md-sys-color-surface-container` tinted towards
+   * on-surface, for hover states on opaque controls (a plain button, a
+   * search result row) that can't use --state-hover's transparent tint
+   * without the surface underneath showing through. Shared by every
+   * hand-rolled control that needs it, rather than each one re-deriving
+   * the same color-mix(). */
+  --md-sys-color-surface-container-hover: color-mix(
+    in srgb,
+    var(--md-sys-color-surface-container) 92%,
+    var(--md-sys-color-on-surface) 8%
   );
 
   /* App-specific composite tokens layered on the M3 roles above — not
@@ -344,11 +352,7 @@ body {
 }
 
 .leaflet-container .leaflet-control-zoom a:hover {
-  background: color-mix(
-    in srgb,
-    var(--md-sys-color-surface-container) 92%,
-    var(--md-sys-color-on-surface) 8%
-  );
+  background: var(--md-sys-color-surface-container-hover);
 }
 
 .leaflet-container .leaflet-control-zoom-in {

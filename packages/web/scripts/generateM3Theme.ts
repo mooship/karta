@@ -14,6 +14,7 @@ import { readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import {
   argbFromHex,
+  type DynamicColor,
   Hct,
   hexFromArgb,
   MaterialDynamicColors,
@@ -69,29 +70,25 @@ function tokenNameFor(role: string): string {
   return `--md-sys-color-${role.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`)}`;
 }
 
+/** Provides every {@link COLOR_ROLES} role's `DynamicColor` resolver; stateless with respect to light/dark, so built once and shared by both `resolveScheme` calls. */
+const dynamicColors = new MaterialDynamicColors() as unknown as Record<
+  (typeof COLOR_ROLES)[number],
+  () => DynamicColor
+>;
+
 /** Resolves every {@link COLOR_ROLES} role to its hex value for one light/dark `SchemeTonalSpot`. */
 function resolveScheme(scheme: SchemeTonalSpot): Record<string, string> {
-  const dynamicColors = new MaterialDynamicColors();
   const resolved: Record<string, string> = {};
   for (const role of COLOR_ROLES) {
-    const dynamicColor = (
-      dynamicColors as unknown as Record<
-        string,
-        () => { getArgb: (s: SchemeTonalSpot) => number }
-      >
-    )[role]();
-    resolved[role] = hexFromArgb(dynamicColor.getArgb(scheme));
+    resolved[role] = hexFromArgb(dynamicColors[role]().getArgb(scheme));
   }
   return resolved;
 }
 
-/** Renders a resolved role map as `  --md-sys-color-x: #hex;` lines, indented to match `index.css`. */
-function renderTokenLines(
-  roles: Record<string, string>,
-  indent: string,
-): string {
+/** Renders a resolved role map as two-space-indented `--md-sys-color-x: #hex;` lines, matching `index.css`. */
+function renderTokenLines(roles: Record<string, string>): string {
   return COLOR_ROLES.map(
-    (role) => `${indent}${tokenNameFor(role)}: ${roles[role]};`,
+    (role) => `  ${tokenNameFor(role)}: ${roles[role]};`,
   ).join("\n");
 }
 
@@ -142,13 +139,13 @@ let next = replaceAllBlocks(
   original,
   startMarker,
   endMarker,
-  renderTokenLines(lightRoles, "  "),
+  renderTokenLines(lightRoles),
 );
 next = replaceAllBlocks(
   next,
   darkStartMarker,
   darkEndMarker,
-  renderTokenLines(darkRoles, "  "),
+  renderTokenLines(darkRoles),
 );
 
 writeFileSync(indexCssPath, next);
