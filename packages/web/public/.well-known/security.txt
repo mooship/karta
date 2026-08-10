@@ -1,0 +1,5 @@
+Contact: https://github.com/mooship/karta/security/advisories/new
+Expires: 2027-08-10T00:00:00.000Z
+Canonical: https://karta.timothybrits.co.za/.well-known/security.txt
+Policy: https://github.com/mooship/karta/blob/main/SECURITY.md
+Preferred-Languages: en
