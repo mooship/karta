@@ -68,12 +68,28 @@ describe("GAUTENG_SPATIAL_LEGACY_LAYERS", () => {
     }
     expect(style.propertyKey).toBe("nearestTransitKm");
     expect(style.buckets).toEqual([
-      { max: 1, color: "#CFE3F5", label: "Near (≤ 1 km)" },
-      { max: 3, color: "#7FB2E5", label: "Moderate (1–3 km)" },
-      { max: 8, color: "#3673B8", label: "Far (3–8 km)" },
+      {
+        max: 1,
+        color: "#CFE3F5",
+        darkColor: "#274A66",
+        label: "Near (≤ 1 km)",
+      },
+      {
+        max: 3,
+        color: "#7FB2E5",
+        darkColor: "#3E75A8",
+        label: "Moderate (1–3 km)",
+      },
+      {
+        max: 8,
+        color: "#3673B8",
+        darkColor: "#5FA8DE",
+        label: "Far (3–8 km)",
+      },
       {
         max: Number.POSITIVE_INFINITY,
         color: "#123F6E",
+        darkColor: "#9ED4FF",
         label: "Very far (> 8 km)",
       },
     ]);

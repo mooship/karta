@@ -1,4 +1,5 @@
 import type { Layer } from "@karta/core";
+import { usePrefersDarkMode, useThemePreference } from "@karta/react";
 import { useDomain } from "../../context/DomainContext";
 import styles from "./Legend.module.css";
 
@@ -10,9 +11,16 @@ interface LegendProps {
   compact?: boolean;
 }
 
+/**
+ * Resolves choropleth legend sections, one per visible choropleth layer.
+ * @param dark - When `true`, each bucket's `darkColor` is shown instead of
+ *   `color` (falling back to `color` when unset), so the legend swatch
+ *   always matches what `MapView` actually renders for the same theme.
+ */
 function choroplethLegends(
   layers: readonly Layer[],
-  visibleLayerIds?: string[],
+  visibleLayerIds: string[] | undefined,
+  dark: boolean,
 ) {
   return layers.flatMap((layer) => {
     if (layer.style.kind !== "choropleth") {
@@ -25,7 +33,10 @@ function choroplethLegends(
       {
         layer,
         entries: [
-          ...layer.style.buckets,
+          ...layer.style.buckets.map((bucket) => ({
+            ...bucket,
+            color: (dark && bucket.darkColor) || bucket.color,
+          })),
           { label: "No data", color: CHOROPLETH_NO_DATA_COLOR },
         ],
       },
@@ -70,7 +81,9 @@ function getLegendAriaLabel(mode: "all" | "active", label: string) {
 
 /**
  * Renders choropleth and transit layer legend entries for a map domain.
- * @remarks Must be rendered inside a `DomainProvider`.
+ * @remarks Must be rendered inside a `DomainProvider`. Choropleth swatches
+ *   resolve each bucket's `darkColor` over `color` while dark theme is
+ *   active, matching the fill `MapView` renders for the same theme.
  * @example
  * <DomainProvider domain={GAUTENG_SPATIAL_LEGACY_DOMAIN}>
  *   <Legend mode="active" visibleLayerIds={["townships"]} />
@@ -84,9 +97,14 @@ export function Legend({
   const { getLayers } = useDomain();
   const layers = getLayers();
   const isActiveMode = mode === "active";
+  const prefersDark = usePrefersDarkMode();
+  const themePreference = useThemePreference();
+  const resolvedDark =
+    themePreference === "dark" || (themePreference === "system" && prefersDark);
   const choroplethSections = choroplethLegends(
     layers,
     isActiveMode ? visibleLayerIds : undefined,
+    resolvedDark,
   );
   const transitEntries = getTransitEntries(
     layers,

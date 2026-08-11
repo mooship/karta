@@ -93,14 +93,20 @@ vi.mock("react-leaflet", () => ({
     url,
     detectRetina,
     eventHandlers,
+    className,
   }: {
     url: string;
     detectRetina?: boolean;
     eventHandlers?: { tileerror?: () => void };
+    className?: string;
   }) => {
     mapMocks.tileErrorHandler = eventHandlers?.tileerror ?? null;
     return (
-      <div data-testid="tile-layer" data-retina={String(detectRetina)}>
+      <div
+        data-testid="tile-layer"
+        data-retina={String(detectRetina)}
+        data-classname={className ?? ""}
+      >
         {url}
       </div>
     );
@@ -703,6 +709,52 @@ describe("MapView", () => {
     expect(screen.getByTestId("geojson-layer")).toHaveTextContent("1 features");
   });
 
+  it("resolves a choropleth bucket's darkColor over color when dark theme is active", () => {
+    stubMatchMedia(true);
+
+    render(
+      withDomain(
+        <MapView
+          {...DEFAULT_MAP_VIEW_PROPS}
+          areas={areas}
+          visibleLayerIds={["areas"]}
+        />,
+      ),
+    );
+
+    const feature = {
+      type: "Feature",
+      properties: { value: 15 },
+      geometry: null,
+    };
+    expect(mapMocks.geoJsonProps.areas?.style?.(feature)).toMatchObject({
+      fillColor: "#274A66",
+    });
+  });
+
+  it("uses a choropleth bucket's color in light theme, ignoring darkColor", () => {
+    stubMatchMedia(false);
+
+    render(
+      withDomain(
+        <MapView
+          {...DEFAULT_MAP_VIEW_PROPS}
+          areas={areas}
+          visibleLayerIds={["areas"]}
+        />,
+      ),
+    );
+
+    const feature = {
+      type: "Feature",
+      properties: { value: 15 },
+      geometry: null,
+    };
+    expect(mapMocks.geoJsonProps.areas?.style?.(feature)).toMatchObject({
+      fillColor: "#7A9B6E",
+    });
+  });
+
   it("renders choropleth GeoJSON with exact geometry and transit overlays with smoothing", async () => {
     vi.stubGlobal(
       "fetch",
@@ -981,6 +1033,62 @@ describe("MapView", () => {
     );
 
     expect(screen.getByTestId("tile-layer")).toHaveTextContent(/arcgisonline/i);
+  });
+
+  it.each(["voyager", "topo"])(
+    "dims the %s basemap's tiles in dark mode, which has no dark tile set of its own",
+    (basemap) => {
+      stubMatchMedia(true);
+
+      render(
+        withDomain(
+          <MapView
+            {...DEFAULT_MAP_VIEW_PROPS}
+            areas={[]}
+            visibleLayerIds={[]}
+            basemap={basemap}
+          />,
+        ),
+      );
+
+      expect(screen.getByTestId("tile-layer").dataset.classname).toContain(
+        "dimmedTile",
+      );
+    },
+  );
+
+  it("does not dim satellite imagery in dark mode", () => {
+    stubMatchMedia(true);
+
+    render(
+      withDomain(
+        <MapView
+          {...DEFAULT_MAP_VIEW_PROPS}
+          areas={[]}
+          visibleLayerIds={[]}
+          basemap="satellite"
+        />,
+      ),
+    );
+
+    expect(screen.getByTestId("tile-layer").dataset.classname).toBe("");
+  });
+
+  it("does not dim voyager tiles in light mode", () => {
+    stubMatchMedia(false);
+
+    render(
+      withDomain(
+        <MapView
+          {...DEFAULT_MAP_VIEW_PROPS}
+          areas={[]}
+          visibleLayerIds={[]}
+          basemap="voyager"
+        />,
+      ),
+    );
+
+    expect(screen.getByTestId("tile-layer").dataset.classname).toBe("");
   });
 
   it("refits the full area bounds when crossing the mobile breakpoint", () => {

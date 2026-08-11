@@ -587,6 +587,8 @@ function MapViewComponent<
   const isVectorBasemap = basemapDefinition.kind === "vector";
   const useDarkTiles =
     isRasterBasemap && basemapDefinition.darkUrl !== undefined && resolvedDark;
+  const useDimFilter =
+    isRasterBasemap && resolvedDark && basemapDefinition.dimInDarkMode === true;
   const tileSourceMode = `${basemap}-${useDarkTiles ? "dark" : "light"}`;
   const tileSources = useMemo(
     () => (isRasterBasemap ? getBasemapTileSources(basemap, useDarkTiles) : []),
@@ -682,9 +684,12 @@ function MapViewComponent<
   const layerConfigById = useMemo(
     () =>
       new Map(
-        visibleLayers.map((layer) => [layer.id, createLayerConfig(layer)]),
+        visibleLayers.map((layer) => [
+          layer.id,
+          createLayerConfig(layer, undefined, resolvedDark),
+        ]),
       ),
-    [visibleLayers],
+    [visibleLayers, resolvedDark],
   );
   /**
    * Each visible layer's `pathOptions`, with its pane folded in, memoised by
@@ -776,7 +781,13 @@ function MapViewComponent<
             key={`${tileSourceMode}-${tileSource.url}`}
             url={resolveTileScaleToken(tileSource.url, useRetinaTiles)}
             attribution={tileSource.attribution}
-            className={useDarkTiles ? styles.darkTile : undefined}
+            className={
+              useDarkTiles
+                ? styles.darkTile
+                : useDimFilter
+                  ? styles.dimmedTile
+                  : undefined
+            }
             detectRetina={useRetinaTiles}
             updateWhenZooming
             eventHandlers={{ tileerror: handleTileError }}
