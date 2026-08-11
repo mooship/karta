@@ -1,5 +1,6 @@
 import type { Layer } from "@karta/core";
-import { usePrefersDarkMode, useThemePreference } from "@karta/react";
+import { resolveThemedColor } from "@karta/core";
+import { useResolvedDarkTheme } from "@karta/react";
 import { useDomain } from "../../context/DomainContext";
 import styles from "./Legend.module.css";
 
@@ -34,8 +35,8 @@ function choroplethLegends(
         layer,
         entries: [
           ...layer.style.buckets.map((bucket) => ({
-            ...bucket,
-            color: (dark && bucket.darkColor) || bucket.color,
+            label: bucket.label,
+            color: resolveThemedColor(bucket.color, bucket.darkColor, dark),
           })),
           { label: "No data", color: CHOROPLETH_NO_DATA_COLOR },
         ],
@@ -97,10 +98,7 @@ export function Legend({
   const { getLayers } = useDomain();
   const layers = getLayers();
   const isActiveMode = mode === "active";
-  const prefersDark = usePrefersDarkMode();
-  const themePreference = useThemePreference();
-  const resolvedDark =
-    themePreference === "dark" || (themePreference === "system" && prefersDark);
+  const resolvedDark = useResolvedDarkTheme();
   const choroplethSections = choroplethLegends(
     layers,
     isActiveMode ? visibleLayerIds : undefined,

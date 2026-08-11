@@ -39,7 +39,12 @@ function choroplethLayer(overrides: Partial<Layer> = {}): Layer {
       kind: "choropleth",
       propertyKey: "commuteMinutes",
       buckets: [
-        { max: 20, color: "#7A9B6E", label: "Short (≤ 20 min)" },
+        {
+          max: 20,
+          color: "#7A9B6E",
+          darkColor: "#274A66",
+          label: "Short (≤ 20 min)",
+        },
         { max: 40, color: "#C9A227", label: "Moderate (21–40 min)" },
         { max: 60, color: "#D6703F", label: "Long (41–60 min)" },
         {
@@ -86,20 +91,7 @@ describe("createLayerConfig", () => {
   });
 
   it("uses each bucket's darkColor instead of color when dark is true", () => {
-    const config = createLayerConfig(
-      choroplethLayer({
-        style: {
-          kind: "choropleth",
-          propertyKey: "commuteMinutes",
-          buckets: [
-            { max: 20, color: "#CFE3F5", darkColor: "#274A66", label: "Near" },
-          ],
-          baseOpacity: 0.18,
-        },
-      }),
-      "#8A93A5",
-      true,
-    );
+    const config = createLayerConfig(choroplethLayer(), { dark: true });
     const feature = {
       type: "Feature",
       properties: { commuteMinutes: 15 },
@@ -110,14 +102,14 @@ describe("createLayerConfig", () => {
   });
 
   it("falls back to a bucket's color when dark is true but darkColor is unset", () => {
-    const config = createLayerConfig(choroplethLayer(), "#8A93A5", true);
+    const config = createLayerConfig(choroplethLayer(), { dark: true });
     const feature = {
       type: "Feature",
-      properties: { commuteMinutes: 15 },
+      properties: { commuteMinutes: 35 },
       geometry: null,
     } as unknown as Feature;
 
-    expect(config.styleFn?.(feature)).toMatchObject({ fillColor: "#7A9B6E" });
+    expect(config.styleFn?.(feature)).toMatchObject({ fillColor: "#C9A227" });
   });
 
   it("gives features the emphasis resolver selects a higher opacity", () => {

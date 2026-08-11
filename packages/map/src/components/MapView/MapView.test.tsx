@@ -1035,30 +1035,13 @@ describe("MapView", () => {
     expect(screen.getByTestId("tile-layer")).toHaveTextContent(/arcgisonline/i);
   });
 
-  it.each(["voyager", "topo"])(
-    "dims the %s basemap's tiles in dark mode, which has no dark tile set of its own",
-    (basemap) => {
-      stubMatchMedia(true);
-
-      render(
-        withDomain(
-          <MapView
-            {...DEFAULT_MAP_VIEW_PROPS}
-            areas={[]}
-            visibleLayerIds={[]}
-            basemap={basemap}
-          />,
-        ),
-      );
-
-      expect(screen.getByTestId("tile-layer").dataset.classname).toContain(
-        "dimmedTile",
-      );
-    },
-  );
-
-  it("does not dim satellite imagery in dark mode", () => {
-    stubMatchMedia(true);
+  it.each([
+    ["voyager", true, true],
+    ["topo", true, true],
+    ["satellite", true, false],
+    ["voyager", false, false],
+  ])("%s basemap: dark=%s -> dimmed=%s", (basemap, dark, expectDimmed) => {
+    stubMatchMedia(dark);
 
     render(
       withDomain(
@@ -1066,29 +1049,17 @@ describe("MapView", () => {
           {...DEFAULT_MAP_VIEW_PROPS}
           areas={[]}
           visibleLayerIds={[]}
-          basemap="satellite"
+          basemap={basemap}
         />,
       ),
     );
 
-    expect(screen.getByTestId("tile-layer").dataset.classname).toBe("");
-  });
-
-  it("does not dim voyager tiles in light mode", () => {
-    stubMatchMedia(false);
-
-    render(
-      withDomain(
-        <MapView
-          {...DEFAULT_MAP_VIEW_PROPS}
-          areas={[]}
-          visibleLayerIds={[]}
-          basemap="voyager"
-        />,
-      ),
-    );
-
-    expect(screen.getByTestId("tile-layer").dataset.classname).toBe("");
+    const classname = screen.getByTestId("tile-layer").dataset.classname;
+    if (expectDimmed) {
+      expect(classname).toContain("dimmedTile");
+    } else {
+      expect(classname).toBe("");
+    }
   });
 
   it("refits the full area bounds when crossing the mobile breakpoint", () => {

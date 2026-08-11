@@ -25,6 +25,21 @@ export interface LeafletLayerConfig {
 }
 
 /**
+ * Resolves a themed CSS color: `darkColor` when `dark` is `true` and set,
+ * otherwise `color`.
+ * @remarks Shared by choropleth bucket resolution here and by `@karta/map`'s
+ *   `Legend`, so a bucket's rendered fill and its legend swatch always agree
+ *   on the same light/dark fallback rule.
+ */
+export function resolveThemedColor(
+  color: string,
+  darkColor: string | undefined,
+  dark: boolean,
+): string {
+  return (dark && darkColor) || color;
+}
+
+/**
  * Adapts a choropleth style's `buckets` into a `GraduatedClassification`, so
  * choropleth fill color resolves through the same `resolveClassification`
  * machinery as line/point classifications, instead of a separate
@@ -42,7 +57,7 @@ function bucketsToClassification(
     propertyKey: style.propertyKey,
     stops: style.buckets.map((bucket) => ({
       max: bucket.max,
-      value: (dark && bucket.darkColor) || bucket.color,
+      value: resolveThemedColor(bucket.color, bucket.darkColor, dark),
       label: bucket.label,
     })),
     fallback: noDataColor,
@@ -63,13 +78,20 @@ function resolveStyleValue<T>(
     : fallback;
 }
 
+/** Options for `createLayerConfig`. */
+export interface CreateLayerConfigOptions {
+  /** CSS color used when a choropleth feature has no value. Defaults to `"#8A93A5"`. */
+  noDataColor?: string;
+  /**
+   * When `true`, choropleth buckets prefer their `darkColor` over `color`
+   * (see `ColorBucket`). Defaults to `false`.
+   */
+  dark?: boolean;
+}
+
 /**
  * Converts a `Layer` descriptor into a Leaflet path configuration object.
  * @param layer - The layer to configure.
- * @param noDataColor - CSS color used when a choropleth feature has no value.
- *   Defaults to `"#8A93A5"`.
- * @param dark - When `true`, choropleth buckets prefer their `darkColor`
- *   over `color` (see `ColorBucket`). Defaults to `false`.
  * @returns A `LeafletLayerConfig` with either `pathOptions` or `styleFn`.
  * @example
  * const { styleFn } = createLayerConfig(layer);
@@ -77,9 +99,9 @@ function resolveStyleValue<T>(
  */
 export function createLayerConfig(
   layer: Layer,
-  noDataColor = "#8A93A5",
-  dark = false,
+  options: CreateLayerConfigOptions = {},
 ): LeafletLayerConfig {
+  const { noDataColor = "#8A93A5", dark = false } = options;
   const style = layer.style;
 
   switch (style.kind) {
