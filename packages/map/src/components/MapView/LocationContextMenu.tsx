@@ -20,8 +20,9 @@ const GHOST_CLICK_SUPPRESSION_MS = 500;
 
 /**
  * Consumes the next `click` anywhere in the document if it lands within
- * `GHOST_CLICK_MAX_DISTANCE_PX` of `origin`, then disarms itself (on that
- * click, or after `GHOST_CLICK_SUPPRESSION_MS` if none arrives).
+ * `GHOST_CLICK_MAX_DISTANCE_PX` of `origin` and outside `menuContentRef`'s
+ * element, then disarms itself (on that click, or after
+ * `GHOST_CLICK_SUPPRESSION_MS` if none arrives).
  * @remarks On most touchscreens, the `touchend` that ends a long press is
  *   still turned into a synthetic `click` at (near enough) the same point
  *   once the finger lifts, and Leaflet's `Popup` closes itself on the very
@@ -32,23 +33,33 @@ const GHOST_CLICK_SUPPRESSION_MS = 500;
  *   container, is the same trick Leaflet's own `Map.TapHold` handler uses
  *   for the equivalent problem on mobile Safari (its `_cancelClickPrevent`);
  *   this generalises it to every touchscreen browser that does this, not
- *   just Safari. A click any real tap-distance away from the long-press
- *   point -- e.g. on the menu's own button, which Leaflet renders offset
- *   above the anchor -- is left alone.
+ *   just Safari. Both conditions matter: distance alone would risk
+ *   swallowing a genuine tap on the menu's own button if Leaflet happens to
+ *   render the popup close to the anchor on a given screen size, while
+ *   containment alone can't tell a same-gesture ghost click apart from a
+ *   deliberate tap somewhere else on the map moments later (e.g. to dismiss
+ *   the menu without choosing an action) -- only a click that's both close
+ *   to the long-press point *and* outside the menu is the ghost click this
+ *   exists to catch.
  */
 function armGhostClickGuard(
   origin: { clientX: number; clientY: number },
+  menuContentRef: { current: HTMLElement | null },
   cleanupRef: { current: (() => void) | null },
 ): void {
   cleanupRef.current?.();
 
   const handleClick = (event: MouseEvent) => {
     disarm();
+    const target = event.target;
+    const insideMenu =
+      target instanceof Node &&
+      (menuContentRef.current?.contains(target) ?? false);
     const distance = Math.hypot(
       event.clientX - origin.clientX,
       event.clientY - origin.clientY,
     );
-    if (distance <= GHOST_CLICK_MAX_DISTANCE_PX) {
+    if (!insideMenu && distance <= GHOST_CLICK_MAX_DISTANCE_PX) {
       event.stopPropagation();
     }
   };
@@ -87,6 +98,7 @@ export function LocationContextMenu() {
   const [menu, setMenu] = useState<MenuState | null>(null);
   const { next, abort } = useAbortController();
   const ghostClickGuardRef = useRef<(() => void) | null>(null);
+  const menuContentRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     return () => {
@@ -98,7 +110,11 @@ export function LocationContextMenu() {
     contextmenu(event) {
       abort();
       if (event.originalEvent) {
-        armGhostClickGuard(event.originalEvent, ghostClickGuardRef);
+        armGhostClickGuard(
+          event.originalEvent,
+          menuContentRef,
+          ghostClickGuardRef,
+        );
       }
       setMenu({ latlng: event.latlng, search: null });
     },
@@ -155,7 +171,11 @@ export function LocationContextMenu() {
 
   return (
     <Popup position={menu.latlng} eventHandlers={{ remove: handleClosed }}>
-      <div data-testid="location-context-menu" data-e2e="location-context-menu">
+      <div
+        ref={menuContentRef}
+        data-testid="location-context-menu"
+        data-e2e="location-context-menu"
+      >
         {menu.search ? (
           <output className={styles.result}>
             {menu.search.loading

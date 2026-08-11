@@ -72,15 +72,20 @@ async function chooseSearchHere() {
   });
 }
 
-function dispatchDocumentClick(clientX: number, clientY: number) {
+function dispatchDocumentClick(
+  target: EventTarget,
+  coordinates: { clientX: number; clientY: number } = {
+    clientX: 0,
+    clientY: 0,
+  },
+) {
   const event = new MouseEvent("click", {
     bubbles: true,
     cancelable: true,
-    clientX,
-    clientY,
+    ...coordinates,
   });
   const stopPropagationSpy = vi.spyOn(event, "stopPropagation");
-  document.dispatchEvent(event);
+  target.dispatchEvent(event);
   return stopPropagationSpy;
 }
 
@@ -247,39 +252,63 @@ describe("LocationContextMenu", () => {
     expect(aborted).toBe(true);
   });
 
-  it("suppresses the synthetic click a mobile long-press's release fires at (near enough) the same point, so it can't close the menu it just opened", () => {
+  it("suppresses a click that's both near the long-press point and outside the menu (the ghost click a mobile long-press's release fires on the map background), so it can't close the menu it just opened", () => {
     render(<LocationContextMenu />);
     openMenu({ lat: -26.2, lng: 28.0 }, { clientX: 100, clientY: 200 });
 
-    const stopPropagationSpy = dispatchDocumentClick(108, 195);
+    const stopPropagationSpy = dispatchDocumentClick(document.body, {
+      clientX: 105,
+      clientY: 195,
+    });
 
     expect(stopPropagationSpy).toHaveBeenCalled();
   });
 
-  it("leaves a click well away from the long-press point alone (a deliberate tap, e.g. on the menu's own button)", () => {
+  it("leaves a click on the menu's own content alone (a deliberate tap on its button), even if it happens to land near the long-press point", () => {
     render(<LocationContextMenu />);
     openMenu({ lat: -26.2, lng: 28.0 }, { clientX: 100, clientY: 200 });
 
-    const stopPropagationSpy = dispatchDocumentClick(400, 500);
+    const stopPropagationSpy = dispatchDocumentClick(
+      screen.getByRole("menuitem", { name: /search this location/i }),
+      { clientX: 105, clientY: 195 },
+    );
 
     expect(stopPropagationSpy).not.toHaveBeenCalled();
   });
 
-  it("only guards the single click immediately after a long-press, not later ones", () => {
+  it("leaves a click well away from the long-press point alone, even though it's outside the menu (e.g. a deliberate tap elsewhere on the map to dismiss the menu)", () => {
     render(<LocationContextMenu />);
     openMenu({ lat: -26.2, lng: 28.0 }, { clientX: 100, clientY: 200 });
 
-    dispatchDocumentClick(108, 195);
-    const secondSpy = dispatchDocumentClick(101, 201);
+    const stopPropagationSpy = dispatchDocumentClick(document.body, {
+      clientX: 400,
+      clientY: 500,
+    });
+
+    expect(stopPropagationSpy).not.toHaveBeenCalled();
+  });
+
+  it("only guards the single click immediately after a long-press/right-click, not later ones", () => {
+    render(<LocationContextMenu />);
+    openMenu({ lat: -26.2, lng: 28.0 }, { clientX: 100, clientY: 200 });
+
+    dispatchDocumentClick(document.body, { clientX: 105, clientY: 195 });
+    const secondSpy = dispatchDocumentClick(document.body, {
+      clientX: 101,
+      clientY: 201,
+    });
 
     expect(secondSpy).not.toHaveBeenCalled();
   });
 
   it("does not arm a click guard when the contextmenu event has no native originalEvent", () => {
     render(<LocationContextMenu />);
-    openMenu({ lat: -26.2, lng: 28.0 });
+    openMenu();
 
-    const stopPropagationSpy = dispatchDocumentClick(100, 200);
+    const stopPropagationSpy = dispatchDocumentClick(document.body, {
+      clientX: 0,
+      clientY: 0,
+    });
 
     expect(stopPropagationSpy).not.toHaveBeenCalled();
   });
