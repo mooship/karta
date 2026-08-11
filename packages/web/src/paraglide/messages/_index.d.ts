@@ -34,3 +34,4 @@ export * from './error_boundary_not_found_message.js';
 export * from './error_boundary_generic_title.js';
 export * from './error_boundary_generic_message.js';
 export * from './error_boundary_reload.js';
+export * from './language_toggle_label.js';

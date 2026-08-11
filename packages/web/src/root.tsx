@@ -15,6 +15,7 @@ import {
 import { THEME_STORAGE_KEY } from "./constants/themeConfig";
 import "./index.css";
 import { m } from "./paraglide/messages.js";
+import { getLocale, getTextDirection } from "./paraglide/runtime.js";
 import styles from "./root.module.css";
 
 /**
@@ -85,10 +86,15 @@ export const links: LinksFunction = () => [
  * React Router route module export: the document shell (`<html>`/`<head>`/`<body>`)
  * wrapping every route. Sets the pre-hydration `theme-color` meta tags and
  * inlines `THEME_BOOTSTRAP_SCRIPT` to apply the stored theme before paint.
+ * `lang`/`dir` read `getLocale()`/`getTextDirection()` rather than a fixed
+ * `"en"` — on the server that's resolved by `paraglideMiddleware` from the
+ * request's locale cookie/`Accept-Language` header, and on the client from
+ * the same cookie, so the two agree and there's nothing to hydrate around.
  */
 export function Layout({ children }: { children: React.ReactNode }) {
+  const locale = getLocale();
   return (
-    <html lang="en">
+    <html lang={locale} dir={getTextDirection(locale)}>
       <head>
         <meta charSet="utf-8" />
         <meta

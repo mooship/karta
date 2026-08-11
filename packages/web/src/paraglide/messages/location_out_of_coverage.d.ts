@@ -8,11 +8,11 @@ export type Location_Out_Of_CoverageInputs = {
 * | "{location} is outside South Africa." |
 *
 * @param {Location_Out_Of_CoverageInputs} inputs
-* @param {{ locale?: "en" }} options
+* @param {{ locale?: "en" | "st" | "zu" }} options
 * @returns {LocalizedString}
 */
 export declare const location_out_of_coverage: ((inputs: Location_Out_Of_CoverageInputs, options?: {
-    locale?: "en";
+    locale?: "en" | "st" | "zu";
 }) => LocalizedString) & import('../runtime.js').MessageMetadata<Location_Out_Of_CoverageInputs, {
-    locale?: "en";
+    locale?: "en" | "st" | "zu";
 }, {}>;

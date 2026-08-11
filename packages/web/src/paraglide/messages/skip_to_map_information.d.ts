@@ -6,11 +6,11 @@ export type Skip_To_Map_InformationInputs = {};
 * | "Skip to map information" |
 *
 * @param {Skip_To_Map_InformationInputs} inputs
-* @param {{ locale?: "en" }} options
+* @param {{ locale?: "en" | "st" | "zu" }} options
 * @returns {LocalizedString}
 */
 export declare const skip_to_map_information: ((inputs?: Skip_To_Map_InformationInputs, options?: {
-    locale?: "en";
+    locale?: "en" | "st" | "zu";
 }) => LocalizedString) & import('../runtime.js').MessageMetadata<Skip_To_Map_InformationInputs, {
-    locale?: "en";
+    locale?: "en" | "st" | "zu";
 }, {}>;

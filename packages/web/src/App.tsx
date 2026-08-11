@@ -36,6 +36,7 @@ import {
 import { useWindowSize } from "usehooks-ts";
 import styles from "./App.module.css";
 import { DomainStory } from "./components/DomainStory/DomainStory";
+import { LanguageToggle } from "./components/LanguageToggle/LanguageToggle";
 import { LayerToggles } from "./components/LayerToggles/LayerToggles";
 import { TownshipPopup } from "./components/TownshipPopup/TownshipPopup";
 import { buildRegionDataUrls } from "./data/regionDataUrls";
@@ -739,7 +740,9 @@ export function App() {
             themePreference={themePreference}
             onThemePreferenceChange={setThemePreference}
             onOpenChange={setSettingsOpen}
-          />
+          >
+            <LanguageToggle />
+          </SettingsMenu>
         </div>
       </div>
     </DomainProvider>

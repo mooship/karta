@@ -39,5 +39,7 @@
   "error_boundary_not_found_message": "The page you're looking for doesn't exist.",
   "error_boundary_generic_title": "Something went wrong",
   "error_boundary_generic_message": "An unexpected error occurred. Reloading the page usually fixes it.",
-  "error_boundary_reload": "Reload page"
+  "error_boundary_reload": "Reload page",
+
+  "language_toggle_label": "Language"
 }

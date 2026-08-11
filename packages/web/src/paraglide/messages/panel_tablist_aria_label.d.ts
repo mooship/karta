@@ -6,11 +6,11 @@ export type Panel_Tablist_Aria_LabelInputs = {};
 * | "Map panel" |
 *
 * @param {Panel_Tablist_Aria_LabelInputs} inputs
-* @param {{ locale?: "en" }} options
+* @param {{ locale?: "en" | "st" | "zu" }} options
 * @returns {LocalizedString}
 */
 export declare const panel_tablist_aria_label: ((inputs?: Panel_Tablist_Aria_LabelInputs, options?: {
-    locale?: "en";
+    locale?: "en" | "st" | "zu";
 }) => LocalizedString) & import('../runtime.js').MessageMetadata<Panel_Tablist_Aria_LabelInputs, {
-    locale?: "en";
+    locale?: "en" | "st" | "zu";
 }, {}>;

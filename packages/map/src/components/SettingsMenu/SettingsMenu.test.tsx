@@ -186,6 +186,25 @@ describe("SettingsMenu", () => {
     expect(onThemePreferenceChange).toHaveBeenCalledWith("dark");
   });
 
+  it("renders children after the built-in controls", () => {
+    render(
+      <SettingsMenu
+        basemap="street"
+        onBasemapChange={vi.fn()}
+        themePreference="system"
+        onThemePreferenceChange={vi.fn()}
+      >
+        <button type="button" data-testid="extra-control">
+          Extra
+        </button>
+      </SettingsMenu>,
+    );
+
+    fireEvent.click(screen.getByTestId("settings-menu-trigger"));
+
+    expect(screen.getByTestId("extra-control")).toBeInTheDocument();
+  });
+
   it("shows contextual guidance for the active basemap", () => {
     const { rerender } = render(
       <SettingsMenu
