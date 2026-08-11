@@ -27,6 +27,7 @@ import {
 import {
   assertCompleteNetworkCoverage,
   assertMetroSetup,
+  assertNoUnmatchedTownshipAreas,
   cleanupStagingDirectories,
   formatDuration,
   mergeNetworkCoverage,
@@ -149,6 +150,7 @@ async function runRegion(config: RegionPipelineConfig): Promise<void> {
     );
 
     const townshipAreas = createTownshipAreas(allNormalizedTownships);
+    assertNoUnmatchedTownshipAreas(townshipAreas);
     await writeGeoJsonFile(
       resolve(outputDir, "township-areas.display.v1.geojson"),
       createDisplayPolygons(townshipAreas),

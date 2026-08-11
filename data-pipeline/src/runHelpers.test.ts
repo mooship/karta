@@ -8,17 +8,35 @@ import {
 } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { resolve } from "node:path";
+import { TOWNSHIP_AREA_DEFINITIONS } from "@karta/app";
+import type { FeatureCollection, Geometry } from "geojson";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import * as jobCenters from "./constants/jobCenters";
 import {
   assertCompleteNetworkCoverage,
   assertMetroSetup,
+  assertNoUnmatchedTownshipAreas,
   cleanupStagingDirectories,
   findJobCenterCountMismatch,
   formatDuration,
   mergeNetworkCoverage,
   promoteStagedOutput,
 } from "./runHelpers";
+
+const STATIC_POINT: Geometry = { type: "Point", coordinates: [0, 0] };
+
+function townshipAreasFeatureCollection(
+  ids: readonly string[],
+): FeatureCollection<Geometry, { id: string }> {
+  return {
+    type: "FeatureCollection",
+    features: ids.map((id) => ({
+      type: "Feature",
+      properties: { id },
+      geometry: STATIC_POINT,
+    })),
+  };
+}
 
 describe("formatDuration", () => {
   it("formats sub-second durations in milliseconds", () => {
@@ -67,6 +85,24 @@ describe("assertCompleteNetworkCoverage", () => {
         "Rea Vaya",
       ]),
     ).toThrow("Missing required transit network coverage: PRASA, Rea Vaya");
+  });
+});
+
+describe("assertNoUnmatchedTownshipAreas", () => {
+  it("does not throw when every definition has a matched feature", () => {
+    const areas = townshipAreasFeatureCollection(
+      TOWNSHIP_AREA_DEFINITIONS.map((definition) => definition.id),
+    );
+
+    expect(() => assertNoUnmatchedTownshipAreas(areas)).not.toThrow();
+  });
+
+  it("throws listing every defined area with no matched feature", () => {
+    const areas = townshipAreasFeatureCollection([]);
+
+    expect(() => assertNoUnmatchedTownshipAreas(areas)).toThrow(
+      /Township areas with zero matched sub-places:.*atteridgeville/,
+    );
   });
 });
 

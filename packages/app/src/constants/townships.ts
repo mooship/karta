@@ -574,7 +574,7 @@ const EKURHULENI_TOWNSHIP_AREA_DEFINITIONS: readonly TownshipAreaDefinitionInput
       name: "KwaThema",
       selectionBasis: "named-sub-places",
       labelPriority: "primary",
-      subPlaceNamePrefixes: ["KwaThema"],
+      subPlaceNamePrefixes: ["Kwa-Thema"],
     },
     {
       id: "duduza",
@@ -630,7 +630,7 @@ const EKURHULENI_TOWNSHIP_AREA_DEFINITIONS: readonly TownshipAreaDefinitionInput
       name: "Chief Albert Luthuli Park",
       selectionBasis: "named-sub-places",
       labelPriority: "primary",
-      subPlaceNamePrefixes: ["Chief Albert Luthuli Park"],
+      subPlaceNamePrefixes: ["Chief A Luthuli Park"],
     },
     {
       id: "clayville",
@@ -640,25 +640,11 @@ const EKURHULENI_TOWNSHIP_AREA_DEFINITIONS: readonly TownshipAreaDefinitionInput
       subPlaceNamePrefixes: ["Clayville"],
     },
     {
-      id: "makause",
-      name: "Makause",
-      selectionBasis: "named-sub-places",
-      labelPriority: "secondary",
-      subPlaceNamePrefixes: ["Makause"],
-    },
-    {
       id: "primrose",
       name: "Primrose",
       selectionBasis: "named-sub-places",
       labelPriority: "secondary",
       subPlaceNamePrefixes: ["Primrose"],
-    },
-    {
-      id: "skoon-plaas",
-      name: "Skoon Plaas",
-      selectionBasis: "named-sub-places",
-      labelPriority: "secondary",
-      subPlaceNamePrefixes: ["Skoon Plaas", "Skoonplaas"],
     },
     {
       id: "joe-slovo-boksburg",
@@ -672,7 +658,7 @@ const EKURHULENI_TOWNSHIP_AREA_DEFINITIONS: readonly TownshipAreaDefinitionInput
       name: "Ulana Park",
       selectionBasis: "named-sub-places",
       labelPriority: "secondary",
-      subPlaceNamePrefixes: ["Ulana Park"],
+      subPlaceNamePrefixes: ["Ulana"],
     },
     {
       id: "hlahane",
@@ -687,34 +673,6 @@ const EKURHULENI_TOWNSHIP_AREA_DEFINITIONS: readonly TownshipAreaDefinitionInput
       selectionBasis: "named-sub-places",
       labelPriority: "secondary",
       subPlaceNamePrefixes: ["Driefontein"],
-    },
-    {
-      id: "crossroads-roodekop-extension-3",
-      name: "Crossroads",
-      selectionBasis: "named-sub-places",
-      labelPriority: "secondary",
-      subPlaceNamePrefixes: ["Crossroads", "Roodekop Extension 3"],
-    },
-    {
-      id: "kalamazoo",
-      name: "Kalamazoo",
-      selectionBasis: "named-sub-places",
-      labelPriority: "secondary",
-      subPlaceNamePrefixes: ["Kalamazoo"],
-    },
-    {
-      id: "duduza-north",
-      name: "Duduza North",
-      selectionBasis: "named-sub-places",
-      labelPriority: "secondary",
-      subPlaceNamePrefixes: ["Duduza North"],
-    },
-    {
-      id: "emandleni",
-      name: "Emandleni",
-      selectionBasis: "named-sub-places",
-      labelPriority: "secondary",
-      subPlaceNamePrefixes: ["Emandleni"],
     },
     {
       id: "bapsfontein",
@@ -876,7 +834,7 @@ const MIDVAAL_TOWNSHIP_AREA_DEFINITIONS: readonly TownshipAreaDefinitionInput[] 
       name: "Evaton",
       selectionBasis: "census-main-place",
       labelPriority: "secondary",
-      censusMainPlaceCodes: ["761009"],
+      censusMainPlaceCodes: ["761008"],
     },
   ];
 
