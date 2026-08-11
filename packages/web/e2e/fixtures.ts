@@ -14,6 +14,10 @@ const TILE_HOST_PATTERN =
 /** Matches a Nominatim place-search request, for tests that override the default geocoder stub below. */
 export const GEOCODER_SEARCH_PATTERN = /nominatim\.openstreetmap\.org\/search/;
 
+/** Matches a Nominatim reverse-geocode request, for tests that override the default geocoder stub below. */
+export const GEOCODER_REVERSE_PATTERN =
+  /nominatim\.openstreetmap\.org\/reverse/;
+
 /**
  * The single place hit that every location search in the suite resolves to,
  * served in place of real Nominatim requests for the same reason the tile
@@ -28,6 +32,15 @@ export const GEOCODER_RESULT = {
   lat: "-26.2678",
   lon: "27.8586",
   boundingbox: ["-26.35", "-26.20", "27.75", "27.95"],
+};
+
+/** The reverse-geocode result served in place of real Nominatim `/reverse` requests, for the same reason `GEOCODER_RESULT` exists. */
+export const GEOCODER_REVERSE_RESULT = {
+  place_id: 26262500,
+  display_name:
+    "Diepkloof, Soweto, City of Johannesburg, Gauteng, South Africa",
+  lat: "-26.25",
+  lon: "27.94",
 };
 
 export const test = base.extend({
@@ -48,6 +61,13 @@ export const test = base.extend({
         status: 200,
         contentType: "application/json",
         body: JSON.stringify([GEOCODER_RESULT]),
+      }),
+    );
+    await page.route(GEOCODER_REVERSE_PATTERN, (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify(GEOCODER_REVERSE_RESULT),
       }),
     );
     await use(page);

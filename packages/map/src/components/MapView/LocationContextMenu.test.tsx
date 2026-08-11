@@ -61,10 +61,15 @@ function openMenu(
   });
 }
 
-function chooseSearchHere() {
+async function chooseSearchHere() {
   fireEvent.click(
     screen.getByRole("menuitem", { name: /search this location/i }),
   );
+  // The component defers its own state update to a macrotask (see
+  // LocationContextMenu's handleSearchHere), so this flushes it.
+  await act(async () => {
+    await new Promise((resolve) => setTimeout(resolve, 0));
+  });
 }
 
 function dispatchDocumentClick(clientX: number, clientY: number) {
@@ -100,18 +105,25 @@ describe("LocationContextMenu", () => {
     expect(geocodeMocks.fetchReverseGeocodeResult).not.toHaveBeenCalled();
   });
 
-  it("reverse-geocodes the long-pressed point once 'search this location' is chosen", async () => {
-    geocodeMocks.fetchReverseGeocodeResult.mockResolvedValue({
-      label: "Braamfontein, Johannesburg",
-    });
+  it("shows a loading message while the lookup is in flight, then the reverse-geocoded address", async () => {
+    let resolveResult: (value: { label: string }) => void = () => {};
+    geocodeMocks.fetchReverseGeocodeResult.mockReturnValue(
+      new Promise((resolve) => {
+        resolveResult = resolve;
+      }),
+    );
 
     render(<LocationContextMenu />);
     openMenu();
-    chooseSearchHere();
+    await chooseSearchHere();
 
     expect(screen.getByTestId("map-context-menu")).toHaveTextContent(
       /looking up/i,
     );
+
+    await act(async () => {
+      resolveResult({ label: "Braamfontein, Johannesburg" });
+    });
 
     await waitFor(() => {
       expect(screen.getByTestId("map-context-menu")).toHaveTextContent(
@@ -130,7 +142,7 @@ describe("LocationContextMenu", () => {
 
     render(<LocationContextMenu />);
     openMenu({ lat: 0, lng: 0 });
-    chooseSearchHere();
+    await chooseSearchHere();
 
     await waitFor(() => {
       expect(screen.getByTestId("map-context-menu")).toHaveTextContent(
@@ -146,7 +158,7 @@ describe("LocationContextMenu", () => {
 
     render(<LocationContextMenu />);
     openMenu();
-    chooseSearchHere();
+    await chooseSearchHere();
 
     await waitFor(() => {
       expect(screen.getByTestId("map-context-menu")).toHaveTextContent(
@@ -162,7 +174,7 @@ describe("LocationContextMenu", () => {
 
     render(<LocationContextMenu />);
     openMenu();
-    chooseSearchHere();
+    await chooseSearchHere();
     await waitFor(() => {
       expect(screen.getByTestId("map-context-menu")).toHaveTextContent(
         "First place",
@@ -202,10 +214,10 @@ describe("LocationContextMenu", () => {
 
     render(<LocationContextMenu />);
     openMenu();
-    chooseSearchHere();
+    await chooseSearchHere();
 
     openMenu({ lat: -26.3, lng: 28.1 });
-    chooseSearchHere();
+    await chooseSearchHere();
 
     await waitFor(() => {
       expect(screen.getByTestId("map-context-menu")).toHaveTextContent(
@@ -215,7 +227,7 @@ describe("LocationContextMenu", () => {
     expect(firstAborted).toBe(true);
   });
 
-  it("aborts an in-flight lookup when the menu is dismissed without picking a new spot", () => {
+  it("aborts an in-flight lookup when the menu is dismissed without picking a new spot", async () => {
     let aborted = false;
     geocodeMocks.fetchReverseGeocodeResult.mockImplementationOnce(
       (_lat: number, _lng: number, signal?: AbortSignal) =>
@@ -228,7 +240,7 @@ describe("LocationContextMenu", () => {
 
     render(<LocationContextMenu />);
     openMenu();
-    chooseSearchHere();
+    await chooseSearchHere();
 
     fireEvent.click(screen.getByTestId("map-context-menu-close"));
 

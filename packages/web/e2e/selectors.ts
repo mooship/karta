@@ -41,4 +41,5 @@ export const E2E = {
     story: "panel-tab-story",
   },
   townshipPopup: "township-popup",
+  locationContextMenu: "location-context-menu",
 } as const;
