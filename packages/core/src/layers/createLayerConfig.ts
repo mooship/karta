@@ -29,17 +29,20 @@ export interface LeafletLayerConfig {
  * choropleth fill color resolves through the same `resolveClassification`
  * machinery as line/point classifications, instead of a separate
  * implementation of the same sort-by-max/find/fallback lookup.
+ * @param dark - When `true`, prefers each bucket's `darkColor` over `color`,
+ *   falling back to `color` for a bucket that doesn't define one.
  */
 function bucketsToClassification(
   style: ChoroplethLayerStyle,
   noDataColor: string,
+  dark: boolean,
 ): GraduatedClassification<string> {
   return {
     kind: "graduated",
     propertyKey: style.propertyKey,
     stops: style.buckets.map((bucket) => ({
       max: bucket.max,
-      value: bucket.color,
+      value: (dark && bucket.darkColor) || bucket.color,
       label: bucket.label,
     })),
     fallback: noDataColor,
@@ -65,6 +68,8 @@ function resolveStyleValue<T>(
  * @param layer - The layer to configure.
  * @param noDataColor - CSS color used when a choropleth feature has no value.
  *   Defaults to `"#8A93A5"`.
+ * @param dark - When `true`, choropleth buckets prefer their `darkColor`
+ *   over `color` (see `ColorBucket`). Defaults to `false`.
  * @returns A `LeafletLayerConfig` with either `pathOptions` or `styleFn`.
  * @example
  * const { styleFn } = createLayerConfig(layer);
@@ -73,12 +78,13 @@ function resolveStyleValue<T>(
 export function createLayerConfig(
   layer: Layer,
   noDataColor = "#8A93A5",
+  dark = false,
 ): LeafletLayerConfig {
   const style = layer.style;
 
   switch (style.kind) {
     case "choropleth": {
-      const classification = bucketsToClassification(style, noDataColor);
+      const classification = bucketsToClassification(style, noDataColor, dark);
       return {
         styleFn: (feature) => {
           const emphasised = style.resolveEmphasis?.(feature?.properties);

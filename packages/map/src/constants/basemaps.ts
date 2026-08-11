@@ -14,6 +14,15 @@ export interface RasterBasemapDefinition {
   fallbackUrls?: string[];
   /** Same as `fallbackUrls`, but tried after `darkUrl` when dark tiles are preferred. */
   darkFallbackUrls?: string[];
+  /**
+   * When `true` and this basemap has no `darkUrl`, `MapView` applies a CSS
+   * filter that inverts and re-tints its tiles while dark theme is active,
+   * so a cartographic (non-imagery) basemap without an official dark tile
+   * set doesn't sit jarringly bright under an otherwise dark UI. Leave unset
+   * for imagery basemaps (e.g. satellite), where inverting tiles would
+   * distort real-world colour rather than restyle a map.
+   */
+  dimInDarkMode?: boolean;
 }
 
 /** Style configuration for a vector-tile basemap, rendered via MapLibre GL. */
@@ -74,6 +83,7 @@ function defaultBasemaps(): Record<string, BasemapDefinition> {
       url: "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
       attribution: CARTO_ATTRIBUTION,
       fallbackUrls: [OSM_FALLBACK_URL],
+      dimInDarkMode: true,
     },
     topo: {
       kind: "raster",
@@ -82,6 +92,7 @@ function defaultBasemaps(): Record<string, BasemapDefinition> {
       url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}",
       attribution:
         "Tiles &copy; Esri &mdash; Esri, HERE, Garmin, and the GIS User Community",
+      dimInDarkMode: true,
     },
   };
 }

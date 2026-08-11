@@ -85,6 +85,41 @@ describe("createLayerConfig", () => {
     });
   });
 
+  it("uses each bucket's darkColor instead of color when dark is true", () => {
+    const config = createLayerConfig(
+      choroplethLayer({
+        style: {
+          kind: "choropleth",
+          propertyKey: "commuteMinutes",
+          buckets: [
+            { max: 20, color: "#CFE3F5", darkColor: "#274A66", label: "Near" },
+          ],
+          baseOpacity: 0.18,
+        },
+      }),
+      "#8A93A5",
+      true,
+    );
+    const feature = {
+      type: "Feature",
+      properties: { commuteMinutes: 15 },
+      geometry: null,
+    } as unknown as Feature;
+
+    expect(config.styleFn?.(feature)).toMatchObject({ fillColor: "#274A66" });
+  });
+
+  it("falls back to a bucket's color when dark is true but darkColor is unset", () => {
+    const config = createLayerConfig(choroplethLayer(), "#8A93A5", true);
+    const feature = {
+      type: "Feature",
+      properties: { commuteMinutes: 15 },
+      geometry: null,
+    } as unknown as Feature;
+
+    expect(config.styleFn?.(feature)).toMatchObject({ fillColor: "#7A9B6E" });
+  });
+
   it("gives features the emphasis resolver selects a higher opacity", () => {
     const config = createLayerConfig(choroplethLayer());
     const feature = {
