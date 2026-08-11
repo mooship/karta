@@ -1,17 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { GAUTENG_HERITAGE_SITES_LAYERS } from "./layers";
+import { HERITAGE_SITES_LAYERS } from "./layers";
 
-describe("GAUTENG_HERITAGE_SITES_LAYERS", () => {
+describe("HERITAGE_SITES_LAYERS", () => {
   it("has exactly the one heritage-sites point layer", () => {
-    expect(GAUTENG_HERITAGE_SITES_LAYERS.map((l) => l.id)).toEqual([
-      "heritage-sites",
-    ]);
+    expect(HERITAGE_SITES_LAYERS.map((l) => l.id)).toEqual(["heritage-sites"]);
   });
 
   it("matches the heritage-sites point layer's configuration", () => {
-    const layer = GAUTENG_HERITAGE_SITES_LAYERS.find(
-      (l) => l.id === "heritage-sites",
-    );
+    const layer = HERITAGE_SITES_LAYERS.find((l) => l.id === "heritage-sites");
     if (!layer) {
       throw new Error("expected heritage-sites layer");
     }
@@ -20,7 +16,7 @@ describe("GAUTENG_HERITAGE_SITES_LAYERS", () => {
     expect(layer.defaultVisible).toBe(true);
     expect(layer.available).toBe(true);
     expect(layer.dataSource).toEqual([
-      "/data/gauteng-heritage-sites/heritage-sites.geojson",
+      "/data/heritage-sites/heritage-sites.geojson",
     ]);
     expect(layer.interaction).toEqual({
       selectable: true,
