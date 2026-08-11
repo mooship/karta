@@ -16,7 +16,13 @@ vi.mock("react-router", async (importOriginal) => {
   };
 });
 
-const { default: Root, Layout, links, meta } = await import("./root");
+const {
+  default: Root,
+  Layout,
+  links,
+  meta,
+  ErrorBoundary,
+} = await import("./root");
 
 describe("root links", () => {
   it("does not preload any layer GeoJSON, so it never competes with render-critical requests", () => {
@@ -83,6 +89,53 @@ describe("root Layout", () => {
     expect(markup).toContain('localStorage.getItem("buffer-zones-theme")');
     expect(markup).toContain('media="(prefers-color-scheme: light)"');
     expect(markup).toContain('media="(prefers-color-scheme: dark)"');
+  });
+});
+
+describe("root ErrorBoundary", () => {
+  it("renders a fallback message and a reload action when a descendant throws", () => {
+    const Boom = () => {
+      throw new Error("kaboom");
+    };
+    const Stub = createRoutesStub([
+      {
+        path: "/",
+        Component: Root,
+        ErrorBoundary,
+        children: [{ index: true, Component: Boom }],
+      },
+    ]);
+
+    render(createElement(Stub, { initialEntries: ["/"] }));
+
+    expect(screen.getByRole("alert")).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Something went wrong" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Reload page" }),
+    ).toBeInTheDocument();
+  });
+
+  it("renders a not-found message for an unmatched route", () => {
+    const Stub = createRoutesStub([
+      {
+        path: "/",
+        Component: Root,
+        ErrorBoundary,
+        children: [
+          { index: true, Component: () => createElement("p", null, "home") },
+        ],
+      },
+    ]);
+
+    render(
+      createElement(Stub, { initialEntries: ["/this-page-does-not-exist"] }),
+    );
+
+    expect(
+      screen.getByRole("heading", { name: "Page not found" }),
+    ).toBeInTheDocument();
   });
 });
 

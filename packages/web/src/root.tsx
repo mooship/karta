@@ -2,6 +2,7 @@ import "@fontsource-variable/inter/index.css";
 import "@fontsource-variable/martian-mono/index.css";
 import "leaflet/dist/leaflet.css";
 import {
+  isRouteErrorResponse,
   Links,
   type LinksFunction,
   Meta,
@@ -9,9 +10,11 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useRouteError,
 } from "react-router";
 import { THEME_STORAGE_KEY } from "./constants/themeConfig";
 import "./index.css";
+import styles from "./root.module.css";
 
 /**
  * Pre-hydration theme-bootstrap script: reads the stored theme preference
@@ -117,4 +120,32 @@ export function Layout({ children }: { children: React.ReactNode }) {
 /** React Router route module export: the root route component. */
 export default function Root() {
   return <Outlet />;
+}
+
+/**
+ * React Router route module export: the top-level error boundary. Catches
+ * any render, loader, or action error uncaught by a more specific route
+ * (there is currently only the one index route, so in practice this is the
+ * whole app) and unmatched-route 404s, replacing `<Outlet />` inside
+ * `Layout` with a recoverable fallback instead of a blank page.
+ */
+export function ErrorBoundary() {
+  const error = useRouteError();
+  console.error(error);
+
+  const isNotFound = isRouteErrorResponse(error) && error.status === 404;
+
+  return (
+    <div className={styles.errorBoundary} role="alert">
+      <h1>{isNotFound ? "Page not found" : "Something went wrong"}</h1>
+      <p>
+        {isNotFound
+          ? "The page you're looking for doesn't exist."
+          : "An unexpected error occurred. Reloading the page usually fixes it."}
+      </p>
+      <button type="button" onClick={() => window.location.reload()}>
+        Reload page
+      </button>
+    </div>
+  );
 }
