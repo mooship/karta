@@ -114,53 +114,71 @@ export function LocationContextMenu() {
   }
 
   const handleSearchHere = () => {
-    const { lat, lng } = menu.latlng;
-    const signal = next();
+    // Deferred to a macrotask so this handler's own state update -- which
+    // replaces this very button with the loading/result text -- can't commit
+    // until well after the native click that invoked it has finished
+    // propagating. React's own click-dispatch machinery runs (and flushes
+    // that DOM change) before Leaflet's bubble-phase listener on the map
+    // container gets a turn, even though that listener sits closer to the
+    // target in the DOM -- and empirically, deferring only to a microtask
+    // isn't enough to land after it, so this needs a full `setTimeout`, not
+    // `queueMicrotask`. Leaflet's own click-vs-popup-content check
+    // (`_isClickDisabled`) walks the clicked element's live `parentNode`
+    // chain looking for the popup's container -- if this button is already
+    // detached by the time that runs, the walk comes up empty, Leaflet
+    // treats the click as an ordinary background one, and closes the popup
+    // this same click was meant to act on.
+    setTimeout(() => {
+      const { lat, lng } = menu.latlng;
+      const signal = next();
 
-    setMenu(
-      (current) =>
-        current && { ...current, search: { loading: true, label: null } },
-    );
+      setMenu(
+        (current) =>
+          current && { ...current, search: { loading: true, label: null } },
+      );
 
-    fetchReverseGeocodeResult(lat, lng, signal)
-      .then(
-        (result) => result?.label ?? null,
-        () => null,
-      )
-      .then((label) => {
-        if (!signal.aborted) {
-          setMenu(
-            (current) =>
-              current && { ...current, search: { loading: false, label } },
-          );
-        }
-      });
+      fetchReverseGeocodeResult(lat, lng, signal)
+        .then(
+          (result) => result?.label ?? null,
+          () => null,
+        )
+        .then((label) => {
+          if (!signal.aborted) {
+            setMenu(
+              (current) =>
+                current && { ...current, search: { loading: false, label } },
+            );
+          }
+        });
+    }, 0);
   };
 
   return (
     <Popup position={menu.latlng} eventHandlers={{ remove: handleClosed }}>
-      {menu.search ? (
-        <output className={styles.result}>
-          {menu.search.loading
-            ? "Looking up address…"
-            : (menu.search.label ?? "No address found here.")}
-        </output>
-      ) : (
-        <div
-          className={styles.menu}
-          role="menu"
-          aria-label="Map location actions"
-        >
-          <button
-            type="button"
-            role="menuitem"
-            className={styles.menuItem}
-            onClick={handleSearchHere}
+      <div data-testid="location-context-menu" data-e2e="location-context-menu">
+        {menu.search ? (
+          <output className={styles.result}>
+            {menu.search.loading
+              ? "Looking up address…"
+              : (menu.search.label ?? "No address found here.")}
+          </output>
+        ) : (
+          <div
+            className={styles.menu}
+            role="menu"
+            aria-label="Map location actions"
           >
-            Search this location
-          </button>
-        </div>
-      )}
+            <button
+              type="button"
+              role="menuitem"
+              className={styles.menuItem}
+              onClick={handleSearchHere}
+            >
+              Search this location
+            </button>
+          </div>
+        )}
+      </div>
     </Popup>
   );
 }
