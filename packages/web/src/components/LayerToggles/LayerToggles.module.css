@@ -53,7 +53,6 @@
   padding: 0.5rem 0.625rem;
   min-height: 48px;
   border-radius: var(--md-sys-shape-corner-small);
-  cursor: pointer;
   font-size: var(--font-size-base);
   transition: background-color var(--motion-duration-short) ease;
 }
@@ -63,8 +62,23 @@
 }
 
 .row[data-unavailable="true"] {
-  cursor: not-allowed;
   color: var(--md-sys-color-on-surface-variant);
+}
+
+/*
+ * `display: contents` drops this label's own box so its children keep
+ * participating directly in `.row`'s flex layout, exactly as when the
+ * label wrapped the whole row — while still scoping the label's native
+ * click-to-toggle behaviour to just these children, not the download link
+ * rendered as `.row`'s other child.
+ */
+.rowLabel {
+  display: contents;
+  cursor: pointer;
+}
+
+.row[data-unavailable="true"] .rowLabel {
+  cursor: not-allowed;
 }
 
 .row[data-unavailable="true"]:hover {
@@ -152,4 +166,31 @@
   font-size: var(--font-size-sm);
   line-height: 1.35;
   color: var(--md-sys-color-error);
+}
+
+.download {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  margin-left: auto;
+  border-radius: var(--md-sys-shape-corner-full);
+  color: var(--md-sys-color-on-surface-variant);
+  transition: background-color var(--motion-duration-short) ease;
+}
+
+.download:hover {
+  background: var(--state-hover);
+}
+
+.download:focus-visible {
+  outline: var(--focus-ring-width) solid var(--md-sys-color-on-surface);
+  outline-offset: 2px;
+}
+
+.downloadIcon {
+  width: 1.125rem;
+  height: 1.125rem;
 }
