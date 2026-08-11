@@ -6,6 +6,7 @@ Generic React hooks for Karta applications, with no map, Leaflet, or domain-data
 
 - **`usePrefersDarkMode(): boolean`** — tracks the OS-level `prefers-color-scheme: dark` media query.
 - **`useThemePreference()` / `setThemePreference(preference)` / `initTheme(config)`** — a `useSyncExternalStore`-backed theme preference store (`"system" | "light" | "dark"`), persisted to `localStorage`, syncing `document.documentElement.dataset.theme` and a `<meta name="theme-color">` override.
+- **`useResolvedDarkTheme(): boolean`** — combines `useThemePreference()` and `usePrefersDarkMode()` into the single boolean a caller actually renders against: `true` for an explicit `"dark"` preference, `false` for `"light"`, and the OS preference for `"system"`.
 
 `initTheme({ storageKey, colors })` must be called once at app bootstrap, before hydration and before any component using `useThemePreference()` mounts — the storage key and light/dark colour pair are app-specific and are no longer baked into the hook. Calling `initTheme` also re-reads the already-stored preference under the newly configured key: the module's own top-level read (which happens at import time, before `initTheme` can run) uses the built-in default config, so without this re-read a caller's existing stored preference would silently be ignored on first render.
 

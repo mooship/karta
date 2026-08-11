@@ -7,6 +7,16 @@ export interface ColorBucket {
   max: number;
   /** CSS color string. */
   color: string;
+  /**
+   * CSS color used instead of `color` when dark theme is active. Optional: a
+   * bucket with nothing to say here simply reuses `color` in both themes.
+   * @remarks A palette tuned for contrast against a light basemap can invert
+   *   its own visual hierarchy against a dark one — e.g. a pale "near" color
+   *   reads brighter than a dark "far" color, the opposite of the emphasis
+   *   the bucket order intends — so a bucket whose color doesn't hold up
+   *   against a dark basemap should set this instead of reusing `color`.
+   */
+  darkColor?: string;
   /** Human-readable label shown in the legend. */
   label: string;
 }

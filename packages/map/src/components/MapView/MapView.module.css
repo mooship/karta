@@ -14,6 +14,18 @@
 }
 
 /*
+ * Approximates a dark variant for a cartographic (non-imagery) basemap that
+ * has no official dark tile set, so it doesn't sit jarringly bright under an
+ * otherwise dark UI: inverting lightness and rotating hue back to its
+ * original angle turns a light basemap dark while roughly preserving its
+ * relative colours, then brightness/contrast are tempered to avoid a
+ * harsh, over-inverted look.
+ */
+.dimmedTile {
+  filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+}
+
+/*
  * Combined OSM + basemap-provider attribution text can run long enough to
  * span most of the viewport width and collide with the bottom-left scale
  * control on narrow screens. Cap its width and let it wrap onto a second

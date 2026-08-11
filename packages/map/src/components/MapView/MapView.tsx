@@ -1,5 +1,5 @@
 import { createLayerConfig, type Layer as DomainLayer } from "@karta/core";
-import { usePrefersDarkMode, useThemePreference } from "@karta/react";
+import { useResolvedDarkTheme } from "@karta/react";
 import type { Feature, FeatureCollection } from "geojson";
 import {
   circleMarker,
@@ -578,15 +578,19 @@ function MapViewComponent<
   useEffect(() => {
     onLayerDataError?.(failedLayerIds);
   }, [failedLayerIds]);
-  const prefersDark = usePrefersDarkMode();
-  const themePreference = useThemePreference();
-  const resolvedDark =
-    themePreference === "dark" || (themePreference === "system" && prefersDark);
+  const resolvedDark = useResolvedDarkTheme();
   const basemapDefinition = getBasemapDefinition(basemap);
   const isRasterBasemap = basemapDefinition.kind === "raster";
   const isVectorBasemap = basemapDefinition.kind === "vector";
   const useDarkTiles =
     isRasterBasemap && basemapDefinition.darkUrl !== undefined && resolvedDark;
+  const useDimFilter =
+    isRasterBasemap && resolvedDark && basemapDefinition.dimInDarkMode === true;
+  const tileClassName = useDarkTiles
+    ? styles.darkTile
+    : useDimFilter
+      ? styles.dimmedTile
+      : undefined;
   const tileSourceMode = `${basemap}-${useDarkTiles ? "dark" : "light"}`;
   const tileSources = useMemo(
     () => (isRasterBasemap ? getBasemapTileSources(basemap, useDarkTiles) : []),
@@ -682,9 +686,12 @@ function MapViewComponent<
   const layerConfigById = useMemo(
     () =>
       new Map(
-        visibleLayers.map((layer) => [layer.id, createLayerConfig(layer)]),
+        visibleLayers.map((layer) => [
+          layer.id,
+          createLayerConfig(layer, { dark: resolvedDark }),
+        ]),
       ),
-    [visibleLayers],
+    [visibleLayers, resolvedDark],
   );
   /**
    * Each visible layer's `pathOptions`, with its pane folded in, memoised by
@@ -776,7 +783,7 @@ function MapViewComponent<
             key={`${tileSourceMode}-${tileSource.url}`}
             url={resolveTileScaleToken(tileSource.url, useRetinaTiles)}
             attribution={tileSource.attribution}
-            className={useDarkTiles ? styles.darkTile : undefined}
+            className={tileClassName}
             detectRetina={useRetinaTiles}
             updateWhenZooming
             eventHandlers={{ tileerror: handleTileError }}
