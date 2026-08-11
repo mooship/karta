@@ -128,7 +128,8 @@
   opacity: 0.4;
 }
 
-.checkbox:focus-visible {
+.checkbox:focus-visible,
+.download:focus-visible {
   outline: var(--focus-ring-width) solid var(--md-sys-color-on-surface);
   outline-offset: 2px;
 }
@@ -183,11 +184,6 @@
 
 .download:hover {
   background: var(--state-hover);
-}
-
-.download:focus-visible {
-  outline: var(--focus-ring-width) solid var(--md-sys-color-on-surface);
-  outline-offset: 2px;
 }
 
 .downloadIcon {
