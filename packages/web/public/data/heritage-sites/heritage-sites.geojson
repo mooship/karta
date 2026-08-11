@@ -1,0 +1,145 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Hector Pieterson Memorial & Museum",
+        "category": "museum",
+        "summary": "Commemorates the schoolchildren killed by police during the 16 June 1976 Soweto uprising, named for the first student shot on the day.",
+        "province": "Gauteng"
+      },
+      "geometry": { "type": "Point", "coordinates": [27.9014, -26.2415] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Regina Mundi Church",
+        "category": "heritage-site",
+        "summary": "Soweto's largest Catholic church, used as a refuge and meeting place during police crackdowns on anti-apartheid gatherings through the 1970s and 1980s.",
+        "province": "Gauteng"
+      },
+      "geometry": { "type": "Point", "coordinates": [27.8963, -26.2603] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Walter Sisulu Square of Dedication",
+        "category": "memorial",
+        "summary": "Site of the Congress of the People in Kliptown, where the Freedom Charter was adopted on 26 June 1955.",
+        "province": "Gauteng"
+      },
+      "geometry": { "type": "Point", "coordinates": [27.9231, -26.2814] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Constitution Hill",
+        "category": "museum",
+        "summary": "Former prison complex that held Mahatma Gandhi, Nelson Mandela, and Winnie Madikizela-Mandela among many others; now the seat of South Africa's Constitutional Court.",
+        "province": "Gauteng"
+      },
+      "geometry": { "type": "Point", "coordinates": [28.0436, -26.1913] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Liliesleaf Farm",
+        "category": "museum",
+        "summary": "Underground headquarters of the ANC and Umkhonto we Sizwe in the early 1960s; the July 1963 police raid here led directly to the Rivonia Trial.",
+        "province": "Gauteng"
+      },
+      "geometry": { "type": "Point", "coordinates": [28.0577, -26.0396] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Apartheid Museum",
+        "category": "museum",
+        "summary": "Museum tracing the rise and fall of apartheid through the twentieth century, opened in 2001 south of central Johannesburg.",
+        "province": "Gauteng"
+      },
+      "geometry": { "type": "Point", "coordinates": [27.9853, -26.241] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Freedom Park",
+        "category": "memorial",
+        "summary": "National heritage precinct and memorial in Pretoria honouring those who died in South Africa's conflicts, including the struggle against apartheid.",
+        "province": "Gauteng"
+      },
+      "geometry": { "type": "Point", "coordinates": [28.1874, -25.7423] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Sharpeville Human Rights Precinct",
+        "category": "memorial",
+        "summary": "Memorial and precinct marking the 21 March 1960 Sharpeville massacre, where police killed 69 people at a protest against pass laws; the site of South Africa's 1996 constitutional signing.",
+        "province": "Gauteng"
+      },
+      "geometry": { "type": "Point", "coordinates": [27.8716, -26.6874] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Robben Island",
+        "category": "museum",
+        "summary": "Island prison off Cape Town where Nelson Mandela was held for 18 of his 27 years as a political prisoner; now a UNESCO World Heritage Site.",
+        "province": "Western Cape"
+      },
+      "geometry": { "type": "Point", "coordinates": [18.3667, -33.8065] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "District Six Museum",
+        "category": "museum",
+        "summary": "Commemorates District Six, a Cape Town inner-city community forcibly removed under the Group Areas Act from 1968 onward.",
+        "province": "Western Cape"
+      },
+      "geometry": { "type": "Point", "coordinates": [18.4233, -33.9284] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Nelson Mandela Museum, Mthatha",
+        "category": "museum",
+        "summary": "Traces Nelson Mandela's life and the history of the region, anchoring a set of linked sites including his birthplace at Mvezo and boyhood home at Qunu.",
+        "province": "Eastern Cape"
+      },
+      "geometry": { "type": "Point", "coordinates": [28.7844, -31.5889] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Steve Biko Centre",
+        "category": "museum",
+        "summary": "Heritage centre in Ginsberg, King William's Town, commemorating Black Consciousness Movement leader Steve Biko, who died in police custody in 1977.",
+        "province": "Eastern Cape"
+      },
+      "geometry": { "type": "Point", "coordinates": [27.4, -32.8833] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Ohlange Institute",
+        "category": "heritage-site",
+        "summary": "School founded in 1901 by John Langalibalele Dube, the ANC's first president, in Inanda near Durban; Nelson Mandela cast his vote at Dube's grave here in the 1994 election.",
+        "province": "KwaZulu-Natal"
+      },
+      "geometry": { "type": "Point", "coordinates": [30.9308, -29.6817] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Waaihoek Wesleyan Church",
+        "category": "heritage-site",
+        "summary": "Church in Bloemfontein's Waaihoek township where the South African Native National Congress, forerunner of the ANC, was founded on 8 January 1912.",
+        "province": "Free State"
+      },
+      "geometry": { "type": "Point", "coordinates": [26.2302, -29.1211] }
+    }
+  ]
+}
