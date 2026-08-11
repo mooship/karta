@@ -1,5 +1,5 @@
 import type { LatLng } from "leaflet";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { Popup, useMapEvents } from "react-leaflet";
 import { fetchReverseGeocodeResult } from "../../data/locationSearch";
 import { useAbortController } from "../../hooks/useAbortController";
@@ -23,6 +23,12 @@ const GHOST_CLICK_SUPPRESSION_MS = 500;
  * `GHOST_CLICK_MAX_DISTANCE_PX` of `origin` and outside `menuContentRef`'s
  * element, then disarms itself (on that click, or after
  * `GHOST_CLICK_SUPPRESSION_MS` if none arrives).
+ * @param signal - From a `useAbortController` instance dedicated to this
+ *   guard (separate from the one used for the reverse-geocode fetch below).
+ *   Re-arming (a fresh `contextmenu`) and unmounting both need to clear any
+ *   previously-armed guard, which `useAbortController`'s `next()`/unmount
+ *   handling already do for free -- `disarm` is just that instance's
+ *   `abort`, called here as this guard's own self-disarm too.
  * @remarks On most touchscreens, the `touchend` that ends a long press is
  *   still turned into a synthetic `click` at (near enough) the same point
  *   once the finger lifts, and Leaflet's `Popup` closes itself on the very
@@ -45,10 +51,9 @@ const GHOST_CLICK_SUPPRESSION_MS = 500;
 function armGhostClickGuard(
   origin: { clientX: number; clientY: number },
   menuContentRef: { current: HTMLElement | null },
-  cleanupRef: { current: (() => void) | null },
+  signal: AbortSignal,
+  disarm: () => void,
 ): void {
-  cleanupRef.current?.();
-
   const handleClick = (event: MouseEvent) => {
     disarm();
     const target = event.target;
@@ -64,15 +69,9 @@ function armGhostClickGuard(
     }
   };
 
-  function disarm() {
-    window.clearTimeout(timeoutId);
-    document.removeEventListener("click", handleClick, true);
-    cleanupRef.current = null;
-  }
-
+  document.addEventListener("click", handleClick, { capture: true, signal });
   const timeoutId = window.setTimeout(disarm, GHOST_CLICK_SUPPRESSION_MS);
-  document.addEventListener("click", handleClick, true);
-  cleanupRef.current = disarm;
+  signal.addEventListener("abort", () => window.clearTimeout(timeoutId));
 }
 
 /**
@@ -97,14 +96,8 @@ function armGhostClickGuard(
 export function LocationContextMenu() {
   const [menu, setMenu] = useState<MenuState | null>(null);
   const { next, abort } = useAbortController();
-  const ghostClickGuardRef = useRef<(() => void) | null>(null);
+  const { next: armGhostGuard, abort: disarmGhostGuard } = useAbortController();
   const menuContentRef = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    return () => {
-      ghostClickGuardRef.current?.();
-    };
-  }, []);
 
   useMapEvents({
     contextmenu(event) {
@@ -113,7 +106,8 @@ export function LocationContextMenu() {
         armGhostClickGuard(
           event.originalEvent,
           menuContentRef,
-          ghostClickGuardRef,
+          armGhostGuard(),
+          disarmGhostGuard,
         );
       }
       setMenu({ latlng: event.latlng, search: null });
@@ -124,34 +118,42 @@ export function LocationContextMenu() {
     abort();
     setMenu(null);
   }, [abort]);
+  const eventHandlers = useMemo(
+    () => ({ remove: handleClosed }),
+    [handleClosed],
+  );
 
   if (!menu) {
     return null;
   }
 
+  const setSearch = (search: SearchState) =>
+    setMenu((current) => current && { ...current, search });
+
   const handleSearchHere = () => {
-    // Deferred to a macrotask so this handler's own state update -- which
-    // replaces this very button with the loading/result text -- can't commit
-    // until well after the native click that invoked it has finished
-    // propagating. React's own click-dispatch machinery runs (and flushes
-    // that DOM change) before Leaflet's bubble-phase listener on the map
-    // container gets a turn, even though that listener sits closer to the
-    // target in the DOM -- and empirically, deferring only to a microtask
-    // isn't enough to land after it, so this needs a full `setTimeout`, not
-    // `queueMicrotask`. Leaflet's own click-vs-popup-content check
-    // (`_isClickDisabled`) walks the clicked element's live `parentNode`
-    // chain looking for the popup's container -- if this button is already
-    // detached by the time that runs, the walk comes up empty, Leaflet
-    // treats the click as an ordinary background one, and closes the popup
-    // this same click was meant to act on.
+    // The whole body is deferred to a macrotask -- not just the loading-state
+    // update below -- so that update reliably commits, and is on screen,
+    // before the fetch can possibly resolve (a mocked or cached response can
+    // resolve within a microtask, i.e. before a macrotask-deferred update
+    // elsewhere would even run). The deferral itself exists because this DOM
+    // mutation -- which replaces this very button with the loading text --
+    // can't commit until well after the native click that invoked it has
+    // finished propagating. React's own click-dispatch machinery runs (and
+    // flushes that DOM change) before Leaflet's bubble-phase listener on the
+    // map container gets a turn, even though that listener sits closer to
+    // the target in the DOM -- and empirically, deferring only to a
+    // microtask isn't enough to land after it, so this needs a full
+    // `setTimeout`, not `queueMicrotask`. Leaflet's own click-vs-popup-content
+    // check (`_isClickDisabled`) walks the clicked element's live
+    // `parentNode` chain looking for the popup's container -- if this button
+    // is already detached by the time that runs, the walk comes up empty,
+    // Leaflet treats the click as an ordinary background one, and closes the
+    // popup this same click was meant to act on.
     setTimeout(() => {
       const { lat, lng } = menu.latlng;
       const signal = next();
 
-      setMenu(
-        (current) =>
-          current && { ...current, search: { loading: true, label: null } },
-      );
+      setSearch({ loading: true, label: null });
 
       fetchReverseGeocodeResult(lat, lng, signal)
         .then(
@@ -160,17 +162,14 @@ export function LocationContextMenu() {
         )
         .then((label) => {
           if (!signal.aborted) {
-            setMenu(
-              (current) =>
-                current && { ...current, search: { loading: false, label } },
-            );
+            setSearch({ loading: false, label });
           }
         });
     }, 0);
   };
 
   return (
-    <Popup position={menu.latlng} eventHandlers={{ remove: handleClosed }}>
+    <Popup position={menu.latlng} eventHandlers={eventHandlers}>
       <div
         ref={menuContentRef}
         data-testid="location-context-menu"

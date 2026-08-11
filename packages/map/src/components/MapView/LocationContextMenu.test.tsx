@@ -72,6 +72,10 @@ async function chooseSearchHere() {
   });
 }
 
+function closeMenu() {
+  fireEvent.click(screen.getByTestId("map-context-menu-close"));
+}
+
 function dispatchDocumentClick(
   target: EventTarget,
   coordinates: { clientX: number; clientY: number } = {
@@ -142,35 +146,28 @@ describe("LocationContextMenu", () => {
     );
   });
 
-  it("shows a fallback message when no address is found", async () => {
-    geocodeMocks.fetchReverseGeocodeResult.mockResolvedValue(null);
+  it.each(["resolves with no result", "rejects"] as const)(
+    "shows a fallback message when the lookup %s",
+    async (mode) => {
+      if (mode === "resolves with no result") {
+        geocodeMocks.fetchReverseGeocodeResult.mockResolvedValue(null);
+      } else {
+        geocodeMocks.fetchReverseGeocodeResult.mockRejectedValue(
+          new Error("network"),
+        );
+      }
 
-    render(<LocationContextMenu />);
-    openMenu({ lat: 0, lng: 0 });
-    await chooseSearchHere();
+      render(<LocationContextMenu />);
+      openMenu();
+      await chooseSearchHere();
 
-    await waitFor(() => {
-      expect(screen.getByTestId("map-context-menu")).toHaveTextContent(
-        /no address found/i,
-      );
-    });
-  });
-
-  it("shows a fallback message when the lookup fails", async () => {
-    geocodeMocks.fetchReverseGeocodeResult.mockRejectedValue(
-      new Error("network"),
-    );
-
-    render(<LocationContextMenu />);
-    openMenu();
-    await chooseSearchHere();
-
-    await waitFor(() => {
-      expect(screen.getByTestId("map-context-menu")).toHaveTextContent(
-        /no address found/i,
-      );
-    });
-  });
+      await waitFor(() => {
+        expect(screen.getByTestId("map-context-menu")).toHaveTextContent(
+          /no address found/i,
+        );
+      });
+    },
+  );
 
   it("re-opens fresh (with the action, not a stale result) on a new contextmenu event", async () => {
     geocodeMocks.fetchReverseGeocodeResult.mockResolvedValue({
@@ -199,7 +196,7 @@ describe("LocationContextMenu", () => {
     openMenu();
     expect(screen.getByTestId("map-context-menu")).toBeInTheDocument();
 
-    fireEvent.click(screen.getByTestId("map-context-menu-close"));
+    closeMenu();
 
     expect(screen.queryByTestId("map-context-menu")).not.toBeInTheDocument();
   });
@@ -247,7 +244,7 @@ describe("LocationContextMenu", () => {
     openMenu();
     await chooseSearchHere();
 
-    fireEvent.click(screen.getByTestId("map-context-menu-close"));
+    closeMenu();
 
     expect(aborted).toBe(true);
   });
