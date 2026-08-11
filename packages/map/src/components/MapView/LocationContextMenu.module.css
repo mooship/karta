@@ -1,0 +1,35 @@
+.menu {
+  display: grid;
+  gap: 0.25rem;
+  min-width: 11rem;
+}
+
+.menuItem {
+  width: 100%;
+  padding: 0.4rem 0.5rem;
+  border: none;
+  border-radius: var(--md-sys-shape-corner-small);
+  background: transparent;
+  color: var(--md-sys-color-on-surface);
+  font: inherit;
+  font-size: var(--font-size-md);
+  text-align: left;
+  cursor: pointer;
+  transition: background-color var(--motion-duration-short) ease;
+}
+
+.menuItem:hover {
+  background: var(--state-hover);
+}
+
+.menuItem:focus-visible {
+  outline: var(--focus-ring-width) solid var(--md-sys-color-on-surface);
+  outline-offset: 2px;
+}
+
+.result {
+  margin: 0;
+  padding: 0.4rem 0.5rem;
+  color: var(--md-sys-color-on-surface);
+  font-size: var(--font-size-md);
+}
