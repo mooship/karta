@@ -27,15 +27,13 @@ import {
 import {
   assertCompleteNetworkCoverage,
   assertMetroSetup,
+  assertNoUnmatchedTownshipAreas,
   cleanupStagingDirectories,
   formatDuration,
   mergeNetworkCoverage,
   promoteStagedOutput,
 } from "./runHelpers";
-import {
-  assertNoUnmatchedTownshipAreas,
-  createTownshipAreas,
-} from "./townshipAreas";
+import { createTownshipAreas } from "./townshipAreas";
 import { computeNearestTransitKm } from "./transitDistance";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
