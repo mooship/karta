@@ -5,10 +5,11 @@ const { getLocale } = vi.hoisted(() => ({
   getLocale: vi.fn(() => "en"),
 }));
 
-vi.mock("../paraglide/runtime.js", () => ({
-  getLocale,
-  experimentalStaticLocale: undefined,
-}));
+vi.mock("../paraglide/runtime.js", async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import("../paraglide/runtime.js")>();
+  return { ...actual, getLocale };
+});
 
 import {
   localizeLayer,

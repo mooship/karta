@@ -6,12 +6,11 @@ const { getLocale, setLocale } = vi.hoisted(() => ({
   setLocale: vi.fn(),
 }));
 
-vi.mock("../../paraglide/runtime.js", () => ({
-  getLocale,
-  setLocale,
-  locales: ["en", "st", "zu"],
-  experimentalStaticLocale: undefined,
-}));
+vi.mock("../../paraglide/runtime.js", async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import("../../paraglide/runtime.js")>();
+  return { ...actual, getLocale, setLocale };
+});
 
 import { LanguageToggle } from "./LanguageToggle";
 
