@@ -6,11 +6,11 @@ export type Search_PlaceholderInputs = {};
 * | "Search town, suburb or station" |
 *
 * @param {Search_PlaceholderInputs} inputs
-* @param {{ locale?: "en" }} options
+* @param {{ locale?: "en" | "st" | "zu" }} options
 * @returns {LocalizedString}
 */
 export declare const search_placeholder: ((inputs?: Search_PlaceholderInputs, options?: {
-    locale?: "en";
+    locale?: "en" | "st" | "zu";
 }) => LocalizedString) & import('../runtime.js').MessageMetadata<Search_PlaceholderInputs, {
-    locale?: "en";
+    locale?: "en" | "st" | "zu";
 }, {}>;

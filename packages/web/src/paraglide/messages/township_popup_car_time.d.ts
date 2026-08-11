@@ -6,11 +6,11 @@ export type Township_Popup_Car_TimeInputs = {};
 * | "Modelled car time" |
 *
 * @param {Township_Popup_Car_TimeInputs} inputs
-* @param {{ locale?: "en" }} options
+* @param {{ locale?: "en" | "st" | "zu" }} options
 * @returns {LocalizedString}
 */
 export declare const township_popup_car_time: ((inputs?: Township_Popup_Car_TimeInputs, options?: {
-    locale?: "en";
+    locale?: "en" | "st" | "zu";
 }) => LocalizedString) & import('../runtime.js').MessageMetadata<Township_Popup_Car_TimeInputs, {
-    locale?: "en";
+    locale?: "en" | "st" | "zu";
 }, {}>;

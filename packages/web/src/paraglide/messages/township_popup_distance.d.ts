@@ -6,11 +6,11 @@ export type Township_Popup_DistanceInputs = {};
 * | "Distance" |
 *
 * @param {Township_Popup_DistanceInputs} inputs
-* @param {{ locale?: "en" }} options
+* @param {{ locale?: "en" | "st" | "zu" }} options
 * @returns {LocalizedString}
 */
 export declare const township_popup_distance: ((inputs?: Township_Popup_DistanceInputs, options?: {
-    locale?: "en";
+    locale?: "en" | "st" | "zu";
 }) => LocalizedString) & import('../runtime.js').MessageMetadata<Township_Popup_DistanceInputs, {
-    locale?: "en";
+    locale?: "en" | "st" | "zu";
 }, {}>;

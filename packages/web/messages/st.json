@@ -1,0 +1,45 @@
+{
+  "$schema": "https://inlang.com/schema/inlang-message-format",
+  "app_title": "Karta",
+  "app_heading": "Karta: 'Mapa wa lefa la sebaka sa Gauteng",
+  "meta_description": "E bontsha kamoo meralo ya sebaka mehleng ya kgethollo e ntseng e hlwaya nako ya maeto le phihlello ya mesebetsi Tshwane le Johannesburg.",
+
+  "skip_to_map_information": "Tlola o ye tlhahisoleseding ya 'mapa",
+  "loading_map": "'Mapa o ntse o kenngwa",
+  "map_aria_label": "'Mapa wa phihlello ya metse ya Aforika Borwa dibakeng tsa mesebetsi",
+  "data_load_error": "Boitsebiso ba 'mapa bo hlotswe ho kenngwa.",
+  "retry": "Leka hape",
+  "search_placeholder": "Batla toropo, sebaka kapa seteishene",
+  "location_out_of_coverage": "{location} e kantle ho Aforika Borwa.",
+
+  "panel_tab_layers": "Mera",
+  "panel_tab_story": "Pale",
+  "panel_toggle_close": "Kwala",
+  "panel_toggle_explore": "Hlahloba",
+  "panel_reduce_height": "Fokotsa bophahamo ba panele",
+  "panel_expand_height": "Atolosa bophahamo ba panele",
+  "panel_tablist_aria_label": "Panele ya 'mapa",
+
+  "layer_unavailable_badge": "Ha e so fumaneha",
+  "layer_failed_badge": "E hlotswe ho kenngwa — e time, o be o e bule hape ho leka hape",
+  "layer_download_aria_label": "Daonlouda boitsebiso ba {label} (GeoJSON)",
+
+  "township_popup_car_time": "Nako ya koloi e akantsweng",
+  "township_popup_job_center": "Setsi sa mesebetsi se haufi",
+  "township_popup_population": "Baahi",
+  "township_popup_distance": "Bohole",
+  "township_popup_transit_distance": "Bohole ho isa dipalangwaneng tse haufi",
+  "distance_km": "{value} km",
+
+  "commute_no_data": "Ha ho boitsebiso",
+  "commute_minutes": "{minutes} min",
+  "commute_hours_minutes": "{hours}h {minutes}min",
+
+  "error_boundary_not_found_title": "Leqephe ha le a fumanwa",
+  "error_boundary_not_found_message": "Leqephe leo o le batlang ha le teng.",
+  "error_boundary_generic_title": "Ho na le se sa lokang",
+  "error_boundary_generic_message": "Ho bile le phoso e sa lebellwang. Ho kenya leqephe hape hangata ho lokisa bothata.",
+  "error_boundary_reload": "Kenya leqephe hape",
+
+  "language_toggle_label": "Puo"
+}

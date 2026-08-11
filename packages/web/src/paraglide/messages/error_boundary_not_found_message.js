@@ -9,16 +9,26 @@ const en_error_boundary_not_found_message = /** @type {(inputs: Error_Boundary_N
 	return /** @type {LocalizedString} */ (`The page you're looking for doesn't exist.`)
 };
 
+const st_error_boundary_not_found_message = /** @type {(inputs: Error_Boundary_Not_Found_MessageInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Leqephe leo o le batlang ha le teng.`)
+};
+
+const zu_error_boundary_not_found_message = /** @type {(inputs: Error_Boundary_Not_Found_MessageInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Ikhasi olifunayo alikho.`)
+};
+
 /**
 * | output |
 * | --- |
 * | "The page you're looking for doesn't exist." |
 *
 * @param {Error_Boundary_Not_Found_MessageInputs} inputs
-* @param {{ locale?: "en" }} options
+* @param {{ locale?: "en" | "st" | "zu" }} options
 * @returns {LocalizedString}
 */
-export const error_boundary_not_found_message = /** @type {((inputs?: Error_Boundary_Not_Found_MessageInputs, options?: { locale?: "en" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Error_Boundary_Not_Found_MessageInputs, { locale?: "en" }, {}>} */ ((inputs = {}, options = {}) => {
-	experimentalStaticLocale ?? options.locale ?? getLocale()
+export const error_boundary_not_found_message = /** @type {((inputs?: Error_Boundary_Not_Found_MessageInputs, options?: { locale?: "en" | "st" | "zu" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Error_Boundary_Not_Found_MessageInputs, { locale?: "en" | "st" | "zu" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "st") return st_error_boundary_not_found_message(inputs)
+	if (locale === "zu") return zu_error_boundary_not_found_message(inputs)
 	return en_error_boundary_not_found_message(inputs)
 });

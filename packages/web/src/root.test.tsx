@@ -83,7 +83,7 @@ describe("root Layout", () => {
       createElement(Layout, null, createElement("p", null, "app content")),
     );
 
-    expect(markup).toContain('<html lang="en">');
+    expect(markup).toContain('<html lang="en" dir="ltr">');
     expect(markup).toContain("app content");
     expect(markup).not.toContain('src="/theme-bootstrap.js"');
     expect(markup).toContain('localStorage.getItem("buffer-zones-theme")');

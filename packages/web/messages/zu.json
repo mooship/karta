@@ -1,0 +1,45 @@
+{
+  "$schema": "https://inlang.com/schema/inlang-message-format",
+  "app_title": "Karta",
+  "app_heading": "Karta: Ibalazwe lefa lokuhlelwa kwezindawo eGauteng",
+  "meta_description": "Ibonisa indlela ukuhlelwa kwezindawo ngesikhathi sobandlululo okusalokhu kubumba ngayo isikhathi sokuya emsebenzini nokufinyelela emsebenzini eTshwane naseJohannesburg.",
+
+  "skip_to_map_information": "Yeqa uye olwazini lwebalazwe",
+  "loading_map": "Ibalazwe liyalayisha",
+  "map_aria_label": "Ibalazwe lokufinyelela kwamalokishi aseNingizimu Afrika ezindaweni zomsebenzi",
+  "data_load_error": "Idatha yebalazwe ayikwazanga ukulayishwa.",
+  "retry": "Zama futhi",
+  "search_placeholder": "Sesha idolobha, indawo noma isiteshi",
+  "location_out_of_coverage": "{location} ingaphandle kweNingizimu Afrika.",
+
+  "panel_tab_layers": "Izingqimba",
+  "panel_tab_story": "Indaba",
+  "panel_toggle_close": "Vala",
+  "panel_toggle_explore": "Hlola",
+  "panel_reduce_height": "Nciphisa ukuphakama kwephaneli",
+  "panel_expand_height": "Andisa ukuphakama kwephaneli",
+  "panel_tablist_aria_label": "Iphaneli yebalazwe",
+
+  "layer_unavailable_badge": "Ayikatholakali",
+  "layer_failed_badge": "Yehlulekile ukulayisha — vala uphinde uvule ukuze uzame futhi",
+  "layer_download_aria_label": "Landa idatha ye-{label} (GeoJSON)",
+
+  "township_popup_car_time": "Isikhathi semoto esilinganiselwe",
+  "township_popup_job_center": "Isikhungo somsebenzi esiseduze",
+  "township_popup_population": "Inani labantu",
+  "township_popup_distance": "Ibanga",
+  "township_popup_transit_distance": "Ibanga eliya ezokuthutha eziseduze",
+  "distance_km": "{value} km",
+
+  "commute_no_data": "Alukho ulwazi",
+  "commute_minutes": "{minutes} min",
+  "commute_hours_minutes": "{hours}h {minutes}min",
+
+  "error_boundary_not_found_title": "Ikhasi alitholakali",
+  "error_boundary_not_found_message": "Ikhasi olifunayo alikho.",
+  "error_boundary_generic_title": "Kukhona okungahambanga kahle",
+  "error_boundary_generic_message": "Kwenzeke iphutha elingalindelekile. Ukuvula kabusha ikhasi ngokuvamile kuyakulungisa.",
+  "error_boundary_reload": "Vula kabusha ikhasi",
+
+  "language_toggle_label": "Ulimi"
+}
