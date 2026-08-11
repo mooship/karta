@@ -1,6 +1,7 @@
 import type { DomainConfig } from "@karta/core";
+import { setThemePreference } from "@karta/react";
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { DomainProvider } from "../../context/DomainContext";
 import { TEST_DOMAIN } from "../../testFixtures/domain";
 import { Legend } from "./Legend";
@@ -9,7 +10,24 @@ function withDomain(ui: React.ReactElement) {
   return <DomainProvider domain={TEST_DOMAIN}>{ui}</DomainProvider>;
 }
 
+function stubMatchMedia(matches: boolean) {
+  vi.stubGlobal(
+    "matchMedia",
+    vi.fn().mockImplementation((query: string) => ({
+      matches,
+      media: query,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+    })),
+  );
+}
+
 describe("Legend", () => {
+  afterEach(() => {
+    setThemePreference("system");
+    vi.unstubAllGlobals();
+  });
+
   it("renders each choropleth layer's bucket labels and colors from its style config", () => {
     render(withDomain(<Legend />));
     expect(
@@ -18,6 +36,33 @@ describe("Legend", () => {
     expect(
       screen.getByRole("list", { name: /Alternate coverage/i }),
     ).toBeInTheDocument();
+  });
+
+  it("shows a bucket's color swatch in light theme, ignoring darkColor", () => {
+    stubMatchMedia(false);
+    render(withDomain(<Legend />));
+
+    expect(screen.getByText("Low").previousElementSibling).toHaveStyle({
+      backgroundColor: "#7A9B6E",
+    });
+  });
+
+  it("shows a bucket's darkColor swatch instead of color when dark theme is active", () => {
+    stubMatchMedia(true);
+    render(withDomain(<Legend />));
+
+    expect(screen.getByText("Low").previousElementSibling).toHaveStyle({
+      backgroundColor: "#274A66",
+    });
+  });
+
+  it("falls back to a bucket's color in dark theme when darkColor is unset", () => {
+    stubMatchMedia(true);
+    render(withDomain(<Legend />));
+
+    expect(screen.getByText("High").previousElementSibling).toHaveStyle({
+      backgroundColor: "#D6703F",
+    });
   });
 
   it("shows a No data swatch for every choropleth layer", () => {

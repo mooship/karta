@@ -43,6 +43,22 @@ describe("basemap registry", () => {
     expect(() => getBasemapDefinition("unknown")).toThrow(/unknown/i);
   });
 
+  it.each([
+    ["voyager", true],
+    ["topo", true],
+    ["street", undefined],
+    ["satellite", undefined],
+  ])(
+    "sets dimInDarkMode to %s for the built-in %s basemap",
+    (basemapId, expected) => {
+      const definition = getBasemapDefinition(basemapId);
+      expect(definition.kind).toBe("raster");
+      expect((definition as RasterBasemapDefinition).dimInDarkMode).toBe(
+        expected,
+      );
+    },
+  );
+
   it("registers a new basemap that becomes retrievable and listed", () => {
     registerBasemap("custom", CUSTOM_RASTER_BASEMAP);
 

@@ -21,7 +21,12 @@ export const TEST_DOMAIN: DomainConfig = {
         kind: "choropleth",
         propertyKey: "value",
         buckets: [
-          { max: 20, color: "#7A9B6E", label: "Low" },
+          {
+            max: 20,
+            color: "#7A9B6E",
+            darkColor: "#274A66",
+            label: "Low",
+          },
           { max: 40, color: "#C9A227", label: "Moderate" },
           { max: 60, color: "#D6703F", label: "High" },
           {
