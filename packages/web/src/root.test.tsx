@@ -119,14 +119,7 @@ describe("root ErrorBoundary", () => {
 
   it("renders a not-found message for an unmatched route", () => {
     const Stub = createRoutesStub([
-      {
-        path: "/",
-        Component: Root,
-        ErrorBoundary,
-        children: [
-          { index: true, Component: () => createElement("p", null, "home") },
-        ],
-      },
+      { path: "/", Component: Root, ErrorBoundary },
     ]);
 
     render(

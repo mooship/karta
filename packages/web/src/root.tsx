@@ -134,15 +134,21 @@ export function ErrorBoundary() {
   console.error(error);
 
   const isNotFound = isRouteErrorResponse(error) && error.status === 404;
+  const { title, message } = isNotFound
+    ? {
+        title: "Page not found",
+        message: "The page you're looking for doesn't exist.",
+      }
+    : {
+        title: "Something went wrong",
+        message:
+          "An unexpected error occurred. Reloading the page usually fixes it.",
+      };
 
   return (
     <div className={styles.errorBoundary} role="alert">
-      <h1>{isNotFound ? "Page not found" : "Something went wrong"}</h1>
-      <p>
-        {isNotFound
-          ? "The page you're looking for doesn't exist."
-          : "An unexpected error occurred. Reloading the page usually fixes it."}
-      </p>
+      <h1>{title}</h1>
+      <p>{message}</p>
       <button type="button" onClick={() => window.location.reload()}>
         Reload page
       </button>
