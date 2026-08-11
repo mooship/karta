@@ -46,7 +46,8 @@
       "!**/dist",
       "!**/node_modules",
       "!**/data-pipeline/output",
-      "!**/packages/web/public/data"
+      "!**/packages/web/public/data",
+      "!**/packages/web/src/paraglide"
     ]
   }
 }

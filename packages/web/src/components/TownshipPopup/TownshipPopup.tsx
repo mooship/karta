@@ -1,4 +1,5 @@
 import type { TownshipProperties } from "@karta/app";
+import { m } from "../../paraglide/messages.js";
 import { formatCommuteTime } from "../../utils/formatCommuteTime";
 import styles from "./TownshipPopup.module.css";
 
@@ -20,15 +21,15 @@ export function TownshipPopup({ properties }: TownshipPopupProps) {
     >
       <h2 className={styles.name}>{properties.name}</h2>
       <dl className={styles.rows}>
-        <dt>Modelled car time</dt>
+        <dt>{m.township_popup_car_time()}</dt>
         <dd className={styles.value}>
           {formatCommuteTime(properties.commuteMinutes)}
         </dd>
-        <dt>Nearest job centre</dt>
+        <dt>{m.township_popup_job_center()}</dt>
         <dd>{properties.nearestJobCenter}</dd>
         {properties.population !== undefined && (
           <>
-            <dt>Population</dt>
+            <dt>{m.township_popup_population()}</dt>
             <dd className={styles.value}>
               {properties.population.toLocaleString("en-ZA")}
             </dd>
@@ -36,17 +37,19 @@ export function TownshipPopup({ properties }: TownshipPopupProps) {
         )}
         {properties.distanceKm !== null && (
           <>
-            <dt>Distance</dt>
+            <dt>{m.township_popup_distance()}</dt>
             <dd className={styles.value}>
-              {properties.distanceKm.toFixed(1)} km
+              {m.distance_km({ value: properties.distanceKm.toFixed(1) })}
             </dd>
           </>
         )}
         {properties.nearestTransitKm !== null && (
           <>
-            <dt>Distance to nearest transit</dt>
+            <dt>{m.township_popup_transit_distance()}</dt>
             <dd className={styles.value}>
-              {properties.nearestTransitKm.toFixed(1)} km
+              {m.distance_km({
+                value: properties.nearestTransitKm.toFixed(1),
+              })}
             </dd>
           </>
         )}
