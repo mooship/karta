@@ -16,6 +16,7 @@ export default defineConfig({
         "packages/web/src/entry.client.tsx",
         "packages/web/src/entry.server.tsx",
         "packages/web/src/routes/**",
+        "packages/web/src/paraglide/**",
       ],
       thresholds: {
         statements: 95,

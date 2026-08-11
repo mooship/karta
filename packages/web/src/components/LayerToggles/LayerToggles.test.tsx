@@ -1,5 +1,5 @@
 import type { Layer, LayerGroup } from "@karta/core";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import * as registry from "../../layers/registry";
 import { LayerToggles } from "./LayerToggles";
@@ -137,5 +137,85 @@ describe("LayerToggles", () => {
     expect(
       screen.queryByTestId("layer-toggle-bus-error"),
     ).not.toBeInTheDocument();
+  });
+
+  it("links to an available layer's data source as a GeoJSON download", () => {
+    render(<LayerToggles visibleLayerIds={[]} onToggle={vi.fn()} />);
+
+    const download = screen.getByRole("link", {
+      name: /download rapid rail data/i,
+    });
+    expect(download).toHaveAttribute(
+      "href",
+      "/data/gauteng/rapid-rail.display.v1.geojson",
+    );
+    expect(download).toHaveAttribute("download", "rapid-rail.geojson");
+  });
+
+  it("renders one download link per data source when a layer has more than one", () => {
+    const multiSourceLayer: Layer = {
+      id: "combined",
+      label: "Combined",
+      dataSource: ["/data/a.geojson", "/data/b.geojson"],
+      geometryKind: "line",
+      defaultVisible: false,
+      available: true,
+      style: { kind: "line", color: "#000", weight: 2 },
+    };
+    const group: LayerGroup = {
+      id: "transit",
+      title: "Transit",
+      selectionMode: "independent",
+      layerIds: ["combined"],
+    };
+    vi.spyOn(registry, "getLayer").mockReturnValue(multiSourceLayer);
+    vi.spyOn(registry, "getLayerGroups").mockReturnValue([group]);
+
+    render(<LayerToggles visibleLayerIds={[]} onToggle={vi.fn()} />);
+
+    const downloads = screen.getAllByRole("link", {
+      name: /download combined data/i,
+    });
+    expect(downloads).toHaveLength(2);
+    expect(downloads[0]).toHaveAttribute("href", "/data/a.geojson");
+    expect(downloads[0]).toHaveAttribute("download", "combined-1.geojson");
+    expect(downloads[1]).toHaveAttribute("href", "/data/b.geojson");
+    expect(downloads[1]).toHaveAttribute("download", "combined-2.geojson");
+  });
+
+  it("shows no download link for an unavailable layer", () => {
+    const unavailableLayer: Layer = {
+      id: "myciti",
+      label: "MyCiTi",
+      dataSource: ["/data/myciti.geojson"],
+      geometryKind: "line",
+      defaultVisible: false,
+      available: false,
+      style: { kind: "line", color: "#000", weight: 2 },
+    };
+    const group: LayerGroup = {
+      id: "transit",
+      title: "Transit",
+      layerIds: ["myciti"],
+    };
+    vi.spyOn(registry, "getLayer").mockReturnValue(unavailableLayer);
+    vi.spyOn(registry, "getLayerGroups").mockReturnValue([group]);
+
+    render(<LayerToggles visibleLayerIds={[]} onToggle={vi.fn()} />);
+
+    expect(
+      screen.queryByRole("link", { name: /download/i }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("doesn't toggle the layer when its download link is clicked", () => {
+    const onToggle = vi.fn();
+    render(<LayerToggles visibleLayerIds={[]} onToggle={onToggle} />);
+
+    fireEvent.click(
+      screen.getByRole("link", { name: /download rapid rail data/i }),
+    );
+
+    expect(onToggle).not.toHaveBeenCalled();
   });
 });

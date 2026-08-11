@@ -41,7 +41,9 @@ import { TownshipPopup } from "./components/TownshipPopup/TownshipPopup";
 import { buildRegionDataUrls } from "./data/regionDataUrls";
 import { createTownshipDataRepository } from "./data/TownshipDataRepository";
 import { useMapModelContextTools } from "./hooks/useMapModelContextTools";
+import { useMapPermalink } from "./hooks/useMapPermalink";
 import { getStory } from "./layers/registry";
+import { m } from "./paraglide/messages.js";
 import { type PanelView, useMapUiStore } from "./stores/useMapUiStore";
 
 const MapView = lazy(async () => {
@@ -90,8 +92,8 @@ const PANEL_VIEWS: readonly PanelView[] = STORY
   ? (["layers", "story"] as const)
   : (["layers"] as const);
 const PANEL_LABELS: Record<PanelView, string> = {
-  layers: "Layers",
-  story: "Story",
+  layers: m.panel_tab_layers(),
+  story: m.panel_tab_story(),
 };
 const PANEL_VIEWPORT_PROPS = {
   className: styles.panelViewport,
@@ -155,7 +157,7 @@ function PanelViewContent({
   }
   return (
     <section className={styles.section}>
-      <h2 className={styles.sectionTitle}>Layers</h2>
+      <h2 className={styles.sectionTitle}>{m.panel_tab_layers()}</h2>
       <LayerToggles
         visibleLayerIds={visibleLayerIds}
         onToggle={onToggle}
@@ -194,7 +196,11 @@ function PanelViewContent({
  *   story capabilities as WebMCP tools; `handleLocationSelect` is shared
  *   between `LocationSearchControl`'s `onLocationSelect` and that hook's
  *   `search-map-location` tool, so a human picking a result and an agent
- *   calling the tool fly the map the same way.
+ *   calling the tool fly the map the same way. `useMapPermalink` restores
+ *   layer/basemap/panel/feature state from the URL on load and keeps the
+ *   URL in sync afterwards, so the address bar is always a shareable link
+ *   to the current view; it defers applying a shared `selectedFeatureId`
+ *   until `townships` has data, since Leaflet has nothing to select before then.
  */
 export function App() {
   const [hydrated, setHydrated] = useState(false);
@@ -327,7 +333,7 @@ export function App() {
   function handleLocationSelect(location: LocationSearchResult): string {
     if (!isWithinSearchCoverage(location)) {
       setOutOfCoverageLocationLabel(location.label);
-      return `${location.label} is outside South Africa.`;
+      return m.location_out_of_coverage({ location: location.label });
     }
     setOutOfCoverageLocationLabel(null);
     setSelectedFeatureId(null);
@@ -343,6 +349,8 @@ export function App() {
       setPanelOpen(true);
     },
   });
+
+  useMapPermalink({ dataReady: townships.length > 0 });
 
   function finishClose() {
     setMobileSheetClosing(false);
@@ -525,7 +533,9 @@ export function App() {
     />
   );
 
-  const panelToggleLabel = panelOpen ? "Close" : "Explore";
+  const panelToggleLabel = panelOpen
+    ? m.panel_toggle_close()
+    : m.panel_toggle_explore();
 
   return (
     <DomainProvider domain={GAUTENG_SPATIAL_LEGACY_DOMAIN}>
@@ -537,23 +547,23 @@ export function App() {
         data-panel-drag-direction={mobileSheetDragDirection}
       >
         <a className={styles.skipLink} href="#map-information">
-          Skip to map information
+          {m.skip_to_map_information()}
         </a>
 
         <header className={styles.visuallyHidden}>
-          <h1>Karta: Gauteng spatial legacy map</h1>
+          <h1>{m.app_heading()}</h1>
         </header>
 
         <main id="map-information" tabIndex={-1}>
           {hydrated ? (
             <Suspense
               fallback={
-                <output className={styles.mapLoading}>Loading map</output>
+                <output className={styles.mapLoading}>{m.loading_map()}</output>
               }
             >
               <MapView
                 bounds={GAUTENG_BOUNDS}
-                ariaLabel="Map of South African township access to job centres"
+                ariaLabel={m.map_aria_label()}
                 areas={townships}
                 areaBoundaries={townshipAreas}
                 visibleLayerIds={visibleLayerIds}
@@ -573,7 +583,7 @@ export function App() {
               />
             </Suspense>
           ) : (
-            <output className={styles.mapLoading}>Loading map</output>
+            <output className={styles.mapLoading}>{m.loading_map()}</output>
           )}
           {dataError ? (
             <div
@@ -582,14 +592,14 @@ export function App() {
               data-testid="data-load-error"
               data-e2e="data-load-error"
             >
-              <p>Map data could not be loaded.</p>
+              <p>{m.data_load_error()}</p>
               <button
                 type="button"
                 data-testid="retry-data-load"
                 data-e2e="retry-data-load"
                 onClick={() => setLoadAttempt((value) => value + 1)}
               >
-                Retry
+                {m.retry()}
               </button>
             </div>
           ) : null}
@@ -597,7 +607,7 @@ export function App() {
 
         <div className={clsx(styles.locationSearchControl, styles.surface)}>
           <LocationSearchControl
-            placeholder="Search town, suburb or station"
+            placeholder={m.search_placeholder()}
             onLocationSelect={handleLocationSelect}
           />
           {outOfCoverageLocationLabel ? (
@@ -606,7 +616,9 @@ export function App() {
               data-testid="location-out-of-coverage"
               data-e2e="location-out-of-coverage"
             >
-              {`${outOfCoverageLocationLabel} is outside South Africa.`}
+              {m.location_out_of_coverage({
+                location: outOfCoverageLocationLabel,
+              })}
             </output>
           ) : null}
         </div>
@@ -665,8 +677,8 @@ export function App() {
             aria-pressed={mobilePanelExpanded}
             aria-label={
               mobilePanelExpanded
-                ? "Reduce panel height"
-                : "Expand panel height"
+                ? m.panel_reduce_height()
+                : m.panel_expand_height()
             }
             onPointerDown={handleSheetHandlePointerDown}
             onClick={handleSheetHeightToggle}
@@ -678,7 +690,7 @@ export function App() {
               <div
                 className={styles.panelTabs}
                 role="tablist"
-                aria-label="Map panel"
+                aria-label={m.panel_tablist_aria_label()}
                 data-testid="panel-tablist"
                 data-e2e="panel-tablist"
               >

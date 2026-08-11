@@ -1,6 +1,15 @@
+import type { Layer } from "@karta/core";
+import { Download } from "lucide-react";
 import { Fragment } from "react";
 import { getLayer, getLayerGroups } from "../../layers/registry";
+import { m } from "../../paraglide/messages.js";
 import styles from "./LayerToggles.module.css";
+
+/** Download filename for one of a layer's `dataSource` URLs, numbering entries past the first. */
+function downloadFileName(layer: Layer, sourceIndex: number): string {
+  const suffix = layer.dataSource.length > 1 ? `-${sourceIndex + 1}` : "";
+  return `${layer.id}${suffix}.geojson`;
+}
 
 interface LayerTogglesProps {
   visibleLayerIds: string[];
@@ -15,6 +24,12 @@ interface LayerTogglesProps {
  * `description`, when it has one, beneath its label. An unavailable layer's
  * checkbox is disabled with a "Not yet available" badge; a failed-to-load
  * visible layer shows a "Failed to load" badge instead.
+ * @remarks Every available layer also gets a download link per
+ *   `dataSource` URL, so a visitor can save the exact GeoJSON the map
+ *   renders. The checkbox's `<label>` wraps only the checkbox/text/badges,
+ *   not the download link — nesting the link inside that label too would
+ *   make clicking it also toggle the checkbox, since a `<label>` forwards
+ *   any click within it to its associated control.
  */
 export function LayerToggles({
   visibleLayerIds,
@@ -35,50 +50,74 @@ export function LayerToggles({
     const failed = failedLayerIds.includes(layer.id);
     return (
       <li key={layer.id}>
-        <label
+        <div
           className={styles.row}
           data-unavailable={layer.available ? undefined : "true"}
           data-testid={`${layerTestId}-row`}
           data-e2e={`${layerTestId}-row`}
         >
-          <input
-            type="checkbox"
-            className={styles.checkbox}
-            data-testid={layerTestId}
-            data-e2e={layerTestId}
-            checked={visibleLayerIds.includes(layer.id)}
-            disabled={!layer.available}
-            onChange={() => onToggle(layer.id)}
-            aria-labelledby={labelId}
-            aria-describedby={layer.description ? descriptionId : undefined}
-          />
-          <span className={styles.label} id={labelId}>
-            {layer.label}
-          </span>
-          {layer.description ? (
-            <span
-              className={styles.description}
-              id={descriptionId}
-              data-testid={descriptionId}
-              data-e2e={descriptionId}
-            >
-              {layer.description}
+          <label className={styles.rowLabel}>
+            <input
+              type="checkbox"
+              className={styles.checkbox}
+              data-testid={layerTestId}
+              data-e2e={layerTestId}
+              checked={visibleLayerIds.includes(layer.id)}
+              disabled={!layer.available}
+              onChange={() => onToggle(layer.id)}
+              aria-labelledby={labelId}
+              aria-describedby={layer.description ? descriptionId : undefined}
+            />
+            <span className={styles.label} id={labelId}>
+              {layer.label}
             </span>
-          ) : null}
-          {layer.available ? null : (
-            <span className={styles.badge}>Not yet available</span>
-          )}
-          {layer.available && failed ? (
-            <span
-              className={styles.badgeError}
-              role="status"
-              data-testid={`${layerTestId}-error`}
-              data-e2e={`${layerTestId}-error`}
-            >
-              Failed to load — toggle off and on to retry
-            </span>
-          ) : null}
-        </label>
+            {layer.description ? (
+              <span
+                className={styles.description}
+                id={descriptionId}
+                data-testid={descriptionId}
+                data-e2e={descriptionId}
+              >
+                {layer.description}
+              </span>
+            ) : null}
+            {layer.available ? null : (
+              <span className={styles.badge}>
+                {m.layer_unavailable_badge()}
+              </span>
+            )}
+            {layer.available && failed ? (
+              <span
+                className={styles.badgeError}
+                role="status"
+                data-testid={`${layerTestId}-error`}
+                data-e2e={`${layerTestId}-error`}
+              >
+                {m.layer_failed_badge()}
+              </span>
+            ) : null}
+          </label>
+          {layer.available
+            ? layer.dataSource.map((url, sourceIndex) => (
+                <a
+                  key={url}
+                  className={styles.download}
+                  href={url}
+                  download={downloadFileName(layer, sourceIndex)}
+                  aria-label={m.layer_download_aria_label({
+                    label: layer.label,
+                  })}
+                  data-testid={`${layerTestId}-download`}
+                  data-e2e={`${layerTestId}-download`}
+                >
+                  <Download
+                    aria-hidden="true"
+                    className={styles.downloadIcon}
+                  />
+                </a>
+              ))
+            : null}
+        </div>
       </li>
     );
   }

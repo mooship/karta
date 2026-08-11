@@ -37,7 +37,12 @@ interface MapUiState {
   reset: () => void;
 }
 
-function createInitialState() {
+/**
+ * The store's default state: every `defaultVisible` layer shown, the street
+ * basemap, and no selection. Also the reference point `useMapPermalink` diffs
+ * against to decide which fields a shareable URL needs to carry.
+ */
+export function getDefaultMapUiState() {
   return {
     visibleLayerIds: getLayers()
       .filter((layer) => layer.defaultVisible)
@@ -56,7 +61,7 @@ function createInitialState() {
  *   same group; `"independent"` groups don't affect each other's layers.
  */
 export const useMapUiStore = create<MapUiState>()((set) => ({
-  ...createInitialState(),
+  ...getDefaultMapUiState(),
   toggleLayer: (id) =>
     set((state) => {
       if (state.visibleLayerIds.includes(id)) {
@@ -85,5 +90,5 @@ export const useMapUiStore = create<MapUiState>()((set) => ({
   setPanelOpen: (panelOpen) => set({ panelOpen }),
   setPanelView: (panelView) => set({ panelView }),
   setSelectedFeatureId: (selectedFeatureId) => set({ selectedFeatureId }),
-  reset: () => set(createInitialState()),
+  reset: () => set(getDefaultMapUiState()),
 }));

@@ -14,6 +14,7 @@ import {
 } from "react-router";
 import { THEME_STORAGE_KEY } from "./constants/themeConfig";
 import "./index.css";
+import { m } from "./paraglide/messages.js";
 import styles from "./root.module.css";
 
 /**
@@ -34,11 +35,10 @@ const THEME_BOOTSTRAP_SCRIPT = `(() => {
 /** React Router route module export: page `<title>`/`<meta>` tags. */
 export const meta: MetaFunction = () => {
   return [
-    { title: "Karta" },
+    { title: m.app_title() },
     {
       name: "description",
-      content:
-        "Visualising how apartheid-era spatial planning still shapes commute times and access to jobs in Tshwane and Johannesburg.",
+      content: m.meta_description(),
     },
     {
       name: "viewport",
@@ -136,13 +136,12 @@ export function ErrorBoundary() {
   const isNotFound = isRouteErrorResponse(error) && error.status === 404;
   const { title, message } = isNotFound
     ? {
-        title: "Page not found",
-        message: "The page you're looking for doesn't exist.",
+        title: m.error_boundary_not_found_title(),
+        message: m.error_boundary_not_found_message(),
       }
     : {
-        title: "Something went wrong",
-        message:
-          "An unexpected error occurred. Reloading the page usually fixes it.",
+        title: m.error_boundary_generic_title(),
+        message: m.error_boundary_generic_message(),
       };
 
   return (
@@ -150,7 +149,7 @@ export function ErrorBoundary() {
       <h1>{title}</h1>
       <p>{message}</p>
       <button type="button" onClick={() => window.location.reload()}>
-        Reload page
+        {m.error_boundary_reload()}
       </button>
     </div>
   );
