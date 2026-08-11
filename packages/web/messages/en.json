@@ -1,0 +1,43 @@
+{
+  "$schema": "https://inlang.com/schema/inlang-message-format",
+  "app_title": "Karta",
+  "app_heading": "Karta: Gauteng spatial legacy map",
+  "meta_description": "Visualising how apartheid-era spatial planning still shapes commute times and access to jobs in Tshwane and Johannesburg.",
+
+  "skip_to_map_information": "Skip to map information",
+  "loading_map": "Loading map",
+  "map_aria_label": "Map of South African township access to job centres",
+  "data_load_error": "Map data could not be loaded.",
+  "retry": "Retry",
+  "search_placeholder": "Search town, suburb or station",
+  "location_out_of_coverage": "{location} is outside South Africa.",
+
+  "panel_tab_layers": "Layers",
+  "panel_tab_story": "Story",
+  "panel_toggle_close": "Close",
+  "panel_toggle_explore": "Explore",
+  "panel_reduce_height": "Reduce panel height",
+  "panel_expand_height": "Expand panel height",
+  "panel_tablist_aria_label": "Map panel",
+
+  "layer_unavailable_badge": "Not yet available",
+  "layer_failed_badge": "Failed to load — toggle off and on to retry",
+  "layer_download_aria_label": "Download {label} data (GeoJSON)",
+
+  "township_popup_car_time": "Modelled car time",
+  "township_popup_job_center": "Nearest job centre",
+  "township_popup_population": "Population",
+  "township_popup_distance": "Distance",
+  "township_popup_transit_distance": "Distance to nearest transit",
+  "distance_km": "{value} km",
+
+  "commute_no_data": "No data",
+  "commute_minutes": "{minutes} min",
+  "commute_hours_minutes": "{hours}h {minutes}min",
+
+  "error_boundary_not_found_title": "Page not found",
+  "error_boundary_not_found_message": "The page you're looking for doesn't exist.",
+  "error_boundary_generic_title": "Something went wrong",
+  "error_boundary_generic_message": "An unexpected error occurred. Reloading the page usually fixes it.",
+  "error_boundary_reload": "Reload page"
+}

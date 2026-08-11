@@ -1,4 +1,5 @@
 import { cloudflare } from "@cloudflare/vite-plugin";
+import { paraglideVitePlugin } from "@inlang/paraglide-js";
 import { reactRouter } from "@react-router/dev/vite";
 import react from "@vitejs/plugin-react";
 import { FontaineTransform } from "fontaine";
@@ -20,6 +21,28 @@ export default defineConfig(({ mode }) => {
             fallbacks: ["Arial", "sans-serif"],
             resolvePath: (id) =>
               new URL(`./node_modules/${id}`, import.meta.url),
+          }),
+          /**
+           * Recompiles `messages/en.json` into `src/paraglide/` on every
+           * `dev`/`build` (and `react-router typegen`, which also spins up
+           * this Vite pipeline) — that checked-in output is the source of
+           * truth `vitest` reads from, so these options must stay identical
+           * to `messages:compile`'s CLI flags: a mismatch here regenerates
+           * the committed output without `.d.ts` files or with a stray
+           * `.gitignore` next time either runs. `strategy: ["baseLocale"]`
+           * always resolves to English and skips paraglide-js's default
+           * cookie/URL locale-detection machinery entirely — no runtime
+           * behaviour to add until a second locale actually ships, and no
+           * cookie write to reconcile with this app's no-tracking stance.
+           */
+          paraglideVitePlugin({
+            project: "./project.inlang",
+            outdir: "./src/paraglide",
+            strategy: ["baseLocale"],
+            emitTsDeclarations: true,
+            emitGitIgnore: false,
+            emitPrettierIgnore: false,
+            emitReadme: false,
           }),
         ],
     build: {
