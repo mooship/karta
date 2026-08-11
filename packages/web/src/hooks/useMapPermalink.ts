@@ -1,5 +1,5 @@
 import { getRegisteredBasemapIds } from "@karta/map";
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { getLayers } from "../layers/registry";
 import {
   getDefaultMapUiState,
@@ -133,12 +133,17 @@ export interface UseMapPermalinkOptions {
  *   history entry.
  */
 export function useMapPermalink({ dataReady }: UseMapPermalinkOptions): void {
+  /**
+   * The registry's layer ids, in order. Memoized rather than recomputed in
+   * every effect below — `getLayers()` returns a stable reference to the
+   * domain's static layer catalogue for the app's whole lifetime.
+   */
+  const layerIds = useMemo(() => getLayers().map((layer) => layer.id), []);
+  const defaults = useMemo(() => getDefaultMapUiState(), []);
   const pendingFeatureId = useRef<string | undefined>(undefined);
-  const featureApplied = useRef(false);
 
   useEffect(() => {
-    const knownLayerIds = getLayers().map((layer) => layer.id);
-    const parsed = parseMapPermalink(window.location.search, knownLayerIds);
+    const parsed = parseMapPermalink(window.location.search, layerIds);
     const patch: Partial<MapPermalinkState> = {};
     if (parsed.visibleLayerIds) {
       patch.visibleLayerIds = parsed.visibleLayerIds;
@@ -153,16 +158,14 @@ export function useMapPermalink({ dataReady }: UseMapPermalinkOptions): void {
       useMapUiStore.setState(patch);
     }
     pendingFeatureId.current = parsed.selectedFeatureId;
-  }, []);
+  }, [layerIds]);
 
   useEffect(() => {
-    if (!dataReady || featureApplied.current) {
+    if (!dataReady || pendingFeatureId.current === undefined) {
       return;
     }
-    featureApplied.current = true;
-    if (pendingFeatureId.current) {
-      useMapUiStore.getState().setSelectedFeatureId(pendingFeatureId.current);
-    }
+    useMapUiStore.getState().setSelectedFeatureId(pendingFeatureId.current);
+    pendingFeatureId.current = undefined;
   }, [dataReady]);
 
   const visibleLayerIds = useMapUiStore((state) => state.visibleLayerIds);
@@ -171,14 +174,19 @@ export function useMapPermalink({ dataReady }: UseMapPermalinkOptions): void {
   const selectedFeatureId = useMapUiStore((state) => state.selectedFeatureId);
 
   useEffect(() => {
-    const defaults = getDefaultMapUiState();
-    const layerOrder = getLayers().map((layer) => layer.id);
     const search = buildMapPermalinkSearch(
       { visibleLayerIds, basemap, panelView, selectedFeatureId },
       defaults,
-      layerOrder,
+      layerIds,
     );
     const url = `${window.location.pathname}${search ? `?${search}` : ""}${window.location.hash}`;
     window.history.replaceState(null, "", url);
-  }, [visibleLayerIds, basemap, panelView, selectedFeatureId]);
+  }, [
+    visibleLayerIds,
+    basemap,
+    panelView,
+    selectedFeatureId,
+    defaults,
+    layerIds,
+  ]);
 }
