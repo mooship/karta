@@ -564,7 +564,7 @@ export function App() {
                 onLayerDataError={setFailedLayerIds}
                 onReady={handleMapReady}
                 onBasemapError={() => setBasemap("street")}
-                locateOnClick
+                locationContextMenu
                 renderFeaturePopup={(properties) => (
                   <TownshipPopup
                     properties={properties as unknown as TownshipProperties}

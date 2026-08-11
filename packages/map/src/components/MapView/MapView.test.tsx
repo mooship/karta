@@ -14,7 +14,7 @@ const mapMocks = vi.hoisted(() => ({
   fitBounds: vi.fn(),
   invalidateSize: vi.fn(),
   tileErrorHandler: null as null | (() => void),
-  mapClickHandler: null as null | ((event: unknown) => void),
+  mapContextMenuHandler: null as null | ((event: unknown) => void),
   featureLayers: [] as Array<{
     feature: { properties?: { id?: string } | null };
     bindPopup: ReturnType<typeof vi.fn>;
@@ -176,12 +176,12 @@ vi.mock("react-leaflet", () => ({
     on: vi.fn(),
     off: vi.fn(),
   }),
-  useMapEvents: (handlers: { click?: (event: unknown) => void }) => {
-    mapMocks.mapClickHandler = handlers.click ?? null;
+  useMapEvents: (handlers: { contextmenu?: (event: unknown) => void }) => {
+    mapMocks.mapContextMenuHandler = handlers.contextmenu ?? null;
     return {};
   },
   Popup: ({ children }: { children: ReactNode }) => (
-    <div data-testid="click-locate-popup">{children}</div>
+    <div data-testid="map-context-menu">{children}</div>
   ),
   Pane: () => null,
   ZoomControl: () => <div data-testid="zoom-control" />,
@@ -289,7 +289,7 @@ describe("MapView", () => {
     mapMocks.fitBounds.mockReset();
     mapMocks.invalidateSize.mockReset();
     mapMocks.tileErrorHandler = null;
-    mapMocks.mapClickHandler = null;
+    mapMocks.mapContextMenuHandler = null;
     mapMocks.featureLayers = [];
     mapMocks.geoJsonProps = {};
     mapMocks.zoom = 9;
@@ -1014,18 +1014,18 @@ describe("MapView", () => {
     );
   });
 
-  it("does not reverse-geocode background clicks when locateOnClick is not set", () => {
+  it("does not open a location context menu when locationContextMenu is not set", () => {
     render(
       withDomain(
         <MapView {...DEFAULT_MAP_VIEW_PROPS} areas={[]} visibleLayerIds={[]} />,
       ),
     );
 
-    expect(screen.queryByTestId("click-locate-popup")).not.toBeInTheDocument();
-    expect(mapMocks.mapClickHandler).toBeNull();
+    expect(screen.queryByTestId("map-context-menu")).not.toBeInTheDocument();
+    expect(mapMocks.mapContextMenuHandler).toBeNull();
   });
 
-  it("reverse-geocodes a background click and shows the result when locateOnClick is set", async () => {
+  it("opens a location context menu on a map long-press/right-click and reverse-geocodes the point once chosen, when locationContextMenu is set", async () => {
     geocodeMocks.fetchReverseGeocodeResult.mockResolvedValue({
       id: "1",
       label: "Braamfontein, Johannesburg",
@@ -1039,17 +1039,23 @@ describe("MapView", () => {
           {...DEFAULT_MAP_VIEW_PROPS}
           areas={[]}
           visibleLayerIds={[]}
-          locateOnClick
+          locationContextMenu
         />,
       ),
     );
 
     act(() => {
-      mapMocks.mapClickHandler?.({ latlng: { lat: -26.19, lng: 28.03 } });
+      mapMocks.mapContextMenuHandler?.({
+        latlng: { lat: -26.19, lng: 28.03 },
+      });
     });
 
+    fireEvent.click(
+      screen.getByRole("menuitem", { name: /search this location/i }),
+    );
+
     await waitFor(() => {
-      expect(screen.getByTestId("click-locate-popup")).toHaveTextContent(
+      expect(screen.getByTestId("map-context-menu")).toHaveTextContent(
         "Braamfontein, Johannesburg",
       );
     });

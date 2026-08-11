@@ -38,7 +38,7 @@ import { AREA_OUTLINE } from "../../constants/mapStyles";
 import { useDomain } from "../../context/DomainContext";
 import type { LocationSearchResult } from "../../data/locationSearch";
 import { useLayerData } from "../../hooks/useLayerData";
-import { ClickToLocatePopup } from "./ClickToLocatePopup";
+import { LocationContextMenu } from "./LocationContextMenu";
 import styles from "./MapView.module.css";
 import {
   SelectableFeatureSearch,
@@ -84,10 +84,11 @@ interface MapViewProps<
    */
   onBasemapError?: (basemap: Basemap, error: unknown) => void;
   /**
-   * When `true`, clicking the map background reverse-geocodes that point and
-   * shows the result in a popup. Defaults to `false`.
+   * When `true`, right-clicking (desktop) or long-pressing (mobile) the map
+   * opens a small context menu offering to reverse-geocode that point.
+   * Defaults to `false`.
    */
-  locateOnClick?: boolean;
+  locationContextMenu?: boolean;
   /**
    * Called once, after Leaflet has initialised the map and the browser has
    * painted it.
@@ -556,7 +557,7 @@ function MapViewComponent<
   renderFeaturePopup,
   onLayerDataError,
   onBasemapError,
-  locateOnClick = false,
+  locationContextMenu = false,
   onReady,
 }: MapViewProps<TProperties>) {
   const { getLayers } = useDomain();
@@ -873,7 +874,7 @@ function MapViewComponent<
         <MapReadyNotifier onReady={onReady} />
         <ResponsiveMapBounds bounds={bounds} />
         <ZoomStateWatcher onZoomChange={setMapZoom} />
-        {locateOnClick ? <ClickToLocatePopup /> : null}
+        {locationContextMenu ? <LocationContextMenu /> : null}
       </MapContainer>
     </section>
   );
