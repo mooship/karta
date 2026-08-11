@@ -34,7 +34,6 @@ export function LanguageToggle() {
       options={locales.map((locale) => ({
         id: locale,
         label: LOCALE_AUTONYMS[locale],
-        ariaLabel: LOCALE_AUTONYMS[locale],
       }))}
       value={getLocale()}
       onChange={(locale) => setLocale(locale)}
