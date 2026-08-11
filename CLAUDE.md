@@ -76,3 +76,20 @@ Pre-commit (lefthook) runs biome (auto-fix staged files) and the full vitest sui
 ## Design system
 
 Karta adopts Google's Material 3 (M3) directly rather than an app-owned system: `--md-sys-color-*` role tokens (`primary`, `surface`, `surfaceContainer` → `surfaceContainerHighest`, `error`, etc., defined in `packages/web/src/index.css` with separate light/dark-mode values) are generated from a single brand seed colour via Material Color Utilities' HCT tonal-palette algorithm (`packages/web/scripts/generateM3Theme.ts`, `npm run generate:theme --workspace @karta/web` — never hand-edit the hex values inside the `/* GENERATED M3 ... TOKENS */` markers, the next run overwrites them). `--md-sys-shape-corner-*` and `--md-sys-elevation-shadow-1/2/3` follow M3's own baseline shape scale and elevation formula rather than app-chosen values. Every component is Karta's own plain React + CSS Modules styled against these tokens, not `@material/web` (Google's Shadow DOM custom element library) — that was tried and reverted: it required a client-only-mount gate per component to avoid crashing this app's Cloudflare Workers SSR (`ReferenceError: HTMLElement is not defined` under workerd) and a React hydration mismatch that came with it, plus unit tests that couldn't use `getByRole` at all since happy-dom never renders Shadow DOM. None of that friction is specific to Material 3 as a design system, only to that one library's delivery mechanism, so plain React gets the same HCT-generated colours/shape/elevation with none of it — see `docs/design-system.md`'s "Component library" section for the full rationale. Karta keeps its own fonts — Inter Variable and Martian Mono Variable — throughout. Hover/pressed/selected states use the `--state-hover`/`--state-pressed`/`--state-selected` opacity-tint tokens, matching M3's own ripple/state-layer opacities. See `docs/design-system.md` for the full token reference. Keep new UI consistent with this rather than introducing ad hoc styles, fonts, or a second parallel design system.
+
+## Delegating to sub-agents
+
+Model tiers for ANY delegated work — Agent-tool calls and Workflow-script `agent()` calls alike. Set the `model` parameter explicitly on every call; never omit it (omission silently inherits the session model):
+- `haiku` — mechanical bulk work: renames, boilerplate, format conversion, log triage
+- `sonnet` — default for well-specified implementation with clear acceptance criteria
+- `opus` — genuinely tricky work: concurrency, subtle algorithms, adversarial verify/judge panels, gnarly debugging
+
+Never use `fable` sub-agents, under any circumstance — not even with my approval. Stick to `haiku`, `sonnet`, or `opus`.
+
+When unsure between tiers, pick the cheaper and escalate on failure.
+
+## Dynamic workflows (Workflow tool)
+
+Applies to ALL sessions, any model. Dynamic workflows do not need to be avoided — reach for the Workflow tool when a task has 3+ independent parallelizable subtasks or would benefit from a pipeline/judge panel. Standing rule on opt-in: if ultracode is NOT on for the session (no "ultracode" keyword, toggle, or an orchestration request in my own words), check with me first — propose the workflow in one or two sentences with the rough shape and cost, and wait for my reply; my "yes" is the opt-in. If ultracode IS on, invoke directly.
+
+**Agent models inside workflow scripts:** every `agent()` call MUST set the `model` parameter explicitly, chosen from `haiku`, `sonnet`, or `opus` per "Delegating to sub-agents" above. `fable` is never a valid choice here, or anywhere else — see above.
