@@ -1,17 +1,67 @@
 import type { LatLng } from "leaflet";
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Popup, useMapEvents } from "react-leaflet";
 import { fetchReverseGeocodeResult } from "../../data/locationSearch";
 import { useAbortController } from "../../hooks/useAbortController";
 import styles from "./LocationContextMenu.module.css";
 
-interface MenuState {
-  latlng: LatLng;
-}
-
 interface SearchState {
   loading: boolean;
   label: string | null;
+}
+
+interface MenuState {
+  latlng: LatLng;
+  search: SearchState | null;
+}
+
+const GHOST_CLICK_MAX_DISTANCE_PX = 20;
+const GHOST_CLICK_SUPPRESSION_MS = 500;
+
+/**
+ * Consumes the next `click` anywhere in the document if it lands within
+ * `GHOST_CLICK_MAX_DISTANCE_PX` of `origin`, then disarms itself (on that
+ * click, or after `GHOST_CLICK_SUPPRESSION_MS` if none arrives).
+ * @remarks On most touchscreens, the `touchend` that ends a long press is
+ *   still turned into a synthetic `click` at (near enough) the same point
+ *   once the finger lifts, and Leaflet's `Popup` closes itself on the very
+ *   next map click by default (`closeOnClick`) -- so without this, the menu
+ *   this same long-press just opened closes again before the point ever
+ *   registers with the user. Consuming just that one click, in the capture
+ *   phase before it ever reaches Leaflet's own listener on the map
+ *   container, is the same trick Leaflet's own `Map.TapHold` handler uses
+ *   for the equivalent problem on mobile Safari (its `_cancelClickPrevent`);
+ *   this generalises it to every touchscreen browser that does this, not
+ *   just Safari. A click any real tap-distance away from the long-press
+ *   point -- e.g. on the menu's own button, which Leaflet renders offset
+ *   above the anchor -- is left alone.
+ */
+function armGhostClickGuard(
+  origin: { clientX: number; clientY: number },
+  cleanupRef: { current: (() => void) | null },
+): void {
+  cleanupRef.current?.();
+
+  const handleClick = (event: MouseEvent) => {
+    disarm();
+    const distance = Math.hypot(
+      event.clientX - origin.clientX,
+      event.clientY - origin.clientY,
+    );
+    if (distance <= GHOST_CLICK_MAX_DISTANCE_PX) {
+      event.stopPropagation();
+    }
+  };
+
+  function disarm() {
+    window.clearTimeout(timeoutId);
+    document.removeEventListener("click", handleClick, true);
+    cleanupRef.current = null;
+  }
+
+  const timeoutId = window.setTimeout(disarm, GHOST_CLICK_SUPPRESSION_MS);
+  document.addEventListener("click", handleClick, true);
+  cleanupRef.current = disarm;
 }
 
 /**
@@ -26,19 +76,38 @@ interface SearchState {
  *   that feature's own tap-to-select popup winning. Leaflet already closes
  *   the underlying popup (and this menu with it) on Escape or the next map
  *   click, via `Map`'s `closeOnEscapeKey`/`closePopupOnClick` defaults, so
- *   there's no dismissal logic to duplicate here.
+ *   there's no dismissal logic to duplicate here -- beyond `armGhostClickGuard`
+ *   above, which stops the long-press's own release from counting as that
+ *   "next click" and closing the menu before it's even seen. Any in-flight
+ *   reverse-geocode lookup is aborted both when the menu reopens elsewhere
+ *   and when it's dismissed, so a slow response can't overwrite a later
+ *   (or no longer open) menu with a stale result.
  */
 export function LocationContextMenu() {
   const [menu, setMenu] = useState<MenuState | null>(null);
-  const [search, setSearch] = useState<SearchState | null>(null);
-  const { next } = useAbortController();
+  const { next, abort } = useAbortController();
+  const ghostClickGuardRef = useRef<(() => void) | null>(null);
+
+  useEffect(() => {
+    return () => {
+      ghostClickGuardRef.current?.();
+    };
+  }, []);
 
   useMapEvents({
     contextmenu(event) {
-      setMenu({ latlng: event.latlng });
-      setSearch(null);
+      abort();
+      if (event.originalEvent) {
+        armGhostClickGuard(event.originalEvent, ghostClickGuardRef);
+      }
+      setMenu({ latlng: event.latlng, search: null });
     },
   });
+
+  const handleClosed = useCallback(() => {
+    abort();
+    setMenu(null);
+  }, [abort]);
 
   if (!menu) {
     return null;
@@ -48,7 +117,10 @@ export function LocationContextMenu() {
     const { lat, lng } = menu.latlng;
     const signal = next();
 
-    setSearch({ loading: true, label: null });
+    setMenu(
+      (current) =>
+        current && { ...current, search: { loading: true, label: null } },
+    );
 
     fetchReverseGeocodeResult(lat, lng, signal)
       .then(
@@ -57,22 +129,22 @@ export function LocationContextMenu() {
       )
       .then((label) => {
         if (!signal.aborted) {
-          setSearch({ loading: false, label });
+          setMenu(
+            (current) =>
+              current && { ...current, search: { loading: false, label } },
+          );
         }
       });
   };
 
   return (
-    <Popup
-      position={menu.latlng}
-      eventHandlers={{ remove: () => setMenu(null) }}
-    >
-      {search ? (
-        <p className={styles.result} role="status">
-          {search.loading
+    <Popup position={menu.latlng} eventHandlers={{ remove: handleClosed }}>
+      {menu.search ? (
+        <output className={styles.result}>
+          {menu.search.loading
             ? "Looking up address…"
-            : (search.label ?? "No address found here.")}
-        </p>
+            : (menu.search.label ?? "No address found here.")}
+        </output>
       ) : (
         <div
           className={styles.menu}

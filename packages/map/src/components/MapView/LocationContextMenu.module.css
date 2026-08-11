@@ -28,6 +28,7 @@
 }
 
 .result {
+  display: block;
   margin: 0;
   padding: 0.4rem 0.5rem;
   color: var(--md-sys-color-on-surface);

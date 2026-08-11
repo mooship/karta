@@ -18,7 +18,10 @@ vi.mock("../../data/locationSearch", () => ({
 
 const mapEventsMocks = vi.hoisted(() => ({
   handlers: {} as {
-    contextmenu?: (event: { latlng: { lat: number; lng: number } }) => void;
+    contextmenu?: (event: {
+      latlng: { lat: number; lng: number };
+      originalEvent?: { clientX: number; clientY: number };
+    }) => void;
   },
 }));
 
@@ -49,6 +52,33 @@ vi.mock("react-leaflet", () => ({
 
 import { LocationContextMenu } from "./LocationContextMenu";
 
+function openMenu(
+  latlng: { lat: number; lng: number } = { lat: -26.2, lng: 28.0 },
+  originalEvent?: { clientX: number; clientY: number },
+) {
+  act(() => {
+    mapEventsMocks.handlers.contextmenu?.({ latlng, originalEvent });
+  });
+}
+
+function chooseSearchHere() {
+  fireEvent.click(
+    screen.getByRole("menuitem", { name: /search this location/i }),
+  );
+}
+
+function dispatchDocumentClick(clientX: number, clientY: number) {
+  const event = new MouseEvent("click", {
+    bubbles: true,
+    cancelable: true,
+    clientX,
+    clientY,
+  });
+  const stopPropagationSpy = vi.spyOn(event, "stopPropagation");
+  document.dispatchEvent(event);
+  return stopPropagationSpy;
+}
+
 describe("LocationContextMenu", () => {
   afterEach(() => {
     vi.clearAllMocks();
@@ -61,12 +91,7 @@ describe("LocationContextMenu", () => {
 
   it("opens a menu with a 'search this location' action on contextmenu, without geocoding yet", () => {
     render(<LocationContextMenu />);
-
-    act(() => {
-      mapEventsMocks.handlers.contextmenu?.({
-        latlng: { lat: -26.2, lng: 28.0 },
-      });
-    });
+    openMenu();
 
     expect(screen.getByTestId("map-context-menu")).toBeInTheDocument();
     expect(
@@ -81,15 +106,8 @@ describe("LocationContextMenu", () => {
     });
 
     render(<LocationContextMenu />);
-    act(() => {
-      mapEventsMocks.handlers.contextmenu?.({
-        latlng: { lat: -26.2, lng: 28.0 },
-      });
-    });
-
-    fireEvent.click(
-      screen.getByRole("menuitem", { name: /search this location/i }),
-    );
+    openMenu();
+    chooseSearchHere();
 
     expect(screen.getByTestId("map-context-menu")).toHaveTextContent(
       /looking up/i,
@@ -111,12 +129,8 @@ describe("LocationContextMenu", () => {
     geocodeMocks.fetchReverseGeocodeResult.mockResolvedValue(null);
 
     render(<LocationContextMenu />);
-    act(() => {
-      mapEventsMocks.handlers.contextmenu?.({ latlng: { lat: 0, lng: 0 } });
-    });
-    fireEvent.click(
-      screen.getByRole("menuitem", { name: /search this location/i }),
-    );
+    openMenu({ lat: 0, lng: 0 });
+    chooseSearchHere();
 
     await waitFor(() => {
       expect(screen.getByTestId("map-context-menu")).toHaveTextContent(
@@ -131,14 +145,8 @@ describe("LocationContextMenu", () => {
     );
 
     render(<LocationContextMenu />);
-    act(() => {
-      mapEventsMocks.handlers.contextmenu?.({
-        latlng: { lat: -26.2, lng: 28.0 },
-      });
-    });
-    fireEvent.click(
-      screen.getByRole("menuitem", { name: /search this location/i }),
-    );
+    openMenu();
+    chooseSearchHere();
 
     await waitFor(() => {
       expect(screen.getByTestId("map-context-menu")).toHaveTextContent(
@@ -153,25 +161,15 @@ describe("LocationContextMenu", () => {
     });
 
     render(<LocationContextMenu />);
-    act(() => {
-      mapEventsMocks.handlers.contextmenu?.({
-        latlng: { lat: -26.2, lng: 28.0 },
-      });
-    });
-    fireEvent.click(
-      screen.getByRole("menuitem", { name: /search this location/i }),
-    );
+    openMenu();
+    chooseSearchHere();
     await waitFor(() => {
       expect(screen.getByTestId("map-context-menu")).toHaveTextContent(
         "First place",
       );
     });
 
-    act(() => {
-      mapEventsMocks.handlers.contextmenu?.({
-        latlng: { lat: -26.3, lng: 28.1 },
-      });
-    });
+    openMenu({ lat: -26.3, lng: 28.1 });
 
     expect(
       screen.getByRole("menuitem", { name: /search this location/i }),
@@ -181,15 +179,96 @@ describe("LocationContextMenu", () => {
 
   it("closes when the popup is dismissed (e.g. by a map click, via Leaflet's own closePopupOnClick)", () => {
     render(<LocationContextMenu />);
-    act(() => {
-      mapEventsMocks.handlers.contextmenu?.({
-        latlng: { lat: -26.2, lng: 28.0 },
-      });
-    });
+    openMenu();
     expect(screen.getByTestId("map-context-menu")).toBeInTheDocument();
 
     fireEvent.click(screen.getByTestId("map-context-menu-close"));
 
     expect(screen.queryByTestId("map-context-menu")).not.toBeInTheDocument();
+  });
+
+  it("aborts an in-flight lookup when a new contextmenu event reopens the menu elsewhere", async () => {
+    let firstAborted = false;
+    geocodeMocks.fetchReverseGeocodeResult
+      .mockImplementationOnce(
+        (_lat: number, _lng: number, signal?: AbortSignal) =>
+          new Promise(() => {
+            signal?.addEventListener("abort", () => {
+              firstAborted = true;
+            });
+          }),
+      )
+      .mockResolvedValueOnce({ label: "Second place" });
+
+    render(<LocationContextMenu />);
+    openMenu();
+    chooseSearchHere();
+
+    openMenu({ lat: -26.3, lng: 28.1 });
+    chooseSearchHere();
+
+    await waitFor(() => {
+      expect(screen.getByTestId("map-context-menu")).toHaveTextContent(
+        "Second place",
+      );
+    });
+    expect(firstAborted).toBe(true);
+  });
+
+  it("aborts an in-flight lookup when the menu is dismissed without picking a new spot", () => {
+    let aborted = false;
+    geocodeMocks.fetchReverseGeocodeResult.mockImplementationOnce(
+      (_lat: number, _lng: number, signal?: AbortSignal) =>
+        new Promise(() => {
+          signal?.addEventListener("abort", () => {
+            aborted = true;
+          });
+        }),
+    );
+
+    render(<LocationContextMenu />);
+    openMenu();
+    chooseSearchHere();
+
+    fireEvent.click(screen.getByTestId("map-context-menu-close"));
+
+    expect(aborted).toBe(true);
+  });
+
+  it("suppresses the synthetic click a mobile long-press's release fires at (near enough) the same point, so it can't close the menu it just opened", () => {
+    render(<LocationContextMenu />);
+    openMenu({ lat: -26.2, lng: 28.0 }, { clientX: 100, clientY: 200 });
+
+    const stopPropagationSpy = dispatchDocumentClick(108, 195);
+
+    expect(stopPropagationSpy).toHaveBeenCalled();
+  });
+
+  it("leaves a click well away from the long-press point alone (a deliberate tap, e.g. on the menu's own button)", () => {
+    render(<LocationContextMenu />);
+    openMenu({ lat: -26.2, lng: 28.0 }, { clientX: 100, clientY: 200 });
+
+    const stopPropagationSpy = dispatchDocumentClick(400, 500);
+
+    expect(stopPropagationSpy).not.toHaveBeenCalled();
+  });
+
+  it("only guards the single click immediately after a long-press, not later ones", () => {
+    render(<LocationContextMenu />);
+    openMenu({ lat: -26.2, lng: 28.0 }, { clientX: 100, clientY: 200 });
+
+    dispatchDocumentClick(108, 195);
+    const secondSpy = dispatchDocumentClick(101, 201);
+
+    expect(secondSpy).not.toHaveBeenCalled();
+  });
+
+  it("does not arm a click guard when the contextmenu event has no native originalEvent", () => {
+    render(<LocationContextMenu />);
+    openMenu({ lat: -26.2, lng: 28.0 });
+
+    const stopPropagationSpy = dispatchDocumentClick(100, 200);
+
+    expect(stopPropagationSpy).not.toHaveBeenCalled();
   });
 });
