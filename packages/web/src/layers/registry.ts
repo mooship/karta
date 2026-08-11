@@ -37,6 +37,18 @@ export function getLayerGroups(): readonly LayerGroup[] {
   return registry.getLayerGroups().map(localizeLayerGroup);
 }
 
+/**
+ * Returns every layer group's structural fields (`id`, `layerIds`,
+ * `selectionMode`) without applying the translation overlay. `title`/
+ * `description` come back in English regardless of locale — prefer
+ * `getLayerGroups()` for anything user-facing; this exists for callers
+ * (e.g. group-membership checks) that only need structure, so they don't
+ * pay for translation work whose result they'd never read.
+ */
+export function getLayerGroupStructure(): readonly LayerGroup[] {
+  return registry.getLayerGroups();
+}
+
 /** Returns the `gauteng-spatial-legacy` domain's story copy localized to the current locale, or `undefined` if it has none. */
 export function getStory(): DomainStory | undefined {
   return localizeStory(registry.getStory());

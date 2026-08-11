@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 const { getLocale } = vi.hoisted(() => ({
   getLocale: vi.fn(() => "en"),
@@ -13,6 +13,10 @@ vi.mock("../paraglide/runtime.js", async (importOriginal) => {
 import { getLayer, getLayerGroups, getLayers, getStory } from "./registry";
 
 describe("registry", () => {
+  afterEach(() => {
+    getLocale.mockReturnValue("en");
+  });
+
   it("returns the 6 gauteng-spatial-legacy layers", () => {
     const layers = getLayers();
     expect(layers.map((l) => l.id)).toEqual(
@@ -61,7 +65,5 @@ describe("registry", () => {
     expect(getLayer("bus")?.label).toBe("Ibhasi");
     expect(getLayerGroups()[0]?.title).toBe("Izingqimba Zokufinyelela");
     expect(getStory()?.title).toBe("Kungani leli balazwe likhona");
-
-    getLocale.mockReturnValue("en");
   });
 });

@@ -75,15 +75,14 @@ export function localizeLayer(layer: Layer): Layer {
   const text = LAYER_TEXT[layer.id];
   const label = text?.label() ?? layer.label;
   const description = text?.description?.() ?? layer.description;
+  const base: Layer = { ...layer, label, description };
 
-  if (layer.style.kind === "choropleth" && text?.bucketLabels) {
+  if (base.style.kind === "choropleth" && text?.bucketLabels) {
     return {
-      ...layer,
-      label,
-      description,
+      ...base,
       style: {
-        ...layer.style,
-        buckets: layer.style.buckets.map((bucket, index) => ({
+        ...base.style,
+        buckets: base.style.buckets.map((bucket, index) => ({
           ...bucket,
           label: text.bucketLabels?.[index]?.() ?? bucket.label,
         })),
@@ -91,16 +90,11 @@ export function localizeLayer(layer: Layer): Layer {
     };
   }
 
-  if (layer.style.kind === "line" || layer.style.kind === "point") {
-    return {
-      ...layer,
-      label,
-      description,
-      style: { ...layer.style, legendLabel: label },
-    };
+  if (base.style.kind === "line" || base.style.kind === "point") {
+    return { ...base, style: { ...base.style, legendLabel: label } };
   }
 
-  return { ...layer, label, description };
+  return base;
 }
 
 /**
