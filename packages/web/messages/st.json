@@ -41,5 +41,30 @@
   "error_boundary_generic_message": "Ho bile le phoso e sa lebellwang. Ho kenya leqephe hape hangata ho lokisa bothata.",
   "error_boundary_reload": "Kenya leqephe hape",
 
-  "language_toggle_label": "Puo"
+  "language_toggle_label": "Puo",
+
+  "layer_townships_label": "Nako ya koloi e akantsweng",
+  "layer_townships_description": "Nako e akantsweng ya ho kganna koloi ho tloha sebakeng se seng le se seng sa lokishi se amohetsweng ho isa setsing sa mesebetsi se haufi se kgethilweng.",
+  "layer_nearest_transit_label": "Bohole ho isa Dipalangwaneng tse Haufi",
+  "layer_nearest_transit_description": "Bohole bo otlolohileng ho tloha sebakeng se seng le se seng sa lokishi se amohetsweng ho isa tseleng ya semmuso ya dipalangwa e haufi.",
+  "layer_rapid_rail_label": "Terene e Potlakileng",
+  "layer_bus_rapid_transit_label": "Bese e Potlakileng",
+  "layer_commuter_rail_label": "Terene ya Maeto",
+  "layer_bus_label": "Bese",
+
+  "layer_group_access_to_opportunity_title": "Maera a Phihlello",
+  "layer_group_access_to_opportunity_description": "Ke lera le le leng feela le ka sebetsang ka nako e le nngwe.",
+  "layer_group_transit_networks_title": "Marangrang a Dipalangwa",
+
+  "domain_story_title": "Hobaneng 'mapa ona o le teng",
+  "domain_story_body": "Molao wa kgethollo o ne o laola moo batho ba Batsho, ba Bammala le ba Maindia ba neng ba ka phela teng. Metse a Batho ba Batsho a ne a arohantswe ka boomo le ditsi tsa moruo, mme dibaka tseo di sa bontsha phihlello ya mesebetsi kajeno. 'Mapa ona o lekanya lekgalo leo ka nako ya koloi e akantsweng le bohole ho isa dipalangwaneng.",
+
+  "bucket_car_time_short": "Nako e khutshwane (≤ 20 min)",
+  "bucket_car_time_moderate": "Nako e bohareng (21–40 min)",
+  "bucket_car_time_long": "Nako e telele (41–60 min)",
+  "bucket_car_time_very_long": "Nako e telele haholo (> 60 min)",
+  "bucket_transit_distance_near": "Bohole bo haufi (≤ 1 km)",
+  "bucket_transit_distance_moderate": "Bohole bo bohareng (1–3 km)",
+  "bucket_transit_distance_far": "Bohole bo hole (3–8 km)",
+  "bucket_transit_distance_very_far": "Bohole bo hole haholo (> 8 km)"
 }

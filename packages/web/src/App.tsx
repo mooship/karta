@@ -1,9 +1,6 @@
+import type { TownshipFeature, TownshipProperties } from "@karta/app";
 import {
-  GAUTENG_SPATIAL_LEGACY_DOMAIN,
-  type TownshipFeature,
-  type TownshipProperties,
-} from "@karta/app";
-import {
+  type DomainConfig,
   type DomainStory as DomainStoryContent,
   fetchFeatureCollection,
   mergeFeatureCollections,
@@ -30,6 +27,7 @@ import {
   Suspense,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -43,7 +41,7 @@ import { buildRegionDataUrls } from "./data/regionDataUrls";
 import { createTownshipDataRepository } from "./data/TownshipDataRepository";
 import { useMapModelContextTools } from "./hooks/useMapModelContextTools";
 import { useMapPermalink } from "./hooks/useMapPermalink";
-import { getStory } from "./layers/registry";
+import { getLayerGroups, getLayers, getStory } from "./layers/registry";
 import { m } from "./paraglide/messages.js";
 import { type PanelView, useMapUiStore } from "./stores/useMapUiStore";
 
@@ -88,14 +86,6 @@ function isWithinSearchCoverage(location: LocationSearchResult): boolean {
   );
 }
 
-const STORY = getStory();
-const PANEL_VIEWS: readonly PanelView[] = STORY
-  ? (["layers", "story"] as const)
-  : (["layers"] as const);
-const PANEL_LABELS: Record<PanelView, string> = {
-  layers: m.panel_tab_layers(),
-  story: m.panel_tab_story(),
-};
 const PANEL_VIEWPORT_PROPS = {
   className: styles.panelViewport,
   "data-testid": "panel-viewport",
@@ -183,8 +173,16 @@ function PanelViewContent({
  *   The info panel shows layer toggles, plus a Story tab reading its
  *   copy from the domain's `story` (via `getStory()`) whenever the active
  *   domain defines one — a domain that omits `story` gets no tab UI at all,
- *   matching today's single-view panel. `PANEL_VIEWS`/`STORY` are computed
- *   once at module scope since the domain's story never changes at runtime.
+ *   matching today's single-view panel. `domain`/`panelViews`/`panelLabels`
+ *   are computed inside the component body, not at module scope: their
+ *   content is locale-dependent (`getLayers()`/`getLayerGroups()`/`getStory()`
+ *   and the `m.panel_tab_*()` calls all read the current request's locale),
+ *   and Cloudflare Workers reuse isolates across requests — a module-scope
+ *   value would freeze in whichever locale first touched that isolate
+ *   instead of reflecting each request's own. `domain` alone is wrapped in
+ *   `useMemo` for referential stability across re-renders (matching
+ *   `DomainProvider`'s own internal memoization); `panelViews`/`panelLabels`
+ *   are cheap enough to recompute every render.
  *   Also owns the mobile bottom-sheet drag/swipe gesture state (pointer
  *   sampling, velocity-based snap projection) in addition to layout state
  *   from `useMapUiStore`. Swiping down from the sheet's medium height closes
@@ -234,6 +232,22 @@ export function App() {
     (state) => state.setSelectedFeatureId,
   );
   const themePreference = useThemePreference();
+  const domain = useMemo<DomainConfig>(
+    () => ({
+      layers: getLayers(),
+      layerGroups: getLayerGroups(),
+      story: getStory(),
+    }),
+    [],
+  );
+  const story = domain.story;
+  const panelViews: readonly PanelView[] = story
+    ? (["layers", "story"] as const)
+    : (["layers"] as const);
+  const panelLabels: Record<PanelView, string> = {
+    layers: m.panel_tab_layers(),
+    story: m.panel_tab_story(),
+  };
   const { width } = useWindowSize({ initializeWithValue: false });
   const isDesktopViewport =
     (width ?? MOBILE_BREAKPOINT_PX) > MOBILE_BREAKPOINT_PX;
@@ -344,7 +358,7 @@ export function App() {
 
   useMapModelContextTools({
     onLocationSelect: handleLocationSelect,
-    story: STORY,
+    story,
     onShowStory: () => {
       setPanelView("story");
       setPanelOpen(true);
@@ -390,23 +404,23 @@ export function App() {
   }
 
   function handleTabKeyDown(event: KeyboardEvent<HTMLButtonElement>) {
-    const currentIndex = PANEL_VIEWS.indexOf(panelView);
+    const currentIndex = panelViews.indexOf(panelView);
     let nextIndex: number | null = null;
     if (event.key === "ArrowRight") {
-      nextIndex = (currentIndex + 1) % PANEL_VIEWS.length;
+      nextIndex = (currentIndex + 1) % panelViews.length;
     } else if (event.key === "ArrowLeft") {
-      nextIndex = (currentIndex - 1 + PANEL_VIEWS.length) % PANEL_VIEWS.length;
+      nextIndex = (currentIndex - 1 + panelViews.length) % panelViews.length;
     } else if (event.key === "Home") {
       nextIndex = 0;
     } else if (event.key === "End") {
-      nextIndex = PANEL_VIEWS.length - 1;
+      nextIndex = panelViews.length - 1;
     }
     if (nextIndex === null) {
       return;
     }
     event.preventDefault();
-    const nextView = PANEL_VIEWS[nextIndex];
-    /* v8 ignore next 3 -- unreachable: nextIndex is always derived via modulo of PANEL_VIEWS.length or clamped to its bounds above, so it always indexes an existing entry */
+    const nextView = panelViews[nextIndex];
+    /* v8 ignore next 3 -- unreachable: nextIndex is always derived via modulo of panelViews.length or clamped to its bounds above, so it always indexes an existing entry */
     if (!nextView) {
       return;
     }
@@ -530,7 +544,7 @@ export function App() {
       visibleLayerIds={visibleLayerIds}
       onToggle={toggleLayer}
       failedLayerIds={failedLayerIds}
-      story={STORY}
+      story={story}
     />
   );
 
@@ -539,7 +553,7 @@ export function App() {
     : m.panel_toggle_explore();
 
   return (
-    <DomainProvider domain={GAUTENG_SPATIAL_LEGACY_DOMAIN}>
+    <DomainProvider domain={domain}>
       <div
         className={styles.app}
         data-panel-open={panelOpen ? "true" : "false"}
@@ -686,7 +700,7 @@ export function App() {
           >
             <span className={styles.sheetHandle} aria-hidden="true" />
           </button>
-          {PANEL_VIEWS.length > 1 ? (
+          {panelViews.length > 1 ? (
             <>
               <div
                 className={styles.panelTabs}
@@ -695,7 +709,7 @@ export function App() {
                 data-testid="panel-tablist"
                 data-e2e="panel-tablist"
               >
-                {PANEL_VIEWS.map((view, index) => (
+                {panelViews.map((view, index) => (
                   <button
                     key={view}
                     type="button"
@@ -713,7 +727,7 @@ export function App() {
                     onClick={() => setPanelView(view)}
                     onKeyDown={handleTabKeyDown}
                   >
-                    {PANEL_LABELS[view]}
+                    {panelLabels[view]}
                   </button>
                 ))}
               </div>

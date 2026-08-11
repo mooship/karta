@@ -1,4 +1,15 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+
+const { getLocale } = vi.hoisted(() => ({
+  getLocale: vi.fn(() => "en"),
+}));
+
+vi.mock("../paraglide/runtime.js", async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import("../paraglide/runtime.js")>();
+  return { ...actual, getLocale };
+});
+
 import { getLayer, getLayerGroups, getLayers, getStory } from "./registry";
 
 describe("registry", () => {
@@ -42,5 +53,15 @@ describe("registry", () => {
       title: "Why this map exists",
       body: expect.any(String),
     });
+  });
+
+  it("translates layers, groups, and the story to the current locale", () => {
+    getLocale.mockReturnValue("zu");
+
+    expect(getLayer("bus")?.label).toBe("Ibhasi");
+    expect(getLayerGroups()[0]?.title).toBe("Izingqimba Zokufinyelela");
+    expect(getStory()?.title).toBe("Kungani leli balazwe likhona");
+
+    getLocale.mockReturnValue("en");
   });
 });
