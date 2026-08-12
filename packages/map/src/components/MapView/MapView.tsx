@@ -751,10 +751,8 @@ function MapViewComponent<
    * a narrower, mobile-width viewport on a high-DPR phone still benefits
    * from a sharp basemap, and serving 1x tiles there was flagged by
    * Lighthouse's `image-size-responsive` best-practices audit as
-   * low-resolution imagery — accepted as a deliberate trade-off (roughly
-   * 2-3x more basemap tile bytes on high-DPR phones) in exchange for that
-   * audit passing and a visually sharper map on the devices most visitors
-   * to a public-interest map are likely using.
+   * low-resolution imagery. See {@link resolveTileScaleToken} for the byte
+   * cost this trades away.
    */
   const useRetinaTiles = getDevicePixelRatio() > 1.25;
 

@@ -583,13 +583,10 @@ export function App() {
             screen readers from re-announcing "loading" once the real map
             is ready.
           */}
-          <output
-            className={styles.mapLoading}
-            aria-hidden={mapReady ? "true" : undefined}
-          >
+          <output className={styles.mapLoading} aria-hidden={mapReady}>
             {m.loading_map()}
           </output>
-          {hydrated ? (
+          {hydrated && (
             <Suspense fallback={null}>
               <MapView
                 bounds={GAUTENG_BOUNDS}
@@ -612,7 +609,7 @@ export function App() {
                 )}
               />
             </Suspense>
-          ) : null}
+          )}
           {dataError ? (
             <div
               className={styles.dataError}

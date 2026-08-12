@@ -49,14 +49,20 @@ export const meta: MetaFunction = () => {
 };
 
 /**
+ * Leaflet's default `{s}` subdomain shards for the CARTO basemap tile
+ * hosts, matching the library's own default `subdomains: "abc"` option.
+ * @remarks Kept as a named list rather than repeated per `<link>` entry
+ *   below, and preconnected individually rather than to the bare
+ *   `basemaps.cartocdn.com` apex domain: the default `"street"` basemap's
+ *   tiles (see `packages/map`'s `basemaps.ts`) are actually requested from
+ *   these three subdomains, so a preconnect to the apex domain alone warms
+ *   a connection nothing ends up using.
+ */
+const CARTO_TILE_SUBDOMAINS = ["a", "b", "c"];
+
+/**
  * React Router route module export: `<link>` tags — self-hosted font/style
  * stylesheets, favicons, and basemap-provider preconnects.
- * @remarks The CARTO preconnects target `a.`/`b.`/`c.basemaps.cartocdn.com`
- *   rather than the bare `basemaps.cartocdn.com` domain: Leaflet's `{s}`
- *   subdomain-sharding placeholder (see `packages/map`'s `basemaps.ts`)
- *   means the default `"street"` basemap's tiles are actually requested
- *   from those three subdomains, so a preconnect to the apex domain alone
- *   warms a connection nothing ends up using.
  * @remarks Deliberately preloads no layer GeoJSON, not even a
  *   `defaultVisible` layer's. Nothing can consume that data until the map
  *   bundle has downloaded, hydrated, and mounted Leaflet, so a `preload`
@@ -85,9 +91,10 @@ export const links: LinksFunction = () => [
   { rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon.png" },
   { rel: "manifest", href: "/site.webmanifest" },
   { rel: "preconnect", href: "https://tile.openstreetmap.org" },
-  { rel: "preconnect", href: "https://a.basemaps.cartocdn.com" },
-  { rel: "preconnect", href: "https://b.basemaps.cartocdn.com" },
-  { rel: "preconnect", href: "https://c.basemaps.cartocdn.com" },
+  ...CARTO_TILE_SUBDOMAINS.map((subdomain) => ({
+    rel: "preconnect" as const,
+    href: `https://${subdomain}.basemaps.cartocdn.com`,
+  })),
 ];
 
 /**
