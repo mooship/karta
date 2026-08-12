@@ -14,7 +14,7 @@ const st_domain_story_body = /** @type {(inputs: Domain_Story_BodyInputs) => Loc
 };
 
 const zu_domain_story_body = /** @type {(inputs: Domain_Story_BodyInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Umthetho wobandlululo wawulawula ukuthi abantu abaMnyama, amaKhaladi kanye namaNdiya bangahlala kuphi. Amalokishi abantu abaMnyama ehlukaniswa ngamabomu nezikhungo zomnotho, futhi lawo mabanga asabumba ukufinyelela emsebenzini nanamuhla. Leli balazwe likala lelo gebe ngesikhathi semoto esilinganiselwe nebanga eliya ezokuthutha.`)
+	return /** @type {LocalizedString} */ (`Umthetho wobandlululo wawulawula ukuthi abantu abaMnyama, amaKhaladi kanye namaNdiya bangahlala kuphi. Amalokishi abantu abaMnyama ahlukaniswa ngamabomu nezikhungo zomnotho, futhi lawo mabanga asabumba ukufinyelela emsebenzini nanamuhla. Leli balazwe likala lelo gebe ngesikhathi semoto esilinganiselwe nebanga eliya ezokuthutha.`)
 };
 
 const xh_domain_story_body = /** @type {(inputs: Domain_Story_BodyInputs) => LocalizedString} */ () => {
