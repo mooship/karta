@@ -6,11 +6,11 @@ export type Layer_Nearest_Transit_LabelInputs = {};
 * | "Distance to nearest transit" |
 *
 * @param {Layer_Nearest_Transit_LabelInputs} inputs
-* @param {{ locale?: "en" | "st" | "zu" }} options
+* @param {{ locale?: "en" | "st" | "zu" | "xh" }} options
 * @returns {LocalizedString}
 */
 export declare const layer_nearest_transit_label: ((inputs?: Layer_Nearest_Transit_LabelInputs, options?: {
-    locale?: "en" | "st" | "zu";
+    locale?: "en" | "st" | "zu" | "xh";
 }) => LocalizedString) & import('../runtime.js').MessageMetadata<Layer_Nearest_Transit_LabelInputs, {
-    locale?: "en" | "st" | "zu";
+    locale?: "en" | "st" | "zu" | "xh";
 }, {}>;

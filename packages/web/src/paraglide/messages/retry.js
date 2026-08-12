@@ -17,18 +17,23 @@ const zu_retry = /** @type {(inputs: RetryInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Zama futhi`)
 };
 
+const xh_retry = /** @type {(inputs: RetryInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Zama kwakhona`)
+};
+
 /**
 * | output |
 * | --- |
 * | "Retry" |
 *
 * @param {RetryInputs} inputs
-* @param {{ locale?: "en" | "st" | "zu" }} options
+* @param {{ locale?: "en" | "st" | "zu" | "xh" }} options
 * @returns {LocalizedString}
 */
-export const retry = /** @type {((inputs?: RetryInputs, options?: { locale?: "en" | "st" | "zu" }) => LocalizedString) & import('../runtime.js').MessageMetadata<RetryInputs, { locale?: "en" | "st" | "zu" }, {}>} */ ((inputs = {}, options = {}) => {
+export const retry = /** @type {((inputs?: RetryInputs, options?: { locale?: "en" | "st" | "zu" | "xh" }) => LocalizedString) & import('../runtime.js').MessageMetadata<RetryInputs, { locale?: "en" | "st" | "zu" | "xh" }, {}>} */ ((inputs = {}, options = {}) => {
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "st") return st_retry(inputs)
 	if (locale === "zu") return zu_retry(inputs)
+	if (locale === "xh") return xh_retry(inputs)
 	return en_retry(inputs)
 });

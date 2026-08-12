@@ -17,18 +17,23 @@ const zu_error_boundary_generic_title = /** @type {(inputs: Error_Boundary_Gener
 	return /** @type {LocalizedString} */ (`Kukhona okungahambanga kahle`)
 };
 
+const xh_error_boundary_generic_title = /** @type {(inputs: Error_Boundary_Generic_TitleInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Kukho into engahambanga kakuhle`)
+};
+
 /**
 * | output |
 * | --- |
 * | "Something went wrong" |
 *
 * @param {Error_Boundary_Generic_TitleInputs} inputs
-* @param {{ locale?: "en" | "st" | "zu" }} options
+* @param {{ locale?: "en" | "st" | "zu" | "xh" }} options
 * @returns {LocalizedString}
 */
-export const error_boundary_generic_title = /** @type {((inputs?: Error_Boundary_Generic_TitleInputs, options?: { locale?: "en" | "st" | "zu" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Error_Boundary_Generic_TitleInputs, { locale?: "en" | "st" | "zu" }, {}>} */ ((inputs = {}, options = {}) => {
+export const error_boundary_generic_title = /** @type {((inputs?: Error_Boundary_Generic_TitleInputs, options?: { locale?: "en" | "st" | "zu" | "xh" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Error_Boundary_Generic_TitleInputs, { locale?: "en" | "st" | "zu" | "xh" }, {}>} */ ((inputs = {}, options = {}) => {
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "st") return st_error_boundary_generic_title(inputs)
 	if (locale === "zu") return zu_error_boundary_generic_title(inputs)
+	if (locale === "xh") return xh_error_boundary_generic_title(inputs)
 	return en_error_boundary_generic_title(inputs)
 });

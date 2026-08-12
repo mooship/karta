@@ -17,18 +17,23 @@ const zu_layer_bus_label = /** @type {(inputs: Layer_Bus_LabelInputs) => Localiz
 	return /** @type {LocalizedString} */ (`Ibhasi`)
 };
 
+const xh_layer_bus_label = /** @type {(inputs: Layer_Bus_LabelInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Ibhasi`)
+};
+
 /**
 * | output |
 * | --- |
 * | "Bus" |
 *
 * @param {Layer_Bus_LabelInputs} inputs
-* @param {{ locale?: "en" | "st" | "zu" }} options
+* @param {{ locale?: "en" | "st" | "zu" | "xh" }} options
 * @returns {LocalizedString}
 */
-export const layer_bus_label = /** @type {((inputs?: Layer_Bus_LabelInputs, options?: { locale?: "en" | "st" | "zu" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Layer_Bus_LabelInputs, { locale?: "en" | "st" | "zu" }, {}>} */ ((inputs = {}, options = {}) => {
+export const layer_bus_label = /** @type {((inputs?: Layer_Bus_LabelInputs, options?: { locale?: "en" | "st" | "zu" | "xh" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Layer_Bus_LabelInputs, { locale?: "en" | "st" | "zu" | "xh" }, {}>} */ ((inputs = {}, options = {}) => {
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "st") return st_layer_bus_label(inputs)
 	if (locale === "zu") return zu_layer_bus_label(inputs)
+	if (locale === "xh") return xh_layer_bus_label(inputs)
 	return en_layer_bus_label(inputs)
 });

@@ -17,18 +17,23 @@ const zu_bucket_transit_distance_moderate = /** @type {(inputs: Bucket_Transit_D
 	return /** @type {LocalizedString} */ (`Ibanga elimaphakathi (1–3 km)`)
 };
 
+const xh_bucket_transit_distance_moderate = /** @type {(inputs: Bucket_Transit_Distance_ModerateInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Umgama ophakathi (1–3 km)`)
+};
+
 /**
 * | output |
 * | --- |
 * | "Moderate (1–3 km)" |
 *
 * @param {Bucket_Transit_Distance_ModerateInputs} inputs
-* @param {{ locale?: "en" | "st" | "zu" }} options
+* @param {{ locale?: "en" | "st" | "zu" | "xh" }} options
 * @returns {LocalizedString}
 */
-export const bucket_transit_distance_moderate = /** @type {((inputs?: Bucket_Transit_Distance_ModerateInputs, options?: { locale?: "en" | "st" | "zu" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Bucket_Transit_Distance_ModerateInputs, { locale?: "en" | "st" | "zu" }, {}>} */ ((inputs = {}, options = {}) => {
+export const bucket_transit_distance_moderate = /** @type {((inputs?: Bucket_Transit_Distance_ModerateInputs, options?: { locale?: "en" | "st" | "zu" | "xh" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Bucket_Transit_Distance_ModerateInputs, { locale?: "en" | "st" | "zu" | "xh" }, {}>} */ ((inputs = {}, options = {}) => {
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "st") return st_bucket_transit_distance_moderate(inputs)
 	if (locale === "zu") return zu_bucket_transit_distance_moderate(inputs)
+	if (locale === "xh") return xh_bucket_transit_distance_moderate(inputs)
 	return en_bucket_transit_distance_moderate(inputs)
 });

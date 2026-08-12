@@ -31,6 +31,10 @@ describe("LanguageToggle", () => {
       "aria-pressed",
       "false",
     );
+    expect(screen.getByTestId("language-option-xh")).toHaveAttribute(
+      "aria-pressed",
+      "false",
+    );
   });
 
   it("shows every configured locale by its own autonym", () => {
@@ -45,6 +49,9 @@ describe("LanguageToggle", () => {
     );
     expect(screen.getByTestId("language-option-zu")).toHaveTextContent(
       "isiZulu",
+    );
+    expect(screen.getByTestId("language-option-xh")).toHaveTextContent(
+      "isiXhosa",
     );
   });
 

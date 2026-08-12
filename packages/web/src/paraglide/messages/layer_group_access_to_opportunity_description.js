@@ -17,18 +17,23 @@ const zu_layer_group_access_to_opportunity_description = /** @type {(inputs: Lay
 	return /** @type {LocalizedString} */ (`Yingqimba eyodwa kuphela engasebenza ngesikhathi esisodwa.`)
 };
 
+const xh_layer_group_access_to_opportunity_description = /** @type {(inputs: Layer_Group_Access_To_Opportunity_DescriptionInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Yingqimba enye kuphela engasebenza ngexesha elinye.`)
+};
+
 /**
 * | output |
 * | --- |
 * | "Only one overlay can be active at a time." |
 *
 * @param {Layer_Group_Access_To_Opportunity_DescriptionInputs} inputs
-* @param {{ locale?: "en" | "st" | "zu" }} options
+* @param {{ locale?: "en" | "st" | "zu" | "xh" }} options
 * @returns {LocalizedString}
 */
-export const layer_group_access_to_opportunity_description = /** @type {((inputs?: Layer_Group_Access_To_Opportunity_DescriptionInputs, options?: { locale?: "en" | "st" | "zu" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Layer_Group_Access_To_Opportunity_DescriptionInputs, { locale?: "en" | "st" | "zu" }, {}>} */ ((inputs = {}, options = {}) => {
+export const layer_group_access_to_opportunity_description = /** @type {((inputs?: Layer_Group_Access_To_Opportunity_DescriptionInputs, options?: { locale?: "en" | "st" | "zu" | "xh" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Layer_Group_Access_To_Opportunity_DescriptionInputs, { locale?: "en" | "st" | "zu" | "xh" }, {}>} */ ((inputs = {}, options = {}) => {
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "st") return st_layer_group_access_to_opportunity_description(inputs)
 	if (locale === "zu") return zu_layer_group_access_to_opportunity_description(inputs)
+	if (locale === "xh") return xh_layer_group_access_to_opportunity_description(inputs)
 	return en_layer_group_access_to_opportunity_description(inputs)
 });
