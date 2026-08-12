@@ -6,11 +6,11 @@ export type App_TitleInputs = {};
 * | "Karta" |
 *
 * @param {App_TitleInputs} inputs
-* @param {{ locale?: "en" }} options
+* @param {{ locale?: "en" | "st" | "zu" }} options
 * @returns {LocalizedString}
 */
 export declare const app_title: ((inputs?: App_TitleInputs, options?: {
-    locale?: "en";
+    locale?: "en" | "st" | "zu";
 }) => LocalizedString) & import('../runtime.js').MessageMetadata<App_TitleInputs, {
-    locale?: "en";
+    locale?: "en" | "st" | "zu";
 }, {}>;

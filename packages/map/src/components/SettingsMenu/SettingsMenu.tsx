@@ -1,6 +1,12 @@
 import type { ThemePreference } from "@karta/react";
 import { Settings, X } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  type ReactNode,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { type Basemap, getBasemapDefinition } from "../../constants/basemaps";
 import { useDismissableOverlay } from "../../hooks/useDismissableOverlay";
 import { BasemapToggle } from "../BasemapToggle/BasemapToggle";
@@ -15,15 +21,23 @@ interface SettingsMenuProps {
   onThemePreferenceChange: (preference: ThemePreference) => void;
   /** Called whenever the menu opens or closes, e.g. so a caller can hide other overlays it would cover. */
   onOpenChange?: (open: boolean) => void;
+  /**
+   * Extra controls rendered after the built-in basemap/theme ones, e.g. a
+   * caller-specific language switcher. Kept as a generic slot rather than
+   * a named prop so this domain-agnostic component doesn't need to know
+   * what any particular caller wants to put here.
+   */
+  children?: ReactNode;
 }
 
-/** A dropdown menu combining basemap and theme preference controls. */
+/** A dropdown menu combining basemap and theme preference controls, plus any caller-supplied `children`. */
 export function SettingsMenu({
   basemap,
   onBasemapChange,
   themePreference,
   onThemePreferenceChange,
   onOpenChange,
+  children,
 }: SettingsMenuProps) {
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -96,6 +110,7 @@ export function SettingsMenu({
             preference={themePreference}
             onChange={onThemePreferenceChange}
           />
+          {children}
         </section>
       ) : null}
     </div>

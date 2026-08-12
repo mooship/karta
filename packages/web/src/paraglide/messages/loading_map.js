@@ -9,16 +9,26 @@ const en_loading_map = /** @type {(inputs: Loading_MapInputs) => LocalizedString
 	return /** @type {LocalizedString} */ (`Loading map`)
 };
 
+const st_loading_map = /** @type {(inputs: Loading_MapInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`'Mapa o ntse o kenngwa`)
+};
+
+const zu_loading_map = /** @type {(inputs: Loading_MapInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Ibalazwe liyalayisha`)
+};
+
 /**
 * | output |
 * | --- |
 * | "Loading map" |
 *
 * @param {Loading_MapInputs} inputs
-* @param {{ locale?: "en" }} options
+* @param {{ locale?: "en" | "st" | "zu" }} options
 * @returns {LocalizedString}
 */
-export const loading_map = /** @type {((inputs?: Loading_MapInputs, options?: { locale?: "en" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Loading_MapInputs, { locale?: "en" }, {}>} */ ((inputs = {}, options = {}) => {
-	experimentalStaticLocale ?? options.locale ?? getLocale()
+export const loading_map = /** @type {((inputs?: Loading_MapInputs, options?: { locale?: "en" | "st" | "zu" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Loading_MapInputs, { locale?: "en" | "st" | "zu" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "st") return st_loading_map(inputs)
+	if (locale === "zu") return zu_loading_map(inputs)
 	return en_loading_map(inputs)
 });

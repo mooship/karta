@@ -6,11 +6,11 @@ export type Layer_Failed_BadgeInputs = {};
 * | "Failed to load — toggle off and on to retry" |
 *
 * @param {Layer_Failed_BadgeInputs} inputs
-* @param {{ locale?: "en" }} options
+* @param {{ locale?: "en" | "st" | "zu" }} options
 * @returns {LocalizedString}
 */
 export declare const layer_failed_badge: ((inputs?: Layer_Failed_BadgeInputs, options?: {
-    locale?: "en";
+    locale?: "en" | "st" | "zu";
 }) => LocalizedString) & import('../runtime.js').MessageMetadata<Layer_Failed_BadgeInputs, {
-    locale?: "en";
+    locale?: "en" | "st" | "zu";
 }, {}>;

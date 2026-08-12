@@ -6,11 +6,11 @@ export type RetryInputs = {};
 * | "Retry" |
 *
 * @param {RetryInputs} inputs
-* @param {{ locale?: "en" }} options
+* @param {{ locale?: "en" | "st" | "zu" }} options
 * @returns {LocalizedString}
 */
 export declare const retry: ((inputs?: RetryInputs, options?: {
-    locale?: "en";
+    locale?: "en" | "st" | "zu";
 }) => LocalizedString) & import('../runtime.js').MessageMetadata<RetryInputs, {
-    locale?: "en";
+    locale?: "en" | "st" | "zu";
 }, {}>;

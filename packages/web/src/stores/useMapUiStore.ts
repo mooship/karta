@@ -1,9 +1,9 @@
 import type { Basemap } from "@karta/map";
 import { create } from "zustand";
-import { getLayerGroups, getLayers } from "../layers/registry";
+import { getLayerGroupStructure, getLayers } from "../layers/registry";
 
 function findGroupContaining(id: string) {
-  return getLayerGroups().find((group) => group.layerIds.includes(id));
+  return getLayerGroupStructure().find((group) => group.layerIds.includes(id));
 }
 
 function isExclusiveGroupMember(id: string): boolean {

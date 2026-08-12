@@ -1,0 +1,70 @@
+{
+  "$schema": "https://inlang.com/schema/inlang-message-format",
+  "app_title": "Karta",
+  "app_heading": "Karta: Ibalazwe lefa lokuhlelwa kwezindawo eGauteng",
+  "meta_description": "Ibonisa indlela ukuhlelwa kwezindawo ngesikhathi sobandlululo okusalokhu kubumba ngayo isikhathi sokuya emsebenzini nokufinyelela emsebenzini eTshwane naseJohannesburg.",
+
+  "skip_to_map_information": "Yeqa uye olwazini lwebalazwe",
+  "loading_map": "Ibalazwe liyalayisha",
+  "map_aria_label": "Ibalazwe lokufinyelela kwamalokishi aseNingizimu Afrika ezindaweni zomsebenzi",
+  "data_load_error": "Idatha yebalazwe ayikwazanga ukulayishwa.",
+  "retry": "Zama futhi",
+  "search_placeholder": "Sesha idolobha, indawo noma isiteshi",
+  "location_out_of_coverage": "{location} ingaphandle kweNingizimu Afrika.",
+
+  "panel_tab_layers": "Izingqimba",
+  "panel_tab_story": "Indaba",
+  "panel_toggle_close": "Vala",
+  "panel_toggle_explore": "Hlola",
+  "panel_reduce_height": "Nciphisa ukuphakama kwephaneli",
+  "panel_expand_height": "Andisa ukuphakama kwephaneli",
+  "panel_tablist_aria_label": "Iphaneli yebalazwe",
+
+  "layer_unavailable_badge": "Ayikatholakali",
+  "layer_failed_badge": "Yehlulekile ukulayisha — vala uphinde uvule ukuze uzame futhi",
+  "layer_download_aria_label": "Landa idatha ye-{label} (GeoJSON)",
+
+  "township_popup_car_time": "Isikhathi semoto esilinganiselwe",
+  "township_popup_job_center": "Isikhungo somsebenzi esiseduze",
+  "township_popup_population": "Inani labantu",
+  "township_popup_distance": "Ibanga",
+  "township_popup_transit_distance": "Ibanga eliya ezokuthutha eziseduze",
+  "distance_km": "{value} km",
+
+  "commute_no_data": "Alukho ulwazi",
+  "commute_minutes": "{minutes} min",
+  "commute_hours_minutes": "{hours}h {minutes}min",
+
+  "error_boundary_not_found_title": "Ikhasi alitholakali",
+  "error_boundary_not_found_message": "Ikhasi olifunayo alikho.",
+  "error_boundary_generic_title": "Kukhona okungahambanga kahle",
+  "error_boundary_generic_message": "Kwenzeke iphutha elingalindelekile. Ukuvula kabusha ikhasi ngokuvamile kuyakulungisa.",
+  "error_boundary_reload": "Vula kabusha ikhasi",
+
+  "language_toggle_label": "Ulimi",
+
+  "layer_townships_label": "Isikhathi semoto esilinganiselwe",
+  "layer_townships_description": "Isikhathi sokushayela imoto esilinganiselwe kusukela endaweni ngayinye yelokishi eqashelwe kuya esikhungweni somsebenzi esiseduze esikhethiwe.",
+  "layer_nearest_transit_label": "Ibanga eliya Ezokuthutha eziSeduze",
+  "layer_nearest_transit_description": "Ibanga eliqondile kusukela endaweni ngayinye yelokishi eqashelwe kuya emzileni osemthethweni wezokuthutha oseduze.",
+  "layer_rapid_rail_label": "Isitimela Esisheshayo",
+  "layer_bus_rapid_transit_label": "Ibhasi Elisheshayo",
+  "layer_commuter_rail_label": "Isitimela Sokuya Emsebenzini",
+  "layer_bus_label": "Ibhasi",
+
+  "layer_group_access_to_opportunity_title": "Izingqimba Zokufinyelela",
+  "layer_group_access_to_opportunity_description": "Yingqimba eyodwa kuphela engasebenza ngesikhathi esisodwa.",
+  "layer_group_transit_networks_title": "Amanethiwekhi Ezokuthutha",
+
+  "domain_story_title": "Kungani leli balazwe likhona",
+  "domain_story_body": "Umthetho wobandlululo wawulawula ukuthi abantu abaMnyama, amaKhaladi kanye namaNdiya bangahlala kuphi. Amalokishi abantu abaMnyama ehlukaniswa ngamabomu nezikhungo zomnotho, futhi lawo mabanga asabumba ukufinyelela emsebenzini nanamuhla. Leli balazwe likala lelo gebe ngesikhathi semoto esilinganiselwe nebanga eliya ezokuthutha.",
+
+  "bucket_car_time_short": "Isikhathi esifushane (≤ 20 min)",
+  "bucket_car_time_moderate": "Isikhathi esimaphakathi (21–40 min)",
+  "bucket_car_time_long": "Isikhathi eside (41–60 min)",
+  "bucket_car_time_very_long": "Isikhathi eside kakhulu (> 60 min)",
+  "bucket_transit_distance_near": "Ibanga eliseduze (≤ 1 km)",
+  "bucket_transit_distance_moderate": "Ibanga elimaphakathi (1–3 km)",
+  "bucket_transit_distance_far": "Ibanga elikude (3–8 km)",
+  "bucket_transit_distance_very_far": "Ibanga elikude kakhulu (> 8 km)"
+}

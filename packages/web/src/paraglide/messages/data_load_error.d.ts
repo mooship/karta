@@ -6,11 +6,11 @@ export type Data_Load_ErrorInputs = {};
 * | "Map data could not be loaded." |
 *
 * @param {Data_Load_ErrorInputs} inputs
-* @param {{ locale?: "en" }} options
+* @param {{ locale?: "en" | "st" | "zu" }} options
 * @returns {LocalizedString}
 */
 export declare const data_load_error: ((inputs?: Data_Load_ErrorInputs, options?: {
-    locale?: "en";
+    locale?: "en" | "st" | "zu";
 }) => LocalizedString) & import('../runtime.js').MessageMetadata<Data_Load_ErrorInputs, {
-    locale?: "en";
+    locale?: "en" | "st" | "zu";
 }, {}>;
