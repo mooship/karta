@@ -18,7 +18,7 @@ const zu_app_heading = /** @type {(inputs: App_HeadingInputs) => LocalizedString
 };
 
 const xh_app_heading = /** @type {(inputs: App_HeadingInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Karta: Imephu yelifa lokucwangciswa kwezindawo eGauteng`)
+	return /** @type {LocalizedString} */ (`Karta: Imephu yelifa lokucwangciswa kweendawo eGauteng`)
 };
 
 const af_app_heading = /** @type {(inputs: App_HeadingInputs) => LocalizedString} */ () => {
