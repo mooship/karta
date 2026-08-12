@@ -746,8 +746,15 @@ function MapViewComponent<
   const boundsOptions = getBoundsOptions(
     getViewportWidth() > MOBILE_BREAKPOINT_PX,
   );
-  const useRetinaTiles =
-    getDevicePixelRatio() > 1.25 && getViewportWidth() > MOBILE_BREAKPOINT_PX;
+  /**
+   * Retina tiles are keyed off device pixel ratio alone, not viewport width:
+   * a narrower, mobile-width viewport on a high-DPR phone still benefits
+   * from a sharp basemap, and serving 1x tiles there was flagged by
+   * Lighthouse's `image-size-responsive` best-practices audit as
+   * low-resolution imagery. See {@link resolveTileScaleToken} for the byte
+   * cost this trades away.
+   */
+  const useRetinaTiles = getDevicePixelRatio() > 1.25;
 
   /* v8 ignore next 3 -- unreachable: every registered raster basemap always yields at least one tile source */
   if (!isVectorBasemap && !tileSource) {

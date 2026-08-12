@@ -469,7 +469,7 @@ describe("MapView", () => {
     expect(screen.getByTestId("tile-layer")).toHaveTextContent("@2x");
   });
 
-  it("requests standard-resolution tiles on a high-DPI mobile screen, where retina tiles are turned off", () => {
+  it("enables retina tile loading on a high-DPI mobile screen too", () => {
     vi.stubGlobal("innerWidth", 390);
     Object.defineProperty(window, "devicePixelRatio", {
       configurable: true,
@@ -487,9 +487,8 @@ describe("MapView", () => {
     );
 
     const tileLayer = screen.getByTestId("tile-layer");
-    expect(tileLayer).toHaveAttribute("data-retina", "false");
-    expect(tileLayer).not.toHaveTextContent("@2x");
-    expect(tileLayer).not.toHaveTextContent("{r}");
+    expect(tileLayer).toHaveAttribute("data-retina", "true");
+    expect(tileLayer).toHaveTextContent("@2x");
   });
 
   it("binds feature popup markup lazily on first click", async () => {
