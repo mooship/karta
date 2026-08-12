@@ -9,16 +9,26 @@ const en_commute_hours_minutes = /** @type {(inputs: Commute_Hours_MinutesInputs
 	return /** @type {LocalizedString} */ (`${i?.hours}h ${i?.minutes}min`)
 };
 
+const st_commute_hours_minutes = /** @type {(inputs: Commute_Hours_MinutesInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`${i?.hours}h ${i?.minutes}min`)
+};
+
+const zu_commute_hours_minutes = /** @type {(inputs: Commute_Hours_MinutesInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`${i?.hours}h ${i?.minutes}min`)
+};
+
 /**
 * | output |
 * | --- |
 * | "{hours}h {minutes}min" |
 *
 * @param {Commute_Hours_MinutesInputs} inputs
-* @param {{ locale?: "en" }} options
+* @param {{ locale?: "en" | "st" | "zu" }} options
 * @returns {LocalizedString}
 */
-export const commute_hours_minutes = /** @type {((inputs: Commute_Hours_MinutesInputs, options?: { locale?: "en" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Commute_Hours_MinutesInputs, { locale?: "en" }, {}>} */ ((inputs, options = {}) => {
-	experimentalStaticLocale ?? options.locale ?? getLocale()
+export const commute_hours_minutes = /** @type {((inputs: Commute_Hours_MinutesInputs, options?: { locale?: "en" | "st" | "zu" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Commute_Hours_MinutesInputs, { locale?: "en" | "st" | "zu" }, {}>} */ ((inputs, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "st") return st_commute_hours_minutes(inputs)
+	if (locale === "zu") return zu_commute_hours_minutes(inputs)
 	return en_commute_hours_minutes(inputs)
 });

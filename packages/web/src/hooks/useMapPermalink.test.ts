@@ -5,11 +5,13 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 const registryMocks = vi.hoisted(() => ({
   getLayers: vi.fn(() => []),
   getLayerGroups: vi.fn(() => []),
+  getLayerGroupStructure: vi.fn(() => []),
 }));
 
 vi.mock("../layers/registry", () => ({
   getLayers: registryMocks.getLayers,
   getLayerGroups: registryMocks.getLayerGroups,
+  getLayerGroupStructure: registryMocks.getLayerGroupStructure,
 }));
 
 vi.mock("@karta/map", async (importOriginal) => {

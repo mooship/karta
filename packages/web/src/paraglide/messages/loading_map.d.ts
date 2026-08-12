@@ -6,11 +6,11 @@ export type Loading_MapInputs = {};
 * | "Loading map" |
 *
 * @param {Loading_MapInputs} inputs
-* @param {{ locale?: "en" }} options
+* @param {{ locale?: "en" | "st" | "zu" }} options
 * @returns {LocalizedString}
 */
 export declare const loading_map: ((inputs?: Loading_MapInputs, options?: {
-    locale?: "en";
+    locale?: "en" | "st" | "zu";
 }) => LocalizedString) & import('../runtime.js').MessageMetadata<Loading_MapInputs, {
-    locale?: "en";
+    locale?: "en" | "st" | "zu";
 }, {}>;

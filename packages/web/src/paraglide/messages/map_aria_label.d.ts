@@ -6,11 +6,11 @@ export type Map_Aria_LabelInputs = {};
 * | "Map of South African township access to job centres" |
 *
 * @param {Map_Aria_LabelInputs} inputs
-* @param {{ locale?: "en" }} options
+* @param {{ locale?: "en" | "st" | "zu" }} options
 * @returns {LocalizedString}
 */
 export declare const map_aria_label: ((inputs?: Map_Aria_LabelInputs, options?: {
-    locale?: "en";
+    locale?: "en" | "st" | "zu";
 }) => LocalizedString) & import('../runtime.js').MessageMetadata<Map_Aria_LabelInputs, {
-    locale?: "en";
+    locale?: "en" | "st" | "zu";
 }, {}>;

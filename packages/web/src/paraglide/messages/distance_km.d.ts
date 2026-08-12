@@ -8,11 +8,11 @@ export type Distance_KmInputs = {
 * | "{value} km" |
 *
 * @param {Distance_KmInputs} inputs
-* @param {{ locale?: "en" }} options
+* @param {{ locale?: "en" | "st" | "zu" }} options
 * @returns {LocalizedString}
 */
 export declare const distance_km: ((inputs: Distance_KmInputs, options?: {
-    locale?: "en";
+    locale?: "en" | "st" | "zu";
 }) => LocalizedString) & import('../runtime.js').MessageMetadata<Distance_KmInputs, {
-    locale?: "en";
+    locale?: "en" | "st" | "zu";
 }, {}>;

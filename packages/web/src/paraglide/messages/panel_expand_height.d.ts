@@ -6,11 +6,11 @@ export type Panel_Expand_HeightInputs = {};
 * | "Expand panel height" |
 *
 * @param {Panel_Expand_HeightInputs} inputs
-* @param {{ locale?: "en" }} options
+* @param {{ locale?: "en" | "st" | "zu" }} options
 * @returns {LocalizedString}
 */
 export declare const panel_expand_height: ((inputs?: Panel_Expand_HeightInputs, options?: {
-    locale?: "en";
+    locale?: "en" | "st" | "zu";
 }) => LocalizedString) & import('../runtime.js').MessageMetadata<Panel_Expand_HeightInputs, {
-    locale?: "en";
+    locale?: "en" | "st" | "zu";
 }, {}>;

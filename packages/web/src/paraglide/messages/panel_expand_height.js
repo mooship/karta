@@ -9,16 +9,26 @@ const en_panel_expand_height = /** @type {(inputs: Panel_Expand_HeightInputs) =>
 	return /** @type {LocalizedString} */ (`Expand panel height`)
 };
 
+const st_panel_expand_height = /** @type {(inputs: Panel_Expand_HeightInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Atolosa bophahamo ba panele`)
+};
+
+const zu_panel_expand_height = /** @type {(inputs: Panel_Expand_HeightInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Andisa ukuphakama kwephaneli`)
+};
+
 /**
 * | output |
 * | --- |
 * | "Expand panel height" |
 *
 * @param {Panel_Expand_HeightInputs} inputs
-* @param {{ locale?: "en" }} options
+* @param {{ locale?: "en" | "st" | "zu" }} options
 * @returns {LocalizedString}
 */
-export const panel_expand_height = /** @type {((inputs?: Panel_Expand_HeightInputs, options?: { locale?: "en" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Panel_Expand_HeightInputs, { locale?: "en" }, {}>} */ ((inputs = {}, options = {}) => {
-	experimentalStaticLocale ?? options.locale ?? getLocale()
+export const panel_expand_height = /** @type {((inputs?: Panel_Expand_HeightInputs, options?: { locale?: "en" | "st" | "zu" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Panel_Expand_HeightInputs, { locale?: "en" | "st" | "zu" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "st") return st_panel_expand_height(inputs)
+	if (locale === "zu") return zu_panel_expand_height(inputs)
 	return en_panel_expand_height(inputs)
 });

@@ -6,11 +6,11 @@ export type Commute_No_DataInputs = {};
 * | "No data" |
 *
 * @param {Commute_No_DataInputs} inputs
-* @param {{ locale?: "en" }} options
+* @param {{ locale?: "en" | "st" | "zu" }} options
 * @returns {LocalizedString}
 */
 export declare const commute_no_data: ((inputs?: Commute_No_DataInputs, options?: {
-    locale?: "en";
+    locale?: "en" | "st" | "zu";
 }) => LocalizedString) & import('../runtime.js').MessageMetadata<Commute_No_DataInputs, {
-    locale?: "en";
+    locale?: "en" | "st" | "zu";
 }, {}>;
