@@ -6,11 +6,11 @@ export type Bucket_Car_Time_Very_LongInputs = {};
 * | "Very long (> 60 min)" |
 *
 * @param {Bucket_Car_Time_Very_LongInputs} inputs
-* @param {{ locale?: "en" | "st" | "zu" }} options
+* @param {{ locale?: "en" | "st" | "zu" | "xh" | "af" }} options
 * @returns {LocalizedString}
 */
 export declare const bucket_car_time_very_long: ((inputs?: Bucket_Car_Time_Very_LongInputs, options?: {
-    locale?: "en" | "st" | "zu";
+    locale?: "en" | "st" | "zu" | "xh" | "af";
 }) => LocalizedString) & import('../runtime.js').MessageMetadata<Bucket_Car_Time_Very_LongInputs, {
-    locale?: "en" | "st" | "zu";
+    locale?: "en" | "st" | "zu" | "xh" | "af";
 }, {}>;

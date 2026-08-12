@@ -17,18 +17,28 @@ const zu_layer_nearest_transit_description = /** @type {(inputs: Layer_Nearest_T
 	return /** @type {LocalizedString} */ (`Ibanga eliqondile kusukela endaweni ngayinye yelokishi eqashelwe kuya emzileni osemthethweni wezokuthutha oseduze.`)
 };
 
+const xh_layer_nearest_transit_description = /** @type {(inputs: Layer_Nearest_Transit_DescriptionInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Umgama oqondileyo ukusuka kwindawo ngayinye yelokishi eliqashelweyo ukuya kumzila osemthethweni wezokuthutha okufuphi.`)
+};
+
+const af_layer_nearest_transit_description = /** @type {(inputs: Layer_Nearest_Transit_DescriptionInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Reguitlynafstand vanaf elke erkende lokasiegebied na die naaste formele vervoerroete.`)
+};
+
 /**
 * | output |
 * | --- |
 * | "Straight-line distance from each recognised township area to the nearest formal transit route." |
 *
 * @param {Layer_Nearest_Transit_DescriptionInputs} inputs
-* @param {{ locale?: "en" | "st" | "zu" }} options
+* @param {{ locale?: "en" | "st" | "zu" | "xh" | "af" }} options
 * @returns {LocalizedString}
 */
-export const layer_nearest_transit_description = /** @type {((inputs?: Layer_Nearest_Transit_DescriptionInputs, options?: { locale?: "en" | "st" | "zu" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Layer_Nearest_Transit_DescriptionInputs, { locale?: "en" | "st" | "zu" }, {}>} */ ((inputs = {}, options = {}) => {
+export const layer_nearest_transit_description = /** @type {((inputs?: Layer_Nearest_Transit_DescriptionInputs, options?: { locale?: "en" | "st" | "zu" | "xh" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Layer_Nearest_Transit_DescriptionInputs, { locale?: "en" | "st" | "zu" | "xh" | "af" }, {}>} */ ((inputs = {}, options = {}) => {
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "st") return st_layer_nearest_transit_description(inputs)
 	if (locale === "zu") return zu_layer_nearest_transit_description(inputs)
+	if (locale === "xh") return xh_layer_nearest_transit_description(inputs)
+	if (locale === "af") return af_layer_nearest_transit_description(inputs)
 	return en_layer_nearest_transit_description(inputs)
 });

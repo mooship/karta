@@ -6,11 +6,11 @@ export type Error_Boundary_Not_Found_MessageInputs = {};
 * | "The page you're looking for doesn't exist." |
 *
 * @param {Error_Boundary_Not_Found_MessageInputs} inputs
-* @param {{ locale?: "en" | "st" | "zu" }} options
+* @param {{ locale?: "en" | "st" | "zu" | "xh" | "af" }} options
 * @returns {LocalizedString}
 */
 export declare const error_boundary_not_found_message: ((inputs?: Error_Boundary_Not_Found_MessageInputs, options?: {
-    locale?: "en" | "st" | "zu";
+    locale?: "en" | "st" | "zu" | "xh" | "af";
 }) => LocalizedString) & import('../runtime.js').MessageMetadata<Error_Boundary_Not_Found_MessageInputs, {
-    locale?: "en" | "st" | "zu";
+    locale?: "en" | "st" | "zu" | "xh" | "af";
 }, {}>;

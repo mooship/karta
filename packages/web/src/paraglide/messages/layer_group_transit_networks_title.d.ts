@@ -6,11 +6,11 @@ export type Layer_Group_Transit_Networks_TitleInputs = {};
 * | "Transit networks" |
 *
 * @param {Layer_Group_Transit_Networks_TitleInputs} inputs
-* @param {{ locale?: "en" | "st" | "zu" }} options
+* @param {{ locale?: "en" | "st" | "zu" | "xh" | "af" }} options
 * @returns {LocalizedString}
 */
 export declare const layer_group_transit_networks_title: ((inputs?: Layer_Group_Transit_Networks_TitleInputs, options?: {
-    locale?: "en" | "st" | "zu";
+    locale?: "en" | "st" | "zu" | "xh" | "af";
 }) => LocalizedString) & import('../runtime.js').MessageMetadata<Layer_Group_Transit_Networks_TitleInputs, {
-    locale?: "en" | "st" | "zu";
+    locale?: "en" | "st" | "zu" | "xh" | "af";
 }, {}>;

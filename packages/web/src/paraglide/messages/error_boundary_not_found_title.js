@@ -17,18 +17,28 @@ const zu_error_boundary_not_found_title = /** @type {(inputs: Error_Boundary_Not
 	return /** @type {LocalizedString} */ (`Ikhasi alitholakali`)
 };
 
+const xh_error_boundary_not_found_title = /** @type {(inputs: Error_Boundary_Not_Found_TitleInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Iphepha alifumaneki`)
+};
+
+const af_error_boundary_not_found_title = /** @type {(inputs: Error_Boundary_Not_Found_TitleInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Bladsy nie gevind nie`)
+};
+
 /**
 * | output |
 * | --- |
 * | "Page not found" |
 *
 * @param {Error_Boundary_Not_Found_TitleInputs} inputs
-* @param {{ locale?: "en" | "st" | "zu" }} options
+* @param {{ locale?: "en" | "st" | "zu" | "xh" | "af" }} options
 * @returns {LocalizedString}
 */
-export const error_boundary_not_found_title = /** @type {((inputs?: Error_Boundary_Not_Found_TitleInputs, options?: { locale?: "en" | "st" | "zu" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Error_Boundary_Not_Found_TitleInputs, { locale?: "en" | "st" | "zu" }, {}>} */ ((inputs = {}, options = {}) => {
+export const error_boundary_not_found_title = /** @type {((inputs?: Error_Boundary_Not_Found_TitleInputs, options?: { locale?: "en" | "st" | "zu" | "xh" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Error_Boundary_Not_Found_TitleInputs, { locale?: "en" | "st" | "zu" | "xh" | "af" }, {}>} */ ((inputs = {}, options = {}) => {
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "st") return st_error_boundary_not_found_title(inputs)
 	if (locale === "zu") return zu_error_boundary_not_found_title(inputs)
+	if (locale === "xh") return xh_error_boundary_not_found_title(inputs)
+	if (locale === "af") return af_error_boundary_not_found_title(inputs)
 	return en_error_boundary_not_found_title(inputs)
 });

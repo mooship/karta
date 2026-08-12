@@ -6,11 +6,11 @@ export type Layer_Townships_DescriptionInputs = {};
 * | "Modelled car drive-time from each recognised township area to its nearest selected job centre." |
 *
 * @param {Layer_Townships_DescriptionInputs} inputs
-* @param {{ locale?: "en" | "st" | "zu" }} options
+* @param {{ locale?: "en" | "st" | "zu" | "xh" | "af" }} options
 * @returns {LocalizedString}
 */
 export declare const layer_townships_description: ((inputs?: Layer_Townships_DescriptionInputs, options?: {
-    locale?: "en" | "st" | "zu";
+    locale?: "en" | "st" | "zu" | "xh" | "af";
 }) => LocalizedString) & import('../runtime.js').MessageMetadata<Layer_Townships_DescriptionInputs, {
-    locale?: "en" | "st" | "zu";
+    locale?: "en" | "st" | "zu" | "xh" | "af";
 }, {}>;

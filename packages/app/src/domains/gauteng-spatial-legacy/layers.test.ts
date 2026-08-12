@@ -57,7 +57,7 @@ describe("GAUTENG_SPATIAL_LEGACY_LAYERS", () => {
     const layer = GAUTENG_SPATIAL_LEGACY_LAYERS.find(
       (l) => l.id === "nearest-transit",
     );
-    expect(layer?.label).toBe("Distance to Nearest Transit");
+    expect(layer?.label).toBe("Distance to nearest transit");
     expect(layer?.defaultVisible).toBe(false);
     expect(layer?.dataSource).toEqual([
       "/data/gauteng/townships.display.v1.geojson",
