@@ -17,18 +17,23 @@ const zu_location_out_of_coverage = /** @type {(inputs: Location_Out_Of_Coverage
 	return /** @type {LocalizedString} */ (`${i?.location} ingaphandle kweNingizimu Afrika.`)
 };
 
+const xh_location_out_of_coverage = /** @type {(inputs: Location_Out_Of_CoverageInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`${i?.location} ingaphandle koMzantsi Afrika.`)
+};
+
 /**
 * | output |
 * | --- |
 * | "{location} is outside South Africa." |
 *
 * @param {Location_Out_Of_CoverageInputs} inputs
-* @param {{ locale?: "en" | "st" | "zu" }} options
+* @param {{ locale?: "en" | "st" | "zu" | "xh" }} options
 * @returns {LocalizedString}
 */
-export const location_out_of_coverage = /** @type {((inputs: Location_Out_Of_CoverageInputs, options?: { locale?: "en" | "st" | "zu" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Location_Out_Of_CoverageInputs, { locale?: "en" | "st" | "zu" }, {}>} */ ((inputs, options = {}) => {
+export const location_out_of_coverage = /** @type {((inputs: Location_Out_Of_CoverageInputs, options?: { locale?: "en" | "st" | "zu" | "xh" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Location_Out_Of_CoverageInputs, { locale?: "en" | "st" | "zu" | "xh" }, {}>} */ ((inputs, options = {}) => {
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "st") return st_location_out_of_coverage(inputs)
 	if (locale === "zu") return zu_location_out_of_coverage(inputs)
+	if (locale === "xh") return xh_location_out_of_coverage(inputs)
 	return en_location_out_of_coverage(inputs)
 });

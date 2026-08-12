@@ -6,11 +6,11 @@ export type Language_Toggle_LabelInputs = {};
 * | "Language" |
 *
 * @param {Language_Toggle_LabelInputs} inputs
-* @param {{ locale?: "en" | "st" | "zu" }} options
+* @param {{ locale?: "en" | "st" | "zu" | "xh" }} options
 * @returns {LocalizedString}
 */
 export declare const language_toggle_label: ((inputs?: Language_Toggle_LabelInputs, options?: {
-    locale?: "en" | "st" | "zu";
+    locale?: "en" | "st" | "zu" | "xh";
 }) => LocalizedString) & import('../runtime.js').MessageMetadata<Language_Toggle_LabelInputs, {
-    locale?: "en" | "st" | "zu";
+    locale?: "en" | "st" | "zu" | "xh";
 }, {}>;

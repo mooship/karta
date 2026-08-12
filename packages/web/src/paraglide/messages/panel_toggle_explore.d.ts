@@ -6,11 +6,11 @@ export type Panel_Toggle_ExploreInputs = {};
 * | "Explore" |
 *
 * @param {Panel_Toggle_ExploreInputs} inputs
-* @param {{ locale?: "en" | "st" | "zu" }} options
+* @param {{ locale?: "en" | "st" | "zu" | "xh" }} options
 * @returns {LocalizedString}
 */
 export declare const panel_toggle_explore: ((inputs?: Panel_Toggle_ExploreInputs, options?: {
-    locale?: "en" | "st" | "zu";
+    locale?: "en" | "st" | "zu" | "xh";
 }) => LocalizedString) & import('../runtime.js').MessageMetadata<Panel_Toggle_ExploreInputs, {
-    locale?: "en" | "st" | "zu";
+    locale?: "en" | "st" | "zu" | "xh";
 }, {}>;

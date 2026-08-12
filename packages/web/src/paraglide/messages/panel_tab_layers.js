@@ -17,18 +17,23 @@ const zu_panel_tab_layers = /** @type {(inputs: Panel_Tab_LayersInputs) => Local
 	return /** @type {LocalizedString} */ (`Izingqimba`)
 };
 
+const xh_panel_tab_layers = /** @type {(inputs: Panel_Tab_LayersInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Iingqimba`)
+};
+
 /**
 * | output |
 * | --- |
 * | "Layers" |
 *
 * @param {Panel_Tab_LayersInputs} inputs
-* @param {{ locale?: "en" | "st" | "zu" }} options
+* @param {{ locale?: "en" | "st" | "zu" | "xh" }} options
 * @returns {LocalizedString}
 */
-export const panel_tab_layers = /** @type {((inputs?: Panel_Tab_LayersInputs, options?: { locale?: "en" | "st" | "zu" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Panel_Tab_LayersInputs, { locale?: "en" | "st" | "zu" }, {}>} */ ((inputs = {}, options = {}) => {
+export const panel_tab_layers = /** @type {((inputs?: Panel_Tab_LayersInputs, options?: { locale?: "en" | "st" | "zu" | "xh" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Panel_Tab_LayersInputs, { locale?: "en" | "st" | "zu" | "xh" }, {}>} */ ((inputs = {}, options = {}) => {
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "st") return st_panel_tab_layers(inputs)
 	if (locale === "zu") return zu_panel_tab_layers(inputs)
+	if (locale === "xh") return xh_panel_tab_layers(inputs)
 	return en_panel_tab_layers(inputs)
 });

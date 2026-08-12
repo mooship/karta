@@ -6,11 +6,11 @@ export type Bucket_Car_Time_ShortInputs = {};
 * | "Short (≤ 20 min)" |
 *
 * @param {Bucket_Car_Time_ShortInputs} inputs
-* @param {{ locale?: "en" | "st" | "zu" }} options
+* @param {{ locale?: "en" | "st" | "zu" | "xh" }} options
 * @returns {LocalizedString}
 */
 export declare const bucket_car_time_short: ((inputs?: Bucket_Car_Time_ShortInputs, options?: {
-    locale?: "en" | "st" | "zu";
+    locale?: "en" | "st" | "zu" | "xh";
 }) => LocalizedString) & import('../runtime.js').MessageMetadata<Bucket_Car_Time_ShortInputs, {
-    locale?: "en" | "st" | "zu";
+    locale?: "en" | "st" | "zu" | "xh";
 }, {}>;

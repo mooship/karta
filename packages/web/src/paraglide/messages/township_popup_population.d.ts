@@ -6,11 +6,11 @@ export type Township_Popup_PopulationInputs = {};
 * | "Population" |
 *
 * @param {Township_Popup_PopulationInputs} inputs
-* @param {{ locale?: "en" | "st" | "zu" }} options
+* @param {{ locale?: "en" | "st" | "zu" | "xh" }} options
 * @returns {LocalizedString}
 */
 export declare const township_popup_population: ((inputs?: Township_Popup_PopulationInputs, options?: {
-    locale?: "en" | "st" | "zu";
+    locale?: "en" | "st" | "zu" | "xh";
 }) => LocalizedString) & import('../runtime.js').MessageMetadata<Township_Popup_PopulationInputs, {
-    locale?: "en" | "st" | "zu";
+    locale?: "en" | "st" | "zu" | "xh";
 }, {}>;

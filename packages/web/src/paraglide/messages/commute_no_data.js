@@ -17,18 +17,23 @@ const zu_commute_no_data = /** @type {(inputs: Commute_No_DataInputs) => Localiz
 	return /** @type {LocalizedString} */ (`Alukho ulwazi`)
 };
 
+const xh_commute_no_data = /** @type {(inputs: Commute_No_DataInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Akukho lwazi`)
+};
+
 /**
 * | output |
 * | --- |
 * | "No data" |
 *
 * @param {Commute_No_DataInputs} inputs
-* @param {{ locale?: "en" | "st" | "zu" }} options
+* @param {{ locale?: "en" | "st" | "zu" | "xh" }} options
 * @returns {LocalizedString}
 */
-export const commute_no_data = /** @type {((inputs?: Commute_No_DataInputs, options?: { locale?: "en" | "st" | "zu" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Commute_No_DataInputs, { locale?: "en" | "st" | "zu" }, {}>} */ ((inputs = {}, options = {}) => {
+export const commute_no_data = /** @type {((inputs?: Commute_No_DataInputs, options?: { locale?: "en" | "st" | "zu" | "xh" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Commute_No_DataInputs, { locale?: "en" | "st" | "zu" | "xh" }, {}>} */ ((inputs = {}, options = {}) => {
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "st") return st_commute_no_data(inputs)
 	if (locale === "zu") return zu_commute_no_data(inputs)
+	if (locale === "xh") return xh_commute_no_data(inputs)
 	return en_commute_no_data(inputs)
 });

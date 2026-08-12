@@ -1,0 +1,70 @@
+{
+  "$schema": "https://inlang.com/schema/inlang-message-format",
+  "app_title": "Karta",
+  "app_heading": "Karta: Imephu yelifa lokucwangciswa kwezindawo eGauteng",
+  "meta_description": "Ibonisa indlela ucwangciso lwezindawo ngexesha localucalulo olusabumba ngalo ixesha lokuya emsebenzini nokufikelela emsebenzini eGauteng.",
+
+  "skip_to_map_information": "Yeqa uye kulwazi lwemephu",
+  "loading_map": "Imephu iyalayisha",
+  "map_aria_label": "Imephu yokufikelela kwamalokishi aseMzantsi Afrika kwiindawo zomsebenzi",
+  "data_load_error": "Idatha yemephu ayikwazanga ukulayishwa.",
+  "retry": "Zama kwakhona",
+  "search_placeholder": "Khangela idolophu, indawo okanye isikhululo",
+  "location_out_of_coverage": "{location} ingaphandle koMzantsi Afrika.",
+
+  "panel_tab_layers": "Iingqimba",
+  "panel_tab_story": "Ibali",
+  "panel_toggle_close": "Vala",
+  "panel_toggle_explore": "Hlola",
+  "panel_reduce_height": "Nciphisa ubude bephaneli",
+  "panel_expand_height": "Andisa ubude bephaneli",
+  "panel_tablist_aria_label": "Iphaneli yemephu",
+
+  "layer_unavailable_badge": "Ayikafumaneki",
+  "layer_failed_badge": "Yehlulekile ukulayisha — vala uphinde uvule ukuze uzame kwakhona",
+  "layer_download_aria_label": "Khuphela idatha ye-{label} (GeoJSON)",
+
+  "township_popup_car_time": "Ixesha lemoto elilinganiselweyo",
+  "township_popup_job_center": "Isikhungo somsebenzi esikufuphi",
+  "township_popup_population": "Inani labemi",
+  "township_popup_distance": "Umgama",
+  "township_popup_transit_distance": "Umgama oya ezokuthutha ezikufuphi",
+  "distance_km": "{value} km",
+
+  "commute_no_data": "Akukho lwazi",
+  "commute_minutes": "{minutes} min",
+  "commute_hours_minutes": "{hours}h {minutes}min",
+
+  "error_boundary_not_found_title": "Iphepha alifumaneki",
+  "error_boundary_not_found_message": "Iphepha olifunayo alikho.",
+  "error_boundary_generic_title": "Kukho into engahambanga kakuhle",
+  "error_boundary_generic_message": "Kwenzeke impazamo engalindelekanga. Ukuvula iphepha kwakhona ngokuqhelekileyo kuyakulungisa.",
+  "error_boundary_reload": "Vula iphepha kwakhona",
+
+  "language_toggle_label": "Ulwimi",
+
+  "layer_townships_label": "Ixesha lemoto elilinganiselweyo",
+  "layer_townships_description": "Ixesha lokuqhuba imoto elilinganiselweyo ukusuka kwindawo ngayinye yelokishi eliqashelweyo ukuya kwisikhungo somsebenzi esikufuphi esikhethiweyo.",
+  "layer_nearest_transit_label": "Umgama oya ezokuthutha ezikufuphi",
+  "layer_nearest_transit_description": "Umgama oqondileyo ukusuka kwindawo ngayinye yelokishi eliqashelweyo ukuya kumzila osemthethweni wezokuthutha okufuphi.",
+  "layer_rapid_rail_label": "Uloliwe Okhawulezayo",
+  "layer_bus_rapid_transit_label": "Ibhasi Ekhawulezayo",
+  "layer_commuter_rail_label": "Uloliwe Wokuya Emsebenzini",
+  "layer_bus_label": "Ibhasi",
+
+  "layer_group_access_to_opportunity_title": "Iingqimba zokufikelela",
+  "layer_group_access_to_opportunity_description": "Yingqimba enye kuphela engasebenza ngexesha elinye.",
+  "layer_group_transit_networks_title": "Amanethiwekhi ezokuthutha",
+
+  "domain_story_title": "Kutheni le mephu ikho",
+  "domain_story_body": "Umthetho wocalucalulo wawulawula ukuba abantu abaMnyama, amaKhaladi kunye namaNdiya bangahlala kuphi. Amalokishi abantu abaMnyama ahlukaniswa ngabom kwizikhungo zoqoqosho, kwaye loo mabanga asabumba ukufikelela emsebenzini nanamhlanje. Le mephu ilinganisa loo msantsa ngexesha lemoto elilinganiselweyo nangomgama oya kwezokuthutha.",
+
+  "bucket_car_time_short": "Ixesha elifutshane (≤ 20 min)",
+  "bucket_car_time_moderate": "Ixesha eliphakathi (21–40 min)",
+  "bucket_car_time_long": "Ixesha elide (41–60 min)",
+  "bucket_car_time_very_long": "Ixesha elide kakhulu (> 60 min)",
+  "bucket_transit_distance_near": "Umgama okufuphi (≤ 1 km)",
+  "bucket_transit_distance_moderate": "Umgama ophakathi (1–3 km)",
+  "bucket_transit_distance_far": "Umgama okude (3–8 km)",
+  "bucket_transit_distance_very_far": "Umgama okude kakhulu (> 8 km)"
+}

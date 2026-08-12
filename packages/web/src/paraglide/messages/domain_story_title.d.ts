@@ -6,11 +6,11 @@ export type Domain_Story_TitleInputs = {};
 * | "Why this map exists" |
 *
 * @param {Domain_Story_TitleInputs} inputs
-* @param {{ locale?: "en" | "st" | "zu" }} options
+* @param {{ locale?: "en" | "st" | "zu" | "xh" }} options
 * @returns {LocalizedString}
 */
 export declare const domain_story_title: ((inputs?: Domain_Story_TitleInputs, options?: {
-    locale?: "en" | "st" | "zu";
+    locale?: "en" | "st" | "zu" | "xh";
 }) => LocalizedString) & import('../runtime.js').MessageMetadata<Domain_Story_TitleInputs, {
-    locale?: "en" | "st" | "zu";
+    locale?: "en" | "st" | "zu" | "xh";
 }, {}>;
