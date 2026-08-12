@@ -37,6 +37,17 @@
   animation: mapLoadingPulse 1.6s ease-in-out infinite;
 }
 
+/*
+ * Once the real map has painted over this placeholder, stop rendering it
+ * entirely rather than leaving its pulse animation compositing forever on a
+ * full-viewport layer nobody sees. Safe to do well after paint -- Chrome
+ * only excludes an element from Largest Contentful Paint consideration when
+ * it's removed from the *DOM*, not when it's hidden via `display`.
+ */
+.mapLoading[aria-hidden="true"] {
+  display: none;
+}
+
 @keyframes mapLoadingPulse {
   0%,
   100% {
