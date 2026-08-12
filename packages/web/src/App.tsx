@@ -570,12 +570,27 @@ export function App() {
         </header>
 
         <main id="map-information" tabIndex={-1}>
+          {/*
+            Rendered unconditionally (server-rendered, then left mounted
+            through hydration and MapView's own lazy-load/mount) rather than
+            swapped out via a ternary or Suspense fallback: Chrome stops
+            counting an element towards Largest Contentful Paint the moment
+            it's removed from the DOM, so a placeholder that gets unmounted
+            can never end up being the reported LCP element even if it was
+            the largest thing on screen for seconds. `MapView`'s own
+            full-viewport container paints over this in normal DOM-order
+            stacking once it mounts; `aria-hidden` (not removal) keeps
+            screen readers from re-announcing "loading" once the real map
+            is ready.
+          */}
+          <output
+            className={styles.mapLoading}
+            aria-hidden={mapReady ? "true" : undefined}
+          >
+            {m.loading_map()}
+          </output>
           {hydrated ? (
-            <Suspense
-              fallback={
-                <output className={styles.mapLoading}>{m.loading_map()}</output>
-              }
-            >
+            <Suspense fallback={null}>
               <MapView
                 bounds={GAUTENG_BOUNDS}
                 ariaLabel={m.map_aria_label()}
@@ -597,9 +612,7 @@ export function App() {
                 )}
               />
             </Suspense>
-          ) : (
-            <output className={styles.mapLoading}>{m.loading_map()}</output>
-          )}
+          ) : null}
           {dataError ? (
             <div
               className={styles.dataError}

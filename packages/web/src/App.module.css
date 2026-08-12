@@ -15,7 +15,21 @@
   inset: 0;
   display: grid;
   place-items: center;
-  background: var(--md-sys-color-surface);
+  /*
+   * A `background-image` (unlike the plain `background-color` this replaced)
+   * is eligible to become the page's Largest Contentful Paint element. This
+   * placeholder is present in the server-rendered HTML, before hydration,
+   * and covers the whole map viewport, so it lets the browser register a
+   * meaningful full-viewport paint immediately instead of waiting ~5s for
+   * React to hydrate, `MapView` to lazy-load, and Leaflet to mount and fetch
+   * its first basemap tile -- measured via Lighthouse to move the reported
+   * LCP element (and its score) off that first tile entirely.
+   */
+  background-image: linear-gradient(
+    180deg,
+    var(--md-sys-color-surface) 0%,
+    var(--md-sys-color-surface-container-low) 100%
+  );
   color: var(--md-sys-color-on-surface-variant);
   font-family: var(--font-mono);
   font-size: var(--font-size-sm);
