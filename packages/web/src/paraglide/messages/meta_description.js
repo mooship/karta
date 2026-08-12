@@ -18,7 +18,7 @@ const zu_meta_description = /** @type {(inputs: Meta_DescriptionInputs) => Local
 };
 
 const xh_meta_description = /** @type {(inputs: Meta_DescriptionInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Ibonisa indlela ucwangciso lwezindawo ngexesha localucalulo olusabumba ngalo ixesha lokuya emsebenzini nokufikelela emsebenzini eGauteng.`)
+	return /** @type {LocalizedString} */ (`Ibonisa indlela ucwangciso lweendawo ngexesha localucalulo olusabumba ngayo ixesha lokuya emsebenzini nokufikelela emsebenzini eGauteng.`)
 };
 
 const af_meta_description = /** @type {(inputs: Meta_DescriptionInputs) => LocalizedString} */ () => {
