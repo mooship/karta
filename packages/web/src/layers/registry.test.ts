@@ -63,7 +63,7 @@ describe("registry", () => {
     getLocale.mockReturnValue("zu");
 
     expect(getLayer("bus")?.label).toBe("Ibhasi");
-    expect(getLayerGroups()[0]?.title).toBe("Izingqimba Zokufinyelela");
+    expect(getLayerGroups()[0]?.title).toBe("Izingqimba zokufinyelela");
     expect(getStory()?.title).toBe("Kungani leli balazwe likhona");
   });
 });

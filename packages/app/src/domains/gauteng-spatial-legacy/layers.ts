@@ -58,7 +58,7 @@ export const GAUTENG_SPATIAL_LEGACY_LAYERS: Layer[] = [
   },
   {
     id: "nearest-transit",
-    label: "Distance to Nearest Transit",
+    label: "Distance to nearest transit",
     description:
       "Straight-line distance from each recognised township area to the nearest formal transit route.",
     dataSource: [dataUrl("townships.display.v1.geojson")],

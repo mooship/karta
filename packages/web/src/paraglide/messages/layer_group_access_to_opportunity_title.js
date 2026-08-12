@@ -10,11 +10,11 @@ const en_layer_group_access_to_opportunity_title = /** @type {(inputs: Layer_Gro
 };
 
 const st_layer_group_access_to_opportunity_title = /** @type {(inputs: Layer_Group_Access_To_Opportunity_TitleInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Maera a Phihlello`)
+	return /** @type {LocalizedString} */ (`Maera a phihlello`)
 };
 
 const zu_layer_group_access_to_opportunity_title = /** @type {(inputs: Layer_Group_Access_To_Opportunity_TitleInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Izingqimba Zokufinyelela`)
+	return /** @type {LocalizedString} */ (`Izingqimba zokufinyelela`)
 };
 
 /**

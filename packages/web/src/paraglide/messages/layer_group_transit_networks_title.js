@@ -10,11 +10,11 @@ const en_layer_group_transit_networks_title = /** @type {(inputs: Layer_Group_Tr
 };
 
 const st_layer_group_transit_networks_title = /** @type {(inputs: Layer_Group_Transit_Networks_TitleInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Marangrang a Dipalangwa`)
+	return /** @type {LocalizedString} */ (`Marangrang a dipalangwa`)
 };
 
 const zu_layer_group_transit_networks_title = /** @type {(inputs: Layer_Group_Transit_Networks_TitleInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Amanethiwekhi Ezokuthutha`)
+	return /** @type {LocalizedString} */ (`Amanethiwekhi ezokuthutha`)
 };
 
 /**

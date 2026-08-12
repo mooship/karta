@@ -6,21 +6,21 @@ import { getLocale, experimentalStaticLocale } from '../runtime.js';
 /** @typedef {{}} Layer_Nearest_Transit_LabelInputs */
 
 const en_layer_nearest_transit_label = /** @type {(inputs: Layer_Nearest_Transit_LabelInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Distance to Nearest Transit`)
+	return /** @type {LocalizedString} */ (`Distance to nearest transit`)
 };
 
 const st_layer_nearest_transit_label = /** @type {(inputs: Layer_Nearest_Transit_LabelInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Bohole ho isa Dipalangwaneng tse Haufi`)
+	return /** @type {LocalizedString} */ (`Bohole ho isa dipalangwaneng tse haufi`)
 };
 
 const zu_layer_nearest_transit_label = /** @type {(inputs: Layer_Nearest_Transit_LabelInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Ibanga eliya Ezokuthutha eziSeduze`)
+	return /** @type {LocalizedString} */ (`Ibanga eliya ezokuthutha eziseduze`)
 };
 
 /**
 * | output |
 * | --- |
-* | "Distance to Nearest Transit" |
+* | "Distance to nearest transit" |
 *
 * @param {Layer_Nearest_Transit_LabelInputs} inputs
 * @param {{ locale?: "en" | "st" | "zu" }} options
