@@ -174,7 +174,7 @@ describe("localizeLayerGroup", () => {
 
     const localized = localizeLayerGroup(KNOWN_GROUP);
 
-    expect(localized.title).toBe("Izingqimba Zokufinyelela");
+    expect(localized.title).toBe("Izingqimba zokufinyelela");
     expect(localized.description).toBe(
       "Yingqimba eyodwa kuphela engasebenza ngesikhathi esisodwa.",
     );

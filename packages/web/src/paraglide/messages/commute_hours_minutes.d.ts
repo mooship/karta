@@ -9,11 +9,11 @@ export type Commute_Hours_MinutesInputs = {
 * | "{hours}h {minutes}min" |
 *
 * @param {Commute_Hours_MinutesInputs} inputs
-* @param {{ locale?: "en" | "st" | "zu" }} options
+* @param {{ locale?: "en" | "st" | "zu" | "xh" | "af" }} options
 * @returns {LocalizedString}
 */
 export declare const commute_hours_minutes: ((inputs: Commute_Hours_MinutesInputs, options?: {
-    locale?: "en" | "st" | "zu";
+    locale?: "en" | "st" | "zu" | "xh" | "af";
 }) => LocalizedString) & import('../runtime.js').MessageMetadata<Commute_Hours_MinutesInputs, {
-    locale?: "en" | "st" | "zu";
+    locale?: "en" | "st" | "zu" | "xh" | "af";
 }, {}>;

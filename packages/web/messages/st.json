@@ -2,7 +2,7 @@
   "$schema": "https://inlang.com/schema/inlang-message-format",
   "app_title": "Karta",
   "app_heading": "Karta: 'Mapa wa lefa la sebaka sa Gauteng",
-  "meta_description": "E bontsha kamoo meralo ya sebaka mehleng ya kgethollo e ntseng e hlwaya nako ya maeto le phihlello ya mesebetsi Tshwane le Johannesburg.",
+  "meta_description": "E bontsha kamoo meralo ya sebaka mehleng ya kgethollo e ntseng e hlwaya nako ya maeto le phihlello ya mesebetsi ho Gauteng.",
 
   "skip_to_map_information": "Tlola o ye tlhahisoleseding ya 'mapa",
   "loading_map": "'Mapa o ntse o kenngwa",
@@ -45,16 +45,16 @@
 
   "layer_townships_label": "Nako ya koloi e akantsweng",
   "layer_townships_description": "Nako e akantsweng ya ho kganna koloi ho tloha sebakeng se seng le se seng sa lokishi se amohetsweng ho isa setsing sa mesebetsi se haufi se kgethilweng.",
-  "layer_nearest_transit_label": "Bohole ho isa Dipalangwaneng tse Haufi",
+  "layer_nearest_transit_label": "Bohole ho isa dipalangwaneng tse haufi",
   "layer_nearest_transit_description": "Bohole bo otlolohileng ho tloha sebakeng se seng le se seng sa lokishi se amohetsweng ho isa tseleng ya semmuso ya dipalangwa e haufi.",
   "layer_rapid_rail_label": "Terene e Potlakileng",
   "layer_bus_rapid_transit_label": "Bese e Potlakileng",
   "layer_commuter_rail_label": "Terene ya Maeto",
   "layer_bus_label": "Bese",
 
-  "layer_group_access_to_opportunity_title": "Maera a Phihlello",
+  "layer_group_access_to_opportunity_title": "Maera a phihlello",
   "layer_group_access_to_opportunity_description": "Ke lera le le leng feela le ka sebetsang ka nako e le nngwe.",
-  "layer_group_transit_networks_title": "Marangrang a Dipalangwa",
+  "layer_group_transit_networks_title": "Marangrang a dipalangwa",
 
   "domain_story_title": "Hobaneng 'mapa ona o le teng",
   "domain_story_body": "Molao wa kgethollo o ne o laola moo batho ba Batsho, ba Bammala le ba Maindia ba neng ba ka phela teng. Metse a Batho ba Batsho a ne a arohantswe ka boomo le ditsi tsa moruo, mme dibaka tseo di sa bontsha phihlello ya mesebetsi kajeno. 'Mapa ona o lekanya lekgalo leo ka nako ya koloi e akantsweng le bohole ho isa dipalangwaneng.",

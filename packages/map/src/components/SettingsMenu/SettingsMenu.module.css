@@ -15,7 +15,14 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
-  min-width: max-content;
+  /*
+   * No min-width here: a `min-width: max-content` used to sit alongside this
+   * `width`, but min-width always wins the two against each other, so once
+   * any child's own content (e.g. a `SegmentedControl` with enough options)
+   * grew wider than this cap, the whole menu was forced wider than the
+   * viewport instead of letting that child wrap. Children must wrap/shrink
+   * to fit this width, not the other way around.
+   */
   width: min(21rem, calc(100vw - 2.5rem));
   padding: 0.875rem;
   border: 1px solid var(--md-sys-color-outline);

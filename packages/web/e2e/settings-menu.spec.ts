@@ -114,4 +114,35 @@ test.describe("settings menu", () => {
       ).toHaveAttribute("src", urlPattern);
     });
   }
+
+  test.describe("on a narrow (mobile) viewport", () => {
+    test.use({ viewport: { width: 360, height: 740 } });
+
+    test("stays within the viewport width even with five language options", async ({
+      page,
+    }) => {
+      await page.goto("/");
+      await page.getByTestId(E2E.settingsMenuTrigger).click();
+
+      const menu = page.getByTestId(E2E.settingsMenuContent);
+      await expect(menu).toBeVisible();
+      await expect(
+        page.getByTestId(`${E2E.languageToggle}-option-af`),
+      ).toBeVisible();
+
+      const menuBox = await menu.boundingBox();
+      if (!menuBox) {
+        throw new Error("Expected the settings menu to render bounds");
+      }
+      expect(menuBox.x).toBeGreaterThanOrEqual(0);
+      expect(menuBox.x + menuBox.width).toBeLessThanOrEqual(360);
+
+      const hasHorizontalOverflow = await page.evaluate(
+        () =>
+          document.documentElement.scrollWidth >
+          document.documentElement.clientWidth,
+      );
+      expect(hasHorizontalOverflow).toBe(false);
+    });
+  });
 });

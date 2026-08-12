@@ -11,6 +11,7 @@ export const E2E = {
   retryDataLoad: "retry-data-load",
   settingsMenuTrigger: "settings-menu-trigger",
   settingsMenuContent: "settings-menu-content",
+  languageToggle: "language",
   mapView: "map-view",
   locationSearchInput: "location-search-input",
   locationSearchResults: "location-search-results",

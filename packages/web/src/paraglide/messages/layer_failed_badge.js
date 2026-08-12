@@ -17,18 +17,28 @@ const zu_layer_failed_badge = /** @type {(inputs: Layer_Failed_BadgeInputs) => L
 	return /** @type {LocalizedString} */ (`Yehlulekile ukulayisha — vala uphinde uvule ukuze uzame futhi`)
 };
 
+const xh_layer_failed_badge = /** @type {(inputs: Layer_Failed_BadgeInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Yehlulekile ukulayisha — vala uphinde uvule ukuze uzame kwakhona`)
+};
+
+const af_layer_failed_badge = /** @type {(inputs: Layer_Failed_BadgeInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Kon nie laai nie — skakel af en aan om weer te probeer`)
+};
+
 /**
 * | output |
 * | --- |
 * | "Failed to load — toggle off and on to retry" |
 *
 * @param {Layer_Failed_BadgeInputs} inputs
-* @param {{ locale?: "en" | "st" | "zu" }} options
+* @param {{ locale?: "en" | "st" | "zu" | "xh" | "af" }} options
 * @returns {LocalizedString}
 */
-export const layer_failed_badge = /** @type {((inputs?: Layer_Failed_BadgeInputs, options?: { locale?: "en" | "st" | "zu" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Layer_Failed_BadgeInputs, { locale?: "en" | "st" | "zu" }, {}>} */ ((inputs = {}, options = {}) => {
+export const layer_failed_badge = /** @type {((inputs?: Layer_Failed_BadgeInputs, options?: { locale?: "en" | "st" | "zu" | "xh" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Layer_Failed_BadgeInputs, { locale?: "en" | "st" | "zu" | "xh" | "af" }, {}>} */ ((inputs = {}, options = {}) => {
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "st") return st_layer_failed_badge(inputs)
 	if (locale === "zu") return zu_layer_failed_badge(inputs)
+	if (locale === "xh") return xh_layer_failed_badge(inputs)
+	if (locale === "af") return af_layer_failed_badge(inputs)
 	return en_layer_failed_badge(inputs)
 });

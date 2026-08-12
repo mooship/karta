@@ -2,7 +2,7 @@
   "$schema": "https://inlang.com/schema/inlang-message-format",
   "app_title": "Karta",
   "app_heading": "Karta: Ibalazwe lefa lokuhlelwa kwezindawo eGauteng",
-  "meta_description": "Ibonisa indlela ukuhlelwa kwezindawo ngesikhathi sobandlululo okusalokhu kubumba ngayo isikhathi sokuya emsebenzini nokufinyelela emsebenzini eTshwane naseJohannesburg.",
+  "meta_description": "Ibonisa indlela ukuhlelwa kwezindawo ngesikhathi sobandlululo okusalokhu kubumba ngayo isikhathi sokuya emsebenzini nokufinyelela emsebenzini eGauteng.",
 
   "skip_to_map_information": "Yeqa uye olwazini lwebalazwe",
   "loading_map": "Ibalazwe liyalayisha",
@@ -45,16 +45,16 @@
 
   "layer_townships_label": "Isikhathi semoto esilinganiselwe",
   "layer_townships_description": "Isikhathi sokushayela imoto esilinganiselwe kusukela endaweni ngayinye yelokishi eqashelwe kuya esikhungweni somsebenzi esiseduze esikhethiwe.",
-  "layer_nearest_transit_label": "Ibanga eliya Ezokuthutha eziSeduze",
+  "layer_nearest_transit_label": "Ibanga eliya ezokuthutha eziseduze",
   "layer_nearest_transit_description": "Ibanga eliqondile kusukela endaweni ngayinye yelokishi eqashelwe kuya emzileni osemthethweni wezokuthutha oseduze.",
   "layer_rapid_rail_label": "Isitimela Esisheshayo",
   "layer_bus_rapid_transit_label": "Ibhasi Elisheshayo",
   "layer_commuter_rail_label": "Isitimela Sokuya Emsebenzini",
   "layer_bus_label": "Ibhasi",
 
-  "layer_group_access_to_opportunity_title": "Izingqimba Zokufinyelela",
+  "layer_group_access_to_opportunity_title": "Izingqimba zokufinyelela",
   "layer_group_access_to_opportunity_description": "Yingqimba eyodwa kuphela engasebenza ngesikhathi esisodwa.",
-  "layer_group_transit_networks_title": "Amanethiwekhi Ezokuthutha",
+  "layer_group_transit_networks_title": "Amanethiwekhi ezokuthutha",
 
   "domain_story_title": "Kungani leli balazwe likhona",
   "domain_story_body": "Umthetho wobandlululo wawulawula ukuthi abantu abaMnyama, amaKhaladi kanye namaNdiya bangahlala kuphi. Amalokishi abantu abaMnyama ehlukaniswa ngamabomu nezikhungo zomnotho, futhi lawo mabanga asabumba ukufinyelela emsebenzini nanamuhla. Leli balazwe likala lelo gebe ngesikhathi semoto esilinganiselwe nebanga eliya ezokuthutha.",
