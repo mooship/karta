@@ -1,8 +1,8 @@
 {
   "$schema": "https://inlang.com/schema/inlang-message-format",
   "app_title": "Karta",
-  "app_heading": "Karta: Imephu yelifa lokucwangciswa kwezindawo eGauteng",
-  "meta_description": "Ibonisa indlela ucwangciso lwezindawo ngexesha localucalulo olusabumba ngalo ixesha lokuya emsebenzini nokufikelela emsebenzini eGauteng.",
+  "app_heading": "Karta: Imephu yelifa lokucwangciswa kweendawo eGauteng",
+  "meta_description": "Ibonisa indlela ucwangciso lweendawo ngexesha localucalulo olusabumba ngayo ixesha lokuya emsebenzini nokufikelela emsebenzini eGauteng.",
 
   "skip_to_map_information": "Yeqa uye kulwazi lwemephu",
   "loading_map": "Imephu iyalayisha",

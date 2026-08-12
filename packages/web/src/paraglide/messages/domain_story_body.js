@@ -10,7 +10,7 @@ const en_domain_story_body = /** @type {(inputs: Domain_Story_BodyInputs) => Loc
 };
 
 const st_domain_story_body = /** @type {(inputs: Domain_Story_BodyInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Molao wa kgethollo o ne o laola moo batho ba Batsho, ba Bammala le ba Maindia ba neng ba ka phela teng. Metse a Batho ba Batsho a ne a arohantswe ka boomo le ditsi tsa moruo, mme dibaka tseo di sa bontsha phihlello ya mesebetsi kajeno. 'Mapa ona o lekanya lekgalo leo ka nako ya koloi e akantsweng le bohole ho isa dipalangwaneng.`)
+	return /** @type {LocalizedString} */ (`Molao wa kgethollo o ne o laola moo batho ba Batsho, ba Bammala le ba Maindia ba neng ba ka phela teng. Metse ya batho ba Batsho e ne e arohantswe ka boomo le ditsi tsa moruo, mme dibaka tseo di sa bontsha phihlello ya mesebetsi kajeno. 'Mapa ona o lekanya lekgalo leo ka nako ya koloi e akantsweng le bohole ho isa dipalangwaneng.`)
 };
 
 const zu_domain_story_body = /** @type {(inputs: Domain_Story_BodyInputs) => LocalizedString} */ () => {
