@@ -1,5 +1,6 @@
 .group {
   display: flex;
+  flex-wrap: wrap;
   gap: var(--control-gap);
   border: 1px solid var(--md-sys-color-outline);
   border-radius: var(--md-sys-shape-corner-medium);
