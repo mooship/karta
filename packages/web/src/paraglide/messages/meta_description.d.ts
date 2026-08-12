@@ -3,7 +3,7 @@ export type Meta_DescriptionInputs = {};
 /**
 * | output |
 * | --- |
-* | "Visualising how apartheid-era spatial planning still shapes commute times and access to jobs in Tshwane and Johannesburg." |
+* | "Visualising how apartheid-era spatial planning still shapes commute times and access to jobs across Gauteng." |
 *
 * @param {Meta_DescriptionInputs} inputs
 * @param {{ locale?: "en" | "st" | "zu" }} options

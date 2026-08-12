@@ -2,7 +2,7 @@
   "$schema": "https://inlang.com/schema/inlang-message-format",
   "app_title": "Karta",
   "app_heading": "Karta: Gauteng spatial legacy map",
-  "meta_description": "Visualising how apartheid-era spatial planning still shapes commute times and access to jobs in Tshwane and Johannesburg.",
+  "meta_description": "Visualising how apartheid-era spatial planning still shapes commute times and access to jobs across Gauteng.",
 
   "skip_to_map_information": "Skip to map information",
   "loading_map": "Loading map",
@@ -45,7 +45,7 @@
 
   "layer_townships_label": "Modelled car time",
   "layer_townships_description": "Modelled car drive-time from each recognised township area to its nearest selected job centre.",
-  "layer_nearest_transit_label": "Distance to Nearest Transit",
+  "layer_nearest_transit_label": "Distance to nearest transit",
   "layer_nearest_transit_description": "Straight-line distance from each recognised township area to the nearest formal transit route.",
   "layer_rapid_rail_label": "Rapid Rail",
   "layer_bus_rapid_transit_label": "Bus Rapid Transit",

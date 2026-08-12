@@ -3,7 +3,7 @@ export type Layer_Nearest_Transit_LabelInputs = {};
 /**
 * | output |
 * | --- |
-* | "Distance to Nearest Transit" |
+* | "Distance to nearest transit" |
 *
 * @param {Layer_Nearest_Transit_LabelInputs} inputs
 * @param {{ locale?: "en" | "st" | "zu" }} options
