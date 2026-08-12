@@ -21,19 +21,24 @@ const xh_domain_story_body = /** @type {(inputs: Domain_Story_BodyInputs) => Loc
 	return /** @type {LocalizedString} */ (`Umthetho wocalucalulo wawulawula ukuba abantu abaMnyama, amaKhaladi kunye namaNdiya bangahlala kuphi. Amalokishi abantu abaMnyama ahlukaniswa ngabom kwizikhungo zoqoqosho, kwaye loo mabanga asabumba ukufikelela emsebenzini nanamhlanje. Le mephu ilinganisa loo msantsa ngexesha lemoto elilinganiselweyo nangomgama oya kwezokuthutha.`)
 };
 
+const af_domain_story_body = /** @type {(inputs: Domain_Story_BodyInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Apartheidswetgewing het bepaal waar Swart, Kleurling- en Indiër-mense kon woon. Swart lokasies is doelbewus van ekonomiese sentrums geskei, en daardie afstande bepaal vandag steeds toegang tot werk. Hierdie kaart meet daardie gaping met gemodelleerde motortyd en afstand tot vervoer.`)
+};
+
 /**
 * | output |
 * | --- |
 * | "Apartheid law controlled where Black, Coloured and Indian people could live. Black townships were deliberately separated from economic centres, and those dis..." |
 *
 * @param {Domain_Story_BodyInputs} inputs
-* @param {{ locale?: "en" | "st" | "zu" | "xh" }} options
+* @param {{ locale?: "en" | "st" | "zu" | "xh" | "af" }} options
 * @returns {LocalizedString}
 */
-export const domain_story_body = /** @type {((inputs?: Domain_Story_BodyInputs, options?: { locale?: "en" | "st" | "zu" | "xh" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Domain_Story_BodyInputs, { locale?: "en" | "st" | "zu" | "xh" }, {}>} */ ((inputs = {}, options = {}) => {
+export const domain_story_body = /** @type {((inputs?: Domain_Story_BodyInputs, options?: { locale?: "en" | "st" | "zu" | "xh" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Domain_Story_BodyInputs, { locale?: "en" | "st" | "zu" | "xh" | "af" }, {}>} */ ((inputs = {}, options = {}) => {
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "st") return st_domain_story_body(inputs)
 	if (locale === "zu") return zu_domain_story_body(inputs)
 	if (locale === "xh") return xh_domain_story_body(inputs)
+	if (locale === "af") return af_domain_story_body(inputs)
 	return en_domain_story_body(inputs)
 });

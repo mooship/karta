@@ -1,16 +1,24 @@
 import { describe, expect, it } from "vitest";
-import en from "./en.json";
-import st from "./st.json";
-import xh from "./xh.json";
-import zu from "./zu.json";
+import settings from "../project.inlang/settings.json";
 
 /**
- * Every configured locale, keyed by its `messages/{locale}.json` content.
- * `en` is the baseline every other locale is checked against — add a new
- * locale here (and to `project.inlang/settings.json`'s `locales`) and this
- * suite starts covering it automatically.
+ * Every `messages/{locale}.json` file, discovered by glob rather than a
+ * hand-maintained import list — a new locale file with no matching entry
+ * here was exactly the kind of thing that slipped through when this suite
+ * imported each locale by name: isiXhosa's addition updated this list, but
+ * Afrikaans's initially didn't, and nothing caught it until reviewed by eye.
+ * Globbing means adding `messages/{locale}.json` is enough on its own.
  */
-const LOCALES: Record<string, Record<string, string>> = { en, st, zu, xh };
+const localeModules = import.meta.glob<{ default: Record<string, string> }>(
+  "./*.json",
+  { eager: true },
+);
+
+const LOCALES: Record<string, Record<string, string>> = {};
+for (const [path, mod] of Object.entries(localeModules)) {
+  const locale = path.replace(/^\.\//, "").replace(/\.json$/, "");
+  LOCALES[locale] = mod.default;
+}
 
 const PLACEHOLDER_PATTERN = /\{(\w+)\}/g;
 
@@ -20,9 +28,17 @@ function placeholders(value: string): string[] {
     .sort();
 }
 
-const baseKeys = Object.keys(en).filter((key) => key !== "$schema");
+const baseMessages = LOCALES.en;
+if (!baseMessages) {
+  throw new Error("messages/en.json is missing — cannot establish a baseline");
+}
+const baseKeys = Object.keys(baseMessages).filter((key) => key !== "$schema");
 
 describe("locale message parity", () => {
+  it("project.inlang/settings.json's locales match the messages/*.json files present", () => {
+    expect(new Set(Object.keys(LOCALES))).toEqual(new Set(settings.locales));
+  });
+
   it.each(Object.entries(LOCALES))(
     "%s has exactly the same message keys as en",
     (_locale, messages) => {
@@ -36,7 +52,7 @@ describe("locale message parity", () => {
     (_locale, messages) => {
       for (const key of baseKeys) {
         expect(placeholders(messages[key] ?? "")).toEqual(
-          placeholders(en[key as keyof typeof en]),
+          placeholders(baseMessages[key] ?? ""),
         );
       }
     },

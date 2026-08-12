@@ -21,19 +21,24 @@ const xh_error_boundary_reload = /** @type {(inputs: Error_Boundary_ReloadInputs
 	return /** @type {LocalizedString} */ (`Vula iphepha kwakhona`)
 };
 
+const af_error_boundary_reload = /** @type {(inputs: Error_Boundary_ReloadInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Herlaai bladsy`)
+};
+
 /**
 * | output |
 * | --- |
 * | "Reload page" |
 *
 * @param {Error_Boundary_ReloadInputs} inputs
-* @param {{ locale?: "en" | "st" | "zu" | "xh" }} options
+* @param {{ locale?: "en" | "st" | "zu" | "xh" | "af" }} options
 * @returns {LocalizedString}
 */
-export const error_boundary_reload = /** @type {((inputs?: Error_Boundary_ReloadInputs, options?: { locale?: "en" | "st" | "zu" | "xh" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Error_Boundary_ReloadInputs, { locale?: "en" | "st" | "zu" | "xh" }, {}>} */ ((inputs = {}, options = {}) => {
+export const error_boundary_reload = /** @type {((inputs?: Error_Boundary_ReloadInputs, options?: { locale?: "en" | "st" | "zu" | "xh" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Error_Boundary_ReloadInputs, { locale?: "en" | "st" | "zu" | "xh" | "af" }, {}>} */ ((inputs = {}, options = {}) => {
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "st") return st_error_boundary_reload(inputs)
 	if (locale === "zu") return zu_error_boundary_reload(inputs)
 	if (locale === "xh") return xh_error_boundary_reload(inputs)
+	if (locale === "af") return af_error_boundary_reload(inputs)
 	return en_error_boundary_reload(inputs)
 });
