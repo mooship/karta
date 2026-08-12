@@ -18,6 +18,7 @@ const LOCALE_AUTONYMS: Record<Locale, string> = {
   st: "Sesotho",
   zu: "isiZulu",
   xh: "isiXhosa",
+  af: "Afrikaans",
 };
 
 /**

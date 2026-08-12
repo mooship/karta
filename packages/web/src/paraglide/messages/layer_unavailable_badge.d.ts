@@ -6,11 +6,11 @@ export type Layer_Unavailable_BadgeInputs = {};
 * | "Not yet available" |
 *
 * @param {Layer_Unavailable_BadgeInputs} inputs
-* @param {{ locale?: "en" | "st" | "zu" | "xh" }} options
+* @param {{ locale?: "en" | "st" | "zu" | "xh" | "af" }} options
 * @returns {LocalizedString}
 */
 export declare const layer_unavailable_badge: ((inputs?: Layer_Unavailable_BadgeInputs, options?: {
-    locale?: "en" | "st" | "zu" | "xh";
+    locale?: "en" | "st" | "zu" | "xh" | "af";
 }) => LocalizedString) & import('../runtime.js').MessageMetadata<Layer_Unavailable_BadgeInputs, {
-    locale?: "en" | "st" | "zu" | "xh";
+    locale?: "en" | "st" | "zu" | "xh" | "af";
 }, {}>;

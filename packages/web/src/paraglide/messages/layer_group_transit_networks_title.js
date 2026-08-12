@@ -21,19 +21,24 @@ const xh_layer_group_transit_networks_title = /** @type {(inputs: Layer_Group_Tr
 	return /** @type {LocalizedString} */ (`Amanethiwekhi ezokuthutha`)
 };
 
+const af_layer_group_transit_networks_title = /** @type {(inputs: Layer_Group_Transit_Networks_TitleInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Vervoernetwerke`)
+};
+
 /**
 * | output |
 * | --- |
 * | "Transit networks" |
 *
 * @param {Layer_Group_Transit_Networks_TitleInputs} inputs
-* @param {{ locale?: "en" | "st" | "zu" | "xh" }} options
+* @param {{ locale?: "en" | "st" | "zu" | "xh" | "af" }} options
 * @returns {LocalizedString}
 */
-export const layer_group_transit_networks_title = /** @type {((inputs?: Layer_Group_Transit_Networks_TitleInputs, options?: { locale?: "en" | "st" | "zu" | "xh" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Layer_Group_Transit_Networks_TitleInputs, { locale?: "en" | "st" | "zu" | "xh" }, {}>} */ ((inputs = {}, options = {}) => {
+export const layer_group_transit_networks_title = /** @type {((inputs?: Layer_Group_Transit_Networks_TitleInputs, options?: { locale?: "en" | "st" | "zu" | "xh" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Layer_Group_Transit_Networks_TitleInputs, { locale?: "en" | "st" | "zu" | "xh" | "af" }, {}>} */ ((inputs = {}, options = {}) => {
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "st") return st_layer_group_transit_networks_title(inputs)
 	if (locale === "zu") return zu_layer_group_transit_networks_title(inputs)
 	if (locale === "xh") return xh_layer_group_transit_networks_title(inputs)
+	if (locale === "af") return af_layer_group_transit_networks_title(inputs)
 	return en_layer_group_transit_networks_title(inputs)
 });

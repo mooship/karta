@@ -21,19 +21,24 @@ const xh_domain_story_title = /** @type {(inputs: Domain_Story_TitleInputs) => L
 	return /** @type {LocalizedString} */ (`Kutheni le mephu ikho`)
 };
 
+const af_domain_story_title = /** @type {(inputs: Domain_Story_TitleInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Waarom hierdie kaart bestaan`)
+};
+
 /**
 * | output |
 * | --- |
 * | "Why this map exists" |
 *
 * @param {Domain_Story_TitleInputs} inputs
-* @param {{ locale?: "en" | "st" | "zu" | "xh" }} options
+* @param {{ locale?: "en" | "st" | "zu" | "xh" | "af" }} options
 * @returns {LocalizedString}
 */
-export const domain_story_title = /** @type {((inputs?: Domain_Story_TitleInputs, options?: { locale?: "en" | "st" | "zu" | "xh" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Domain_Story_TitleInputs, { locale?: "en" | "st" | "zu" | "xh" }, {}>} */ ((inputs = {}, options = {}) => {
+export const domain_story_title = /** @type {((inputs?: Domain_Story_TitleInputs, options?: { locale?: "en" | "st" | "zu" | "xh" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Domain_Story_TitleInputs, { locale?: "en" | "st" | "zu" | "xh" | "af" }, {}>} */ ((inputs = {}, options = {}) => {
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "st") return st_domain_story_title(inputs)
 	if (locale === "zu") return zu_domain_story_title(inputs)
 	if (locale === "xh") return xh_domain_story_title(inputs)
+	if (locale === "af") return af_domain_story_title(inputs)
 	return en_domain_story_title(inputs)
 });

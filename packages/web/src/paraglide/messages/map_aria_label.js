@@ -21,19 +21,24 @@ const xh_map_aria_label = /** @type {(inputs: Map_Aria_LabelInputs) => Localized
 	return /** @type {LocalizedString} */ (`Imephu yokufikelela kwamalokishi aseMzantsi Afrika kwiindawo zomsebenzi`)
 };
 
+const af_map_aria_label = /** @type {(inputs: Map_Aria_LabelInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Kaart van Suid-Afrikaanse lokasies se toegang tot werksentrums`)
+};
+
 /**
 * | output |
 * | --- |
 * | "Map of South African township access to job centres" |
 *
 * @param {Map_Aria_LabelInputs} inputs
-* @param {{ locale?: "en" | "st" | "zu" | "xh" }} options
+* @param {{ locale?: "en" | "st" | "zu" | "xh" | "af" }} options
 * @returns {LocalizedString}
 */
-export const map_aria_label = /** @type {((inputs?: Map_Aria_LabelInputs, options?: { locale?: "en" | "st" | "zu" | "xh" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Map_Aria_LabelInputs, { locale?: "en" | "st" | "zu" | "xh" }, {}>} */ ((inputs = {}, options = {}) => {
+export const map_aria_label = /** @type {((inputs?: Map_Aria_LabelInputs, options?: { locale?: "en" | "st" | "zu" | "xh" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Map_Aria_LabelInputs, { locale?: "en" | "st" | "zu" | "xh" | "af" }, {}>} */ ((inputs = {}, options = {}) => {
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "st") return st_map_aria_label(inputs)
 	if (locale === "zu") return zu_map_aria_label(inputs)
 	if (locale === "xh") return xh_map_aria_label(inputs)
+	if (locale === "af") return af_map_aria_label(inputs)
 	return en_map_aria_label(inputs)
 });

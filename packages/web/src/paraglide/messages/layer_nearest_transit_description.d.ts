@@ -6,11 +6,11 @@ export type Layer_Nearest_Transit_DescriptionInputs = {};
 * | "Straight-line distance from each recognised township area to the nearest formal transit route." |
 *
 * @param {Layer_Nearest_Transit_DescriptionInputs} inputs
-* @param {{ locale?: "en" | "st" | "zu" | "xh" }} options
+* @param {{ locale?: "en" | "st" | "zu" | "xh" | "af" }} options
 * @returns {LocalizedString}
 */
 export declare const layer_nearest_transit_description: ((inputs?: Layer_Nearest_Transit_DescriptionInputs, options?: {
-    locale?: "en" | "st" | "zu" | "xh";
+    locale?: "en" | "st" | "zu" | "xh" | "af";
 }) => LocalizedString) & import('../runtime.js').MessageMetadata<Layer_Nearest_Transit_DescriptionInputs, {
-    locale?: "en" | "st" | "zu" | "xh";
+    locale?: "en" | "st" | "zu" | "xh" | "af";
 }, {}>;

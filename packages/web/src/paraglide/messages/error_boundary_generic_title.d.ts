@@ -6,11 +6,11 @@ export type Error_Boundary_Generic_TitleInputs = {};
 * | "Something went wrong" |
 *
 * @param {Error_Boundary_Generic_TitleInputs} inputs
-* @param {{ locale?: "en" | "st" | "zu" | "xh" }} options
+* @param {{ locale?: "en" | "st" | "zu" | "xh" | "af" }} options
 * @returns {LocalizedString}
 */
 export declare const error_boundary_generic_title: ((inputs?: Error_Boundary_Generic_TitleInputs, options?: {
-    locale?: "en" | "st" | "zu" | "xh";
+    locale?: "en" | "st" | "zu" | "xh" | "af";
 }) => LocalizedString) & import('../runtime.js').MessageMetadata<Error_Boundary_Generic_TitleInputs, {
-    locale?: "en" | "st" | "zu" | "xh";
+    locale?: "en" | "st" | "zu" | "xh" | "af";
 }, {}>;

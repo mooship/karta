@@ -6,11 +6,11 @@ export type Layer_Bus_LabelInputs = {};
 * | "Bus" |
 *
 * @param {Layer_Bus_LabelInputs} inputs
-* @param {{ locale?: "en" | "st" | "zu" | "xh" }} options
+* @param {{ locale?: "en" | "st" | "zu" | "xh" | "af" }} options
 * @returns {LocalizedString}
 */
 export declare const layer_bus_label: ((inputs?: Layer_Bus_LabelInputs, options?: {
-    locale?: "en" | "st" | "zu" | "xh";
+    locale?: "en" | "st" | "zu" | "xh" | "af";
 }) => LocalizedString) & import('../runtime.js').MessageMetadata<Layer_Bus_LabelInputs, {
-    locale?: "en" | "st" | "zu" | "xh";
+    locale?: "en" | "st" | "zu" | "xh" | "af";
 }, {}>;

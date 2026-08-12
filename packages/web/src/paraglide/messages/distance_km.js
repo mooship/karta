@@ -21,19 +21,24 @@ const xh_distance_km = /** @type {(inputs: Distance_KmInputs) => LocalizedString
 	return /** @type {LocalizedString} */ (`${i?.value} km`)
 };
 
+const af_distance_km = /** @type {(inputs: Distance_KmInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`${i?.value} km`)
+};
+
 /**
 * | output |
 * | --- |
 * | "{value} km" |
 *
 * @param {Distance_KmInputs} inputs
-* @param {{ locale?: "en" | "st" | "zu" | "xh" }} options
+* @param {{ locale?: "en" | "st" | "zu" | "xh" | "af" }} options
 * @returns {LocalizedString}
 */
-export const distance_km = /** @type {((inputs: Distance_KmInputs, options?: { locale?: "en" | "st" | "zu" | "xh" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Distance_KmInputs, { locale?: "en" | "st" | "zu" | "xh" }, {}>} */ ((inputs, options = {}) => {
+export const distance_km = /** @type {((inputs: Distance_KmInputs, options?: { locale?: "en" | "st" | "zu" | "xh" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Distance_KmInputs, { locale?: "en" | "st" | "zu" | "xh" | "af" }, {}>} */ ((inputs, options = {}) => {
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "st") return st_distance_km(inputs)
 	if (locale === "zu") return zu_distance_km(inputs)
 	if (locale === "xh") return xh_distance_km(inputs)
+	if (locale === "af") return af_distance_km(inputs)
 	return en_distance_km(inputs)
 });

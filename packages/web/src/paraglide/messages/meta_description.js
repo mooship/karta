@@ -21,19 +21,24 @@ const xh_meta_description = /** @type {(inputs: Meta_DescriptionInputs) => Local
 	return /** @type {LocalizedString} */ (`Ibonisa indlela ucwangciso lwezindawo ngexesha localucalulo olusabumba ngalo ixesha lokuya emsebenzini nokufikelela emsebenzini eGauteng.`)
 };
 
+const af_meta_description = /** @type {(inputs: Meta_DescriptionInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Wys hoe ruimtelike beplanning uit die apartheidsera steeds reistye en toegang tot werk regoor Gauteng bepaal.`)
+};
+
 /**
 * | output |
 * | --- |
 * | "Visualising how apartheid-era spatial planning still shapes commute times and access to jobs across Gauteng." |
 *
 * @param {Meta_DescriptionInputs} inputs
-* @param {{ locale?: "en" | "st" | "zu" | "xh" }} options
+* @param {{ locale?: "en" | "st" | "zu" | "xh" | "af" }} options
 * @returns {LocalizedString}
 */
-export const meta_description = /** @type {((inputs?: Meta_DescriptionInputs, options?: { locale?: "en" | "st" | "zu" | "xh" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Meta_DescriptionInputs, { locale?: "en" | "st" | "zu" | "xh" }, {}>} */ ((inputs = {}, options = {}) => {
+export const meta_description = /** @type {((inputs?: Meta_DescriptionInputs, options?: { locale?: "en" | "st" | "zu" | "xh" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Meta_DescriptionInputs, { locale?: "en" | "st" | "zu" | "xh" | "af" }, {}>} */ ((inputs = {}, options = {}) => {
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "st") return st_meta_description(inputs)
 	if (locale === "zu") return zu_meta_description(inputs)
 	if (locale === "xh") return xh_meta_description(inputs)
+	if (locale === "af") return af_meta_description(inputs)
 	return en_meta_description(inputs)
 });

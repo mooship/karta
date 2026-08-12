@@ -21,19 +21,24 @@ const xh_layer_download_aria_label = /** @type {(inputs: Layer_Download_Aria_Lab
 	return /** @type {LocalizedString} */ (`Khuphela idatha ye-${i?.label} (GeoJSON)`)
 };
 
+const af_layer_download_aria_label = /** @type {(inputs: Layer_Download_Aria_LabelInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`Laai ${i?.label}-data af (GeoJSON)`)
+};
+
 /**
 * | output |
 * | --- |
 * | "Download {label} data (GeoJSON)" |
 *
 * @param {Layer_Download_Aria_LabelInputs} inputs
-* @param {{ locale?: "en" | "st" | "zu" | "xh" }} options
+* @param {{ locale?: "en" | "st" | "zu" | "xh" | "af" }} options
 * @returns {LocalizedString}
 */
-export const layer_download_aria_label = /** @type {((inputs: Layer_Download_Aria_LabelInputs, options?: { locale?: "en" | "st" | "zu" | "xh" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Layer_Download_Aria_LabelInputs, { locale?: "en" | "st" | "zu" | "xh" }, {}>} */ ((inputs, options = {}) => {
+export const layer_download_aria_label = /** @type {((inputs: Layer_Download_Aria_LabelInputs, options?: { locale?: "en" | "st" | "zu" | "xh" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Layer_Download_Aria_LabelInputs, { locale?: "en" | "st" | "zu" | "xh" | "af" }, {}>} */ ((inputs, options = {}) => {
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "st") return st_layer_download_aria_label(inputs)
 	if (locale === "zu") return zu_layer_download_aria_label(inputs)
 	if (locale === "xh") return xh_layer_download_aria_label(inputs)
+	if (locale === "af") return af_layer_download_aria_label(inputs)
 	return en_layer_download_aria_label(inputs)
 });

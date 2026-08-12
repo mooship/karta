@@ -1,0 +1,70 @@
+{
+  "$schema": "https://inlang.com/schema/inlang-message-format",
+  "app_title": "Karta",
+  "app_heading": "Karta: Gauteng se ruimtelike erfeniskaart",
+  "meta_description": "Wys hoe ruimtelike beplanning uit die apartheidsera steeds reistye en toegang tot werk regoor Gauteng bepaal.",
+
+  "skip_to_map_information": "Spring na kaartinligting",
+  "loading_map": "Kaart laai tans",
+  "map_aria_label": "Kaart van Suid-Afrikaanse lokasies se toegang tot werksentrums",
+  "data_load_error": "Kaartdata kon nie gelaai word nie.",
+  "retry": "Probeer weer",
+  "search_placeholder": "Soek dorp, voorstad of stasie",
+  "location_out_of_coverage": "{location} is buite Suid-Afrika.",
+
+  "panel_tab_layers": "Lae",
+  "panel_tab_story": "Verhaal",
+  "panel_toggle_close": "Sluit",
+  "panel_toggle_explore": "Verken",
+  "panel_reduce_height": "Verklein paneelhoogte",
+  "panel_expand_height": "Vergroot paneelhoogte",
+  "panel_tablist_aria_label": "Kaartpaneel",
+
+  "layer_unavailable_badge": "Nog nie beskikbaar nie",
+  "layer_failed_badge": "Kon nie laai nie — skakel af en aan om weer te probeer",
+  "layer_download_aria_label": "Laai {label}-data af (GeoJSON)",
+
+  "township_popup_car_time": "Gemodelleerde motortyd",
+  "township_popup_job_center": "Naaste werksentrum",
+  "township_popup_population": "Bevolking",
+  "township_popup_distance": "Afstand",
+  "township_popup_transit_distance": "Afstand tot naaste vervoer",
+  "distance_km": "{value} km",
+
+  "commute_no_data": "Geen data",
+  "commute_minutes": "{minutes} min",
+  "commute_hours_minutes": "{hours}h {minutes}min",
+
+  "error_boundary_not_found_title": "Bladsy nie gevind nie",
+  "error_boundary_not_found_message": "Die bladsy waarna jy soek, bestaan nie.",
+  "error_boundary_generic_title": "Iets het verkeerd geloop",
+  "error_boundary_generic_message": "'n Onverwagte fout het voorgekom. Die herlaai van die bladsy los gewoonlik die probleem op.",
+  "error_boundary_reload": "Herlaai bladsy",
+
+  "language_toggle_label": "Taal",
+
+  "layer_townships_label": "Gemodelleerde motortyd",
+  "layer_townships_description": "Gemodelleerde motorrytyd vanaf elke erkende lokasiegebied na die naaste geselekteerde werksentrum.",
+  "layer_nearest_transit_label": "Afstand tot naaste vervoer",
+  "layer_nearest_transit_description": "Reguitlynafstand vanaf elke erkende lokasiegebied na die naaste formele vervoerroete.",
+  "layer_rapid_rail_label": "Snelspoor",
+  "layer_bus_rapid_transit_label": "Snelbus",
+  "layer_commuter_rail_label": "Pendelspoor",
+  "layer_bus_label": "Bus",
+
+  "layer_group_access_to_opportunity_title": "Toeganklikheidslae",
+  "layer_group_access_to_opportunity_description": "Slegs een laag kan op 'n slag aktief wees.",
+  "layer_group_transit_networks_title": "Vervoernetwerke",
+
+  "domain_story_title": "Waarom hierdie kaart bestaan",
+  "domain_story_body": "Apartheidswetgewing het bepaal waar Swart, Kleurling- en Indiër-mense kon woon. Swart lokasies is doelbewus van ekonomiese sentrums geskei, en daardie afstande bepaal vandag steeds toegang tot werk. Hierdie kaart meet daardie gaping met gemodelleerde motortyd en afstand tot vervoer.",
+
+  "bucket_car_time_short": "Kort (≤ 20 min)",
+  "bucket_car_time_moderate": "Matig (21–40 min)",
+  "bucket_car_time_long": "Lank (41–60 min)",
+  "bucket_car_time_very_long": "Baie lank (> 60 min)",
+  "bucket_transit_distance_near": "Naby (≤ 1 km)",
+  "bucket_transit_distance_moderate": "Matig (1–3 km)",
+  "bucket_transit_distance_far": "Ver (3–8 km)",
+  "bucket_transit_distance_very_far": "Baie ver (> 8 km)"
+}
