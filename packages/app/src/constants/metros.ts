@@ -1,3 +1,5 @@
+import type { RegionId } from "./regions";
+
 /** Identifier for one of the nine Gauteng municipalities the SDK's reference domain covers. */
 export type MetroId =
   | "tshwane"
@@ -15,7 +17,7 @@ export interface MetroDefinition {
   id: MetroId;
   name: string;
   shortName: string;
-  regionId: string;
+  regionId: RegionId;
   /**
    * Census 2011 municipality codes, used by the data pipeline to filter the
    * national boundary shapefile down to this metro's features (see

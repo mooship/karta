@@ -279,6 +279,45 @@ describe("fetchBusRapidTransit (bus-rapid-transit source)", () => {
       ["A Re Yeng", "Ekurhuleni IRPTN", "Rea Vaya"].sort(),
     );
   });
+
+  it("fetches A Re Yeng, Rea Vaya and Ekurhuleni IRPTN concurrently, not sequentially", async () => {
+    let resolveAReYeng!: (value: unknown) => void;
+    let resolveReaVaya!: (value: unknown) => void;
+    let resolveEkurhuleni!: (value: unknown) => void;
+
+    fetchAReYengRoutesMock.mockReturnValue(
+      new Promise((resolve) => {
+        resolveAReYeng = resolve;
+      }),
+    );
+    fetchReaVayaRoutesMock.mockReturnValue(
+      new Promise((resolve) => {
+        resolveReaVaya = resolve;
+      }),
+    );
+    fetchEkurhuleniIrptnRoutesMock.mockReturnValue(
+      new Promise((resolve) => {
+        resolveEkurhuleni = resolve;
+      }),
+    );
+    normalizeAReYengOverpassMock.mockReturnValue(transitLine("A Re Yeng"));
+
+    const fetchPromise = findSource("bus-rapid-transit").fetch();
+
+    await Promise.resolve();
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(fetchAReYengRoutesMock).toHaveBeenCalledTimes(1);
+    expect(fetchReaVayaRoutesMock).toHaveBeenCalledTimes(1);
+    expect(fetchEkurhuleniIrptnRoutesMock).toHaveBeenCalledTimes(1);
+
+    resolveAReYeng({ elements: [] });
+    resolveReaVaya({ elements: [] });
+    resolveEkurhuleni({ type: "FeatureCollection", features: [] });
+
+    await expect(fetchPromise).resolves.toBeDefined();
+  });
 });
 
 describe("fetchBus (bus source, wraps fetchGautrainBus)", () => {

@@ -7,13 +7,14 @@ import {
   screen,
   waitFor,
 } from "@testing-library/react";
-import { forwardRef, type ReactNode, useEffect } from "react";
+import { forwardRef, type ReactNode, useEffect, useRef } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 const mapMocks = vi.hoisted(() => ({
   fitBounds: vi.fn(),
   invalidateSize: vi.fn(),
   tileErrorHandler: null as null | (() => void),
+  tileEventHandlers: [] as unknown[],
   mapContextMenuHandler: null as null | ((event: unknown) => void),
   featureLayers: [] as Array<{
     feature: { properties?: { id?: string } | null };
@@ -49,6 +50,18 @@ const popupMocks = vi.hoisted(() => ({
 vi.mock("react-dom/server", () => ({
   renderToStaticMarkup: popupMocks.renderToStaticMarkup,
 }));
+
+const mapInstance = {
+  fitBounds: mapMocks.fitBounds,
+  invalidateSize: mapMocks.invalidateSize,
+  getContainer: () => document.createElement("div"),
+  getZoom: () => mapMocks.zoom,
+  whenReady: (callback: () => void) => {
+    callback();
+  },
+  on: vi.fn(),
+  off: vi.fn(),
+};
 
 function createMockLayer(feature: { properties?: { id?: string } | null }) {
   const handlers: Record<string, (...args: unknown[]) => void> = {};
@@ -101,6 +114,7 @@ vi.mock("react-leaflet", () => ({
     className?: string;
   }) => {
     mapMocks.tileErrorHandler = eventHandlers?.tileerror ?? null;
+    mapMocks.tileEventHandlers.push(eventHandlers);
     return (
       <div
         data-testid="tile-layer"
@@ -139,13 +153,21 @@ vi.mock("react-leaflet", () => ({
         };
       }
 
+      // Real react-leaflet passes `onEachFeature` to Leaflet's `GeoJSON`
+      // constructor once, at layer creation, and its update path only reacts
+      // to a changed `data` prop (`clearLayers()` + `addData()`). A later
+      // `onEachFeature` identity therefore never rebinds existing layers, so
+      // this mock must read it through a ref rather than depend on it.
+      const onEachFeatureRef = useRef(onEachFeature);
+      onEachFeatureRef.current = onEachFeature;
+
       useEffect(() => {
         const layers = data.features.map((feature) => createMockLayer(feature));
         mapMocks.featureLayers = layers;
         for (const [index, feature] of data.features.entries()) {
           const layer = layers[index];
           if (layer) {
-            onEachFeature?.(feature, layer);
+            onEachFeatureRef.current?.(feature, layer);
           }
         }
         if (ref && typeof ref === "object") {
@@ -162,7 +184,7 @@ vi.mock("react-leaflet", () => ({
             ref.current = null;
           }
         };
-      }, [data.features, onEachFeature, ref]);
+      }, [data.features, ref]);
 
       return (
         <div data-testid="geojson-layer" data-pane={pathOptions?.pane}>
@@ -171,17 +193,11 @@ vi.mock("react-leaflet", () => ({
       );
     },
   ),
-  useMap: () => ({
-    fitBounds: mapMocks.fitBounds,
-    invalidateSize: mapMocks.invalidateSize,
-    getContainer: () => document.createElement("div"),
-    getZoom: () => mapMocks.zoom,
-    whenReady: (callback: () => void) => {
-      callback();
-    },
-    on: vi.fn(),
-    off: vi.fn(),
-  }),
+  // Real `useMap()` reads a single Leaflet `Map` instance out of React
+  // context, so its identity is stable for the life of the `MapContainer`.
+  // A fresh object per call would re-fire every `map`-dependent effect on
+  // every render and hide exactly the kind of bug those deps guard against.
+  useMap: () => mapInstance,
   useMapEvents: (handlers: { contextmenu?: (event: unknown) => void }) => {
     mapMocks.mapContextMenuHandler = handlers.contextmenu ?? null;
     return {};
@@ -219,7 +235,7 @@ import {
 } from "../../constants/basemaps";
 import { DomainProvider } from "../../context/DomainContext";
 import { TEST_DOMAIN } from "../../testFixtures/domain";
-import { MapView } from "./MapView";
+import { MapView, type MapViewProps } from "./MapView";
 
 const CUSTOM_VECTOR_BASEMAP: VectorBasemapDefinition = {
   kind: "vector",
@@ -295,6 +311,7 @@ describe("MapView", () => {
     mapMocks.fitBounds.mockReset();
     mapMocks.invalidateSize.mockReset();
     mapMocks.tileErrorHandler = null;
+    mapMocks.tileEventHandlers = [];
     mapMocks.mapContextMenuHandler = null;
     mapMocks.featureLayers = [];
     mapMocks.geoJsonProps = {};
@@ -307,6 +324,24 @@ describe("MapView", () => {
     setThemePreference("system");
     resetBasemapRegistry();
     clearFeatureCollectionCache();
+  });
+
+  it("exports MapViewProps so a consumer can type its own wrapper component", () => {
+    function TypedMapView(props: MapViewProps<{ id: string; name: string }>) {
+      return <MapView {...props} />;
+    }
+
+    render(
+      withDomain(
+        <TypedMapView
+          {...DEFAULT_MAP_VIEW_PROPS}
+          areas={[]}
+          visibleLayerIds={[]}
+        />,
+      ),
+    );
+
+    expect(screen.getByTestId("map-view")).toBeInTheDocument();
   });
 
   it("passes bounds to MapContainer", () => {
@@ -600,6 +635,152 @@ describe("MapView", () => {
     });
     expect(mapMocks.fitBounds).toHaveBeenCalledTimes(1);
     expect(mapMocks.featureLayers[0]?.openPopup).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not refit bounds or reopen the popup when only renderFeaturePopup's identity changes", async () => {
+    const { rerender } = render(
+      withDomain(
+        <MapView
+          {...DEFAULT_MAP_VIEW_PROPS}
+          areas={areas}
+          visibleLayerIds={["areas"]}
+          selectedFeatureId="A"
+          renderFeaturePopup={(properties) => (
+            <div>{String(properties.name)}</div>
+          )}
+        />,
+      ),
+    );
+
+    await waitFor(() => {
+      expect(mapMocks.featureLayers[0]?.openPopup).toHaveBeenCalledTimes(1);
+    });
+    expect(mapMocks.fitBounds).toHaveBeenCalledTimes(1);
+
+    rerender(
+      withDomain(
+        <MapView
+          {...DEFAULT_MAP_VIEW_PROPS}
+          areas={areas}
+          visibleLayerIds={["areas"]}
+          selectedFeatureId="A"
+          renderFeaturePopup={(properties) => (
+            <div>{String(properties.name)}</div>
+          )}
+        />,
+      ),
+    );
+
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    expect(mapMocks.fitBounds).toHaveBeenCalledTimes(1);
+    expect(mapMocks.featureLayers[0]?.openPopup).toHaveBeenCalledTimes(1);
+  });
+
+  it("calls the latest onFeatureSelect when a feature is clicked after an unrelated re-render", async () => {
+    vi.useFakeTimers();
+    const staleOnFeatureSelect = vi.fn();
+    const freshOnFeatureSelect = vi.fn();
+
+    const { rerender } = render(
+      withDomain(
+        <MapView
+          {...DEFAULT_MAP_VIEW_PROPS}
+          areas={areas}
+          visibleLayerIds={["areas"]}
+          onFeatureSelect={staleOnFeatureSelect}
+          renderFeaturePopup={testRenderFeaturePopup}
+        />,
+      ),
+    );
+
+    const firstLayer = mapMocks.featureLayers[0];
+    expect(firstLayer).toBeDefined();
+
+    rerender(
+      withDomain(
+        <MapView
+          {...DEFAULT_MAP_VIEW_PROPS}
+          areas={areas}
+          visibleLayerIds={["areas"]}
+          onFeatureSelect={freshOnFeatureSelect}
+          renderFeaturePopup={testRenderFeaturePopup}
+        />,
+      ),
+    );
+
+    expect(mapMocks.featureLayers[0]).toBe(firstLayer);
+
+    firstLayer?.__handlers.click?.({ originalEvent: { detail: 1 } });
+    await vi.advanceTimersByTimeAsync(220);
+
+    expect(freshOnFeatureSelect).toHaveBeenCalledWith("A");
+    expect(staleOnFeatureSelect).not.toHaveBeenCalled();
+  });
+
+  it("renders the latest renderFeaturePopup's markup on a click after an unrelated re-render", async () => {
+    vi.useFakeTimers();
+    const stalePopup = vi.fn().mockReturnValue(<div>Stale</div>);
+    const freshPopup = vi.fn().mockReturnValue(<div>Fresh</div>);
+
+    const { rerender } = render(
+      withDomain(
+        <MapView
+          {...DEFAULT_MAP_VIEW_PROPS}
+          areas={areas}
+          visibleLayerIds={["areas"]}
+          renderFeaturePopup={stalePopup}
+        />,
+      ),
+    );
+
+    rerender(
+      withDomain(
+        <MapView
+          {...DEFAULT_MAP_VIEW_PROPS}
+          areas={areas}
+          visibleLayerIds={["areas"]}
+          renderFeaturePopup={freshPopup}
+        />,
+      ),
+    );
+
+    mapMocks.featureLayers[0]?.__handlers.click?.({
+      originalEvent: { detail: 1 },
+    });
+    await vi.advanceTimersByTimeAsync(220);
+
+    expect(freshPopup).toHaveBeenCalledWith(
+      expect.objectContaining({ id: "A" }),
+    );
+    expect(stalePopup).not.toHaveBeenCalled();
+  });
+
+  it("keeps the tile layer's eventHandlers object referentially stable across re-renders", () => {
+    const { rerender } = render(
+      withDomain(
+        <MapView {...DEFAULT_MAP_VIEW_PROPS} areas={[]} visibleLayerIds={[]} />,
+      ),
+    );
+
+    rerender(
+      withDomain(
+        <MapView
+          {...DEFAULT_MAP_VIEW_PROPS}
+          areas={[]}
+          visibleLayerIds={[]}
+          ariaLabel="Test map, renamed"
+        />,
+      ),
+    );
+
+    expect(mapMocks.tileEventHandlers.length).toBeGreaterThan(1);
+    const [first] = mapMocks.tileEventHandlers;
+    for (const handlers of mapMocks.tileEventHandlers) {
+      expect(handlers).toBe(first);
+    }
   });
 
   it("does nothing when selectedFeatureId doesn't match any registered feature layer", () => {

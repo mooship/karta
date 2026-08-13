@@ -3,7 +3,7 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { REGIONS, type TransitLayerFeatureCollection } from "@karta/app";
 import {
-  fetchMetroBoundaries,
+  fetchMetroBoundariesForMetros,
   normalizeBoundaries,
 } from "./adapters/boundaries";
 import { pruneCache } from "./cache";
@@ -34,7 +34,10 @@ import {
   promoteStagedOutput,
 } from "./runHelpers";
 import { createTownshipAreas } from "./townshipAreas";
-import { computeNearestTransitKm } from "./transitDistance";
+import {
+  computeNearestTransitKm,
+  flattenTransitGeometries,
+} from "./transitDistance";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const OUTPUT_ROOT = resolve(__dirname, "../../packages/web/public/data");
@@ -63,7 +66,7 @@ async function runRegion(config: RegionPipelineConfig): Promise<void> {
   const { regionId, metros } = config;
 
   await pruneCache(7 * 24 * 60 * 60 * 1000);
-  assertMetroSetup();
+  assertMetroSetup(metros);
   await cleanupStagingDirectories(OUTPUT_ROOT, regionId);
 
   if (metros.length === 0) {
@@ -92,6 +95,12 @@ async function runRegion(config: RegionPipelineConfig): Promise<void> {
     const transitCollections = fetchedSources.map(
       (entry) => entry.collection as TransitLayerFeatureCollection,
     );
+    const transitGeometries = flattenTransitGeometries(transitCollections);
+
+    const metroBoundaries = await timedStep(
+      `Fetching sub-place boundaries for ${regionId}'s ${metros.length} metros`,
+      () => fetchMetroBoundariesForMetros(metros.map((metro) => metro.id)),
+    );
 
     const allTownships = [];
     const allNormalizedTownships = [];
@@ -99,11 +108,7 @@ async function runRegion(config: RegionPipelineConfig): Promise<void> {
 
     for (const metro of metros) {
       console.log(`\n=== ${metro.id} ===`);
-      const rawBoundaries = await timedStep(
-        `Fetching ${metro.id} sub-place boundaries`,
-        () => fetchMetroBoundaries(metro.id),
-      );
-      const townships = normalizeBoundaries(rawBoundaries);
+      const townships = normalizeBoundaries(metroBoundaries[metro.id]);
       console.log(`  ${townships.length} sub-places loaded`);
 
       const jobCenters = getJobCentersForMetro(metro.id);
@@ -123,7 +128,7 @@ async function runRegion(config: RegionPipelineConfig): Promise<void> {
         async () =>
           computeNearestTransitKm(
             townships.map((township) => township.centroid),
-            transitCollections,
+            transitGeometries,
           ),
       );
 

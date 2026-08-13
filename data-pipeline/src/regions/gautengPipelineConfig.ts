@@ -143,17 +143,18 @@ async function fetchCommuterRail(): Promise<TransitLayerFeatureCollection> {
 }
 
 async function fetchBusRapidTransit(): Promise<TransitLayerFeatureCollection> {
-  const rawAReYeng = await fetchAReYengRoutes();
+  const reaVayaBbox = getMetroBbox("johannesburg");
+  const [rawAReYeng, reaVayaRaw, ekurhuleniIrptnRaw] = await Promise.all([
+    fetchAReYengRoutes(),
+    fetchReaVayaRoutes(reaVayaBbox),
+    fetchEkurhuleniIrptnRoutes(),
+  ]);
+
   const aReYeng =
     "elements" in rawAReYeng
       ? normalizeAReYengOverpass(rawAReYeng)
       : normalizeAReYeng(rawAReYeng);
-
-  const reaVayaBbox = getMetroBbox("johannesburg");
-  const reaVayaRaw = await fetchReaVayaRoutes(reaVayaBbox);
   const reaVaya = normalizeReaVayaOverpass(reaVayaRaw);
-
-  const ekurhuleniIrptnRaw = await fetchEkurhuleniIrptnRoutes();
   const ekurhuleniIrptn = normalizeEkurhuleniIrptn(ekurhuleniIrptnRaw);
 
   return mergeFeatureCollections([aReYeng, reaVaya, ekurhuleniIrptn]);

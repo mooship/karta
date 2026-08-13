@@ -126,30 +126,49 @@ export const multiPolygonGeometrySchema = z.looseObject({
 });
 
 /**
+ * Zod schema for every non-null GeoJSON geometry type, dispatched by its
+ * `type` field.
+ * @remarks A `z.discriminatedUnion` rather than a plain `z.union`: with a
+ *   plain union Zod tries each of the ~7 branches in turn until one matches,
+ *   so every feature pays for up to 7 failed parses before (or instead of)
+ *   a success. Discriminating on `type` lets Zod jump straight to the one
+ *   matching branch, which matters at the same GeoJSON scale documented on
+ *   {@link positionSchema}. `null` can't be a branch here — it has no `type`
+ *   key to discriminate on — so it's handled as a separate outer branch by
+ *   {@link geometrySchema} instead.
+ */
+const nonNullGeometrySchema: z.ZodMiniType<unknown> = z.discriminatedUnion(
+  "type",
+  [
+    z.looseObject({ type: z.literal("Point"), coordinates: positionSchema }),
+    z.looseObject({
+      type: z.literal("MultiPoint"),
+      coordinates: lineStringCoordinatesSchema,
+    }),
+    z.looseObject({
+      type: z.literal("LineString"),
+      coordinates: lineStringCoordinatesSchema,
+    }),
+    z.looseObject({
+      type: z.literal("MultiLineString"),
+      coordinates: multiLineStringCoordinatesSchema,
+    }),
+    polygonGeometrySchema,
+    multiPolygonGeometrySchema,
+    z.looseObject({
+      type: z.literal("GeometryCollection"),
+      geometries: z.array(z.lazy(() => geometrySchema)),
+    }),
+  ],
+);
+
+/**
  * Zod schema for a GeoJSON geometry, including `null` and (recursively)
  * `GeometryCollection`.
  */
 const geometrySchema: z.ZodMiniType<unknown> = z.union([
   z.null(),
-  z.looseObject({ type: z.literal("Point"), coordinates: positionSchema }),
-  z.looseObject({
-    type: z.literal("MultiPoint"),
-    coordinates: lineStringCoordinatesSchema,
-  }),
-  z.looseObject({
-    type: z.literal("LineString"),
-    coordinates: lineStringCoordinatesSchema,
-  }),
-  z.looseObject({
-    type: z.literal("MultiLineString"),
-    coordinates: multiLineStringCoordinatesSchema,
-  }),
-  polygonGeometrySchema,
-  multiPolygonGeometrySchema,
-  z.looseObject({
-    type: z.literal("GeometryCollection"),
-    geometries: z.array(z.lazy(() => geometrySchema)),
-  }),
+  nonNullGeometrySchema,
 ]);
 
 const propertiesSchema = z.union([z.null(), z.record(z.string(), z.unknown())]);

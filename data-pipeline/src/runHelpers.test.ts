@@ -8,9 +8,10 @@ import {
 } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { resolve } from "node:path";
-import { TOWNSHIP_AREA_DEFINITIONS } from "@karta/app";
+import { METROS, TOWNSHIP_AREA_DEFINITIONS } from "@karta/app";
 import type { FeatureCollection, Geometry } from "geojson";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import type { JobCenter } from "./constants/jobCenters";
 import * as jobCenters from "./constants/jobCenters";
 import {
   assertCompleteNetworkCoverage,
@@ -124,13 +125,27 @@ describe("assertMetroSetup", () => {
   });
 
   it("does not throw against the real METROS/getJobCentersForMetro data", () => {
-    expect(() => assertMetroSetup()).not.toThrow();
+    expect(() => assertMetroSetup(METROS)).not.toThrow();
   });
 
-  it("throws when a metro's configured job centres don't match its declared count", () => {
+  it("throws when a given metro's configured job centres don't match its declared count", () => {
     vi.spyOn(jobCenters, "getJobCentersForMetro").mockReturnValue([]);
 
-    expect(() => assertMetroSetup()).toThrow(/Job center count mismatch/);
+    expect(() => assertMetroSetup(METROS)).toThrow(/Job center count mismatch/);
+  });
+
+  it("ignores a mismatch in a metro that isn't in the given list", () => {
+    const includedMetro = { id: "tshwane" as const, jobCenterCount: 2 };
+    const mismatchedMetro = { id: "johannesburg" as const, jobCenterCount: 8 };
+    vi.spyOn(jobCenters, "getJobCentersForMetro").mockImplementation(
+      (metroId) =>
+        metroId === "tshwane" ? ([{}, {}] as JobCenter[]) : ([] as JobCenter[]),
+    );
+
+    expect(() => assertMetroSetup([includedMetro])).not.toThrow();
+    expect(() => assertMetroSetup([includedMetro, mismatchedMetro])).toThrow(
+      /Job center count mismatch for johannesburg/,
+    );
   });
 });
 
