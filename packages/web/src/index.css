@@ -341,12 +341,12 @@ body {
 .leaflet-container .leaflet-control-zoom a {
   display: grid;
   place-items: center;
-  width: 44px;
-  height: 44px;
+  width: 48px;
+  height: 48px;
   border: none;
   background: var(--md-sys-color-surface-container);
   color: var(--md-sys-color-on-surface);
-  font-size: 1.375rem;
+  font-size: 1.5rem;
   line-height: 1;
   transition: background-color var(--motion-duration-short) ease;
 }
@@ -382,6 +382,12 @@ body {
     /* biome-ignore lint/complexity/noImportantStyles: overrides Leaflet's own bundled control stylesheet, which loads after this file and sets this property directly */
     margin-right: 0.75rem !important;
     transform: translateY(-9.5rem);
+  }
+
+  .leaflet-container .leaflet-control-zoom a {
+    width: 56px;
+    height: 56px;
+    font-size: 1.75rem;
   }
 
   .leaflet-control-scale {
