@@ -1,5 +1,5 @@
 import { createLayerConfig, type Layer as DomainLayer } from "@karta/core";
-import { useResolvedDarkTheme } from "@karta/react";
+import { useLatestRef, useResolvedDarkTheme } from "@karta/react";
 import type { Feature, FeatureCollection } from "geojson";
 import {
   circleMarker,
@@ -216,22 +216,16 @@ function resolveFeatureLabel(
 }
 
 /**
- * The caller-supplied behaviour a bound feature listener needs at the moment
- * it fires, rather than at the moment it was bound.
+ * Binds a selectable feature's click/dblclick/remove listeners once, at
+ * layer creation.
  * @remarks react-leaflet hands `onEachFeature` to Leaflet's `GeoJSON`
  *   constructor once, at layer creation, and only re-runs it when the `data`
- *   prop's identity changes. Listeners bound there would otherwise close
- *   over whichever `onFeatureSelect`/`renderFeaturePopup` happened to be
- *   current at creation time and keep calling those forever, so they are
- *   passed as a ref and dereferenced when the event actually fires.
+ *   prop's identity changes. Listeners bound here would otherwise close over
+ *   whichever `onSelect`/`renderFeaturePopup` happened to be current at
+ *   creation time and keep calling those forever, so they're passed as refs
+ *   (see {@link useLatestRef}) and dereferenced when the event actually
+ *   fires instead.
  */
-interface SelectableFeatureHandlers<
-  TProperties extends Record<string, unknown>,
-> {
-  onSelect?: (featureId: string) => void;
-  renderFeaturePopup?: (properties: TProperties) => ReactNode;
-}
-
 function bindSelectableFeatureInteractions<
   TProperties extends Record<string, unknown>,
 >(
@@ -239,7 +233,10 @@ function bindSelectableFeatureInteractions<
   domainLayer: DomainLayer,
   leafletLayer: Layer,
   layerById: Map<string, SelectableFeatureLayer>,
-  handlersRef: React.RefObject<SelectableFeatureHandlers<TProperties>>,
+  onSelectRef: React.RefObject<((featureId: string) => void) | undefined>,
+  renderFeaturePopupRef: React.RefObject<
+    ((properties: TProperties) => ReactNode) | undefined
+  >,
 ) {
   /* v8 ignore start -- unreachable: this function's only call site already gates on `isSelectable` before passing it as `onEachFeature`, but the runtime check (and the type narrowing it gives `domainLayer.interaction` below) stays as this function's own contract in case a second call site is ever added without that gate */
   if (!domainLayer.interaction?.selectable) {
@@ -271,14 +268,13 @@ function bindSelectableFeatureInteractions<
     pendingClickTimeout = setTimeout(() => {
       pendingClickTimeout = null;
       const featureLayer = leafletLayer as SelectableFeatureLayer;
-      const { onSelect, renderFeaturePopup } = handlersRef.current;
       void bindSelectedFeaturePopup(
         featureLayer,
         properties,
-        renderFeaturePopup,
+        renderFeaturePopupRef.current,
       ).then(() => featureLayer.openPopup?.());
       if (typeof featureId === "string") {
-        onSelect?.(featureId);
+        onSelectRef.current?.(featureId);
       }
     }, AREA_CLICK_DELAY_MS);
   });
@@ -306,17 +302,29 @@ interface SelectedFeatureHighlightProps<
 > {
   selectedFeatureId: string | null;
   layerById: React.RefObject<Map<string, SelectableFeatureLayer>>;
-  renderFeaturePopup?: (properties: TProperties) => ReactNode;
+  renderFeaturePopupRef: React.RefObject<
+    ((properties: TProperties) => ReactNode) | undefined
+  >;
 }
 
+/**
+ * Re-fits the map to, and reopens the popup for, the currently selected
+ * feature whenever `selectedFeatureId` changes.
+ * @remarks Takes `renderFeaturePopupRef` rather than the popup renderer
+ *   itself, via {@link useLatestRef}: an effect keyed only on
+ *   `selectedFeatureId` reading the renderer directly would need it in its
+ *   dependency array, re-firing (and snapping the map back to the selected
+ *   feature) on every render where a caller passes an unmemoised renderer —
+ *   reading through the ref sidesteps that without asking every caller to
+ *   memoise.
+ */
 function SelectedFeatureHighlight<TProperties extends Record<string, unknown>>({
   selectedFeatureId,
   layerById,
-  renderFeaturePopup,
+  renderFeaturePopupRef,
 }: SelectedFeatureHighlightProps<TProperties>) {
   const map = useMap();
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: renderFeaturePopup intentionally omitted -- it's a public prop with no stability guarantee, so including it could re-fire this effect on every render for callers that don't memoize it, snapping the map back to the selected feature's bounds and reopening its popup long after the user panned away or dismissed it
   useEffect(() => {
     if (!selectedFeatureId) {
       return;
@@ -339,7 +347,11 @@ function SelectedFeatureHighlight<TProperties extends Record<string, unknown>>({
     }
     let cancelled = false;
     const binding = properties
-      ? bindSelectedFeaturePopup(featureLayer, properties, renderFeaturePopup)
+      ? bindSelectedFeaturePopup(
+          featureLayer,
+          properties,
+          renderFeaturePopupRef.current,
+        )
       : Promise.resolve();
     void binding.then(() => {
       if (!cancelled) {
@@ -349,7 +361,7 @@ function SelectedFeatureHighlight<TProperties extends Record<string, unknown>>({
     return () => {
       cancelled = true;
     };
-  }, [map, selectedFeatureId, layerById]);
+  }, [map, selectedFeatureId, layerById, renderFeaturePopupRef]);
 
   return null;
 }
@@ -590,14 +602,8 @@ function MapViewComponent<
 }: MapViewProps<TProperties>) {
   const { getLayers } = useDomain();
   const selectableLayerById = useRef(new Map<string, SelectableFeatureLayer>());
-  const featureHandlersRef = useRef<SelectableFeatureHandlers<TProperties>>({
-    onSelect: onFeatureSelect,
-    renderFeaturePopup,
-  });
-  featureHandlersRef.current = {
-    onSelect: onFeatureSelect,
-    renderFeaturePopup,
-  };
+  const onSelectRef = useLatestRef(onFeatureSelect);
+  const renderFeaturePopupRef = useLatestRef(renderFeaturePopup);
   const visibleLayers = useMemo(
     () =>
       getLayers().filter(
@@ -793,10 +799,10 @@ function MapViewComponent<
    * Each selectable layer's `onEachFeature` binder, memoised by layer id.
    * @remarks Kept referentially stable so react-leaflet's `GeoJSON` isn't
    *   handed a new binder on every render; the binder reads the current
-   *   `onFeatureSelect`/`renderFeaturePopup` through `featureHandlersRef`
-   *   instead, since Leaflet only ever runs `onEachFeature` once per feature
-   *   layer and would otherwise pin those callbacks to their creation-time
-   *   values.
+   *   `onFeatureSelect`/`renderFeaturePopup` through `onSelectRef`/
+   *   `renderFeaturePopupRef` instead, since Leaflet only ever runs
+   *   `onEachFeature` once per feature layer and would otherwise pin those
+   *   callbacks to their creation-time values.
    */
   const onEachSelectableFeatureByLayerId = useMemo(
     () =>
@@ -813,12 +819,13 @@ function MapViewComponent<
                     layer,
                     featureLayer,
                     selectableLayerById.current,
-                    featureHandlersRef,
+                    onSelectRef,
+                    renderFeaturePopupRef,
                   ),
               ] as const,
           ),
       ),
-    [visibleLayers],
+    [visibleLayers, onSelectRef, renderFeaturePopupRef],
   );
   const boundsOptions = getBoundsOptions(
     getViewportWidth() > MOBILE_BREAKPOINT_PX,
@@ -950,7 +957,7 @@ function MapViewComponent<
         <SelectedFeatureHighlight
           selectedFeatureId={selectedFeatureId}
           layerById={selectableLayerById}
-          renderFeaturePopup={renderFeaturePopup}
+          renderFeaturePopupRef={renderFeaturePopupRef}
         />
         <FocusLocationTarget focusLocationTarget={focusLocationTarget} />
         <AreaLabelVisibility />

@@ -1,15 +1,14 @@
 import { describe, expect, it } from "vitest";
+import { expectLayerGroupsReferenceKnownLayers } from "../testUtils";
 import { GAUTENG_SPATIAL_LEGACY_LAYER_GROUPS } from "./layerGroups";
 import { GAUTENG_SPATIAL_LEGACY_LAYERS } from "./layers";
 
 describe("GAUTENG_SPATIAL_LEGACY_LAYER_GROUPS", () => {
   it("only references layer ids that actually exist in GAUTENG_SPATIAL_LEGACY_LAYERS", () => {
-    const layerIds = GAUTENG_SPATIAL_LEGACY_LAYERS.map((layer) => layer.id);
-    for (const group of GAUTENG_SPATIAL_LEGACY_LAYER_GROUPS) {
-      for (const layerId of group.layerIds) {
-        expect(layerIds).toContain(layerId);
-      }
-    }
+    expectLayerGroupsReferenceKnownLayers(
+      GAUTENG_SPATIAL_LEGACY_LAYERS,
+      GAUTENG_SPATIAL_LEGACY_LAYER_GROUPS,
+    );
   });
 
   it("defines the access-to-opportunity exclusive group matching today's LayerToggles copy", () => {

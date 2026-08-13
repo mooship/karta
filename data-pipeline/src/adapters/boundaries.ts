@@ -110,10 +110,10 @@ export function filterFeaturesByMunicipality(
 /**
  * Extracts the sub-place shapefile pair (.shp/.dbf) from the zip archive and
  * parses it into an unfiltered, national GeoJSON FeatureCollection. I/O-bound
- * (zip extraction + shapefile parsing); shared by `convertShapefileToGeoJSON`
- * (which additionally filters to one metro) and `fetchNationalBoundaries`
- * (which additionally fetches the zip over the network), so the actual
- * parsing logic exists in exactly one place.
+ * (zip extraction + shapefile parsing); the only caller is
+ * `fetchNationalBoundaries`, which additionally fetches the zip over the
+ * network — kept as its own function so that fetch and parse stay separately
+ * testable.
  */
 async function parseSubPlaceZip(zipBuffer: Buffer): Promise<FeatureCollection> {
   const zip = new AdmZip(zipBuffer);
@@ -130,21 +130,6 @@ async function parseSubPlaceZip(zipBuffer: Buffer): Promise<FeatureCollection> {
   const dbfBuffer = dbfEntry.getData();
 
   return shapefile.read(shpBuffer, dbfBuffer);
-}
-
-/**
- * Extracts the sub-place shapefile pair (.shp/.dbf) from the zip archive and
- * converts it to a GeoJSON FeatureCollection, filtered down to a single
- * metro's sub-places only. I/O-bound (zip extraction + shapefile parsing);
- * the filtering logic itself lives in the pure, separately-tested
- * `filterFeaturesByMunicipality`.
- */
-export async function convertShapefileToGeoJSON(
-  zipBuffer: Buffer,
-  municipalityCodes: readonly number[],
-): Promise<FeatureCollection> {
-  const collection = await parseSubPlaceZip(zipBuffer);
-  return filterFeaturesByMunicipality(collection, municipalityCodes);
 }
 
 /**
@@ -167,27 +152,12 @@ export async function fetchNationalBoundaries(): Promise<FeatureCollection> {
 }
 
 /**
- * Fetches the national sub-place boundary shapefile zip and returns just
- * `metroId`'s sub-place features, via `fetchNationalBoundaries`.
- * @throws If the network fetch fails.
- */
-export async function fetchMetroBoundaries(
-  metroId: MetroId,
-): Promise<FeatureCollection> {
-  const national = await fetchNationalBoundaries();
-  return filterFeaturesByMunicipality(
-    national,
-    getMetroDefinition(metroId).municipalityCodes,
-  );
-}
-
-/**
  * Fetches the national sub-place boundary shapefile zip exactly once, then
  * filters it down to each of `metroIds`' sub-place features.
- * @remarks The single-metro `fetchMetroBoundaries` re-fetches and re-parses
- *   the whole-country zip on every call, so a caller processing several
- *   metros (as `runRegion` in `src/run.ts` does for a region's every metro)
- *   should call this once instead of `fetchMetroBoundaries` in a loop.
+ * @remarks Fetching and parsing the whole-country zip once and filtering
+ *   the result per metro (rather than re-fetching and re-parsing it once per
+ *   metro) is why this takes every metro at once instead of one at a time —
+ *   `runRegion` in `src/run.ts` calls this once for a region's every metro.
  * @throws If the network fetch fails.
  */
 export async function fetchMetroBoundariesForMetros(

@@ -5,37 +5,41 @@ import {
   flattenTransitGeometries,
 } from "./transitDistance";
 
+const GAUTRAIN_HATFIELD_COLLECTION = {
+  type: "FeatureCollection" as const,
+  features: [
+    {
+      type: "Feature" as const,
+      properties: { id: "node/1", name: "Hatfield", network: "Gautrain" },
+      geometry: {
+        type: "Point" as const,
+        coordinates: [28.2379, -25.7487],
+      },
+    },
+  ],
+};
+
+const A_RE_YENG_LINE_1A_COLLECTION = {
+  type: "FeatureCollection" as const,
+  features: [
+    {
+      type: "Feature" as const,
+      properties: { id: "way/1", name: "Line 1A", network: "A Re Yeng" },
+      geometry: {
+        type: "LineString" as const,
+        coordinates: [
+          [28.0, -25.75],
+          [28.05, -25.75],
+        ],
+      },
+    },
+  ],
+};
+
 describe("flattenTransitGeometries", () => {
   it("flattens every collection's Point/LineString geometries into one array", () => {
-    const gautrain = {
-      type: "FeatureCollection" as const,
-      features: [
-        {
-          type: "Feature" as const,
-          properties: { id: "node/1", name: "Hatfield", network: "Gautrain" },
-          geometry: {
-            type: "Point" as const,
-            coordinates: [28.2379, -25.7487],
-          },
-        },
-      ],
-    };
-    const aReYeng = {
-      type: "FeatureCollection" as const,
-      features: [
-        {
-          type: "Feature" as const,
-          properties: { id: "way/1", name: "Line 1A", network: "A Re Yeng" },
-          geometry: {
-            type: "LineString" as const,
-            coordinates: [
-              [28.0, -25.75],
-              [28.05, -25.75],
-            ],
-          },
-        },
-      ],
-    };
+    const gautrain = GAUTRAIN_HATFIELD_COLLECTION;
+    const aReYeng = A_RE_YENG_LINE_1A_COLLECTION;
 
     const result = flattenTransitGeometries([gautrain, aReYeng]);
 
@@ -82,36 +86,10 @@ describe("flattenTransitGeometries", () => {
 
 describe("computeNearestTransitKm", () => {
   it("returns the distance in km to the nearest given geometry", () => {
-    const gautrain = {
-      type: "FeatureCollection" as const,
-      features: [
-        {
-          type: "Feature" as const,
-          properties: { id: "node/1", name: "Hatfield", network: "Gautrain" },
-          geometry: {
-            type: "Point" as const,
-            coordinates: [28.2379, -25.7487],
-          },
-        },
-      ],
-    };
-    const aReYeng = {
-      type: "FeatureCollection" as const,
-      features: [
-        {
-          type: "Feature" as const,
-          properties: { id: "way/1", name: "Line 1A", network: "A Re Yeng" },
-          geometry: {
-            type: "LineString" as const,
-            coordinates: [
-              [28.0, -25.75],
-              [28.05, -25.75],
-            ],
-          },
-        },
-      ],
-    };
-    const geometries = flattenTransitGeometries([gautrain, aReYeng]);
+    const geometries = flattenTransitGeometries([
+      GAUTRAIN_HATFIELD_COLLECTION,
+      A_RE_YENG_LINE_1A_COLLECTION,
+    ]);
 
     const result = computeNearestTransitKm(
       [
@@ -138,20 +116,7 @@ describe("computeNearestTransitKm", () => {
   });
 
   it("reuses one flattened geometry array across multiple centroid batches without re-flattening", () => {
-    const gautrain = {
-      type: "FeatureCollection" as const,
-      features: [
-        {
-          type: "Feature" as const,
-          properties: { id: "node/1", name: "Hatfield", network: "Gautrain" },
-          geometry: {
-            type: "Point" as const,
-            coordinates: [28.2379, -25.7487],
-          },
-        },
-      ],
-    };
-    const geometries = flattenTransitGeometries([gautrain]);
+    const geometries = flattenTransitGeometries([GAUTRAIN_HATFIELD_COLLECTION]);
 
     const first = computeNearestTransitKm(
       [{ lat: -25.7487, lon: 28.2379 }],
