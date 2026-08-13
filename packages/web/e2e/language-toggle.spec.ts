@@ -1,7 +1,6 @@
+import { cookieName as LOCALE_COOKIE_NAME } from "../src/paraglide/runtime.js";
 import { expect, test } from "./fixtures";
 import { E2E } from "./selectors";
-
-const LOCALE_COOKIE_NAME = "PARAGLIDE_LOCALE";
 
 test.describe("language toggle", () => {
   test("switching language reloads the document in the new locale, persists via cookie, and survives a reload", async ({
