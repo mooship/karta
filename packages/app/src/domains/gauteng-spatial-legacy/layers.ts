@@ -1,8 +1,17 @@
 import type { Layer } from "@karta/core";
+import type { RegionId } from "../../constants/regions";
 import { getTownshipGroup } from "../../constants/townships";
 
+/**
+ * This domain's region, typed against `RegionId` (derived from `REGIONS`)
+ * rather than a bare string literal — if `REGIONS`'s `gauteng` entry is ever
+ * renamed, this fails typechecking instead of `dataUrl` silently pointing at
+ * a directory `data-pipeline` no longer writes.
+ */
+const GAUTENG_REGION_ID: RegionId = "gauteng";
+
 function dataUrl(fileName: string): string {
-  return `/data/gauteng/${fileName}`;
+  return `/data/${GAUTENG_REGION_ID}/${fileName}`;
 }
 
 function resolveTownshipEmphasis(
@@ -25,8 +34,12 @@ function resolveTownshipEmphasis(
  * township-area data, and one line layer per transit network. `rapid-rail`
  * and `commuter-rail` set `hasPointGeometry: true` since real station/stop
  * Point geometry only exists for those two networks.
+ * @remarks `readonly`/`as const`, matching `METROS`/`REGIONS`: Cloudflare
+ *   Workers reuse isolates across requests, so an in-place mutation by any
+ *   downstream consumer would otherwise leak across unrelated requests for
+ *   the isolate's lifetime.
  */
-export const GAUTENG_SPATIAL_LEGACY_LAYERS: Layer[] = [
+export const GAUTENG_SPATIAL_LEGACY_LAYERS: readonly Layer[] = [
   {
     id: "townships",
     label: "Modelled car time",
@@ -168,4 +181,4 @@ export const GAUTENG_SPATIAL_LEGACY_LAYERS: Layer[] = [
     available: true,
     style: { kind: "line", color: "#CC79A7", weight: 3, legendLabel: "Bus" },
   },
-];
+] as const satisfies readonly Layer[];

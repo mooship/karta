@@ -1,4 +1,10 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react";
 import type { ReactNode } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -158,6 +164,26 @@ describe("App map/location callback wiring", () => {
 
     expect(mapViewMocks.latestProps?.renderFeaturePopup).toBeInstanceOf(
       Function,
+    );
+  });
+
+  it("keeps renderFeaturePopup referentially stable across unrelated re-renders", async () => {
+    render(<App />);
+
+    await waitFor(() => expect(mapViewMocks.latestProps).toBeDefined());
+    const initialRenderFeaturePopup =
+      mapViewMocks.latestProps?.renderFeaturePopup;
+    expect(initialRenderFeaturePopup).toBeInstanceOf(Function);
+
+    act(() => {
+      useMapUiStore.getState().setPanelOpen(true);
+    });
+    act(() => {
+      useMapUiStore.getState().setPanelView("story");
+    });
+
+    expect(mapViewMocks.latestProps?.renderFeaturePopup).toBe(
+      initialRenderFeaturePopup,
     );
   });
 

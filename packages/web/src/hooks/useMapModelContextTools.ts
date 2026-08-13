@@ -7,6 +7,7 @@ import {
 import type { ThemePreference } from "@karta/react";
 import { setThemePreference, useModelContextTool } from "@karta/react";
 import { getLayer, getLayers } from "../layers/registry";
+import { m } from "../paraglide/messages.js";
 import { useMapUiStore } from "../stores/useMapUiStore";
 
 const THEME_PREFERENCES: readonly ThemePreference[] = [
@@ -65,8 +66,7 @@ export function useMapModelContextTools({
 }: UseMapModelContextToolsOptions): void {
   useModelContextTool<Record<string, never>>({
     name: "list-map-layers",
-    description:
-      "List this map's layers, each with its id, label, and whether it's currently visible.",
+    description: m.webmcp_list_layers_description(),
     inputSchema: {
       type: "object",
       properties: {},
@@ -78,8 +78,8 @@ export function useMapModelContextTools({
         .filter((layer) => layer.available)
         .map((layer) => {
           const visibility = visibleLayerIds.includes(layer.id)
-            ? "visible"
-            : "hidden";
+            ? m.webmcp_layer_state_visible()
+            : m.webmcp_layer_state_hidden();
           const description = layer.description
             ? ` — ${layer.description}`
             : "";
@@ -92,7 +92,7 @@ export function useMapModelContextTools({
             text:
               lines.length > 0
                 ? lines.join("\n")
-                : "This map has no layers available.",
+                : m.webmcp_list_layers_empty(),
           },
         ],
       };
@@ -101,14 +101,13 @@ export function useMapModelContextTools({
 
   useModelContextTool<ToggleLayerInput>({
     name: "toggle-map-layer",
-    description:
-      "Show or hide a map layer by id. Call list-map-layers first to find valid ids.",
+    description: m.webmcp_toggle_layer_description(),
     inputSchema: {
       type: "object",
       properties: {
         layerId: {
           type: "string",
-          description: "The layer's id, as returned by list-map-layers.",
+          description: m.webmcp_toggle_layer_input_layer_id(),
         },
       },
       required: ["layerId"],
@@ -121,7 +120,7 @@ export function useMapModelContextTools({
           content: [
             {
               type: "text",
-              text: `No layer with id "${layerId}". Call list-map-layers to see valid ids.`,
+              text: m.webmcp_toggle_layer_unknown({ layerId }),
             },
           ],
         };
@@ -131,7 +130,7 @@ export function useMapModelContextTools({
           content: [
             {
               type: "text",
-              text: `Layer "${layer.label}" isn't available yet.`,
+              text: m.webmcp_toggle_layer_unavailable({ label: layer.label }),
             },
           ],
         };
@@ -144,7 +143,9 @@ export function useMapModelContextTools({
         content: [
           {
             type: "text",
-            text: `Layer "${layer.label}" is now ${nowVisible ? "visible" : "hidden"}.`,
+            text: nowVisible
+              ? m.webmcp_toggle_layer_now_visible({ label: layer.label })
+              : m.webmcp_toggle_layer_now_hidden({ label: layer.label }),
           },
         ],
       };
@@ -153,14 +154,13 @@ export function useMapModelContextTools({
 
   useModelContextTool<SearchLocationInput>({
     name: "search-map-location",
-    description:
-      "Search for a place by name and fly the map to the best match, e.g. a town, suburb or station.",
+    description: m.webmcp_search_location_description(),
     inputSchema: {
       type: "object",
       properties: {
         query: {
           type: "string",
-          description: "Free-text place name to search for.",
+          description: m.webmcp_search_location_input_query(),
         },
       },
       required: ["query"],
@@ -172,7 +172,10 @@ export function useMapModelContextTools({
       if (!best) {
         return {
           content: [
-            { type: "text", text: `No location found matching "${query}".` },
+            {
+              type: "text",
+              text: m.webmcp_search_location_not_found({ query }),
+            },
           ],
         };
       }
@@ -182,14 +185,14 @@ export function useMapModelContextTools({
 
   useModelContextTool<SetBasemapInput>({
     name: "set-map-basemap",
-    description: "Switch the map's basemap style.",
+    description: m.webmcp_set_basemap_description(),
     inputSchema: {
       type: "object",
       properties: {
         basemap: {
           type: "string",
           enum: getRegisteredBasemapIds(),
-          description: "One of the registered basemap ids.",
+          description: m.webmcp_set_basemap_input_basemap(),
         },
       },
       required: ["basemap"],
@@ -198,20 +201,23 @@ export function useMapModelContextTools({
     execute: ({ basemap }) => {
       if (!getRegisteredBasemapIds().includes(basemap)) {
         return {
-          content: [{ type: "text", text: `Unknown basemap "${basemap}".` }],
+          content: [
+            { type: "text", text: m.webmcp_set_basemap_unknown({ basemap }) },
+          ],
         };
       }
       useMapUiStore.getState().setBasemap(basemap);
       return {
-        content: [{ type: "text", text: `Basemap switched to "${basemap}".` }],
+        content: [
+          { type: "text", text: m.webmcp_set_basemap_switched({ basemap }) },
+        ],
       };
     },
   });
 
   useModelContextTool<SetThemeInput>({
     name: "set-app-theme",
-    description:
-      'Switch the app\'s colour theme. "system" follows the OS preference.',
+    description: m.webmcp_set_theme_description(),
     inputSchema: {
       type: "object",
       properties: {
@@ -226,12 +232,16 @@ export function useMapModelContextTools({
     execute: ({ theme }) => {
       if (!THEME_PREFERENCES.includes(theme as ThemePreference)) {
         return {
-          content: [{ type: "text", text: `Unknown theme "${theme}".` }],
+          content: [
+            { type: "text", text: m.webmcp_set_theme_unknown({ theme }) },
+          ],
         };
       }
       setThemePreference(theme as ThemePreference);
       return {
-        content: [{ type: "text", text: `Theme switched to "${theme}".` }],
+        content: [
+          { type: "text", text: m.webmcp_set_theme_switched({ theme }) },
+        ],
       };
     },
   });
@@ -240,8 +250,7 @@ export function useMapModelContextTools({
     story
       ? {
           name: "read-map-story",
-          description:
-            "Read this map's background story explaining why it exists, and open the Story panel.",
+          description: m.webmcp_read_story_description(),
           inputSchema: {
             type: "object",
             properties: {},

@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { getMetroDefinition, METROS } from "./metros";
+import { REGIONS } from "./regions";
 
 describe("metros", () => {
   it("defines all Gauteng municipalities with stable Census 2011 municipality codes", () => {
@@ -22,6 +23,13 @@ describe("metros", () => {
   it("assigns every metro to the gauteng region", () => {
     for (const metro of METROS) {
       expect(metro.regionId).toBe("gauteng");
+    }
+  });
+
+  it("only assigns metros to regions that actually exist in REGIONS", () => {
+    const regionIds = REGIONS.map((region) => region.id);
+    for (const metro of METROS) {
+      expect(regionIds).toContain(metro.regionId);
     }
   });
 

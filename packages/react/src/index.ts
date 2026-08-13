@@ -1,3 +1,4 @@
+export { useLatestRef } from "./hooks/useLatestRef";
 export type {
   ModelContextToolContentBlock,
   ModelContextToolDefinition,

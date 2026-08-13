@@ -1,6 +1,7 @@
 import type { Layer } from "@karta/core";
 import { resolveThemedColor } from "@karta/core";
 import { useResolvedDarkTheme } from "@karta/react";
+import { useMemo } from "react";
 import { useDomain } from "../../context/DomainContext";
 import styles from "./Legend.module.css";
 
@@ -99,14 +100,22 @@ export function Legend({
   const layers = getLayers();
   const isActiveMode = mode === "active";
   const resolvedDark = useResolvedDarkTheme();
-  const choroplethSections = choroplethLegends(
-    layers,
-    isActiveMode ? visibleLayerIds : undefined,
-    resolvedDark,
+  const activeLayerIds = isActiveMode ? visibleLayerIds : undefined;
+  /**
+   * @remarks Both derived lists walk every layer (and, for choropleths,
+   *   every bucket) and allocate a fresh entry object per swatch. Memoised
+   *   for the same reason `MapView` memoises its own derived layer maps: the
+   *   legend re-renders on unrelated parent state (panel drag frames, menu
+   *   toggles), and rebuilding these each time also gave every rendered
+   *   entry a new identity for no benefit.
+   */
+  const choroplethSections = useMemo(
+    () => choroplethLegends(layers, activeLayerIds, resolvedDark),
+    [layers, activeLayerIds, resolvedDark],
   );
-  const transitEntries = getTransitEntries(
-    layers,
-    isActiveMode ? visibleLayerIds : undefined,
+  const transitEntries = useMemo(
+    () => getTransitEntries(layers, activeLayerIds),
+    [layers, activeLayerIds],
   );
   const hasAnyLegendSection =
     choroplethSections.length > 0 || transitEntries.length > 0;
