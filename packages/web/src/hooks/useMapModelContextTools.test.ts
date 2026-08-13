@@ -40,6 +40,8 @@ vi.mock("@karta/react", async (importOriginal) => {
   };
 });
 
+import { m } from "../paraglide/messages.js";
+import { overwriteGetLocale } from "../paraglide/runtime.js";
 import { useMapUiStore } from "../stores/useMapUiStore";
 import { useMapModelContextTools } from "./useMapModelContextTools";
 
@@ -364,6 +366,47 @@ describe("useMapModelContextTools", () => {
 
     expect(text).toBe('Theme switched to "dark".');
     expect(themeMocks.setThemePreference).toHaveBeenCalledWith("dark");
+  });
+
+  it("sources every tool's copy from the message catalogue, not English literals", async () => {
+    const registerTool = stubModelContext();
+    registryMocks.getLayers.mockReturnValue([]);
+    overwriteGetLocale(() => "af");
+    try {
+      renderHook(() =>
+        useMapModelContextTools({
+          onLocationSelect,
+          story: { title: "Waarom", body: "Omdat" },
+          onShowStory,
+        }),
+      );
+
+      expect(toolNamed(registerTool, "list-map-layers").description).toBe(
+        m.webmcp_list_layers_description({}, { locale: "af" }),
+      );
+      expect(toolNamed(registerTool, "toggle-map-layer").description).toBe(
+        m.webmcp_toggle_layer_description({}, { locale: "af" }),
+      );
+      expect(toolNamed(registerTool, "search-map-location").description).toBe(
+        m.webmcp_search_location_description({}, { locale: "af" }),
+      );
+      expect(toolNamed(registerTool, "set-map-basemap").description).toBe(
+        m.webmcp_set_basemap_description({}, { locale: "af" }),
+      );
+      expect(toolNamed(registerTool, "set-app-theme").description).toBe(
+        m.webmcp_set_theme_description({}, { locale: "af" }),
+      );
+      expect(toolNamed(registerTool, "read-map-story").description).toBe(
+        m.webmcp_read_story_description({}, { locale: "af" }),
+      );
+
+      const listed = await textOf(
+        toolNamed(registerTool, "list-map-layers").execute({}),
+      );
+      expect(listed).toBe(m.webmcp_list_layers_empty({}, { locale: "af" }));
+    } finally {
+      overwriteGetLocale(() => "en");
+    }
   });
 
   it("rejects an invalid theme value", async () => {

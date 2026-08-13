@@ -121,4 +121,46 @@ describe("reprojectFeatureCollection", () => {
       ],
     });
   });
+
+  it("passes through a feature with a null geometry unchanged, rather than throwing", () => {
+    const collection: FeatureCollection = {
+      type: "FeatureCollection",
+      features: [
+        {
+          type: "Feature",
+          properties: { id: 1 },
+          geometry: { type: "Point", coordinates: SOURCE_COORD },
+        },
+        {
+          type: "Feature",
+          properties: { id: 2 },
+          geometry: null,
+        },
+      ],
+    };
+
+    expect(reprojectFeatureCollection(collection, "EPSG:3857")).toEqual({
+      type: "FeatureCollection",
+      features: [
+        {
+          type: "Feature",
+          properties: { id: 1 },
+          geometry: { type: "Point", coordinates: REPROJECTED_COORD },
+        },
+        {
+          type: "Feature",
+          properties: { id: 2 },
+          geometry: null,
+        },
+      ],
+    });
+  });
+});
+
+describe("reprojectGeometry misuse", () => {
+  it("throws a descriptive error when called directly with a null geometry", () => {
+    expect(() =>
+      reprojectGeometry(null as unknown as Geometry, "EPSG:3857"),
+    ).toThrow(/null/i);
+  });
 });

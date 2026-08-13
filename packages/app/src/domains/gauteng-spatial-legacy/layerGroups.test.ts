@@ -1,7 +1,17 @@
 import { describe, expect, it } from "vitest";
 import { GAUTENG_SPATIAL_LEGACY_LAYER_GROUPS } from "./layerGroups";
+import { GAUTENG_SPATIAL_LEGACY_LAYERS } from "./layers";
 
 describe("GAUTENG_SPATIAL_LEGACY_LAYER_GROUPS", () => {
+  it("only references layer ids that actually exist in GAUTENG_SPATIAL_LEGACY_LAYERS", () => {
+    const layerIds = GAUTENG_SPATIAL_LEGACY_LAYERS.map((layer) => layer.id);
+    for (const group of GAUTENG_SPATIAL_LEGACY_LAYER_GROUPS) {
+      for (const layerId of group.layerIds) {
+        expect(layerIds).toContain(layerId);
+      }
+    }
+  });
+
   it("defines the access-to-opportunity exclusive group matching today's LayerToggles copy", () => {
     const group = GAUTENG_SPATIAL_LEGACY_LAYER_GROUPS.find(
       (g) => g.id === "access-to-opportunity",

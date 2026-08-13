@@ -207,4 +207,40 @@ describe("useModelContextTool", () => {
     await Promise.resolve();
     await Promise.resolve();
   });
+
+  it("does not throw when registerTool throws synchronously", () => {
+    const registerTool = vi.fn().mockImplementation(() => {
+      throw new Error("Permissions-Policy denies tools");
+    });
+    Object.defineProperty(document, "modelContext", {
+      configurable: true,
+      value: { registerTool },
+    });
+
+    expect(() =>
+      renderHook(() => useModelContextTool(makeTool())),
+    ).not.toThrow();
+  });
+
+  it("logs a console.error with the tool name and error when registerTool throws synchronously", () => {
+    const error = new Error("Permissions-Policy denies tools");
+    const registerTool = vi.fn().mockImplementation(() => {
+      throw error;
+    });
+    Object.defineProperty(document, "modelContext", {
+      configurable: true,
+      value: { registerTool },
+    });
+    const consoleError = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
+
+    renderHook(() => useModelContextTool(makeTool({ name: "example-tool" })));
+
+    expect(consoleError).toHaveBeenCalledWith(
+      expect.stringContaining("example-tool"),
+      error,
+    );
+    consoleError.mockRestore();
+  });
 });

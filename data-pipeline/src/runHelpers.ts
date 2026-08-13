@@ -1,6 +1,7 @@
 import { readdir, rename, rm } from "node:fs/promises";
 import { resolve } from "node:path";
-import { METROS, type MetroId, TOWNSHIP_AREA_DEFINITIONS } from "@karta/app";
+import type { MetroDefinition, MetroId } from "@karta/app";
+import { TOWNSHIP_AREA_DEFINITIONS } from "@karta/app";
 import type { FeatureCollection, Geometry } from "geojson";
 import { getJobCentersForMetro } from "./constants/jobCenters";
 import { pathExists } from "./fsUtils";
@@ -63,13 +64,19 @@ export function findJobCenterCountMismatch(
 }
 
 /**
- * Checks that each metro's declared `jobCenterCount` matches its actual
+ * Checks that each of `metros`' declared `jobCenterCount` matches its actual
  * configured job centres, catching a `constants/metros.ts` edit that wasn't
  * kept in sync with `constants/jobCenters.ts`.
+ * @param metros - The metros to check, e.g. a single region's
+ *   `RegionPipelineConfig.metros` — never the global `METROS` list, so a
+ *   drift in a still-under-construction, unrelated region's metro doesn't
+ *   fail an otherwise-valid region's run.
  * @throws On the first mismatch found.
  */
-export function assertMetroSetup(): void {
-  for (const metro of METROS) {
+export function assertMetroSetup(
+  metros: readonly Pick<MetroDefinition, "id" | "jobCenterCount">[],
+): void {
+  for (const metro of metros) {
     const mismatch = findJobCenterCountMismatch(
       metro.id,
       metro.jobCenterCount,

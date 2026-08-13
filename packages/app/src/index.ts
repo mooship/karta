@@ -3,6 +3,7 @@ export * from "./constants/regions";
 export * from "./constants/townships";
 export * from "./constants/transitLayers";
 export * from "./domains/gauteng-spatial-legacy";
+export * from "./domains/heritage-sites";
 export * from "./types/genericLayer";
 export * from "./types/township";
 export * from "./types/transit";

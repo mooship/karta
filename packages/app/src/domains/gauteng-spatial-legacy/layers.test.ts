@@ -1,8 +1,24 @@
 import { describe, expect, it } from "vitest";
+import { REGIONS } from "../../constants/regions";
 import type { Layer } from "../../types/genericLayer";
 import { GAUTENG_SPATIAL_LEGACY_LAYERS } from "./layers";
 
 describe("GAUTENG_SPATIAL_LEGACY_LAYERS", () => {
+  it("derives every data URL's region segment from REGIONS' gauteng entry", () => {
+    const gautengRegion = REGIONS.find((region) => region.id === "gauteng");
+    expect(gautengRegion).toBeDefined();
+    for (const layer of GAUTENG_SPATIAL_LEGACY_LAYERS) {
+      for (const url of layer.dataSource) {
+        expect(url.startsWith(`/data/${gautengRegion?.id}/`)).toBe(true);
+      }
+      if (layer.companionSource) {
+        expect(
+          layer.companionSource.startsWith(`/data/${gautengRegion?.id}/`),
+        ).toBe(true);
+      }
+    }
+  });
+
   it("has exactly the 6 layers the current app ships, in order", () => {
     expect(GAUTENG_SPATIAL_LEGACY_LAYERS.map((l) => l.id)).toEqual([
       "townships",

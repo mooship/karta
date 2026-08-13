@@ -46,12 +46,25 @@ export function reprojectPosition(
  * @remarks Walks coordinates via Turf's `coordEach`, so every geometry type
  *   it supports (including `GeometryCollection`) is handled without a
  *   hand-written recursive case per type. Builds one converter for the whole
- *   geometry rather than re-parsing `sourceCrs` per coordinate.
+ *   geometry rather than re-parsing `sourceCrs` per coordinate. `geometry`'s
+ *   type doesn't admit `null` — GeoJSON's `Feature.geometry` does, but a
+ *   bare `Geometry` never should — so a caller passing `null` anyway (only
+ *   reachable via a type assertion, as `reprojectFeatureCollection` used to
+ *   do before it started skipping null-geometry features itself) is a
+ *   misuse this throws on explicitly, rather than surfacing Turf's opaque
+ *   `"geojson is required"`.
  */
 export function reprojectGeometry(
   geometry: Geometry,
   sourceCrs: string,
 ): Geometry {
+  if (geometry === null) {
+    throw new Error(
+      "reprojectGeometry: geometry must not be null — callers with a " +
+        "possibly-null Feature.geometry should use reprojectFeatureCollection, " +
+        "which passes null-geometry features through unchanged.",
+    );
+  }
   const converter = proj4(sourceCrs, WGS84);
   const reprojected = turf.clone(geometry);
   turf.coordEach(reprojected, (coord) => {
@@ -66,6 +79,10 @@ export function reprojectGeometry(
  * Reprojects every feature's geometry in `collection` from `sourceCrs` into WGS84.
  * @param collection - The collection to reproject.
  * @param sourceCrs - A proj4-compatible definition string.
+ * @remarks GeoJSON explicitly allows `Feature.geometry: null` (an
+ *   "unlocated" feature), which `geoJsonSchemas.ts` validates as a valid
+ *   shape. Such features are passed through unchanged rather than handed to
+ *   `reprojectGeometry`, which would otherwise throw on the null geometry.
  */
 export function reprojectFeatureCollection(
   collection: FeatureCollection,
@@ -74,10 +91,13 @@ export function reprojectFeatureCollection(
   return {
     ...collection,
     features: collection.features.map(
-      (feature): Feature => ({
-        ...feature,
-        geometry: reprojectGeometry(feature.geometry, sourceCrs),
-      }),
+      (feature): Feature =>
+        feature.geometry === null
+          ? feature
+          : {
+              ...feature,
+              geometry: reprojectGeometry(feature.geometry, sourceCrs),
+            },
     ),
   };
 }

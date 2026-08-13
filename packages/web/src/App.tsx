@@ -345,6 +345,23 @@ export function App() {
 
   const handleMapReady = useCallback(() => setMapReady(true), []);
 
+  /**
+   * Renders a selected township's popup markup for `MapView`.
+   * @remarks Memoised with no dependencies because `MapView` treats this
+   *   prop as a stability signal, not just a renderer: an unmemoised
+   *   callback made the map refit its bounds and reopen the popup on any
+   *   unrelated re-render (a bottom-sheet drag frame, opening the settings
+   *   menu), throwing away wherever the user had panned to. Nothing render-
+   *   scoped is captured here — `TownshipPopup` resolves its own translated
+   *   copy when the element it returns is actually rendered.
+   */
+  const renderFeaturePopup = useCallback(
+    (properties: Record<string, unknown>) => (
+      <TownshipPopup properties={properties as unknown as TownshipProperties} />
+    ),
+    [],
+  );
+
   function handleLocationSelect(location: LocationSearchResult): string {
     if (!isWithinSearchCoverage(location)) {
       setOutOfCoverageLocationLabel(location.label);
@@ -353,7 +370,7 @@ export function App() {
     setOutOfCoverageLocationLabel(null);
     setSelectedFeatureId(null);
     setFocusLocationTarget({ token: Date.now(), location });
-    return `Flew to ${location.label}.`;
+    return m.webmcp_search_location_flew_to({ location: location.label });
   }
 
   useMapModelContextTools({
@@ -602,11 +619,7 @@ export function App() {
                 onReady={handleMapReady}
                 onBasemapError={() => setBasemap("street")}
                 locationContextMenu
-                renderFeaturePopup={(properties) => (
-                  <TownshipPopup
-                    properties={properties as unknown as TownshipProperties}
-                  />
-                )}
+                renderFeaturePopup={renderFeaturePopup}
               />
             </Suspense>
           )}
