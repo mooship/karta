@@ -70,6 +70,35 @@ test.describe("location search", () => {
     await expect(input).toHaveValue("");
   });
 
+  test("does not reopen the results dropdown once the debounce window elapses after a selection", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    const input = page.getByTestId(E2E.locationSearchInput);
+    await input.click();
+    await input.fill("soweto");
+
+    const firstResult = page
+      .getByTestId(E2E.locationSearchResults)
+      .getByRole("option")
+      .first();
+    await expect(firstResult).toBeVisible();
+    await firstResult.click();
+
+    await expect(input).toHaveValue(GEOCODER_RESULT.display_name);
+    await expect(page.getByTestId(E2E.locationSearchResults)).toHaveCount(0);
+
+    // setQuery(result.label) after a selection is itself a query change, which
+    // would otherwise re-arm the debounced search effect and reopen the
+    // dropdown around it firing a moment after selection (see
+    // LocationSearchControl's `justSelectedRef` guard) -- waiting out the
+    // debounce window is the only way to prove that doesn't happen.
+    await page.waitForTimeout(500);
+
+    await expect(page.getByTestId(E2E.locationSearchResults)).toHaveCount(0);
+    await expect(input).toHaveValue(GEOCODER_RESULT.display_name);
+  });
+
   test("reports no matches for a query the geocoder can't resolve", async ({
     page,
   }) => {
