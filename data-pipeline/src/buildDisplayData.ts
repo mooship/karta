@@ -2,7 +2,6 @@ import { readFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
-  METROS,
   type TownshipFeature,
   TRANSIT_OPERATOR_LAYER_NAMES,
   type TransitLayerFeatureCollection,
@@ -12,6 +11,7 @@ import { isDirectExecution } from "./cliEntry";
 import { createDisplayPolygons } from "./displayTownships";
 import { createDisplayTransit } from "./displayTransit";
 import { writeGeoJsonFile } from "./export";
+import { REGION_PIPELINE_CONFIGS } from "./regionPipelineConfigs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const DATA_ROOT = resolve(__dirname, "../../packages/web/public/data");
@@ -105,15 +105,26 @@ export async function rebuildTransitDisplay(
   }
 }
 
+/**
+ * Rebuilds display files for every metro in every configured region's
+ * pipeline, per {@link REGION_PIPELINE_CONFIGS}.
+ * @remarks Loops `config.metros` per region rather than the flat, global
+ *   `METROS` list, so a metro registered for a region this helper hasn't
+ *   been pointed at yet doesn't get processed here regardless — the same
+ *   region-scoping `runRegion` (`src/run.ts`) already applies via
+ *   `assertMetroSetup`.
+ */
 async function main() {
-  for (const metro of METROS) {
-    const dataDir = resolve(DATA_ROOT, metro.id);
-    const hasTownships = await rebuildTownshipDisplay(dataDir);
-    if (!hasTownships) {
-      console.log(`  skipping ${metro.id} townships (no source file yet)`);
-      continue;
+  for (const config of REGION_PIPELINE_CONFIGS) {
+    for (const metro of config.metros) {
+      const dataDir = resolve(DATA_ROOT, metro.id);
+      const hasTownships = await rebuildTownshipDisplay(dataDir);
+      if (!hasTownships) {
+        console.log(`  skipping ${metro.id} townships (no source file yet)`);
+        continue;
+      }
+      await rebuildTransitDisplay(dataDir, metro.id);
     }
-    await rebuildTransitDisplay(dataDir, metro.id);
   }
 }
 
