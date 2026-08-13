@@ -26,3 +26,12 @@ export const REGIONS: readonly RegionDefinition[] = [
 export function getRegionDefinition(id: string): RegionDefinition | undefined {
   return REGIONS.find((region) => region.id === id);
 }
+
+/**
+ * Union of the ids actually configured in `REGIONS`, derived from `REGIONS`
+ * itself rather than hand-typed. `MetroDefinition.regionId` (`./metros.ts`)
+ * is typed against this instead of plain `string` so a typo'd or renamed
+ * region id fails typechecking instead of silently producing a metro that
+ * belongs to no configured region.
+ */
+export type RegionId = (typeof REGIONS)[number]["id"];

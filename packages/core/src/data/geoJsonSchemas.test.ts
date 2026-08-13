@@ -254,6 +254,24 @@ describe("featureCollectionSchema", () => {
     expect(result.success).toBe(true);
   });
 
+  it("rejects a geometry with a completely unknown type string", () => {
+    const result = featureCollectionSchema.safeParse({
+      type: "FeatureCollection",
+      features: [
+        {
+          type: "Feature",
+          properties: {},
+          geometry: { type: "NotAGeometry", coordinates: [28, -25] },
+        },
+      ],
+    });
+
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.issues[0]?.message).toBeTruthy();
+    }
+  });
+
   it("rejects a GeometryCollection containing an invalid geometry", () => {
     const result = featureCollectionSchema.safeParse({
       type: "FeatureCollection",

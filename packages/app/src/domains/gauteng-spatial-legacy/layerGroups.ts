@@ -5,8 +5,12 @@ import type { LayerGroup } from "../../types/genericLayer";
  * choropleth layers as a mutually-exclusive group (only one shown at a
  * time), and every transit network layer as an independently-toggleable
  * group.
+ * @remarks `readonly`/`as const`, matching `METROS`/`REGIONS`: Cloudflare
+ *   Workers reuse isolates across requests, so an in-place mutation by any
+ *   downstream consumer would otherwise leak across unrelated requests for
+ *   the isolate's lifetime.
  */
-export const GAUTENG_SPATIAL_LEGACY_LAYER_GROUPS: LayerGroup[] = [
+export const GAUTENG_SPATIAL_LEGACY_LAYER_GROUPS: readonly LayerGroup[] = [
   {
     id: "access-to-opportunity",
     title: "Accessibility overlays",
@@ -20,4 +24,4 @@ export const GAUTENG_SPATIAL_LEGACY_LAYER_GROUPS: LayerGroup[] = [
     selectionMode: "independent",
     layerIds: ["rapid-rail", "bus-rapid-transit", "commuter-rail", "bus"],
   },
-];
+] as const satisfies readonly LayerGroup[];

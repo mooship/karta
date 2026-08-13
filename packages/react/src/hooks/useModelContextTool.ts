@@ -60,10 +60,15 @@ export function isModelContextSupported(): boolean {
  * @param definition - The tool to register, or `null` to skip registration
  *   (e.g. a tool that only makes sense when some optional data is present).
  * @remarks A no-op, including in SSR, wherever `document.modelContext` is
- *   unsupported or denied by Permissions-Policy — `registerTool`'s rejection
- *   in that case is swallowed since there's nothing meaningful to surface to
- *   the user for what is inherently a progressive enhancement. Re-registers
- *   only when `definition`'s `name` changes identity (including transitions
+ *   unsupported or denied by Permissions-Policy — `registerTool` can reject
+ *   asynchronously (e.g. a Permissions-Policy denial delivered as a promise)
+ *   or throw synchronously (e.g. a spec-validation error on a malformed
+ *   `inputSchema`), and both are caught the same way: never re-thrown into
+ *   the component tree, since there's nothing meaningful to surface to the
+ *   user for what is inherently a progressive enhancement, but still logged
+ *   via `console.error` with the tool's name so a genuinely malformed
+ *   `inputSchema` from a real consumer is visible during development.
+ *   Re-registers only when `definition`'s `name` changes identity (including transitions
  *   to/from `null`); `description` and `inputSchema` are captured at
  *   registration time, since every current caller's schema is static for a
  *   given tool name, and a fresh `execute` closure on every render (the
@@ -87,25 +92,37 @@ export function useModelContextTool<TInput = unknown>(
     }
 
     const controller = new AbortController();
-    modelContext
-      .registerTool(
-        {
-          name: currentDefinition.name,
-          description: currentDefinition.description,
-          inputSchema: currentDefinition.inputSchema,
-          execute: async (input: unknown) => {
-            const execute = executeRef.current;
-            if (!execute) {
-              throw new Error(
-                `Model context tool "${currentDefinition.name}" is no longer available.`,
-              );
-            }
-            return execute(input as TInput);
+    try {
+      modelContext
+        .registerTool(
+          {
+            name: currentDefinition.name,
+            description: currentDefinition.description,
+            inputSchema: currentDefinition.inputSchema,
+            execute: async (input: unknown) => {
+              const execute = executeRef.current;
+              if (!execute) {
+                throw new Error(
+                  `Model context tool "${currentDefinition.name}" is no longer available.`,
+                );
+              }
+              return execute(input as TInput);
+            },
           },
-        },
-        { signal: controller.signal },
-      )
-      .catch(() => {});
+          { signal: controller.signal },
+        )
+        .catch((error) => {
+          console.error(
+            `useModelContextTool: registerTool rejected for tool "${currentDefinition.name}"`,
+            error,
+          );
+        });
+    } catch (error) {
+      console.error(
+        `useModelContextTool: registerTool threw synchronously for tool "${currentDefinition.name}"`,
+        error,
+      );
+    }
 
     return () => controller.abort();
   }, [definition?.name]);

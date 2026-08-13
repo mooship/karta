@@ -59,7 +59,17 @@ const GeoJSON = LeafletGeoJSON as ComponentType<
   GeoJSONProps & { smoothFactor?: number }
 >;
 
-interface MapViewProps<
+/**
+ * Props accepted by {@link MapView}.
+ * @typeParam TProperties - The shape of a selectable feature's GeoJSON
+ *   `properties`, so `renderFeaturePopup` receives the caller's own domain
+ *   type rather than an untyped record.
+ * @remarks Exported so a consumer importing `@karta/map/MapView` (the only
+ *   entry point for this component, since the package barrel deliberately
+ *   omits it to preserve the Leaflet bundle split) can name this type when
+ *   wrapping or re-typing the component.
+ */
+export interface MapViewProps<
   TProperties extends Record<string, unknown> = Record<string, unknown>,
 > {
   bounds: [[number, number], [number, number]];
@@ -205,6 +215,23 @@ function resolveFeatureLabel(
     : String(properties.name ?? "");
 }
 
+/**
+ * The caller-supplied behaviour a bound feature listener needs at the moment
+ * it fires, rather than at the moment it was bound.
+ * @remarks react-leaflet hands `onEachFeature` to Leaflet's `GeoJSON`
+ *   constructor once, at layer creation, and only re-runs it when the `data`
+ *   prop's identity changes. Listeners bound there would otherwise close
+ *   over whichever `onFeatureSelect`/`renderFeaturePopup` happened to be
+ *   current at creation time and keep calling those forever, so they are
+ *   passed as a ref and dereferenced when the event actually fires.
+ */
+interface SelectableFeatureHandlers<
+  TProperties extends Record<string, unknown>,
+> {
+  onSelect?: (featureId: string) => void;
+  renderFeaturePopup?: (properties: TProperties) => ReactNode;
+}
+
 function bindSelectableFeatureInteractions<
   TProperties extends Record<string, unknown>,
 >(
@@ -212,8 +239,7 @@ function bindSelectableFeatureInteractions<
   domainLayer: DomainLayer,
   leafletLayer: Layer,
   layerById: Map<string, SelectableFeatureLayer>,
-  onSelect?: (featureId: string) => void,
-  renderFeaturePopup?: (properties: TProperties) => ReactNode,
+  handlersRef: React.RefObject<SelectableFeatureHandlers<TProperties>>,
 ) {
   /* v8 ignore start -- unreachable: this function's only call site already gates on `isSelectable` before passing it as `onEachFeature`, but the runtime check (and the type narrowing it gives `domainLayer.interaction` below) stays as this function's own contract in case a second call site is ever added without that gate */
   if (!domainLayer.interaction?.selectable) {
@@ -245,6 +271,7 @@ function bindSelectableFeatureInteractions<
     pendingClickTimeout = setTimeout(() => {
       pendingClickTimeout = null;
       const featureLayer = leafletLayer as SelectableFeatureLayer;
+      const { onSelect, renderFeaturePopup } = handlersRef.current;
       void bindSelectedFeaturePopup(
         featureLayer,
         properties,
@@ -289,6 +316,7 @@ function SelectedFeatureHighlight<TProperties extends Record<string, unknown>>({
 }: SelectedFeatureHighlightProps<TProperties>) {
   const map = useMap();
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: renderFeaturePopup intentionally omitted -- it's a public prop with no stability guarantee, so including it could re-fire this effect on every render for callers that don't memoize it, snapping the map back to the selected feature's bounds and reopening its popup long after the user panned away or dismissed it
   useEffect(() => {
     if (!selectedFeatureId) {
       return;
@@ -321,7 +349,7 @@ function SelectedFeatureHighlight<TProperties extends Record<string, unknown>>({
     return () => {
       cancelled = true;
     };
-  }, [map, selectedFeatureId, layerById, renderFeaturePopup]);
+  }, [map, selectedFeatureId, layerById]);
 
   return null;
 }
@@ -562,6 +590,14 @@ function MapViewComponent<
 }: MapViewProps<TProperties>) {
   const { getLayers } = useDomain();
   const selectableLayerById = useRef(new Map<string, SelectableFeatureLayer>());
+  const featureHandlersRef = useRef<SelectableFeatureHandlers<TProperties>>({
+    onSelect: onFeatureSelect,
+    renderFeaturePopup,
+  });
+  featureHandlersRef.current = {
+    onSelect: onFeatureSelect,
+    renderFeaturePopup,
+  };
   const visibleLayers = useMemo(
     () =>
       getLayers().filter(
@@ -628,6 +664,16 @@ function MapViewComponent<
       };
     });
   }, [tileSourceMode, tileSources.length]);
+  /**
+   * @remarks `@react-leaflet/core`'s event-handler effect keys off this
+   *   object's identity, not its contents, so an inline literal here would
+   *   unbind and rebind the tile layer's `tileerror` listener on every
+   *   render even though `handleTileError` itself never changes.
+   */
+  const tileEventHandlers = useMemo(
+    () => ({ tileerror: handleTileError }),
+    [handleTileError],
+  );
   const showAreaLabels = getLayers().some(
     (layer) =>
       visibleLayerIds.includes(layer.id) &&
@@ -743,6 +789,37 @@ function MapViewComponent<
       ),
     [layerConfigById, transitStopRadius, visibleLayers],
   );
+  /**
+   * Each selectable layer's `onEachFeature` binder, memoised by layer id.
+   * @remarks Kept referentially stable so react-leaflet's `GeoJSON` isn't
+   *   handed a new binder on every render; the binder reads the current
+   *   `onFeatureSelect`/`renderFeaturePopup` through `featureHandlersRef`
+   *   instead, since Leaflet only ever runs `onEachFeature` once per feature
+   *   layer and would otherwise pin those callbacks to their creation-time
+   *   values.
+   */
+  const onEachSelectableFeatureByLayerId = useMemo(
+    () =>
+      new Map(
+        visibleLayers
+          .filter((layer) => layer.interaction?.selectable)
+          .map(
+            (layer) =>
+              [
+                layer.id,
+                (feature: Feature, featureLayer: Layer) =>
+                  bindSelectableFeatureInteractions(
+                    feature,
+                    layer,
+                    featureLayer,
+                    selectableLayerById.current,
+                    featureHandlersRef,
+                  ),
+              ] as const,
+          ),
+      ),
+    [visibleLayers],
+  );
   const boundsOptions = getBoundsOptions(
     getViewportWidth() > MOBILE_BREAKPOINT_PX,
   );
@@ -793,7 +870,7 @@ function MapViewComponent<
             className={tileClassName}
             detectRetina={useRetinaTiles}
             updateWhenZooming
-            eventHandlers={{ tileerror: handleTileError }}
+            eventHandlers={tileEventHandlers}
           />
         ) : null}
         {vectorStyleUrl ? (
@@ -861,15 +938,7 @@ function MapViewComponent<
               pathOptions={layerPathOptionsById.get(layer.id)}
               onEachFeature={
                 isSelectable
-                  ? (feature: Feature, featureLayer: Layer) =>
-                      bindSelectableFeatureInteractions(
-                        feature,
-                        layer,
-                        featureLayer,
-                        selectableLayerById.current,
-                        onFeatureSelect,
-                        renderFeaturePopup,
-                      )
+                  ? onEachSelectableFeatureByLayerId.get(layer.id)
                   : undefined
               }
               pointToLayer={

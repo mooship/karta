@@ -10,7 +10,9 @@ export function mergeFeatureCollections(
 ): FeatureCollection {
   const features: Feature[] = [];
   for (const collection of collections) {
-    features.push(...collection.features);
+    for (const feature of collection.features) {
+      features.push(feature);
+    }
   }
   return { type: "FeatureCollection", features };
 }

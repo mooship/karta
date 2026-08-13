@@ -7,6 +7,7 @@ vi.mock("shapefile", () => ({ read: shapefileReadMock }));
 import {
   convertShapefileToGeoJSON,
   fetchMetroBoundaries,
+  fetchMetroBoundariesForMetros,
   filterFeaturesByMunicipality,
   normalizeBoundaries,
 } from "./boundaries";
@@ -324,5 +325,64 @@ describe("fetchMetroBoundaries", () => {
     await expect(fetchMetroBoundaries("tshwane")).rejects.toThrow(
       "Expected Subplace/SP_SA_2011.shp and Subplace/SP_SA_2011.dbf entries in the boundary zip archive",
     );
+  });
+});
+
+describe("fetchMetroBoundariesForMetros", () => {
+  it("fetches and parses the national boundary zip exactly once for multiple metros", async () => {
+    const zip = new AdmZip();
+    zip.addFile("Subplace/SP_SA_2011.shp", Buffer.from("shp bytes"));
+    zip.addFile("Subplace/SP_SA_2011.dbf", Buffer.from("dbf bytes"));
+    const zipBuffer = zip.toBuffer();
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      arrayBuffer: async () =>
+        zipBuffer.buffer.slice(
+          zipBuffer.byteOffset,
+          zipBuffer.byteOffset + zipBuffer.byteLength,
+        ),
+    });
+    vi.stubGlobal("fetch", fetchMock);
+    shapefileReadMock.mockResolvedValue({
+      type: "FeatureCollection",
+      features: [
+        {
+          type: "Feature",
+          properties: {
+            SP_CODE: 799016009,
+            SP_NAME: "Odinburg Gardens",
+            MN_CODE: 799,
+          },
+          geometry: { type: "Polygon", coordinates: [] },
+        },
+        {
+          type: "Feature",
+          properties: {
+            SP_CODE: 798001001,
+            SP_NAME: "Randburg",
+            MN_CODE: 798,
+          },
+          geometry: { type: "Polygon", coordinates: [] },
+        },
+      ],
+    });
+
+    const result = await fetchMetroBoundariesForMetros([
+      "tshwane",
+      "johannesburg",
+    ]);
+
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(shapefileReadMock).toHaveBeenCalledTimes(1);
+    expect(result.tshwane.features).toHaveLength(1);
+    expect(result.tshwane.features[0]?.properties).toEqual({
+      SP_CODE: "799016009",
+      SP_NAME: "Odinburg Gardens",
+    });
+    expect(result.johannesburg.features).toHaveLength(1);
+    expect(result.johannesburg.features[0]?.properties).toEqual({
+      SP_CODE: "798001001",
+      SP_NAME: "Randburg",
+    });
   });
 });
