@@ -1,4 +1,5 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
+import { useLatestRef } from "./useLatestRef";
 
 /** A single content block in a WebMCP tool's result, as consumed by the calling agent. */
 export interface ModelContextToolContentBlock {
@@ -78,10 +79,8 @@ export function isModelContextSupported(): boolean {
 export function useModelContextTool<TInput = unknown>(
   definition: ModelContextToolDefinition<TInput> | null,
 ): void {
-  const executeRef = useRef(definition?.execute);
-  executeRef.current = definition?.execute;
-  const definitionRef = useRef(definition);
-  definitionRef.current = definition;
+  const executeRef = useLatestRef(definition?.execute);
+  const definitionRef = useLatestRef(definition);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: definition?.name is a re-registration trigger, not read directly in the effect body — the effect reads the live value via definitionRef instead
   useEffect(() => {
