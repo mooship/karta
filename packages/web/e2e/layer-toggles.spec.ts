@@ -108,6 +108,35 @@ test.describe("layer toggles", () => {
     await waitForTransitPaint(page, false);
   });
 
+  test("a layer's download link points at its own GeoJSON file and doesn't toggle its checkbox", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await ensurePanelOpen(page);
+
+    const rapidRailCheckbox = page.getByTestId(E2E.layerToggle.rapidRail);
+    const downloadLink = page.getByTestId(
+      `${E2E.layerToggle.rapidRail}-download`,
+    );
+
+    await expect(downloadLink).toHaveAttribute(
+      "href",
+      /\/data\/gauteng\/rapid-rail\.display\.v1\.geojson$/,
+    );
+    await expect(downloadLink).toHaveAttribute(
+      "download",
+      "rapid-rail.geojson",
+    );
+    await expect(rapidRailCheckbox).not.toBeChecked();
+
+    const downloadPromise = page.waitForEvent("download");
+    await downloadLink.click();
+    const download = await downloadPromise;
+
+    expect(download.suggestedFilename()).toBe("rapid-rail.geojson");
+    await expect(rapidRailCheckbox).not.toBeChecked();
+  });
+
   test("keeps only one accessibility overlay active at a time", async ({
     page,
   }) => {
