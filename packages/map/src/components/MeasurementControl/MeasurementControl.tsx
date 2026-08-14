@@ -1,4 +1,5 @@
 import { Ruler, X } from "lucide-react";
+import { ControlButton } from "../ControlButton/ControlButton";
 import { IconButton } from "../IconButton/IconButton";
 import {
   SegmentedControl,
@@ -108,15 +109,15 @@ export function MeasurementControl({
             >
               {resultLabel}
             </output>
-            <button
-              type="button"
-              className={styles.clearButton}
+            <ControlButton
+              shape="pill"
+              variant="embedded"
               data-testid="measurement-control-clear"
               data-e2e="measurement-control-clear"
               onClick={onClear}
             >
               Clear
-            </button>
+            </ControlButton>
           </div>
         )}
       </section>

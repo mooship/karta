@@ -60,11 +60,8 @@ export function LayerToggles({
   failedLayerIds = [],
 }: LayerTogglesProps) {
   const groups = getLayerGroups();
-  const [csvExportErrors, setCsvExportErrors] = useState<
-    Record<string, boolean>
-  >({});
-  const [csvExportLoading, setCsvExportLoading] = useState<
-    Record<string, boolean>
+  const [csvExportStatus, setCsvExportStatus] = useState<
+    Record<string, "loading" | "error">
   >({});
 
   async function handleCsvExport(
@@ -73,8 +70,7 @@ export function LayerToggles({
     url: string,
   ) {
     const key = `${layer.id}-${sourceIndex}`;
-    setCsvExportErrors((errors) => ({ ...errors, [key]: false }));
-    setCsvExportLoading((loading) => ({ ...loading, [key]: true }));
+    setCsvExportStatus((status) => ({ ...status, [key]: "loading" }));
     try {
       const collection = await fetchFeatureCollection(url);
       downloadBlob(
@@ -83,10 +79,13 @@ export function LayerToggles({
         }),
         downloadFileName(layer, sourceIndex, "csv"),
       );
+      setCsvExportStatus((status) => {
+        const next = { ...status };
+        delete next[key];
+        return next;
+      });
     } catch {
-      setCsvExportErrors((errors) => ({ ...errors, [key]: true }));
-    } finally {
-      setCsvExportLoading((loading) => ({ ...loading, [key]: false }));
+      setCsvExportStatus((status) => ({ ...status, [key]: "error" }));
     }
   }
 
@@ -177,7 +176,7 @@ export function LayerToggles({
                       })}
                       data-testid={`${layerTestId}-download-csv`}
                       data-e2e={`${layerTestId}-download-csv`}
-                      disabled={csvExportLoading[csvKey] === true}
+                      disabled={csvExportStatus[csvKey] === "loading"}
                       onClick={() => handleCsvExport(layer, sourceIndex, url)}
                     >
                       <FileSpreadsheet
@@ -185,7 +184,7 @@ export function LayerToggles({
                         className={styles.downloadIcon}
                       />
                     </button>
-                    {csvExportErrors[csvKey] ? (
+                    {csvExportStatus[csvKey] === "error" ? (
                       <span
                         className={styles.badgeError}
                         role="status"
