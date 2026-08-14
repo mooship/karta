@@ -8,6 +8,14 @@
   --mobile-control-size: 44px;
   --mobile-control-gap: 0.625rem;
   --mobile-control-bottom: calc(1.5rem + env(safe-area-inset-bottom));
+  /*
+   * The mobile info panel's two sheet heights, shared with any control
+   * (the legend trigger, the measurement tool) that needs to reposition
+   * or resize itself around however much of the viewport the sheet is
+   * currently covering.
+   */
+  --mobile-sheet-height-medium: min(66dvh, 36rem);
+  --mobile-sheet-height-full: min(84dvh, 45rem);
 }
 
 .mapLoading {
@@ -308,7 +316,7 @@
     bottom: 0;
     width: auto;
     max-width: none;
-    height: min(66dvh, 36rem);
+    height: var(--mobile-sheet-height-medium);
     max-height: none;
     padding: 0.5rem 1rem max(1.25rem, env(safe-area-inset-bottom));
     gap: 0.75rem;
@@ -335,7 +343,7 @@
   }
 
   .panel[data-panel-size="full"] {
-    height: min(84dvh, 45rem);
+    height: var(--mobile-sheet-height-full);
   }
 
   .app[data-panel-open="true"][data-panel-size="medium"] .panelTrigger,
@@ -354,11 +362,19 @@
   }
 
   .app[data-panel-open="true"][data-panel-size="medium"] .panelTrigger {
-    bottom: calc(min(66dvh, 36rem) + 0.75rem + env(safe-area-inset-bottom));
+    bottom: calc(
+      var(--mobile-sheet-height-medium) +
+      0.75rem +
+      env(safe-area-inset-bottom)
+    );
   }
 
   .app[data-panel-open="true"][data-panel-size="full"] .panelTrigger {
-    bottom: calc(min(84dvh, 45rem) + 0.75rem + env(safe-area-inset-bottom));
+    bottom: calc(
+      var(--mobile-sheet-height-full) +
+      0.75rem +
+      env(safe-area-inset-bottom)
+    );
   }
 
   .app[data-panel-open="true"] .panelTriggerLabel {

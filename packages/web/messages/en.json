@@ -23,6 +23,8 @@
   "layer_unavailable_badge": "Not yet available",
   "layer_failed_badge": "Failed to load — toggle off and on to retry",
   "layer_download_aria_label": "Download {label} data (GeoJSON)",
+  "layer_download_csv_aria_label": "Download {label} data (CSV)",
+  "layer_csv_export_error": "Couldn't prepare the CSV file. Try again.",
 
   "township_popup_car_time": "Modelled car time",
   "township_popup_job_center": "Nearest job centre",

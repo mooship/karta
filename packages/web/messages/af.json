@@ -23,6 +23,8 @@
   "layer_unavailable_badge": "Nog nie beskikbaar nie",
   "layer_failed_badge": "Kon nie laai nie — skakel af en aan om weer te probeer",
   "layer_download_aria_label": "Laai {label}-data af (GeoJSON)",
+  "layer_download_csv_aria_label": "Laai {label}-data af (CSV)",
+  "layer_csv_export_error": "Kon nie die CSV-lêer voorberei nie. Probeer weer.",
 
   "township_popup_car_time": "Gemodelleerde motortyd",
   "township_popup_job_center": "Naaste werksentrum",

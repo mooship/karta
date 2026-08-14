@@ -12,6 +12,20 @@ export async function ensurePanelOpen(page: Page) {
 }
 
 /**
+ * Closes the info panel if it's open (it's open by default on desktop
+ * viewports), so its layer list doesn't overlap the right side of the map.
+ */
+export async function ensurePanelClosed(page: Page) {
+  const panelToggle = page.getByTestId(E2E.panelToggle);
+  await expect(panelToggle).toBeVisible();
+
+  if ((await panelToggle.getAttribute("aria-expanded")) === "true") {
+    await panelToggle.click();
+    await expect(panelToggle).toHaveAttribute("aria-expanded", "false");
+  }
+}
+
+/**
  * Fails the first request matching `urlPattern` with a 500, then lets every
  * later one through, for tests asserting a load-error state and its retry
  * recovery. The returned object's `requestCount` updates live as requests

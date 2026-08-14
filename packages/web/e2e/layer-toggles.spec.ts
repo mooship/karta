@@ -137,6 +137,51 @@ test.describe("layer toggles", () => {
     await expect(rapidRailCheckbox).not.toBeChecked();
   });
 
+  test("a layer's CSV download button fetches its data and triggers a download, without toggling its checkbox", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await ensurePanelOpen(page);
+
+    const rapidRailCheckbox = page.getByTestId(E2E.layerToggle.rapidRail);
+    const csvDownloadButton = page.getByTestId(
+      `${E2E.layerToggle.rapidRail}-download-csv`,
+    );
+    await expect(rapidRailCheckbox).not.toBeChecked();
+
+    const downloadPromise = page.waitForEvent("download");
+    await csvDownloadButton.click();
+    const download = await downloadPromise;
+
+    expect(download.suggestedFilename()).toBe("rapid-rail.csv");
+    await expect(rapidRailCheckbox).not.toBeChecked();
+
+    const csvPath = await download.path();
+    expect(csvPath).not.toBeNull();
+    if (csvPath) {
+      const fs = await import("node:fs/promises");
+      const csvContent = await fs.readFile(csvPath, "utf-8");
+      expect(csvContent.split("\r\n")[0]).toContain("centroid_lon");
+    }
+  });
+
+  test("shows an inline error on the layer row if the CSV export fetch fails", async ({
+    page,
+  }) => {
+    await page.route("**/data/**/rapid-rail.display.v1.geojson*", (route) =>
+      route.fulfill({ status: 500, body: "Internal Server Error" }),
+    );
+
+    await page.goto("/");
+    await ensurePanelOpen(page);
+
+    await page.getByTestId(`${E2E.layerToggle.rapidRail}-download-csv`).click();
+
+    await expect(
+      page.getByTestId(`${E2E.layerToggle.rapidRail}-csv-error`),
+    ).toBeVisible();
+  });
+
   test("keeps only one accessibility overlay active at a time", async ({
     page,
   }) => {
