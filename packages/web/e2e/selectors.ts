@@ -43,4 +43,14 @@ export const E2E = {
   },
   townshipPopup: "township-popup",
   locationContextMenu: "location-context-menu",
+  measurement: {
+    toggle: "measurement-control-toggle",
+    panel: "measurement-control-panel",
+    close: "measurement-control-close",
+    hint: "measurement-control-hint",
+    result: "measurement-control-result",
+    clear: "measurement-control-clear",
+    modeDistance: "measurement-control-mode-option-distance",
+    modeArea: "measurement-control-mode-option-area",
+  },
 } as const;
