@@ -102,24 +102,48 @@
     );
   }
 
-  .container[data-panel-open="true"][data-panel-size="medium"] {
-    bottom: calc(
-      var(--mobile-sheet-height-medium) +
-      0.75rem +
-      env(safe-area-inset-bottom) +
-      var(--mobile-control-size) +
-      var(--mobile-control-gap)
+  /*
+   * Climbs to sit just above the sheet (its own height plus a gap), but
+   * never higher than the bottom edge of the measurement control's
+   * top-anchored toggle plus a gap (see MeasurementControl.module.css's
+   * mobile `inset-block-start: calc(7.5rem + var(--mobile-safe-top))`) —
+   * on a "medium" sheet there's only a sliver of headroom between the
+   * search box and the sheet, not enough for both a stacked measurement
+   * toggle and a climbed legend trigger, so without this ceiling the two
+   * land on top of each other instead of stacking. `--sheet-height` is set
+   * per panel size below, matching MeasurementControl's own pattern.
+   */
+  .container[data-panel-open="true"] {
+    bottom: min(
+      calc(var(--sheet-height) + 0.75rem + env(safe-area-inset-bottom)),
+      calc(
+        100dvh -
+        7.5rem -
+        var(--mobile-safe-top) -
+        (var(--mobile-control-size) * 2)
+      )
     );
   }
 
+  .container[data-panel-open="true"][data-panel-size="medium"] {
+    --sheet-height: var(--mobile-sheet-height-medium);
+  }
+
   .container[data-panel-open="true"][data-panel-size="full"] {
-    bottom: calc(
-      var(--mobile-sheet-height-full) +
-      0.75rem +
-      env(safe-area-inset-bottom) +
-      var(--mobile-control-size) +
-      var(--mobile-control-gap)
-    );
+    --sheet-height: var(--mobile-sheet-height-full);
+  }
+
+  /*
+   * The legend's own popover normally opens upward from its trigger
+   * (`.sheet`'s default `bottom: calc(100% + 0.5rem)`), which is fine when
+   * the trigger sits low, near the settings/basemap stack. Anchored from
+   * the top instead while the host panel is open, opening upward would
+   * push it off the top of the screen — it opens downward, toward the
+   * map, instead.
+   */
+  .container[data-panel-open="true"] .sheet {
+    top: calc(100% + 0.5rem);
+    bottom: auto;
   }
 }
 
