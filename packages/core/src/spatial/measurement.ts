@@ -6,12 +6,14 @@ import type { Position } from "geojson";
  * in order.
  * @param positions - Vertices as `[lon, lat]`, e.g. points a user has clicked
  *   while measuring on a map.
- * @returns The summed distance across every segment, or `0` if there are
+ * @returns The summed distance across every segment, or `null` if there are
  *   fewer than two positions to form a segment from.
  */
-export function measureLineDistance(positions: readonly Position[]): number {
+export function measureLineDistance(
+  positions: readonly Position[],
+): number | null {
   if (positions.length < 2) {
-    return 0;
+    return null;
   }
 
   return turf.length(turf.lineString(positions as Position[]), {
@@ -24,12 +26,14 @@ export function measureLineDistance(positions: readonly Position[]): number {
  * @param positions - Ring vertices as `[lon, lat]`, e.g. points a user has
  *   clicked while measuring on a map. The ring is closed automatically if
  *   `positions` doesn't already repeat its first point as its last.
- * @returns The enclosed area, or `0` if there are fewer than three positions
- *   to form a polygon from.
+ * @returns The enclosed area, or `null` if there are fewer than three
+ *   positions to form a polygon from.
  */
-export function measurePolygonArea(positions: readonly Position[]): number {
+export function measurePolygonArea(
+  positions: readonly Position[],
+): number | null {
   if (positions.length < 3) {
-    return 0;
+    return null;
   }
 
   const first = positions[0] as Position;

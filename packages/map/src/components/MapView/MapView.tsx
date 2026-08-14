@@ -236,12 +236,13 @@ function resolveFeatureLabel(
  *   whichever `onSelect`/`renderFeaturePopup` happened to be current at
  *   creation time and keep calling those forever, so they're passed as refs
  *   (see {@link useLatestRef}) and dereferenced when the event actually
- *   fires instead. `measurementActiveRef` is read for the same reason and
- *   guards the same click: while the measurement tool is active, a map click
- *   is meant to place a measurement vertex, not also open this feature's
- *   popup and re-fit the map to it via `SelectedFeatureHighlight` — both of
- *   which would otherwise fire from Leaflet's default click bubbling,
- *   yanking the view out from under an in-progress measurement.
+ *   fires instead. `suppressFeatureClickRef` is read for the same reason and
+ *   guards the same click: some other tool (currently just the measurement
+ *   tool) can claim exclusive ownership of map clicks — while it does, a
+ *   click is meant to feed that tool, not also open this feature's popup and
+ *   re-fit the map to it via `SelectedFeatureHighlight`, both of which would
+ *   otherwise fire from Leaflet's default click bubbling and yank the view
+ *   out from under whatever the other tool is doing.
  */
 function bindSelectableFeatureInteractions<
   TProperties extends Record<string, unknown>,
@@ -254,7 +255,7 @@ function bindSelectableFeatureInteractions<
   renderFeaturePopupRef: React.RefObject<
     ((properties: TProperties) => ReactNode) | undefined
   >,
-  measurementActiveRef: React.RefObject<boolean>,
+  suppressFeatureClickRef: React.RefObject<boolean>,
 ) {
   /* v8 ignore start -- unreachable: this function's only call site already gates on `isSelectable` before passing it as `onEachFeature`, but the runtime check (and the type narrowing it gives `domainLayer.interaction` below) stays as this function's own contract in case a second call site is ever added without that gate */
   if (!domainLayer.interaction?.selectable) {
@@ -285,7 +286,7 @@ function bindSelectableFeatureInteractions<
 
     pendingClickTimeout = setTimeout(() => {
       pendingClickTimeout = null;
-      if (measurementActiveRef.current) {
+      if (suppressFeatureClickRef.current) {
         return;
       }
       const featureLayer = leafletLayer as SelectableFeatureLayer;
@@ -603,6 +604,24 @@ function bindAreaBoundaryLabel(feature: Feature, layer: Layer) {
   });
 }
 
+/**
+ * The measurement tool's whole in-progress state, held as one object rather
+ * than three separate `useState` calls: toggling `active` and changing
+ * `mode` both always discard `points` too, and keeping all three fields
+ * together means every handler updates one thing instead of two.
+ */
+interface MeasurementState {
+  active: boolean;
+  mode: MeasurementMode;
+  points: LatLng[];
+}
+
+const INITIAL_MEASUREMENT_STATE: MeasurementState = {
+  active: false,
+  mode: "distance",
+  points: [],
+};
+
 function MapViewComponent<
   TProperties extends Record<string, unknown> = Record<string, unknown>,
 >({
@@ -623,37 +642,38 @@ function MapViewComponent<
   onReady,
 }: MapViewProps<TProperties>) {
   const { getLayers } = useDomain();
-  const [measurementActive, setMeasurementActive] = useState(false);
-  const [measurementMode, setMeasurementMode] =
-    useState<MeasurementMode>("distance");
-  const [measurementPoints, setMeasurementPoints] = useState<LatLng[]>([]);
-  const measurementResultLabel = formatMeasurementResult(
-    measurementMode,
-    measurementPoints,
+  const [measurement, setMeasurement] = useState<MeasurementState>(
+    INITIAL_MEASUREMENT_STATE,
+  );
+  const measurementResultLabel = useMemo(
+    () => formatMeasurementResult(measurement.mode, measurement.points),
+    [measurement.mode, measurement.points],
   );
 
   function handleMeasurementToggleActive() {
-    setMeasurementActive((active) => !active);
-    setMeasurementPoints([]);
+    setMeasurement((state) => ({
+      ...state,
+      active: !state.active,
+      points: [],
+    }));
   }
 
   function handleMeasurementModeChange(mode: MeasurementMode) {
-    setMeasurementMode(mode);
-    setMeasurementPoints([]);
+    setMeasurement((state) => ({ ...state, mode, points: [] }));
   }
 
   function handleMeasurementClear() {
-    setMeasurementPoints([]);
+    setMeasurement((state) => ({ ...state, points: [] }));
   }
 
   function handleMeasurementAddPoint(point: LatLng) {
-    setMeasurementPoints((points) => [...points, point]);
+    setMeasurement((state) => ({ ...state, points: [...state.points, point] }));
   }
 
   const selectableLayerById = useRef(new Map<string, SelectableFeatureLayer>());
   const onSelectRef = useLatestRef(onFeatureSelect);
   const renderFeaturePopupRef = useLatestRef(renderFeaturePopup);
-  const measurementActiveRef = useLatestRef(measurementActive);
+  const measurementActiveRef = useLatestRef(measurement.active);
   const visibleLayers = useMemo(
     () =>
       getLayers().filter(
@@ -905,9 +925,9 @@ function MapViewComponent<
     >
       {measurementTool ? (
         <MeasurementControl
-          active={measurementActive}
-          mode={measurementMode}
-          pointCount={measurementPoints.length}
+          active={measurement.active}
+          mode={measurement.mode}
+          pointCount={measurement.points.length}
           resultLabel={measurementResultLabel}
           onToggleActive={handleMeasurementToggleActive}
           onModeChange={handleMeasurementModeChange}
@@ -1027,10 +1047,10 @@ function MapViewComponent<
         <ResponsiveMapBounds bounds={bounds} />
         <ZoomStateWatcher onZoomChange={setMapZoom} />
         {locationContextMenu ? <LocationContextMenu /> : null}
-        {measurementTool && measurementActive ? (
+        {measurementTool && measurement.active ? (
           <MeasurementLayer
-            mode={measurementMode}
-            points={measurementPoints}
+            mode={measurement.mode}
+            points={measurement.points}
             onAddPoint={handleMeasurementAddPoint}
           />
         ) : null}

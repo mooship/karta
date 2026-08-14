@@ -29,19 +29,19 @@ export function formatMeasurementResult(
   );
 
   if (mode === "distance") {
-    if (points.length < 2) {
+    const km = measureLineDistance(positions);
+    if (km === null) {
       return null;
     }
-    const km = measureLineDistance(positions);
     return km < 1
       ? `${Math.round(km * METRES_PER_KM)} m`
       : `${km.toFixed(2)} km`;
   }
 
-  if (points.length < 3) {
+  const sqm = measurePolygonArea(positions);
+  if (sqm === null) {
     return null;
   }
-  const sqm = measurePolygonArea(positions);
   if (sqm < SQM_PER_HECTARE) {
     return `${Math.round(sqm)} m²`;
   }

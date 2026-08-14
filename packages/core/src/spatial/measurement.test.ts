@@ -3,9 +3,9 @@ import { describe, expect, it } from "vitest";
 import { measureLineDistance, measurePolygonArea } from "./measurement";
 
 describe("measureLineDistance", () => {
-  it("returns 0 for fewer than two positions", () => {
-    expect(measureLineDistance([])).toBe(0);
-    expect(measureLineDistance([[28.0, -26.0]])).toBe(0);
+  it("returns null for fewer than two positions", () => {
+    expect(measureLineDistance([])).toBeNull();
+    expect(measureLineDistance([[28.0, -26.0]])).toBeNull();
   });
 
   it("returns the distance in kilometres along a two-point line", () => {
@@ -32,14 +32,14 @@ describe("measureLineDistance", () => {
 });
 
 describe("measurePolygonArea", () => {
-  it("returns 0 for fewer than three positions", () => {
-    expect(measurePolygonArea([])).toBe(0);
+  it("returns null for fewer than three positions", () => {
+    expect(measurePolygonArea([])).toBeNull();
     expect(
       measurePolygonArea([
         [28.0, -26.0],
         [28.01, -26.0],
       ]),
-    ).toBe(0);
+    ).toBeNull();
   });
 
   it("returns the area in square metres of a closed ring, without requiring the caller to close it", () => {
