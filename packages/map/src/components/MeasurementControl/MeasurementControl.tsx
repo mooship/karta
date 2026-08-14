@@ -30,22 +30,21 @@ export interface MeasurementControlProps {
   /** Discards the points clicked so far without leaving measuring mode. */
   onClear: () => void;
   /**
-   * Whether the host app's own overlapping panel (if it has one) is open,
-   * and if so whether it's expanded to its larger size. Defaults to
-   * `false`/`false`. Mirrors `MobileLegend`'s `panelOpen`/`panelExpanded`
-   * props: on narrow viewports this control caps its own height so it
-   * can't grow down into space that panel's mobile sheet — or controls
-   * that reposition themselves above that sheet, like the legend trigger
-   * — already claim. It also hides its own idle (`active: false`) toggle
-   * on narrow viewports while `panelOpen` is `true` — with the host's
-   * sheet covering most of the map there's barely any surface left to
-   * click a measurement point on, and the toggle otherwise competes for
-   * the same sliver of space as the legend trigger stacked beneath it. A
-   * measurement already in progress (`active: true`) stays visible
-   * regardless, so opening the panel mid-measurement can't strand it.
+   * Whether the host app's own overlapping panel (if it has one) is open.
+   * Defaults to `false`. On narrow viewports this control hides itself
+   * entirely — both the idle toggle and an in-progress measurement's own
+   * panel — while `panelOpen` is `true`. With the host's sheet covering
+   * most of the map there's barely any surface left to click a measurement
+   * point on, and the control otherwise competes for the same sliver of
+   * space as `MobileLegend`'s trigger stacked beneath it. `active`/`mode`/
+   * `points` stay owned by the caller and untouched while hidden, so a
+   * measurement in progress resumes exactly where it left off once the
+   * host panel closes — the caller is expected to also stop listening for
+   * map clicks in the meantime (see `MapView`'s `measurementInteractive`),
+   * so clicks on whatever sliver of map stays visible don't silently add
+   * points nobody can see.
    */
   panelOpen?: boolean;
-  panelExpanded?: boolean;
 }
 
 /**
@@ -68,14 +67,11 @@ export function MeasurementControl({
   onModeChange,
   onClear,
   panelOpen = false,
-  panelExpanded = false,
 }: MeasurementControlProps) {
   const rootProps = {
     className: styles.root,
     "data-testid": "measurement-control-root",
     "data-panel-open": panelOpen ? "true" : "false",
-    "data-panel-size": panelExpanded ? "full" : "medium",
-    "data-active": active ? "true" : "false",
   } as const;
 
   if (!active) {

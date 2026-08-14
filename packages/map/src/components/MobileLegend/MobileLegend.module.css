@@ -104,23 +104,25 @@
 
   /*
    * Climbs to sit just above the sheet (its own height plus a gap), but
-   * never higher than the bottom edge of the measurement control's
-   * top-anchored toggle plus a gap (see MeasurementControl.module.css's
-   * mobile `inset-block-start: calc(7.5rem + var(--mobile-safe-top))`) —
-   * on a "medium" sheet there's only a sliver of headroom between the
-   * search box and the sheet, not enough for both a stacked measurement
-   * toggle and a climbed legend trigger, so without this ceiling the two
-   * land on top of each other instead of stacking. `--sheet-height` is set
-   * per panel size below, matching MeasurementControl's own pattern.
+   * never higher than clearing the search box (see
+   * MeasurementControl.module.css's `--mobile-search-clearance`, the same
+   * boundary that control's own toggle sits below) plus this trigger's own
+   * height — on a "full" sheet there's so little headroom left above it
+   * that an unclamped climb pushes the trigger off the top of the screen
+   * entirely. `MeasurementControl` hides itself outright whenever the host
+   * panel is open (see its own mobile rules), so this ceiling only has to
+   * clear the search box, not also reserve room for that control.
+   * `--sheet-height` is set per panel size below, matching
+   * `MeasurementControl`'s own now-removed pattern for the same terms.
    */
   .container[data-panel-open="true"] {
     bottom: min(
       calc(var(--sheet-height) + 0.75rem + env(safe-area-inset-bottom)),
       calc(
         100dvh -
-        7.5rem -
+        var(--mobile-search-clearance) -
         var(--mobile-safe-top) -
-        (var(--mobile-control-size) * 2)
+        var(--mobile-control-size)
       )
     );
   }
