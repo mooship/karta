@@ -7,14 +7,16 @@
  * the legend; bottom-right holds Leaflet's own zoom control. The one
  * reliably free strip is directly beneath the search box on the left —
  * settings/legend sit much further down, so this control stacks there
- * instead of contesting a corner. 6rem clears the search box's own
- * footprint (its label row plus input, measured at ~62px) with a
- * consistent gap beneath it.
+ * instead of contesting a corner. 7.5rem clears the search box's whole
+ * rendered footprint, not just its own content box: measured at 88px
+ * desktop / 84px mobile from the viewport edge (its `top` offset plus its
+ * wrapper's padding/border plus its label-and-input content), with a
+ * comfortable double-digit-pixel gap left beneath it.
  */
 .root {
   position: absolute;
   inset-inline-start: 1.25rem;
-  inset-block-start: 6rem;
+  inset-block-start: 7.5rem;
   z-index: 1240;
 }
 
@@ -68,24 +70,26 @@
 @media (max-width: 768px) {
   .root {
     inset-inline-start: var(--mobile-control-edge);
-    inset-block-start: calc(6rem + var(--mobile-safe-top));
+    inset-block-start: calc(7.5rem + var(--mobile-safe-top));
   }
 
   /*
    * While the host app's own mobile sheet is open, the legend trigger
-   * (see `MobileLegend`) climbs to sit just above it, using the same
-   * min(66dvh, 36rem)/min(84dvh, 45rem) sheet-height terms as here. This
-   * panel is anchored from the top rather than the bottom, so it can't
-   * reposition itself out of that space the same way — instead it caps
-   * its own height and scrolls internally, so it can never grow down far
-   * enough to reach a control that's climbed up to meet it.
+   * (see `MobileLegend`) climbs to sit just above it, sized by the same
+   * --sheet-height-medium/--sheet-height-full terms `MobileLegend` uses
+   * (see App.module.css). This panel is anchored from the top rather
+   * than the bottom, so it can't reposition itself out of that space the
+   * same way — instead it caps its own height and scrolls internally, so
+   * it can never grow down far enough to reach a control that's climbed
+   * up to meet it. The two panel sizes share every term except the sheet
+   * height itself, set once per selector and consumed by one shared rule.
    */
-  .root[data-panel-open="true"][data-panel-size="medium"] .panel {
+  .root[data-panel-open="true"] .panel {
     max-height: calc(
       100dvh -
-      6rem -
+      7.5rem -
       var(--mobile-safe-top) -
-      min(66dvh, 36rem) -
+      var(--sheet-height) -
       0.75rem -
       env(safe-area-inset-bottom) -
       (var(--mobile-control-size) * 2) -
@@ -95,18 +99,11 @@
     overflow-y: auto;
   }
 
+  .root[data-panel-open="true"][data-panel-size="medium"] .panel {
+    --sheet-height: var(--mobile-sheet-height-medium);
+  }
+
   .root[data-panel-open="true"][data-panel-size="full"] .panel {
-    max-height: calc(
-      100dvh -
-      6rem -
-      var(--mobile-safe-top) -
-      min(84dvh, 45rem) -
-      0.75rem -
-      env(safe-area-inset-bottom) -
-      (var(--mobile-control-size) * 2) -
-      var(--mobile-control-gap) -
-      0.5rem
-    );
-    overflow-y: auto;
+    --sheet-height: var(--mobile-sheet-height-full);
   }
 }
