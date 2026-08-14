@@ -15,13 +15,23 @@ export interface UseDismissableOverlayOptions {
    * heading). Omit if the overlay manages its own initial focus.
    */
   initialFocusRef?: RefObject<HTMLElement | null>;
+  /**
+   * Whether a pointerdown outside `containerRef` closes the overlay.
+   * Defaults to `true`. Set `false` for an overlay that also behaves as a
+   * persistent, non-popover panel in some layout (e.g. an always-open
+   * desktop sidebar) where dismissing it just because the user clicked
+   * elsewhere on the page — the map, say — would fight normal use; Escape
+   * still closes it either way.
+   */
+  dismissOnOutsideClick?: boolean;
 }
 
 /**
  * Shared open/close behaviour for a disclosure-panel-style overlay
- * (`SettingsMenu`, `MobileLegend`): closes on Escape or a pointerdown outside
- * `containerRef`, restoring focus to `triggerRef`, and moves focus into
- * `initialFocusRef` when the overlay opens.
+ * (`SettingsMenu`, `MobileLegend`): closes on Escape or (unless
+ * `dismissOnOutsideClick` is `false`) a pointerdown outside `containerRef`,
+ * restoring focus to `triggerRef`, and moves focus into `initialFocusRef`
+ * when the overlay opens.
  */
 export function useDismissableOverlay({
   open,
@@ -29,6 +39,7 @@ export function useDismissableOverlay({
   containerRef,
   triggerRef,
   initialFocusRef,
+  dismissOnOutsideClick = true,
 }: UseDismissableOverlayOptions): void {
   useEffect(() => {
     if (!open) {
@@ -38,7 +49,10 @@ export function useDismissableOverlay({
     initialFocusRef?.current?.focus();
 
     function handlePointerDown(event: MouseEvent) {
-      if (!containerRef.current?.contains(event.target as Node)) {
+      if (
+        dismissOnOutsideClick &&
+        !containerRef.current?.contains(event.target as Node)
+      ) {
         onClose();
       }
     }
@@ -56,5 +70,12 @@ export function useDismissableOverlay({
       document.removeEventListener("mousedown", handlePointerDown);
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [open, onClose, containerRef, triggerRef, initialFocusRef]);
+  }, [
+    open,
+    onClose,
+    containerRef,
+    triggerRef,
+    initialFocusRef,
+    dismissOnOutsideClick,
+  ]);
 }

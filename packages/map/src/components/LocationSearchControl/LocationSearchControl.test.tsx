@@ -488,4 +488,48 @@ describe("LocationSearchControl", () => {
 
     expect(input).toHaveValue("");
   });
+
+  it("reports every query change via onQueryChange, including on clear", async () => {
+    searchMocks.fetchLocationSearchResults.mockResolvedValue([
+      { id: "1", label: "First", latitude: 0, longitude: 0 },
+    ]);
+    const onQueryChange = vi.fn();
+
+    render(
+      <LocationSearchControl
+        onLocationSelect={vi.fn()}
+        onQueryChange={onQueryChange}
+      />,
+    );
+    const input = screen.getByTestId("location-search-input");
+    fireEvent.change(input, { target: { value: "Query" } });
+    expect(onQueryChange).toHaveBeenLastCalledWith("Query");
+    await screen.findByRole("option", { name: "First" });
+
+    fireEvent.click(screen.getByRole("button", { name: /clear search/i }));
+
+    expect(onQueryChange).toHaveBeenLastCalledWith("");
+  });
+
+  it("does not report a query change when a result is selected", async () => {
+    searchMocks.fetchLocationSearchResults.mockResolvedValue([
+      { id: "1", label: "First", latitude: 0, longitude: 0 },
+    ]);
+    const onQueryChange = vi.fn();
+
+    render(
+      <LocationSearchControl
+        onLocationSelect={vi.fn()}
+        onQueryChange={onQueryChange}
+      />,
+    );
+    const input = screen.getByTestId("location-search-input");
+    fireEvent.change(input, { target: { value: "Query" } });
+    onQueryChange.mockClear();
+    const option = await screen.findByRole("option", { name: "First" });
+
+    fireEvent.click(option);
+
+    expect(onQueryChange).not.toHaveBeenCalled();
+  });
 });

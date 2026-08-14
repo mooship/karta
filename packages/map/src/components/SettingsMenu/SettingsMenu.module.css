@@ -2,11 +2,6 @@
   position: relative;
 }
 
-.trigger svg {
-  width: 1.25rem;
-  height: 1.25rem;
-}
-
 .menu {
   position: absolute;
   bottom: calc(100% + 0.5rem);

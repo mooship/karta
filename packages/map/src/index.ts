@@ -45,11 +45,15 @@ export { DomainProvider, useDomain } from "./context/DomainContext";
 export type {
   GeocoderProvider,
   LocationSearchResult,
+  NominatimSearchOptions,
 } from "./data/locationSearch";
 export {
+  createNominatimGeocoderProvider,
   fetchLocationSearchResults,
   fetchReverseGeocodeResult,
   nominatimGeocoderProvider,
 } from "./data/locationSearch";
+export type { UseDismissableOverlayOptions } from "./hooks/useDismissableOverlay";
+export { useDismissableOverlay } from "./hooks/useDismissableOverlay";
 export type { LayerDataMap, LayerDataResult } from "./hooks/useLayerData";
 export { useLayerData } from "./hooks/useLayerData";

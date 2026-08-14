@@ -72,10 +72,26 @@ function toLocationSearchResult(
 }
 
 /**
+ * Biases a Nominatim search toward a subset of the world, since it otherwise
+ * searches every country equally and a host app with a fixed geographic
+ * scope (a single country, say) would rather not see irrelevant results
+ * from elsewhere, especially for a place name that's common internationally.
+ */
+export interface NominatimSearchOptions {
+  /**
+   * One or more comma-separated ISO 3166-1 alpha-2 country codes (Nominatim's
+   * own `countrycodes` parameter), e.g. `"za"`. Biases ranking toward those
+   * countries without excluding results elsewhere.
+   */
+  countryCodes?: string;
+}
+
+/**
  * Searches OpenStreetMap Nominatim for places matching `query`.
  * @param query - Free-text place search query. An empty/whitespace-only
  *   query resolves to an empty array without making a request.
  * @param signal - Optional `AbortSignal` to cancel the request.
+ * @param options - See {@link NominatimSearchOptions}.
  * @returns Up to 6 matching places, each with parsed coordinates and, where
  *   available, a bounding box.
  * @throws If the Nominatim request returns a non-2xx response.
@@ -83,6 +99,7 @@ function toLocationSearchResult(
 export async function fetchLocationSearchResults(
   query: string,
   signal?: AbortSignal,
+  options: NominatimSearchOptions = {},
 ): Promise<LocationSearchResult[]> {
   const trimmedQuery = query.trim();
   if (trimmedQuery.length === 0) {
@@ -95,6 +112,9 @@ export async function fetchLocationSearchResults(
     limit: "6",
     addressdetails: "0",
   });
+  if (options.countryCodes) {
+    searchParams.set("countrycodes", options.countryCodes);
+  }
 
   const response = await fetch(
     `https://nominatim.openstreetmap.org/search?${searchParams.toString()}`,
@@ -180,11 +200,31 @@ export interface GeocoderProvider {
 }
 
 /**
- * The default `GeocoderProvider`, backed by OpenStreetMap Nominatim.
+ * Builds a `GeocoderProvider` backed by OpenStreetMap Nominatim.
+ * @param searchOptions - Applied to every `search` call (not `reverse`,
+ *   which is already coordinate-scoped and has no use for a country bias).
+ * @remarks Requires `https://nominatim.openstreetmap.org` in the host app's
+ *   CSP `connect-src` — see `GeocoderProvider`. Use this instead of the
+ *   `nominatimGeocoderProvider` default when a host app's own coverage is
+ *   narrower than "the whole world," e.g. `createNominatimGeocoderProvider({
+ *   countryCodes: "za" })` for a South Africa-only app.
+ */
+export function createNominatimGeocoderProvider(
+  searchOptions: NominatimSearchOptions = {},
+): GeocoderProvider {
+  return {
+    search: (query, signal) =>
+      fetchLocationSearchResults(query, signal, searchOptions),
+    reverse: fetchReverseGeocodeResult,
+  };
+}
+
+/**
+ * The default `GeocoderProvider`, backed by OpenStreetMap Nominatim with no
+ * geographic bias. Use `createNominatimGeocoderProvider` instead to bias
+ * search results toward a host app's own coverage area.
  * @remarks Requires `https://nominatim.openstreetmap.org` in the host app's
  *   CSP `connect-src` — see `GeocoderProvider`.
  */
-export const nominatimGeocoderProvider: GeocoderProvider = {
-  search: fetchLocationSearchResults,
-  reverse: fetchReverseGeocodeResult,
-};
+export const nominatimGeocoderProvider: GeocoderProvider =
+  createNominatimGeocoderProvider();

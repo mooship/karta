@@ -7,12 +7,14 @@ import {
 } from "@karta/core";
 import {
   ControlButton,
+  createNominatimGeocoderProvider,
   DesktopLegend,
   DomainProvider,
   LocationSearchControl,
   type LocationSearchResult,
   MobileLegend,
   SettingsMenu,
+  useDismissableOverlay,
 } from "@karta/map";
 import { setThemePreference, useThemePreference } from "@karta/react";
 import clsx from "clsx";
@@ -68,6 +70,18 @@ const SEARCH_COVERAGE_BOUNDS: LatLngBoundsTuple = [
   [-34.84, 16.45],
   [-22.13, 32.95],
 ];
+
+/**
+ * This app's own `LocationSearchControl` provider: Nominatim biased toward
+ * South Africa, matching `SEARCH_COVERAGE_BOUNDS` above. `@karta/map`'s
+ * default `nominatimGeocoderProvider` has no such bias, since a domain-
+ * agnostic SDK component can't assume any host's coverage area — a search
+ * for a common place name would otherwise rank same-named places elsewhere
+ * in the world ahead of the South African one this app actually cares about.
+ */
+const locationSearchProvider = createNominatimGeocoderProvider({
+  countryCodes: "za",
+});
 
 /**
  * Whether `location` falls within `SEARCH_COVERAGE_BOUNDS`.
@@ -257,7 +271,9 @@ export function App() {
   const isDesktopViewport =
     (width ?? MOBILE_BREAKPOINT_PX) > MOBILE_BREAKPOINT_PX;
   const panelTriggerRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLElement>(null);
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
+  const singleViewRef = useRef<HTMLDivElement>(null);
   const suppressNextHandleClickRef = useRef(false);
   const activeSheetPointerIdRef = useRef<number | null>(null);
   const pendingSheetDragOffsetRef = useRef(0);
@@ -406,6 +422,22 @@ export function App() {
     setMobileSheetClosing(true);
   }
 
+  /**
+   * Closes the panel on Escape (from anywhere, matching `SettingsMenu`/
+   * `MobileLegend`'s own behaviour) or on an outside pointerdown -- but only
+   * on mobile, where the panel is a transient bottom sheet covering the map.
+   * On desktop it's a persistent sidebar the user is expected to keep open
+   * alongside ordinary map interaction, so a stray click on the map itself
+   * must not dismiss it the way it would a popover.
+   */
+  useDismissableOverlay({
+    open: panelOpen,
+    onClose: closePanel,
+    containerRef: panelRef,
+    triggerRef: panelTriggerRef,
+    dismissOnOutsideClick: !isDesktopViewport,
+  });
+
   function handleSheetAnimationEnd(event: AnimationEvent<HTMLElement>) {
     // CSS Modules hashes @keyframes names, so animationName can't be matched
     // against a literal here; requiring the event to originate on the panel
@@ -416,6 +448,14 @@ export function App() {
     }
   }
 
+  /**
+   * Opening moves focus into the panel -- the active tab when tabs are
+   * shown, otherwise the single view's own container -- mirroring how
+   * `finishClose` already returns focus to the trigger on the way out.
+   * `hidden` comes off the `<aside>` in the same commit `setPanelOpen(true)`
+   * causes, so by the next animation frame the target is focusable, the
+   * same assumption `finishClose`'s own `requestAnimationFrame` call makes.
+   */
   function handlePanelToggle() {
     if (panelOpen) {
       closePanel();
@@ -423,6 +463,10 @@ export function App() {
     }
     setMobilePanelExpanded(false);
     setPanelOpen(true);
+    requestAnimationFrame(() => {
+      const activeTabIndex = panelViews.indexOf(panelView);
+      (tabRefs.current[activeTabIndex] ?? singleViewRef.current)?.focus();
+    });
   }
 
   function handleTabKeyDown(event: KeyboardEvent<HTMLButtonElement>) {
@@ -624,6 +668,7 @@ export function App() {
                 onReady={handleMapReady}
                 onBasemapError={() => setBasemap("street")}
                 locationContextMenu
+                locationContextMenuProvider={locationSearchProvider}
                 measurementTool
                 measurementPanelOpen={panelOpen}
                 renderFeaturePopup={renderFeaturePopup}
@@ -651,9 +696,14 @@ export function App() {
         </main>
 
         <div className={clsx(styles.locationSearchControl, styles.surface)}>
+          <p className={styles.appName} data-testid="app-name">
+            {m.app_title()}
+          </p>
           <LocationSearchControl
             placeholder={m.search_placeholder()}
+            provider={locationSearchProvider}
             onLocationSelect={handleLocationSelect}
+            onQueryChange={() => setOutOfCoverageLocationLabel(null)}
           />
           {outOfCoverageLocationLabel ? (
             <output
@@ -701,6 +751,7 @@ export function App() {
 
         <aside
           id="map-controls"
+          ref={panelRef}
           className={clsx(styles.panel, styles.surface)}
           data-testid="panel-container"
           data-e2e="panel-container"
@@ -773,7 +824,9 @@ export function App() {
               </div>
             </>
           ) : (
-            <div {...PANEL_VIEWPORT_PROPS}>{panelViewContent}</div>
+            <div {...PANEL_VIEWPORT_PROPS} ref={singleViewRef} tabIndex={-1}>
+              {panelViewContent}
+            </div>
           )}
         </aside>
 

@@ -33,8 +33,8 @@
 
 .input {
   width: 100%;
-  min-height: 42px;
-  padding: 0.5rem 2.25rem 0.5rem 0.625rem;
+  min-height: 44px;
+  padding: 0.5rem 3.25rem 0.5rem 0.625rem;
   border: 1px solid var(--md-sys-color-outline);
   border-radius: var(--md-sys-shape-corner-small);
   background: var(--md-sys-color-surface-container);
@@ -53,13 +53,19 @@
   display: none;
 }
 
+/*
+ * 44px to meet the design system's touch-target floor -- with `.input` at
+ * the same 44px min-height, this now matches it exactly rather than
+ * poking out above/below, so `right` only needs to clear the input's own
+ * rounded border rather than also room for a taller button.
+ */
 .clearButton {
   position: absolute;
   top: 50%;
-  right: 0.3rem;
+  right: 0.1rem;
   transform: translateY(-50%);
-  width: 1.75rem;
-  height: 1.75rem;
+  width: 44px;
+  height: 44px;
   min-height: 0;
 }
 
@@ -113,7 +119,7 @@
 
 .resultButton {
   width: 100%;
-  min-height: 38px;
+  min-height: 44px;
   padding: 0.45rem 0.55rem;
   border: 1px solid transparent;
   border-radius: var(--md-sys-shape-corner-small);

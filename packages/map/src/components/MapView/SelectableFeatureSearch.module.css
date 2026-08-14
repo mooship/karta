@@ -4,9 +4,22 @@
  * top-of-the-stack hit target over the map's corner, swallowing clicks meant
  * for whatever the caller renders there.
  */
+/*
+ * Anchored well below the map's top-left corner rather than flush against
+ * it: every corner and the strip directly under the top-left one are
+ * already claimed by a typical host's own floating chrome (a location
+ * search box top-left, an info panel top-right -- see
+ * MeasurementControl.module.css's own header comment for the full map).
+ * This component reveals on keyboard focus alone and has no way to learn
+ * where a given host has placed its own controls, so it drops below the
+ * generously-sized worst case of "search box plus an expanded measurement
+ * panel" instead of contesting either -- previously anchored at 0.5rem it
+ * rendered directly on top of a host's always-visible search box the
+ * moment a keyboard user tabbed into it.
+ */
 .root {
   position: absolute;
-  inset-block-start: 0.5rem;
+  inset-block-start: 18rem;
   inset-inline-start: 0.5rem;
   z-index: 2000;
   pointer-events: none;
@@ -57,12 +70,12 @@
 
 .input {
   width: 100%;
-  min-height: 42px;
+  min-height: 44px;
   padding: 0.5rem 0.625rem;
   border: 1px solid var(--md-sys-color-outline);
   border-radius: var(--md-sys-shape-corner-small);
   background: var(--md-sys-color-surface-container);
-  color: var(--md-sys-color-surface);
+  color: var(--md-sys-color-on-surface);
   font: inherit;
 }
 
@@ -72,7 +85,7 @@
 
 .input:focus-visible,
 .resultButton:focus-visible {
-  outline: var(--focus-ring-width) solid var(--md-sys-color-surface);
+  outline: var(--focus-ring-width) solid var(--md-sys-color-on-surface);
   outline-offset: 2px;
 }
 
@@ -94,12 +107,12 @@
 
 .resultButton {
   width: 100%;
-  min-height: 38px;
+  min-height: 44px;
   padding: 0.45rem 0.55rem;
   border: 1px solid transparent;
   border-radius: var(--md-sys-shape-corner-small);
   background: var(--md-sys-color-surface-container);
-  color: var(--md-sys-color-surface);
+  color: var(--md-sys-color-on-surface);
   font: inherit;
   text-align: left;
   cursor: pointer;

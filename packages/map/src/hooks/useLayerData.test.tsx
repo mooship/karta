@@ -106,6 +106,23 @@ describe("useLayerData", () => {
     expect(result.current.failedLayerIds).toEqual([]);
   });
 
+  it("clears a failed layer id as soon as it's no longer requested, without waiting for a retry", async () => {
+    vi.mocked(global.fetch).mockRejectedValueOnce(new Error("network"));
+
+    const { result, rerender } = renderHook(
+      ({ ids }: { ids: string[] }) => useLayerData(ids),
+      { initialProps: { ids: ["rail"] }, wrapper: withTestDomain },
+    );
+
+    await waitFor(() => {
+      expect(result.current.failedLayerIds).toEqual(["rail"]);
+    });
+
+    rerender({ ids: [] });
+
+    expect(result.current.failedLayerIds).toEqual([]);
+  });
+
   it("logs a failed layer fetch to the console", async () => {
     const consoleError = vi
       .spyOn(console, "error")
@@ -226,12 +243,19 @@ describe("useLayerData", () => {
     });
 
     rerender({ ids: [] });
+    // Toggling the layer off (above) now prunes it from failedLayerIds
+    // immediately, rather than waiting for a retry -- see the "clears a
+    // failed layer id" test above. Re-requesting it here starts a fresh
+    // fetch, which this test expects to fail again and be re-added.
+    expect(result.current.failedLayerIds).toEqual([]);
     rerender({ ids: ["rail"] });
 
     await waitFor(() => {
       expect(global.fetch).toHaveBeenCalledTimes(2);
     });
-    expect(result.current.failedLayerIds).toEqual(["rail"]);
+    await waitFor(() => {
+      expect(result.current.failedLayerIds).toEqual(["rail"]);
+    });
 
     consoleError.mockRestore();
   });
