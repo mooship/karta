@@ -1,7 +1,7 @@
 .container {
   position: absolute;
   left: 1.25rem;
-  bottom: calc(3.25rem + 44px + 0.75rem);
+  bottom: calc(3.25rem + var(--control-height, 44px) + 0.75rem);
   z-index: 1240;
   display: block;
 }
@@ -51,7 +51,7 @@
   display: grid;
   place-items: center;
   width: 100%;
-  min-height: 28px;
+  min-height: var(--control-height, 44px);
   padding: 0;
   margin-bottom: var(--space-2);
   border: 0;
@@ -92,13 +92,13 @@
 
 @media (max-width: 768px) {
   .container {
-    left: var(--mobile-control-edge);
+    left: var(--mobile-control-edge, 0.75rem);
     bottom: calc(
-      var(--mobile-control-bottom) +
-      var(--mobile-control-size) +
+      var(--mobile-control-bottom, calc(1.5rem + env(safe-area-inset-bottom))) +
+      var(--mobile-control-size, 44px) +
       3rem +
-      var(--mobile-control-size) +
-      var(--mobile-control-gap)
+      var(--mobile-control-size, 44px) +
+      var(--mobile-control-gap, 0.625rem)
     );
   }
 
@@ -120,9 +120,9 @@
       calc(var(--sheet-height) + 0.75rem + env(safe-area-inset-bottom)),
       calc(
         100dvh -
-        var(--mobile-search-clearance) -
-        var(--mobile-safe-top) -
-        var(--mobile-control-size)
+        var(--mobile-search-clearance, 7.5rem) -
+        var(--mobile-safe-top, env(safe-area-inset-top)) -
+        var(--mobile-control-size, 44px)
       )
     );
   }

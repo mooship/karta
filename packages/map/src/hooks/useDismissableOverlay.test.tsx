@@ -3,7 +3,13 @@ import { useRef, useState } from "react";
 import { describe, expect, it, vi } from "vitest";
 import { useDismissableOverlay } from "./useDismissableOverlay";
 
-function TestOverlay({ initialOpen = true }: { initialOpen?: boolean }) {
+function TestOverlay({
+  initialOpen = true,
+  dismissOnOutsideClick,
+}: {
+  initialOpen?: boolean;
+  dismissOnOutsideClick?: boolean;
+}) {
   const [open, setOpen] = useState(initialOpen);
   const containerRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -15,6 +21,7 @@ function TestOverlay({ initialOpen = true }: { initialOpen?: boolean }) {
     containerRef,
     triggerRef,
     initialFocusRef: headingRef,
+    dismissOnOutsideClick,
   });
 
   return (
@@ -78,6 +85,35 @@ describe("useDismissableOverlay", () => {
     });
 
     expect(queryByText("panel")).toBeInTheDocument();
+  });
+
+  it("stays open on an outside pointerdown when dismissOnOutsideClick is false", () => {
+    const { getByText, queryByText } = render(
+      <TestOverlay dismissOnOutsideClick={false} />,
+    );
+
+    act(() => {
+      getByText("outside").dispatchEvent(
+        new MouseEvent("mousedown", { bubbles: true }),
+      );
+    });
+
+    expect(queryByText("panel")).toBeInTheDocument();
+  });
+
+  it("still closes on Escape when dismissOnOutsideClick is false", () => {
+    const { getByText, queryByText } = render(
+      <TestOverlay dismissOnOutsideClick={false} />,
+    );
+
+    act(() => {
+      document.dispatchEvent(
+        new KeyboardEvent("keydown", { key: "Escape", bubbles: true }),
+      );
+    });
+
+    expect(queryByText("panel")).not.toBeInTheDocument();
+    expect(document.activeElement).toBe(getByText("trigger"));
   });
 
   it("does nothing when closed", () => {

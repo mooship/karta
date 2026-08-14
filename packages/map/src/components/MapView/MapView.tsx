@@ -1,4 +1,8 @@
-import { createLayerConfig, type Layer as DomainLayer } from "@karta/core";
+import {
+  createLayerConfig,
+  type Layer as DomainLayer,
+  resolveThemedColor,
+} from "@karta/core";
 import { useLatestRef, useResolvedDarkTheme } from "@karta/react";
 import type { Feature, FeatureCollection } from "geojson";
 import {
@@ -36,7 +40,10 @@ import {
 } from "../../constants/basemaps";
 import { AREA_OUTLINE } from "../../constants/mapStyles";
 import { useDomain } from "../../context/DomainContext";
-import type { LocationSearchResult } from "../../data/locationSearch";
+import type {
+  GeocoderProvider,
+  LocationSearchResult,
+} from "../../data/locationSearch";
 import { useLayerData } from "../../hooks/useLayerData";
 import { formatMeasurementResult } from "../MeasurementControl/formatMeasurementResult";
 import {
@@ -105,6 +112,13 @@ export interface MapViewProps<
    * Defaults to `false`.
    */
   locationContextMenu?: boolean;
+  /**
+   * Geocoder backend used for that context menu's reverse lookup. Defaults
+   * to OpenStreetMap Nominatim. Pass the same `GeocoderProvider` given to
+   * `LocationSearchControl` if a caller wants both to agree on a non-default
+   * backend.
+   */
+  locationContextMenuProvider?: GeocoderProvider;
   /**
    * When `true`, shows a toggleable control for measuring straight-line
    * distance or enclosed area by clicking points on the map. Defaults to
@@ -648,6 +662,7 @@ function MapViewComponent<
   onLayerDataError,
   onBasemapError,
   locationContextMenu = false,
+  locationContextMenuProvider,
   measurementTool = false,
   measurementPanelOpen = false,
   onReady,
@@ -1002,8 +1017,11 @@ function MapViewComponent<
             smoothFactor={0}
             pathOptions={AREA_OUTLINE_PATH_OPTIONS}
             style={(feature: Feature | undefined) => ({
-              ...AREA_OUTLINE,
-              color: resolvedDark ? "#5b6476" : AREA_OUTLINE.color,
+              color: resolveThemedColor(
+                AREA_OUTLINE.color,
+                AREA_OUTLINE.darkColor,
+                resolvedDark,
+              ),
               opacity: resolvedDark
                 ? feature?.properties?.labelPriority === "secondary"
                   ? 0.42
@@ -1070,7 +1088,9 @@ function MapViewComponent<
         <MapReadyNotifier onReady={onReady} />
         <ResponsiveMapBounds bounds={bounds} />
         <ZoomStateWatcher onZoomChange={setMapZoom} />
-        {locationContextMenu ? <LocationContextMenu /> : null}
+        {locationContextMenu ? (
+          <LocationContextMenu provider={locationContextMenuProvider} />
+        ) : null}
         {measurementTool && measurementInteractive ? (
           <MeasurementLayer
             mode={measurement.mode}

@@ -20,6 +20,14 @@ interface LocationSearchControlProps {
   placeholder?: string;
   /** Geocoder backend used for search. Defaults to OpenStreetMap Nominatim. */
   provider?: GeocoderProvider;
+  /**
+   * Called with the input's new value whenever the query changes, including
+   * to `""` on clear. Lets a caller drop query-specific state (e.g. an
+   * "outside coverage" message tied to a previous selection) the moment the
+   * visitor starts a new search, rather than leaving it displayed against a
+   * query it no longer describes.
+   */
+  onQueryChange?: (query: string) => void;
 }
 
 const MIN_SEARCH_QUERY_LENGTH = 2;
@@ -37,6 +45,7 @@ export function LocationSearchControl({
   onLocationSelect,
   placeholder = DEFAULT_PLACEHOLDER,
   provider = nominatimGeocoderProvider,
+  onQueryChange,
 }: LocationSearchControlProps) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<LocationSearchResult[]>([]);
@@ -161,6 +170,7 @@ export function LocationSearchControl({
 
   function handleClear() {
     setQuery("");
+    onQueryChange?.("");
     setResults([]);
     setSearchError(null);
     setActiveResultIndex(-1);
@@ -208,6 +218,7 @@ export function LocationSearchControl({
           value={query}
           onChange={(event) => {
             setQuery(event.target.value);
+            onQueryChange?.(event.target.value);
             setSearchError(null);
             setActiveResultIndex(-1);
           }}

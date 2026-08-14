@@ -299,6 +299,26 @@
   padding: 0.75rem 0.875rem;
 }
 
+/*
+ * The only visible app name/title in the whole layout -- everything else
+ * naming this app (the <title>, the page's own <h1>) is either in the
+ * browser chrome or screen-reader-only, so a sighted first-time visitor had
+ * no on-screen cue for what they were looking at. Placed inside the
+ * search box's own surface rather than as new floating chrome, since every
+ * map corner is already claimed by other controls (see
+ * MeasurementControl.module.css's own note on this) and this box is
+ * already visible, already has padding, and needs no new stacking context.
+ */
+.appName {
+  margin: 0 0 0.375rem;
+  color: var(--md-sys-color-on-surface-variant);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
 .outOfCoverage {
   display: block;
   margin: 0.5rem 0 0;
