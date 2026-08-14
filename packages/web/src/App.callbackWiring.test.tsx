@@ -152,10 +152,19 @@ describe("App map/location callback wiring", () => {
     render(<App />);
 
     await waitFor(() => expect(mapViewMocks.latestProps).toBeDefined());
-    expect(mapViewMocks.latestProps?.measurementPanelOpen).toBe(
-      useMapUiStore.getState().panelOpen,
-    );
+    // mobilePanelExpanded has no mount-time effect touching it (unlike
+    // panelOpen, which App auto-sets on mount depending on the test
+    // environment's simulated viewport width), so this is safe to assert
+    // as a fixed default.
     expect(mapViewMocks.latestProps?.measurementPanelExpanded).toBe(false);
+
+    act(() => {
+      useMapUiStore.getState().setPanelOpen(false);
+    });
+
+    await waitFor(() =>
+      expect(mapViewMocks.latestProps?.measurementPanelOpen).toBe(false),
+    );
 
     act(() => {
       useMapUiStore.getState().setPanelOpen(true);

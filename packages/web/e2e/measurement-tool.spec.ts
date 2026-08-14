@@ -27,6 +27,12 @@ async function clickMapPoint(
   );
 }
 
+/** Clicks the same two points several distance-mode tests share, to produce a measurable line. */
+async function drawSampleLine(page: Page, mapView: Locator) {
+  await clickMapPoint(page, mapView, 0.75, 0.3);
+  await clickMapPoint(page, mapView, 0.9, 0.5);
+}
+
 test.describe("measurement tool", () => {
   test("is closed by default and opens a panel with a hint on toggle", async ({
     page,
@@ -51,8 +57,7 @@ test.describe("measurement tool", () => {
     await page.getByTestId(E2E.measurement.toggle).click();
 
     const mapView = page.getByTestId(E2E.mapView);
-    await clickMapPoint(page, mapView, 0.75, 0.3);
-    await clickMapPoint(page, mapView, 0.9, 0.5);
+    await drawSampleLine(page, mapView);
 
     await expect(page.getByTestId(E2E.measurement.result)).toHaveText(
       /^\d+(\.\d+)? (m|km)$/,
@@ -68,8 +73,7 @@ test.describe("measurement tool", () => {
     await page.getByTestId(E2E.measurement.toggle).click();
 
     const mapView = page.getByTestId(E2E.mapView);
-    await clickMapPoint(page, mapView, 0.75, 0.3);
-    await clickMapPoint(page, mapView, 0.9, 0.5);
+    await drawSampleLine(page, mapView);
     await expect(page.getByTestId(E2E.measurement.result)).toBeVisible();
 
     await page.getByTestId(E2E.measurement.modeArea).click();
@@ -102,8 +106,7 @@ test.describe("measurement tool", () => {
     await page.getByTestId(E2E.measurement.toggle).click();
 
     const mapView = page.getByTestId(E2E.mapView);
-    await clickMapPoint(page, mapView, 0.75, 0.3);
-    await clickMapPoint(page, mapView, 0.9, 0.5);
+    await drawSampleLine(page, mapView);
     await expect(page.getByTestId(E2E.measurement.result)).toBeVisible();
 
     await page.getByTestId(E2E.measurement.clear).click();
