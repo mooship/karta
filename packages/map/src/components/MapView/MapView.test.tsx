@@ -16,6 +16,7 @@ const mapMocks = vi.hoisted(() => ({
   tileErrorHandler: null as null | (() => void),
   tileEventHandlers: [] as unknown[],
   mapContextMenuHandler: null as null | ((event: unknown) => void),
+  mapClickHandler: null as null | ((event: unknown) => void),
   featureLayers: [] as Array<{
     feature: { properties?: { id?: string } | null };
     bindPopup: ReturnType<typeof vi.fn>;
@@ -198,8 +199,16 @@ vi.mock("react-leaflet", () => ({
   // A fresh object per call would re-fire every `map`-dependent effect on
   // every render and hide exactly the kind of bug those deps guard against.
   useMap: () => mapInstance,
-  useMapEvents: (handlers: { contextmenu?: (event: unknown) => void }) => {
-    mapMocks.mapContextMenuHandler = handlers.contextmenu ?? null;
+  useMapEvents: (handlers: {
+    contextmenu?: (event: unknown) => void;
+    click?: (event: unknown) => void;
+  }) => {
+    if (handlers.contextmenu) {
+      mapMocks.mapContextMenuHandler = handlers.contextmenu;
+    }
+    if (handlers.click) {
+      mapMocks.mapClickHandler = handlers.click;
+    }
     return {};
   },
   Popup: ({ children }: { children: ReactNode }) => (
@@ -208,6 +217,13 @@ vi.mock("react-leaflet", () => ({
   Pane: () => null,
   ZoomControl: () => <div data-testid="zoom-control" />,
   ScaleControl: () => <div data-testid="scale-control" />,
+  Polyline: ({ positions }: { positions: unknown[] }) => (
+    <div data-testid="measurement-polyline">{positions.length}</div>
+  ),
+  Polygon: ({ positions }: { positions: unknown[] }) => (
+    <div data-testid="measurement-polygon">{positions.length}</div>
+  ),
+  CircleMarker: () => <div data-testid="measurement-vertex" />,
 }));
 
 vi.mock("../../data/locationSearch", () => ({
@@ -313,6 +329,7 @@ describe("MapView", () => {
     mapMocks.tileErrorHandler = null;
     mapMocks.tileEventHandlers = [];
     mapMocks.mapContextMenuHandler = null;
+    mapMocks.mapClickHandler = null;
     mapMocks.featureLayers = [];
     mapMocks.geoJsonProps = {};
     mapMocks.zoom = 9;
@@ -415,6 +432,35 @@ describe("MapView", () => {
     expect(renderFeaturePopup).toHaveBeenCalledWith(
       expect.objectContaining({ id: "A", name: "Mamelodi" }),
     );
+  });
+
+  it("does not select a feature or open its popup when clicked while the measurement tool is active", async () => {
+    vi.useFakeTimers();
+    const renderFeaturePopup = vi.fn().mockReturnValue(<div>Custom popup</div>);
+    const onFeatureSelect = vi.fn();
+
+    render(
+      withDomain(
+        <MapView
+          {...DEFAULT_MAP_VIEW_PROPS}
+          areas={areas}
+          visibleLayerIds={["areas"]}
+          onFeatureSelect={onFeatureSelect}
+          renderFeaturePopup={renderFeaturePopup}
+          measurementTool
+        />,
+      ),
+    );
+
+    fireEvent.click(screen.getByTestId("measurement-control-toggle"));
+
+    const firstLayer = mapMocks.featureLayers[0];
+    expect(firstLayer).toBeDefined();
+    firstLayer?.__handlers.click?.({ originalEvent: { detail: 1 } });
+    await vi.advanceTimersByTimeAsync(220);
+
+    expect(renderFeaturePopup).not.toHaveBeenCalled();
+    expect(onFeatureSelect).not.toHaveBeenCalled();
   });
 
   it("notifies onReady once the map is ready and a frame has been painted", async () => {
@@ -1323,6 +1369,157 @@ describe("MapView", () => {
       28.03,
       expect.any(AbortSignal),
     );
+  });
+
+  it("does not show the measurement control when measurementTool is not set", () => {
+    render(
+      withDomain(
+        <MapView {...DEFAULT_MAP_VIEW_PROPS} areas={[]} visibleLayerIds={[]} />,
+      ),
+    );
+
+    expect(
+      screen.queryByTestId("measurement-control-toggle"),
+    ).not.toBeInTheDocument();
+  });
+
+  it("shows the measurement toggle when measurementTool is set, and opens the panel on click", () => {
+    render(
+      withDomain(
+        <MapView
+          {...DEFAULT_MAP_VIEW_PROPS}
+          areas={[]}
+          visibleLayerIds={[]}
+          measurementTool
+        />,
+      ),
+    );
+
+    expect(
+      screen.getByTestId("measurement-control-toggle"),
+    ).toBeInTheDocument();
+    expect(mapMocks.mapClickHandler).toBeNull();
+
+    fireEvent.click(screen.getByTestId("measurement-control-toggle"));
+
+    expect(screen.getByTestId("measurement-control-panel")).toBeInTheDocument();
+    expect(mapMocks.mapClickHandler).not.toBeNull();
+  });
+
+  it("passes measurementPanelOpen/measurementPanelExpanded through to the measurement control's own panel-state attributes", () => {
+    render(
+      withDomain(
+        <MapView
+          {...DEFAULT_MAP_VIEW_PROPS}
+          areas={[]}
+          visibleLayerIds={[]}
+          measurementTool
+          measurementPanelOpen
+          measurementPanelExpanded
+        />,
+      ),
+    );
+
+    const root = screen.getByTestId("measurement-control-root");
+    expect(root).toHaveAttribute("data-panel-open", "true");
+    expect(root).toHaveAttribute("data-panel-size", "full");
+  });
+
+  it("draws a preview line and shows a distance readout as the map is clicked in distance mode", () => {
+    render(
+      withDomain(
+        <MapView
+          {...DEFAULT_MAP_VIEW_PROPS}
+          areas={[]}
+          visibleLayerIds={[]}
+          measurementTool
+        />,
+      ),
+    );
+
+    fireEvent.click(screen.getByTestId("measurement-control-toggle"));
+    act(() => {
+      mapMocks.mapClickHandler?.({ latlng: { lat: -26.0, lng: 28.0 } });
+    });
+    act(() => {
+      mapMocks.mapClickHandler?.({ latlng: { lat: -25.99, lng: 28.0 } });
+    });
+
+    expect(screen.getByTestId("measurement-polyline")).toHaveTextContent("2");
+    expect(screen.getByTestId("measurement-control-result")).toHaveTextContent(
+      /km|m/,
+    );
+  });
+
+  it("switches to area mode and clears any in-progress points", () => {
+    render(
+      withDomain(
+        <MapView
+          {...DEFAULT_MAP_VIEW_PROPS}
+          areas={[]}
+          visibleLayerIds={[]}
+          measurementTool
+        />,
+      ),
+    );
+
+    fireEvent.click(screen.getByTestId("measurement-control-toggle"));
+    act(() => {
+      mapMocks.mapClickHandler?.({ latlng: { lat: -26.0, lng: 28.0 } });
+    });
+
+    fireEvent.click(screen.getByTestId("measurement-control-mode-option-area"));
+
+    expect(screen.getByTestId("measurement-control-hint")).toBeInTheDocument();
+  });
+
+  it("clears the drawn points without closing the panel when Clear is clicked", () => {
+    render(
+      withDomain(
+        <MapView
+          {...DEFAULT_MAP_VIEW_PROPS}
+          areas={[]}
+          visibleLayerIds={[]}
+          measurementTool
+        />,
+      ),
+    );
+
+    fireEvent.click(screen.getByTestId("measurement-control-toggle"));
+    act(() => {
+      mapMocks.mapClickHandler?.({ latlng: { lat: -26.0, lng: 28.0 } });
+    });
+    act(() => {
+      mapMocks.mapClickHandler?.({ latlng: { lat: -25.99, lng: 28.0 } });
+    });
+
+    fireEvent.click(screen.getByTestId("measurement-control-clear"));
+
+    expect(screen.getByTestId("measurement-control-panel")).toBeInTheDocument();
+    expect(screen.getByTestId("measurement-control-hint")).toBeInTheDocument();
+  });
+
+  it("closes the panel and stops listening for clicks when the toggle is clicked again", () => {
+    render(
+      withDomain(
+        <MapView
+          {...DEFAULT_MAP_VIEW_PROPS}
+          areas={[]}
+          visibleLayerIds={[]}
+          measurementTool
+        />,
+      ),
+    );
+
+    fireEvent.click(screen.getByTestId("measurement-control-toggle"));
+    fireEvent.click(screen.getByTestId("measurement-control-close"));
+
+    expect(
+      screen.queryByTestId("measurement-control-panel"),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByTestId("measurement-control-toggle"),
+    ).toBeInTheDocument();
   });
 
   it("does not open a popup or select a feature on a non-selectable layer", () => {

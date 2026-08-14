@@ -23,6 +23,8 @@
   "layer_unavailable_badge": "Ha e so fumaneha",
   "layer_failed_badge": "E hlotswe ho kenngwa — e time, o be o e bule hape ho leka hape",
   "layer_download_aria_label": "Daonlouda boitsebiso ba {label} (GeoJSON)",
+  "layer_download_csv_aria_label": "Daonlouda boitsebiso ba {label} (CSV)",
+  "layer_csv_export_error": "Faele ya CSV e hlotswe ho lokiswa. Leka hape.",
 
   "township_popup_car_time": "Nako ya koloi e akantsweng",
   "township_popup_job_center": "Setsi sa mesebetsi se haufi",

@@ -23,6 +23,8 @@
   "layer_unavailable_badge": "Ayikafumaneki",
   "layer_failed_badge": "Yehlulekile ukulayisha — vala uphinde uvule ukuze uzame kwakhona",
   "layer_download_aria_label": "Khuphela idatha ye-{label} (GeoJSON)",
+  "layer_download_csv_aria_label": "Khuphela idatha ye-{label} (CSV)",
+  "layer_csv_export_error": "Ayikwazanga ukulungisa ifayile ye-CSV. Zama kwakhona.",
 
   "township_popup_car_time": "Ixesha lemoto elilinganiselweyo",
   "township_popup_job_center": "Isikhungo somsebenzi esikufuphi",
