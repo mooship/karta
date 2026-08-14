@@ -1,37 +1,7 @@
 import { act, renderHook } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { stubMatchMedia } from "./stubMatchMedia";
 import { usePrefersDarkMode } from "./usePrefersDarkMode";
-
-function stubMatchMedia(initialMatches: boolean) {
-  let changeListener: (() => void) | undefined;
-  let matches = initialMatches;
-
-  const mediaQueryList = {
-    get matches() {
-      return matches;
-    },
-    addEventListener: vi.fn((event: string, listener: () => void) => {
-      if (event === "change") {
-        changeListener = listener;
-      }
-    }),
-    removeEventListener: vi.fn((event: string, listener: () => void) => {
-      if (event === "change" && changeListener === listener) {
-        changeListener = undefined;
-      }
-    }),
-  };
-
-  vi.stubGlobal("matchMedia", vi.fn().mockReturnValue(mediaQueryList));
-
-  return {
-    triggerChange(nextMatches: boolean) {
-      matches = nextMatches;
-      changeListener?.();
-    },
-    mediaQueryList,
-  };
-}
 
 describe("usePrefersDarkMode", () => {
   afterEach(() => {
