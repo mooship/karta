@@ -169,6 +169,29 @@
   color: var(--md-sys-color-error);
 }
 
+/*
+ * Groups every dataSource's download link + CSV button pair and pushes the
+ * whole group to the row's right edge with a single `margin-left: auto` —
+ * applying that to each `.download` icon individually (the previous
+ * approach) split the row's free space between every auto margin instead,
+ * scattering the icons across the row rather than clustering them.
+ */
+.downloads {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 0.25rem;
+  margin-left: auto;
+}
+
+/*
+ * `.download` is shared by an `<a>` (the GeoJSON link) and a `<button>`
+ * (the CSV export trigger) so they read as one visual family; the reset
+ * properties below (`border`/`background`/`padding`/`font`/`cursor`) only
+ * affect the `<button>` in practice, since a plain `<a>` has no default
+ * browser chrome to begin with, but without them the button showed its
+ * native outline and background instead of matching the link.
+ */
 .download {
   display: flex;
   flex-shrink: 0;
@@ -176,14 +199,23 @@
   justify-content: center;
   width: 1.75rem;
   height: 1.75rem;
-  margin-left: auto;
+  border: 0;
   border-radius: var(--md-sys-shape-corner-full);
+  background: transparent;
+  padding: 0;
   color: var(--md-sys-color-on-surface-variant);
+  font: inherit;
+  cursor: pointer;
   transition: background-color var(--motion-duration-short) ease;
 }
 
 .download:hover {
   background: var(--state-hover);
+}
+
+.download:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
 }
 
 .downloadIcon {
