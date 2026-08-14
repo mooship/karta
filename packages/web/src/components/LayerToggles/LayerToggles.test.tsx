@@ -1,8 +1,22 @@
 import type { Layer, LayerGroup } from "@karta/core";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import * as registry from "../../layers/registry";
 import { LayerToggles } from "./LayerToggles";
+
+const coreMocks = vi.hoisted(() => ({
+  fetchFeatureCollection: vi.fn(),
+  featureCollectionToCsv: vi.fn(),
+}));
+
+vi.mock("@karta/core", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@karta/core")>();
+  return {
+    ...actual,
+    fetchFeatureCollection: coreMocks.fetchFeatureCollection,
+    featureCollectionToCsv: coreMocks.featureCollectionToCsv,
+  };
+});
 
 describe("LayerToggles", () => {
   afterEach(() => {
@@ -217,5 +231,95 @@ describe("LayerToggles", () => {
     );
 
     expect(onToggle).not.toHaveBeenCalled();
+  });
+
+  describe("CSV export", () => {
+    afterEach(() => {
+      coreMocks.fetchFeatureCollection.mockReset();
+      coreMocks.featureCollectionToCsv.mockReset();
+    });
+
+    it("shows a CSV download button alongside the GeoJSON download link", () => {
+      render(<LayerToggles visibleLayerIds={[]} onToggle={vi.fn()} />);
+
+      expect(
+        screen.getByRole("button", {
+          name: /download rapid rail data \(csv\)/i,
+        }),
+      ).toBeInTheDocument();
+    });
+
+    it("fetches the layer's data, converts it to CSV, and triggers a download when clicked", async () => {
+      const collection = { type: "FeatureCollection", features: [] } as const;
+      coreMocks.fetchFeatureCollection.mockResolvedValue(collection);
+      coreMocks.featureCollectionToCsv.mockReturnValue("name\nAlexandra");
+      const createObjectUrlSpy = vi
+        .spyOn(URL, "createObjectURL")
+        .mockReturnValue("blob:mock-url");
+      const revokeObjectUrlSpy = vi
+        .spyOn(URL, "revokeObjectURL")
+        .mockImplementation(() => {});
+      const clickSpy = vi
+        .spyOn(HTMLAnchorElement.prototype, "click")
+        .mockImplementation(() => {});
+
+      render(<LayerToggles visibleLayerIds={[]} onToggle={vi.fn()} />);
+      fireEvent.click(
+        screen.getByRole("button", {
+          name: /download rapid rail data \(csv\)/i,
+        }),
+      );
+
+      await waitFor(() => {
+        expect(clickSpy).toHaveBeenCalled();
+      });
+      expect(coreMocks.fetchFeatureCollection).toHaveBeenCalledWith(
+        "/data/gauteng/rapid-rail.display.v1.geojson",
+      );
+      expect(coreMocks.featureCollectionToCsv).toHaveBeenCalledWith(collection);
+      expect(createObjectUrlSpy).toHaveBeenCalled();
+      expect(revokeObjectUrlSpy).toHaveBeenCalledWith("blob:mock-url");
+
+      createObjectUrlSpy.mockRestore();
+      revokeObjectUrlSpy.mockRestore();
+      clickSpy.mockRestore();
+    });
+
+    it("shows an inline error and doesn't download anything if the CSV export fails", async () => {
+      coreMocks.fetchFeatureCollection.mockRejectedValue(new Error("network"));
+      const clickSpy = vi
+        .spyOn(HTMLAnchorElement.prototype, "click")
+        .mockImplementation(() => {});
+
+      render(<LayerToggles visibleLayerIds={[]} onToggle={vi.fn()} />);
+      fireEvent.click(
+        screen.getByRole("button", {
+          name: /download rapid rail data \(csv\)/i,
+        }),
+      );
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId("layer-toggle-rapid-rail-csv-error"),
+        ).toBeInTheDocument();
+      });
+      expect(clickSpy).not.toHaveBeenCalled();
+
+      clickSpy.mockRestore();
+    });
+
+    it("doesn't toggle the layer when the CSV button is clicked", () => {
+      const onToggle = vi.fn();
+      coreMocks.fetchFeatureCollection.mockReturnValue(new Promise(() => {}));
+
+      render(<LayerToggles visibleLayerIds={[]} onToggle={onToggle} />);
+      fireEvent.click(
+        screen.getByRole("button", {
+          name: /download rapid rail data \(csv\)/i,
+        }),
+      );
+
+      expect(onToggle).not.toHaveBeenCalled();
+    });
   });
 });

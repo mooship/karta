@@ -1,3 +1,4 @@
+export * from "./data/exportFeatureCollection";
 export * from "./data/fetchFeatureCollection";
 export * from "./data/geoJsonSchemas";
 export * from "./data/mergeFeatureCollections";
@@ -6,6 +7,7 @@ export * from "./layers/createLayerConfig";
 export * from "./layers/createRegistry";
 export * from "./spatial/boundingBox";
 export * from "./spatial/isPointInPolygon";
+export * from "./spatial/measurement";
 export * from "./spatial/nearestFeatureDistance";
 export * from "./spatial/reproject";
 export * from "./types/layer";
