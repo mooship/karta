@@ -200,12 +200,11 @@ function PanelViewContent({
  *   URL in sync afterwards, so the address bar is always a shareable link
  *   to the current view; it defers applying a shared `selectedFeatureId`
  *   until `townships` has data, since Leaflet has nothing to select before then.
- *   `panelOpen`/`mobilePanelExpanded` are also passed to `MapView` as
- *   `measurementPanelOpen`/`measurementPanelExpanded` — the same values
- *   `MobileLegend` already receives as `panelOpen`/`panelExpanded` — so the
- *   measurement tool's own panel can cap its height instead of growing
- *   into space the mobile Explore sheet (or a control that's repositioned
- *   itself above it, like the legend trigger) already claims.
+ *   `panelOpen` is also passed to `MapView` as `measurementPanelOpen` — the
+ *   same value `MobileLegend` already receives as its own `panelOpen` — so
+ *   the measurement tool hides itself instead of competing with the mobile
+ *   Explore sheet (or a control that's repositioned itself above it, like
+ *   the legend trigger) for the same sliver of screen.
  */
 export function App() {
   const [hydrated, setHydrated] = useState(false);
@@ -627,7 +626,6 @@ export function App() {
                 locationContextMenu
                 measurementTool
                 measurementPanelOpen={panelOpen}
-                measurementPanelExpanded={mobilePanelExpanded}
                 renderFeaturePopup={renderFeaturePopup}
               />
             </Suspense>

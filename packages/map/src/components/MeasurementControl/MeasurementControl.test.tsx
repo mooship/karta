@@ -145,7 +145,7 @@ describe("MeasurementControl", () => {
     expect(onToggleActive).toHaveBeenCalled();
   });
 
-  it("defaults to data-panel-open=false and data-panel-size=medium when panelOpen/panelExpanded are omitted", () => {
+  it("defaults to data-panel-open=false when panelOpen is omitted", () => {
     render(
       <MeasurementControl
         active
@@ -158,12 +158,13 @@ describe("MeasurementControl", () => {
       />,
     );
 
-    const root = screen.getByTestId("measurement-control-root");
-    expect(root).toHaveAttribute("data-panel-open", "false");
-    expect(root).toHaveAttribute("data-panel-size", "medium");
+    expect(screen.getByTestId("measurement-control-root")).toHaveAttribute(
+      "data-panel-open",
+      "false",
+    );
   });
 
-  it("reflects panelOpen and panelExpanded as data-panel-open/data-panel-size, on both the inactive and active render", () => {
+  it("reflects panelOpen as data-panel-open, on both the inactive and active render", () => {
     const { rerender } = render(
       <MeasurementControl
         active={false}
@@ -174,17 +175,12 @@ describe("MeasurementControl", () => {
         onModeChange={vi.fn()}
         onClear={vi.fn()}
         panelOpen
-        panelExpanded
       />,
     );
 
     expect(screen.getByTestId("measurement-control-root")).toHaveAttribute(
       "data-panel-open",
       "true",
-    );
-    expect(screen.getByTestId("measurement-control-root")).toHaveAttribute(
-      "data-panel-size",
-      "full",
     );
 
     rerender(
@@ -197,17 +193,12 @@ describe("MeasurementControl", () => {
         onModeChange={vi.fn()}
         onClear={vi.fn()}
         panelOpen
-        panelExpanded={false}
       />,
     );
 
     expect(screen.getByTestId("measurement-control-root")).toHaveAttribute(
       "data-panel-open",
       "true",
-    );
-    expect(screen.getByTestId("measurement-control-root")).toHaveAttribute(
-      "data-panel-size",
-      "medium",
     );
   });
 });

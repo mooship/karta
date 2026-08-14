@@ -1406,7 +1406,7 @@ describe("MapView", () => {
     expect(mapMocks.mapClickHandler).not.toBeNull();
   });
 
-  it("passes measurementPanelOpen/measurementPanelExpanded through to the measurement control's own panel-state attributes", () => {
+  it("passes measurementPanelOpen through to the measurement control's own panel-state attribute", () => {
     render(
       withDomain(
         <MapView
@@ -1415,14 +1415,85 @@ describe("MapView", () => {
           visibleLayerIds={[]}
           measurementTool
           measurementPanelOpen
-          measurementPanelExpanded
         />,
       ),
     );
 
-    const root = screen.getByTestId("measurement-control-root");
-    expect(root).toHaveAttribute("data-panel-open", "true");
-    expect(root).toHaveAttribute("data-panel-size", "full");
+    expect(screen.getByTestId("measurement-control-root")).toHaveAttribute(
+      "data-panel-open",
+      "true",
+    );
+  });
+
+  it("stops listening for measurement clicks (and re-enables feature clicks) while the host panel is open, then resumes with the same points once it closes", async () => {
+    vi.useFakeTimers();
+    const renderFeaturePopup = vi.fn().mockReturnValue(<div>Custom popup</div>);
+    const onFeatureSelect = vi.fn();
+
+    const { rerender } = render(
+      withDomain(
+        <MapView
+          {...DEFAULT_MAP_VIEW_PROPS}
+          areas={areas}
+          visibleLayerIds={["areas"]}
+          onFeatureSelect={onFeatureSelect}
+          renderFeaturePopup={renderFeaturePopup}
+          measurementTool
+        />,
+      ),
+    );
+
+    fireEvent.click(screen.getByTestId("measurement-control-toggle"));
+    act(() => {
+      mapMocks.mapClickHandler?.({ latlng: { lat: -26.0, lng: 28.0 } });
+    });
+    act(() => {
+      mapMocks.mapClickHandler?.({ latlng: { lat: -25.99, lng: 28.0 } });
+    });
+    expect(screen.getByTestId("measurement-polyline")).toHaveTextContent("2");
+
+    rerender(
+      withDomain(
+        <MapView
+          {...DEFAULT_MAP_VIEW_PROPS}
+          areas={areas}
+          visibleLayerIds={["areas"]}
+          onFeatureSelect={onFeatureSelect}
+          renderFeaturePopup={renderFeaturePopup}
+          measurementTool
+          measurementPanelOpen
+        />,
+      ),
+    );
+
+    expect(
+      screen.queryByTestId("measurement-polyline"),
+    ).not.toBeInTheDocument();
+
+    const firstLayer = mapMocks.featureLayers[0];
+    expect(firstLayer).toBeDefined();
+    firstLayer?.__handlers.click?.({ originalEvent: { detail: 1 } });
+    await vi.advanceTimersByTimeAsync(220);
+
+    expect(renderFeaturePopup).toHaveBeenCalledWith(
+      expect.objectContaining({ id: "A", name: "Mamelodi" }),
+    );
+    expect(onFeatureSelect).toHaveBeenCalled();
+
+    rerender(
+      withDomain(
+        <MapView
+          {...DEFAULT_MAP_VIEW_PROPS}
+          areas={areas}
+          visibleLayerIds={["areas"]}
+          onFeatureSelect={onFeatureSelect}
+          renderFeaturePopup={renderFeaturePopup}
+          measurementTool
+        />,
+      ),
+    );
+
+    expect(screen.getByTestId("measurement-polyline")).toHaveTextContent("2");
   });
 
   it("draws a preview line and shows a distance readout as the map is clicked in distance mode", () => {

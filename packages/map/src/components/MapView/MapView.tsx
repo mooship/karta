@@ -113,16 +113,14 @@ export interface MapViewProps<
   measurementTool?: boolean;
   /**
    * Whether the caller's own overlapping panel (if it has one — e.g. an
-   * info/layers panel rendered alongside `MapView`) is currently open,
-   * and if so whether it's expanded to its larger size. Passed straight
-   * through to the measurement tool's control (see
-   * `MeasurementControl`'s `panelOpen`/`panelExpanded` props) so it can
-   * avoid growing into space that panel's own mobile layout already
-   * claims. Both default to `false`; harmless to omit for a caller with
-   * no such panel.
+   * info/layers panel rendered alongside `MapView`) is currently open.
+   * Passed straight through to the measurement tool's control (see
+   * `MeasurementControl`'s `panelOpen` prop) so it hides itself, and to
+   * gating map click handling (see `measurementInteractive` below), while
+   * that panel's own mobile layout is claiming most of the screen. Defaults
+   * to `false`; harmless to omit for a caller with no such panel.
    */
   measurementPanelOpen?: boolean;
-  measurementPanelExpanded?: boolean;
   /**
    * Called once, after Leaflet has initialised the map and the browser has
    * painted it.
@@ -652,7 +650,6 @@ function MapViewComponent<
   locationContextMenu = false,
   measurementTool = false,
   measurementPanelOpen = false,
-  measurementPanelExpanded = false,
   onReady,
 }: MapViewProps<TProperties>) {
   const { getLayers } = useDomain();
@@ -687,7 +684,19 @@ function MapViewComponent<
   const selectableLayerById = useRef(new Map<string, SelectableFeatureLayer>());
   const onSelectRef = useLatestRef(onFeatureSelect);
   const renderFeaturePopupRef = useLatestRef(renderFeaturePopup);
-  const measurementActiveRef = useLatestRef(measurement.active);
+  /**
+   * Whether the map should currently be listening for measurement clicks.
+   * @remarks Distinct from `measurement.active` itself: the host's own
+   * overlapping panel (`measurementPanelOpen`) hides `MeasurementControl`
+   * entirely on mobile (see MeasurementControl.module.css), leaving no UI to
+   * show a click's result. `measurement.active`/`mode`/`points` stay
+   * untouched while hidden so the tool resumes exactly where it left off
+   * once that panel closes, but clicks on the sliver of map still visible
+   * in the meantime fall through to normal feature interaction instead of
+   * silently accumulating invisible measurement points.
+   */
+  const measurementInteractive = measurement.active && !measurementPanelOpen;
+  const measurementActiveRef = useLatestRef(measurementInteractive);
   const visibleLayers = useMemo(
     () =>
       getLayers().filter(
@@ -947,7 +956,6 @@ function MapViewComponent<
           onModeChange={handleMeasurementModeChange}
           onClear={handleMeasurementClear}
           panelOpen={measurementPanelOpen}
-          panelExpanded={measurementPanelExpanded}
         />
       ) : null}
       {selectableSearchEntries.length > 0 ? (
@@ -1063,7 +1071,7 @@ function MapViewComponent<
         <ResponsiveMapBounds bounds={bounds} />
         <ZoomStateWatcher onZoomChange={setMapZoom} />
         {locationContextMenu ? <LocationContextMenu /> : null}
-        {measurementTool && measurement.active ? (
+        {measurementTool && measurementInteractive ? (
           <MeasurementLayer
             mode={measurement.mode}
             points={measurement.points}

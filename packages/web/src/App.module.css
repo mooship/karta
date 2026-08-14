@@ -16,6 +16,14 @@
    */
   --mobile-sheet-height-medium: min(66dvh, 36rem);
   --mobile-sheet-height-full: min(84dvh, 45rem);
+  /*
+   * How far down the search box's whole rendered footprint reaches (see
+   * MeasurementControl.module.css's mobile `inset-block-start`) — shared so
+   * any other control stacking beneath the search box (the legend trigger,
+   * when the info panel is open) can clamp itself to the same boundary
+   * instead of hardcoding its own copy of this measurement.
+   */
+  --mobile-search-clearance: 7.5rem;
 }
 
 .mapLoading {
