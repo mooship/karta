@@ -4,7 +4,7 @@ import {
   type Layer,
 } from "@karta/core";
 import { Download, FileSpreadsheet } from "lucide-react";
-import { Fragment, useState } from "react";
+import { Fragment, type ReactNode, useState } from "react";
 import { getLayer, getLayerGroups } from "../../layers/registry";
 import { m } from "../../paraglide/messages.js";
 import styles from "./LayerToggles.module.css";
@@ -99,6 +99,68 @@ export function LayerToggles({
     const labelId = `${layerTestId}-label`;
     const descriptionId = `${layerTestId}-description`;
     const failed = failedLayerIds.includes(layer.id);
+
+    /**
+     * Built as two flat arrays (rather than nested inline `.map`s) so every
+     * source's download link + CSV button pair can be grouped inside one
+     * `.downloads` wrapper — `margin-left: auto` on that single wrapper
+     * pushes the whole group to the row's right edge, where the same rule
+     * applied to each icon individually split the row's free space between
+     * every auto margin instead, scattering the icons across the row.
+     * `csvErrors` stays outside that wrapper since it needs `.row`'s own
+     * `flex-wrap` (via `flex-basis: 100%`) to drop onto its own line.
+     */
+    const downloadControls: ReactNode[] = [];
+    const csvErrors: ReactNode[] = [];
+    if (layer.available) {
+      layer.dataSource.forEach((url, sourceIndex) => {
+        const csvKey = `${layer.id}-${sourceIndex}`;
+        downloadControls.push(
+          <Fragment key={url}>
+            <a
+              className={styles.download}
+              href={url}
+              download={downloadFileName(layer, sourceIndex, "geojson")}
+              aria-label={m.layer_download_aria_label({ label: layer.label })}
+              data-testid={`${layerTestId}-download`}
+              data-e2e={`${layerTestId}-download`}
+            >
+              <Download aria-hidden="true" className={styles.downloadIcon} />
+            </a>
+            <button
+              type="button"
+              className={styles.download}
+              aria-label={m.layer_download_csv_aria_label({
+                label: layer.label,
+              })}
+              data-testid={`${layerTestId}-download-csv`}
+              data-e2e={`${layerTestId}-download-csv`}
+              disabled={csvExportStatus[csvKey] === "loading"}
+              onClick={() => handleCsvExport(layer, sourceIndex, url)}
+            >
+              <FileSpreadsheet
+                aria-hidden="true"
+                className={styles.downloadIcon}
+              />
+            </button>
+          </Fragment>,
+        );
+        if (csvExportStatus[csvKey] === "error") {
+          csvErrors.push(
+            <span
+              key={csvKey}
+              className={styles.badgeError}
+              role="status"
+              data-testid={`${layerTestId}-csv-error`}
+              data-e2e={`${layerTestId}-csv-error`}
+            >
+              {m.layer_csv_export_error()}
+            </span>,
+          );
+        }
+      });
+    }
+
     return (
       <li key={layer.id}>
         <div
@@ -148,56 +210,8 @@ export function LayerToggles({
               </span>
             ) : null}
           </label>
-          {layer.available
-            ? layer.dataSource.map((url, sourceIndex) => {
-                const csvKey = `${layer.id}-${sourceIndex}`;
-                return (
-                  <Fragment key={url}>
-                    <a
-                      className={styles.download}
-                      href={url}
-                      download={downloadFileName(layer, sourceIndex, "geojson")}
-                      aria-label={m.layer_download_aria_label({
-                        label: layer.label,
-                      })}
-                      data-testid={`${layerTestId}-download`}
-                      data-e2e={`${layerTestId}-download`}
-                    >
-                      <Download
-                        aria-hidden="true"
-                        className={styles.downloadIcon}
-                      />
-                    </a>
-                    <button
-                      type="button"
-                      className={styles.download}
-                      aria-label={m.layer_download_csv_aria_label({
-                        label: layer.label,
-                      })}
-                      data-testid={`${layerTestId}-download-csv`}
-                      data-e2e={`${layerTestId}-download-csv`}
-                      disabled={csvExportStatus[csvKey] === "loading"}
-                      onClick={() => handleCsvExport(layer, sourceIndex, url)}
-                    >
-                      <FileSpreadsheet
-                        aria-hidden="true"
-                        className={styles.downloadIcon}
-                      />
-                    </button>
-                    {csvExportStatus[csvKey] === "error" ? (
-                      <span
-                        className={styles.badgeError}
-                        role="status"
-                        data-testid={`${layerTestId}-csv-error`}
-                        data-e2e={`${layerTestId}-csv-error`}
-                      >
-                        {m.layer_csv_export_error()}
-                      </span>
-                    ) : null}
-                  </Fragment>
-                );
-              })
-            : null}
+          <div className={styles.downloads}>{downloadControls}</div>
+          {csvErrors}
         </div>
       </li>
     );
