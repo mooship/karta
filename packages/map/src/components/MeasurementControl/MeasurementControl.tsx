@@ -29,6 +29,17 @@ export interface MeasurementControlProps {
   onModeChange: (mode: MeasurementMode) => void;
   /** Discards the points clicked so far without leaving measuring mode. */
   onClear: () => void;
+  /**
+   * Whether the host app's own overlapping panel (if it has one) is open,
+   * and if so whether it's expanded to its larger size. Defaults to
+   * `false`/`false`. Mirrors `MobileLegend`'s `panelOpen`/`panelExpanded`
+   * props: on narrow viewports this control caps its own height so it
+   * can't grow down into space that panel's mobile sheet — or controls
+   * that reposition themselves above that sheet, like the legend trigger
+   * — already claim.
+   */
+  panelOpen?: boolean;
+  panelExpanded?: boolean;
 }
 
 /**
@@ -50,10 +61,19 @@ export function MeasurementControl({
   onToggleActive,
   onModeChange,
   onClear,
+  panelOpen = false,
+  panelExpanded = false,
 }: MeasurementControlProps) {
+  const rootProps = {
+    className: styles.root,
+    "data-testid": "measurement-control-root",
+    "data-panel-open": panelOpen ? "true" : "false",
+    "data-panel-size": panelExpanded ? "full" : "medium",
+  } as const;
+
   if (!active) {
     return (
-      <div className={styles.root}>
+      <div {...rootProps}>
         <IconButton
           label="Measure distance and area"
           data-testid="measurement-control-toggle"
@@ -67,7 +87,7 @@ export function MeasurementControl({
   }
 
   return (
-    <div className={styles.root}>
+    <div {...rootProps}>
       <section
         className={styles.panel}
         aria-label="Measurement tool"

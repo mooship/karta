@@ -22,6 +22,8 @@ const mapViewMocks = vi.hoisted(() => ({
         focusLocationTarget?: unknown;
         selectedFeatureId?: string | null;
         measurementTool?: boolean;
+        measurementPanelOpen?: boolean;
+        measurementPanelExpanded?: boolean;
       },
 }));
 
@@ -144,6 +146,24 @@ describe("App map/location callback wiring", () => {
     await waitFor(() => expect(mapViewMocks.latestProps).toBeDefined());
 
     expect(mapViewMocks.latestProps?.measurementTool).toBe(true);
+  });
+
+  it("keeps MapView's measurementPanelOpen/measurementPanelExpanded in sync with the app's own panel state", async () => {
+    render(<App />);
+
+    await waitFor(() => expect(mapViewMocks.latestProps).toBeDefined());
+    expect(mapViewMocks.latestProps?.measurementPanelOpen).toBe(
+      useMapUiStore.getState().panelOpen,
+    );
+    expect(mapViewMocks.latestProps?.measurementPanelExpanded).toBe(false);
+
+    act(() => {
+      useMapUiStore.getState().setPanelOpen(true);
+    });
+
+    await waitFor(() =>
+      expect(mapViewMocks.latestProps?.measurementPanelOpen).toBe(true),
+    );
   });
 
   it("renders township popup content via renderFeaturePopup", async () => {
