@@ -210,9 +210,7 @@ export function LayerToggles({
               </span>
             ) : null}
           </label>
-          {downloadControls.length > 0 ? (
-            <div className={styles.downloads}>{downloadControls}</div>
-          ) : null}
+          <div className={styles.downloads}>{downloadControls}</div>
           {csvErrors}
         </div>
       </li>

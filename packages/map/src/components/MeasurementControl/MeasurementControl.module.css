@@ -70,57 +70,23 @@
 @media (max-width: 768px) {
   .root {
     inset-inline-start: var(--mobile-control-edge);
-    inset-block-start: calc(7.5rem + var(--mobile-safe-top));
-  }
-
-  /*
-   * While the host app's own mobile sheet is open, the legend trigger
-   * (see `MobileLegend`) climbs to sit just above it, sized by the same
-   * --sheet-height-medium/--sheet-height-full terms `MobileLegend` uses
-   * (see App.module.css), and clamped so it never climbs past this
-   * control's own bottom edge (see `MobileLegend.module.css`'s matching
-   * clamp) — without that shared ceiling, a "medium" sheet leaves so
-   * little headroom above it that the climbing trigger lands squarely on
-   * this control's collapsed toggle instead of stacking beneath it. This
-   * panel is anchored from the top rather than the bottom, so it can't
-   * reposition itself out of that space the same way — instead it caps
-   * its own height and scrolls internally, so it can never grow down far
-   * enough to reach a control that's climbed up to meet it. The two panel
-   * sizes share every term except the sheet height itself, set once per
-   * selector and consumed by one shared rule.
-   */
-  .root[data-panel-open="true"] .panel {
-    max-height: calc(
-      100dvh -
-      7.5rem -
-      var(--mobile-safe-top) -
-      var(--sheet-height) -
-      0.75rem -
-      env(safe-area-inset-bottom) -
-      (var(--mobile-control-size) * 2) -
-      var(--mobile-control-gap) -
-      0.5rem
+    inset-block-start: calc(
+      var(--mobile-search-clearance) +
+      var(--mobile-safe-top)
     );
-    overflow-y: auto;
-  }
-
-  .root[data-panel-open="true"][data-panel-size="medium"] .panel {
-    --sheet-height: var(--mobile-sheet-height-medium);
-  }
-
-  .root[data-panel-open="true"][data-panel-size="full"] .panel {
-    --sheet-height: var(--mobile-sheet-height-full);
   }
 
   /*
    * With the host's own sheet open, there's barely any map left to click a
-   * measurement point on, and the idle toggle otherwise competes for the
-   * same sliver of space as the legend trigger stacked beneath it (see
-   * MobileLegend.module.css). Hide it in that state; a measurement already
-   * in progress (`data-active="true"`) is left alone, so opening the panel
-   * mid-measurement can't strand it.
+   * measurement point on, and this control otherwise competes for the same
+   * sliver of space as the legend trigger stacked beneath it (see
+   * MobileLegend.module.css's own clamp). Hide the whole control — toggle
+   * or open panel alike — in that state rather than fitting it into
+   * whatever headroom is left; `active`/`mode`/`points` stay owned by the
+   * caller (`MapView`) and untouched while hidden, so a measurement in
+   * progress resumes exactly where it left off once the host panel closes.
    */
-  .root[data-panel-open="true"][data-active="false"] {
+  .root[data-panel-open="true"] {
     display: none;
   }
 }
