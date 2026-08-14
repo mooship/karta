@@ -5,10 +5,11 @@ import { ensurePanelClosed } from "./ui";
 
 /**
  * Clicks a point inside `mapView`'s bounding box at the given fractional
- * offset. The fractions stay within the map's centre band (roughly
- * 20-60% horizontally, 25-75% vertically) so they never land on the
- * search box (top-left), the legend (bottom-left), or the measurement
- * panel itself (top-right) at either viewport size this suite runs.
+ * offset. The fractions stay right of centre and clear of the very top
+ * and bottom edges (roughly 70-95% horizontally, 30-70% vertically) so
+ * they never land on the search box or the measurement panel itself
+ * (both top-left), the legend/settings (bottom-left), or the zoom
+ * control (bottom-right) at either viewport size this suite runs.
  */
 async function clickMapPoint(
   page: Page,
@@ -50,8 +51,8 @@ test.describe("measurement tool", () => {
     await page.getByTestId(E2E.measurement.toggle).click();
 
     const mapView = page.getByTestId(E2E.mapView);
-    await clickMapPoint(page, mapView, 0.3, 0.4);
-    await clickMapPoint(page, mapView, 0.55, 0.6);
+    await clickMapPoint(page, mapView, 0.75, 0.3);
+    await clickMapPoint(page, mapView, 0.9, 0.5);
 
     await expect(page.getByTestId(E2E.measurement.result)).toHaveText(
       /^\d+(\.\d+)? (m|km)$/,
@@ -67,8 +68,8 @@ test.describe("measurement tool", () => {
     await page.getByTestId(E2E.measurement.toggle).click();
 
     const mapView = page.getByTestId(E2E.mapView);
-    await clickMapPoint(page, mapView, 0.3, 0.4);
-    await clickMapPoint(page, mapView, 0.55, 0.6);
+    await clickMapPoint(page, mapView, 0.75, 0.3);
+    await clickMapPoint(page, mapView, 0.9, 0.5);
     await expect(page.getByTestId(E2E.measurement.result)).toBeVisible();
 
     await page.getByTestId(E2E.measurement.modeArea).click();
@@ -84,9 +85,9 @@ test.describe("measurement tool", () => {
     await page.getByTestId(E2E.measurement.modeArea).click();
 
     const mapView = page.getByTestId(E2E.mapView);
-    await clickMapPoint(page, mapView, 0.2, 0.25);
-    await clickMapPoint(page, mapView, 0.6, 0.3);
-    await clickMapPoint(page, mapView, 0.4, 0.75);
+    await clickMapPoint(page, mapView, 0.75, 0.3);
+    await clickMapPoint(page, mapView, 0.95, 0.35);
+    await clickMapPoint(page, mapView, 0.85, 0.65);
 
     await expect(page.getByTestId(E2E.measurement.result)).toHaveText(
       /^\d+(\.\d+)? (m²|ha|km²)$/,
@@ -101,8 +102,8 @@ test.describe("measurement tool", () => {
     await page.getByTestId(E2E.measurement.toggle).click();
 
     const mapView = page.getByTestId(E2E.mapView);
-    await clickMapPoint(page, mapView, 0.3, 0.4);
-    await clickMapPoint(page, mapView, 0.55, 0.6);
+    await clickMapPoint(page, mapView, 0.75, 0.3);
+    await clickMapPoint(page, mapView, 0.9, 0.5);
     await expect(page.getByTestId(E2E.measurement.result)).toBeVisible();
 
     await page.getByTestId(E2E.measurement.clear).click();
@@ -131,7 +132,7 @@ test.describe("measurement tool", () => {
     await page.getByTestId(E2E.measurement.toggle).click();
 
     const mapView = page.getByTestId(E2E.mapView);
-    await clickMapPoint(page, mapView, 0.4, 0.4);
+    await clickMapPoint(page, mapView, 0.8, 0.4);
 
     await expect(page.getByTestId(E2E.townshipPopup)).toHaveCount(0);
   });

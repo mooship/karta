@@ -1,8 +1,28 @@
+/*
+ * Every map corner is already spoken for by the time this control has to
+ * find a spot: top-right holds the info panel and its toggle (the panel
+ * is open by default on desktop, and its content routinely reaches from
+ * just below the toggle almost to the viewport's bottom edge); top-left
+ * holds the search box; bottom-left stacks the basemap/theme settings and
+ * the legend; bottom-right holds Leaflet's own zoom control. The one
+ * reliably free strip is directly beneath the search box on the left —
+ * settings/legend sit much further down, so this control stacks there
+ * instead of contesting a corner. 6rem clears the search box's own
+ * footprint (its label row plus input, measured at ~62px) with a
+ * consistent gap beneath it.
+ */
 .root {
   position: absolute;
-  inset-block-start: 0.5rem;
-  inset-inline-end: 0.5rem;
-  z-index: 2000;
+  inset-inline-start: 1.25rem;
+  inset-block-start: 6rem;
+  z-index: 1240;
+}
+
+@media (max-width: 768px) {
+  .root {
+    inset-inline-start: var(--mobile-control-edge);
+    inset-block-start: calc(6rem + var(--mobile-safe-top));
+  }
 }
 
 .panel {
