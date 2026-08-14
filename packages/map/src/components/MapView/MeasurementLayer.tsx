@@ -15,9 +15,29 @@ const MEASUREMENT_PATH_OPTIONS = {
   weight: 3,
 } as const;
 /** Marks the not-yet-committed segment/edge that follows the cursor. */
-const PREVIEW_DASH_ARRAY = "6 6";
+const PREVIEW_PATH_OPTIONS = {
+  ...MEASUREMENT_PATH_OPTIONS,
+  dashArray: "6 6",
+} as const;
+const DEFAULT_POLYGON_PATH_OPTIONS = {
+  ...MEASUREMENT_PATH_OPTIONS,
+  fillOpacity: 0.15,
+} as const;
+const PREVIEW_POLYGON_PATH_OPTIONS = {
+  ...PREVIEW_PATH_OPTIONS,
+  fillOpacity: 0.08,
+} as const;
 const VERTEX_RADIUS_PX = 4;
-const HOVER_VERTEX_FILL_OPACITY = 0.5;
+const VERTEX_PATH_OPTIONS = {
+  ...MEASUREMENT_PATH_OPTIONS,
+  fillColor: MEASUREMENT_COLOR,
+  fillOpacity: 1,
+} as const;
+const HOVER_VERTEX_PATH_OPTIONS = {
+  ...MEASUREMENT_PATH_OPTIONS,
+  fillColor: MEASUREMENT_COLOR,
+  fillOpacity: 0.5,
+} as const;
 
 interface MeasurementLayerProps {
   mode: MeasurementMode;
@@ -57,25 +77,25 @@ export function MeasurementLayer({
   const [hoverPoint, setHoverPoint] = useState<LatLng | null>(null);
   const onAddPointRef = useLatestRef(onAddPoint);
   const pointsRef = useLatestRef(points);
-  const eventHandlers = useMemo((): LeafletEventHandlerFnMap => {
-    const handlers: LeafletEventHandlerFnMap = {
+  const eventHandlers = useMemo(
+    (): LeafletEventHandlerFnMap => ({
       click: (event: LeafletMouseEvent) => {
         setHoverPoint(null);
         onAddPointRef.current(event.latlng);
       },
-    };
-    if (canHover) {
-      handlers.mousemove = (event: LeafletMouseEvent) => {
-        if (pointsRef.current.length > 0) {
-          setHoverPoint(event.latlng);
-        }
-      };
-      handlers.mouseout = () => {
-        setHoverPoint(null);
-      };
-    }
-    return handlers;
-  }, [canHover, onAddPointRef, pointsRef]);
+      ...(canHover
+        ? {
+            mousemove: (event: LeafletMouseEvent) => {
+              if (pointsRef.current.length > 0) {
+                setHoverPoint(event.latlng);
+              }
+            },
+            mouseout: () => setHoverPoint(null),
+          }
+        : {}),
+    }),
+    [canHover, onAddPointRef, pointsRef],
+  );
   useMapEvents(eventHandlers);
 
   const isPreviewing = hoverPoint !== null;
@@ -88,42 +108,27 @@ export function MeasurementLayer({
   const showPolygon = mode === "area" && previewPoints.length >= 3;
 
   const linePathOptions = isPreviewing
-    ? { ...MEASUREMENT_PATH_OPTIONS, dashArray: PREVIEW_DASH_ARRAY }
+    ? PREVIEW_PATH_OPTIONS
     : MEASUREMENT_PATH_OPTIONS;
   const polygonPathOptions = isPreviewing
-    ? {
-        ...MEASUREMENT_PATH_OPTIONS,
-        dashArray: PREVIEW_DASH_ARRAY,
-        fillOpacity: 0.08,
-      }
-    : { ...MEASUREMENT_PATH_OPTIONS, fillOpacity: 0.15 };
+    ? PREVIEW_POLYGON_PATH_OPTIONS
+    : DEFAULT_POLYGON_PATH_OPTIONS;
 
   return (
     <>
-      {points.map((point, index) => (
+      {previewPoints.map((point, index) => (
         <CircleMarker
           // biome-ignore lint/suspicious/noArrayIndexKey: vertices are append-only and never reordered while measuring, so index is a stable identity here
           key={index}
           center={point}
           radius={VERTEX_RADIUS_PX}
-          pathOptions={{
-            ...MEASUREMENT_PATH_OPTIONS,
-            fillColor: MEASUREMENT_COLOR,
-            fillOpacity: 1,
-          }}
+          pathOptions={
+            isPreviewing && index === previewPoints.length - 1
+              ? HOVER_VERTEX_PATH_OPTIONS
+              : VERTEX_PATH_OPTIONS
+          }
         />
       ))}
-      {isPreviewing ? (
-        <CircleMarker
-          center={hoverPoint}
-          radius={VERTEX_RADIUS_PX}
-          pathOptions={{
-            ...MEASUREMENT_PATH_OPTIONS,
-            fillColor: MEASUREMENT_COLOR,
-            fillOpacity: HOVER_VERTEX_FILL_OPACITY,
-          }}
-        />
-      ) : null}
       {showLine ? (
         <Polyline positions={previewPoints} pathOptions={linePathOptions} />
       ) : null}
