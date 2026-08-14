@@ -111,4 +111,16 @@
   .root[data-panel-open="true"][data-panel-size="full"] .panel {
     --sheet-height: var(--mobile-sheet-height-full);
   }
+
+  /*
+   * With the host's own sheet open, there's barely any map left to click a
+   * measurement point on, and the idle toggle otherwise competes for the
+   * same sliver of space as the legend trigger stacked beneath it (see
+   * MobileLegend.module.css). Hide it in that state; a measurement already
+   * in progress (`data-active="true"`) is left alone, so opening the panel
+   * mid-measurement can't strand it.
+   */
+  .root[data-panel-open="true"][data-active="false"] {
+    display: none;
+  }
 }
