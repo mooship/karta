@@ -112,6 +112,18 @@ export interface MapViewProps<
    */
   measurementTool?: boolean;
   /**
+   * Whether the caller's own overlapping panel (if it has one — e.g. an
+   * info/layers panel rendered alongside `MapView`) is currently open,
+   * and if so whether it's expanded to its larger size. Passed straight
+   * through to the measurement tool's control (see
+   * `MeasurementControl`'s `panelOpen`/`panelExpanded` props) so it can
+   * avoid growing into space that panel's own mobile layout already
+   * claims. Both default to `false`; harmless to omit for a caller with
+   * no such panel.
+   */
+  measurementPanelOpen?: boolean;
+  measurementPanelExpanded?: boolean;
+  /**
    * Called once, after Leaflet has initialised the map and the browser has
    * painted it.
    * @remarks Exists so a caller can hold its own bulk feature data back
@@ -639,6 +651,8 @@ function MapViewComponent<
   onBasemapError,
   locationContextMenu = false,
   measurementTool = false,
+  measurementPanelOpen = false,
+  measurementPanelExpanded = false,
   onReady,
 }: MapViewProps<TProperties>) {
   const { getLayers } = useDomain();
@@ -932,6 +946,8 @@ function MapViewComponent<
           onToggleActive={handleMeasurementToggleActive}
           onModeChange={handleMeasurementModeChange}
           onClear={handleMeasurementClear}
+          panelOpen={measurementPanelOpen}
+          panelExpanded={measurementPanelExpanded}
         />
       ) : null}
       {selectableSearchEntries.length > 0 ? (

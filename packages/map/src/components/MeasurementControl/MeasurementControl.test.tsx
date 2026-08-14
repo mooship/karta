@@ -144,4 +144,70 @@ describe("MeasurementControl", () => {
 
     expect(onToggleActive).toHaveBeenCalled();
   });
+
+  it("defaults to data-panel-open=false and data-panel-size=medium when panelOpen/panelExpanded are omitted", () => {
+    render(
+      <MeasurementControl
+        active
+        mode="distance"
+        pointCount={0}
+        resultLabel={null}
+        onToggleActive={vi.fn()}
+        onModeChange={vi.fn()}
+        onClear={vi.fn()}
+      />,
+    );
+
+    const root = screen.getByTestId("measurement-control-root");
+    expect(root).toHaveAttribute("data-panel-open", "false");
+    expect(root).toHaveAttribute("data-panel-size", "medium");
+  });
+
+  it("reflects panelOpen and panelExpanded as data-panel-open/data-panel-size, on both the inactive and active render", () => {
+    const { rerender } = render(
+      <MeasurementControl
+        active={false}
+        mode="distance"
+        pointCount={0}
+        resultLabel={null}
+        onToggleActive={vi.fn()}
+        onModeChange={vi.fn()}
+        onClear={vi.fn()}
+        panelOpen
+        panelExpanded
+      />,
+    );
+
+    expect(screen.getByTestId("measurement-control-root")).toHaveAttribute(
+      "data-panel-open",
+      "true",
+    );
+    expect(screen.getByTestId("measurement-control-root")).toHaveAttribute(
+      "data-panel-size",
+      "full",
+    );
+
+    rerender(
+      <MeasurementControl
+        active
+        mode="distance"
+        pointCount={0}
+        resultLabel={null}
+        onToggleActive={vi.fn()}
+        onModeChange={vi.fn()}
+        onClear={vi.fn()}
+        panelOpen
+        panelExpanded={false}
+      />,
+    );
+
+    expect(screen.getByTestId("measurement-control-root")).toHaveAttribute(
+      "data-panel-open",
+      "true",
+    );
+    expect(screen.getByTestId("measurement-control-root")).toHaveAttribute(
+      "data-panel-size",
+      "medium",
+    );
+  });
 });

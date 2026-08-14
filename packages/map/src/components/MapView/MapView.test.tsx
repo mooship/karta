@@ -1406,6 +1406,25 @@ describe("MapView", () => {
     expect(mapMocks.mapClickHandler).not.toBeNull();
   });
 
+  it("passes measurementPanelOpen/measurementPanelExpanded through to the measurement control's own panel-state attributes", () => {
+    render(
+      withDomain(
+        <MapView
+          {...DEFAULT_MAP_VIEW_PROPS}
+          areas={[]}
+          visibleLayerIds={[]}
+          measurementTool
+          measurementPanelOpen
+          measurementPanelExpanded
+        />,
+      ),
+    );
+
+    const root = screen.getByTestId("measurement-control-root");
+    expect(root).toHaveAttribute("data-panel-open", "true");
+    expect(root).toHaveAttribute("data-panel-size", "full");
+  });
+
   it("draws a preview line and shows a distance readout as the map is clicked in distance mode", () => {
     render(
       withDomain(
