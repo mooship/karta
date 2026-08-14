@@ -1,3 +1,4 @@
+export { useCanHover } from "./hooks/useCanHover";
 export { useLatestRef } from "./hooks/useLatestRef";
 export type {
   ModelContextToolContentBlock,

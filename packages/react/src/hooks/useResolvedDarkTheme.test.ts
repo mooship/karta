@@ -1,19 +1,8 @@
 import { renderHook } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { stubMatchMedia } from "./stubMatchMedia";
 import { useResolvedDarkTheme } from "./useResolvedDarkTheme";
 import { setThemePreference } from "./useThemePreference";
-
-function stubMatchMedia(matches: boolean) {
-  vi.stubGlobal(
-    "matchMedia",
-    vi.fn().mockImplementation((query: string) => ({
-      matches,
-      media: query,
-      addEventListener: vi.fn(),
-      removeEventListener: vi.fn(),
-    })),
-  );
-}
 
 describe("useResolvedDarkTheme", () => {
   afterEach(() => {
