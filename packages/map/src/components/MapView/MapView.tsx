@@ -38,8 +38,14 @@ import { AREA_OUTLINE } from "../../constants/mapStyles";
 import { useDomain } from "../../context/DomainContext";
 import type { LocationSearchResult } from "../../data/locationSearch";
 import { useLayerData } from "../../hooks/useLayerData";
+import { formatMeasurementResult } from "../MeasurementControl/formatMeasurementResult";
+import {
+  MeasurementControl,
+  type MeasurementMode,
+} from "../MeasurementControl/MeasurementControl";
 import { LocationContextMenu } from "./LocationContextMenu";
 import styles from "./MapView.module.css";
+import { MeasurementLayer } from "./MeasurementLayer";
 import {
   SelectableFeatureSearch,
   type SelectableFeatureSearchEntry,
@@ -99,6 +105,12 @@ export interface MapViewProps<
    * Defaults to `false`.
    */
   locationContextMenu?: boolean;
+  /**
+   * When `true`, shows a toggleable control for measuring straight-line
+   * distance or enclosed area by clicking points on the map. Defaults to
+   * `false`.
+   */
+  measurementTool?: boolean;
   /**
    * Called once, after Leaflet has initialised the map and the browser has
    * painted it.
@@ -224,7 +236,12 @@ function resolveFeatureLabel(
  *   whichever `onSelect`/`renderFeaturePopup` happened to be current at
  *   creation time and keep calling those forever, so they're passed as refs
  *   (see {@link useLatestRef}) and dereferenced when the event actually
- *   fires instead.
+ *   fires instead. `measurementActiveRef` is read for the same reason and
+ *   guards the same click: while the measurement tool is active, a map click
+ *   is meant to place a measurement vertex, not also open this feature's
+ *   popup and re-fit the map to it via `SelectedFeatureHighlight` — both of
+ *   which would otherwise fire from Leaflet's default click bubbling,
+ *   yanking the view out from under an in-progress measurement.
  */
 function bindSelectableFeatureInteractions<
   TProperties extends Record<string, unknown>,
@@ -237,6 +254,7 @@ function bindSelectableFeatureInteractions<
   renderFeaturePopupRef: React.RefObject<
     ((properties: TProperties) => ReactNode) | undefined
   >,
+  measurementActiveRef: React.RefObject<boolean>,
 ) {
   /* v8 ignore start -- unreachable: this function's only call site already gates on `isSelectable` before passing it as `onEachFeature`, but the runtime check (and the type narrowing it gives `domainLayer.interaction` below) stays as this function's own contract in case a second call site is ever added without that gate */
   if (!domainLayer.interaction?.selectable) {
@@ -267,6 +285,9 @@ function bindSelectableFeatureInteractions<
 
     pendingClickTimeout = setTimeout(() => {
       pendingClickTimeout = null;
+      if (measurementActiveRef.current) {
+        return;
+      }
       const featureLayer = leafletLayer as SelectableFeatureLayer;
       void bindSelectedFeaturePopup(
         featureLayer,
@@ -598,12 +619,41 @@ function MapViewComponent<
   onLayerDataError,
   onBasemapError,
   locationContextMenu = false,
+  measurementTool = false,
   onReady,
 }: MapViewProps<TProperties>) {
   const { getLayers } = useDomain();
+  const [measurementActive, setMeasurementActive] = useState(false);
+  const [measurementMode, setMeasurementMode] =
+    useState<MeasurementMode>("distance");
+  const [measurementPoints, setMeasurementPoints] = useState<LatLng[]>([]);
+  const measurementResultLabel = formatMeasurementResult(
+    measurementMode,
+    measurementPoints,
+  );
+
+  function handleMeasurementToggleActive() {
+    setMeasurementActive((active) => !active);
+    setMeasurementPoints([]);
+  }
+
+  function handleMeasurementModeChange(mode: MeasurementMode) {
+    setMeasurementMode(mode);
+    setMeasurementPoints([]);
+  }
+
+  function handleMeasurementClear() {
+    setMeasurementPoints([]);
+  }
+
+  function handleMeasurementAddPoint(point: LatLng) {
+    setMeasurementPoints((points) => [...points, point]);
+  }
+
   const selectableLayerById = useRef(new Map<string, SelectableFeatureLayer>());
   const onSelectRef = useLatestRef(onFeatureSelect);
   const renderFeaturePopupRef = useLatestRef(renderFeaturePopup);
+  const measurementActiveRef = useLatestRef(measurementActive);
   const visibleLayers = useMemo(
     () =>
       getLayers().filter(
@@ -821,11 +871,12 @@ function MapViewComponent<
                     selectableLayerById.current,
                     onSelectRef,
                     renderFeaturePopupRef,
+                    measurementActiveRef,
                   ),
               ] as const,
           ),
       ),
-    [visibleLayers, onSelectRef, renderFeaturePopupRef],
+    [visibleLayers, onSelectRef, renderFeaturePopupRef, measurementActiveRef],
   );
   const boundsOptions = getBoundsOptions(
     getViewportWidth() > MOBILE_BREAKPOINT_PX,
@@ -852,6 +903,17 @@ function MapViewComponent<
       data-e2e="map-view"
       aria-label={ariaLabel}
     >
+      {measurementTool ? (
+        <MeasurementControl
+          active={measurementActive}
+          mode={measurementMode}
+          pointCount={measurementPoints.length}
+          resultLabel={measurementResultLabel}
+          onToggleActive={handleMeasurementToggleActive}
+          onModeChange={handleMeasurementModeChange}
+          onClear={handleMeasurementClear}
+        />
+      ) : null}
       {selectableSearchEntries.length > 0 ? (
         <SelectableFeatureSearch
           features={selectableSearchEntries}
@@ -965,6 +1027,13 @@ function MapViewComponent<
         <ResponsiveMapBounds bounds={bounds} />
         <ZoomStateWatcher onZoomChange={setMapZoom} />
         {locationContextMenu ? <LocationContextMenu /> : null}
+        {measurementTool && measurementActive ? (
+          <MeasurementLayer
+            mode={measurementMode}
+            points={measurementPoints}
+            onAddPoint={handleMeasurementAddPoint}
+          />
+        ) : null}
       </MapContainer>
     </section>
   );

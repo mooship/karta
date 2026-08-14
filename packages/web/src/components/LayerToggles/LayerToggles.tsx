@@ -1,14 +1,32 @@
-import type { Layer } from "@karta/core";
-import { Download } from "lucide-react";
-import { Fragment } from "react";
+import {
+  featureCollectionToCsv,
+  fetchFeatureCollection,
+  type Layer,
+} from "@karta/core";
+import { Download, FileSpreadsheet } from "lucide-react";
+import { Fragment, useState } from "react";
 import { getLayer, getLayerGroups } from "../../layers/registry";
 import { m } from "../../paraglide/messages.js";
 import styles from "./LayerToggles.module.css";
 
 /** Download filename for one of a layer's `dataSource` URLs, numbering entries past the first. */
-function downloadFileName(layer: Layer, sourceIndex: number): string {
+function downloadFileName(
+  layer: Layer,
+  sourceIndex: number,
+  extension: string,
+): string {
   const suffix = layer.dataSource.length > 1 ? `-${sourceIndex + 1}` : "";
-  return `${layer.id}${suffix}.geojson`;
+  return `${layer.id}${suffix}.${extension}`;
+}
+
+/** Prompts the browser to save `blob` as `fileName`, without navigating away from the page. */
+function downloadBlob(blob: Blob, fileName: string): void {
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = fileName;
+  anchor.click();
+  URL.revokeObjectURL(url);
 }
 
 interface LayerTogglesProps {
@@ -26,10 +44,15 @@ interface LayerTogglesProps {
  * visible layer shows a "Failed to load" badge instead.
  * @remarks Every available layer also gets a download link per
  *   `dataSource` URL, so a visitor can save the exact GeoJSON the map
- *   renders. The checkbox's `<label>` wraps only the checkbox/text/badges,
- *   not the download link — nesting the link inside that label too would
- *   make clicking it also toggle the checkbox, since a `<label>` forwards
- *   any click within it to its associated control.
+ *   renders, plus a CSV export button that fetches that same URL on click,
+ *   flattens its properties (via `@karta/core`'s `featureCollectionToCsv`)
+ *   and triggers a browser download — CSV isn't pre-generated like the
+ *   static GeoJSON files, since it's a spreadsheet-friendly convenience
+ *   format rather than something the map itself consumes. The checkbox's
+ *   `<label>` wraps only the checkbox/text/badges, not the download
+ *   link/button — nesting them inside that label too would make clicking
+ *   them also toggle the checkbox, since a `<label>` forwards any click
+ *   within it to its associated control.
  */
 export function LayerToggles({
   visibleLayerIds,
@@ -37,6 +60,35 @@ export function LayerToggles({
   failedLayerIds = [],
 }: LayerTogglesProps) {
   const groups = getLayerGroups();
+  const [csvExportErrors, setCsvExportErrors] = useState<
+    Record<string, boolean>
+  >({});
+  const [csvExportLoading, setCsvExportLoading] = useState<
+    Record<string, boolean>
+  >({});
+
+  async function handleCsvExport(
+    layer: Layer,
+    sourceIndex: number,
+    url: string,
+  ) {
+    const key = `${layer.id}-${sourceIndex}`;
+    setCsvExportErrors((errors) => ({ ...errors, [key]: false }));
+    setCsvExportLoading((loading) => ({ ...loading, [key]: true }));
+    try {
+      const collection = await fetchFeatureCollection(url);
+      downloadBlob(
+        new Blob([featureCollectionToCsv(collection)], {
+          type: "text/csv;charset=utf-8",
+        }),
+        downloadFileName(layer, sourceIndex, "csv"),
+      );
+    } catch {
+      setCsvExportErrors((errors) => ({ ...errors, [key]: true }));
+    } finally {
+      setCsvExportLoading((loading) => ({ ...loading, [key]: false }));
+    }
+  }
 
   function renderLayer(layerId: string) {
     const layer = getLayer(layerId);
@@ -98,24 +150,54 @@ export function LayerToggles({
             ) : null}
           </label>
           {layer.available
-            ? layer.dataSource.map((url, sourceIndex) => (
-                <a
-                  key={url}
-                  className={styles.download}
-                  href={url}
-                  download={downloadFileName(layer, sourceIndex)}
-                  aria-label={m.layer_download_aria_label({
-                    label: layer.label,
-                  })}
-                  data-testid={`${layerTestId}-download`}
-                  data-e2e={`${layerTestId}-download`}
-                >
-                  <Download
-                    aria-hidden="true"
-                    className={styles.downloadIcon}
-                  />
-                </a>
-              ))
+            ? layer.dataSource.map((url, sourceIndex) => {
+                const csvKey = `${layer.id}-${sourceIndex}`;
+                return (
+                  <Fragment key={url}>
+                    <a
+                      className={styles.download}
+                      href={url}
+                      download={downloadFileName(layer, sourceIndex, "geojson")}
+                      aria-label={m.layer_download_aria_label({
+                        label: layer.label,
+                      })}
+                      data-testid={`${layerTestId}-download`}
+                      data-e2e={`${layerTestId}-download`}
+                    >
+                      <Download
+                        aria-hidden="true"
+                        className={styles.downloadIcon}
+                      />
+                    </a>
+                    <button
+                      type="button"
+                      className={styles.download}
+                      aria-label={m.layer_download_csv_aria_label({
+                        label: layer.label,
+                      })}
+                      data-testid={`${layerTestId}-download-csv`}
+                      data-e2e={`${layerTestId}-download-csv`}
+                      disabled={csvExportLoading[csvKey] === true}
+                      onClick={() => handleCsvExport(layer, sourceIndex, url)}
+                    >
+                      <FileSpreadsheet
+                        aria-hidden="true"
+                        className={styles.downloadIcon}
+                      />
+                    </button>
+                    {csvExportErrors[csvKey] ? (
+                      <span
+                        className={styles.badgeError}
+                        role="status"
+                        data-testid={`${layerTestId}-csv-error`}
+                        data-e2e={`${layerTestId}-csv-error`}
+                      >
+                        {m.layer_csv_export_error()}
+                      </span>
+                    ) : null}
+                  </Fragment>
+                );
+              })
             : null}
         </div>
       </li>

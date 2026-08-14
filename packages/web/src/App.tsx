@@ -619,6 +619,7 @@ export function App() {
                 onReady={handleMapReady}
                 onBasemapError={() => setBasemap("street")}
                 locationContextMenu
+                measurementTool
                 renderFeaturePopup={renderFeaturePopup}
               />
             </Suspense>

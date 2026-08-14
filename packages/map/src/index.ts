@@ -14,6 +14,11 @@ export { DesktopLegend } from "./components/DesktopLegend/DesktopLegend";
 export { IconButton } from "./components/IconButton/IconButton";
 export { Legend } from "./components/Legend/Legend";
 export { LocationSearchControl } from "./components/LocationSearchControl/LocationSearchControl";
+export type {
+  MeasurementControlProps,
+  MeasurementMode,
+} from "./components/MeasurementControl/MeasurementControl";
+export { MeasurementControl } from "./components/MeasurementControl/MeasurementControl";
 export { MobileLegend } from "./components/MobileLegend/MobileLegend";
 export type { SegmentedControlOption } from "./components/SegmentedControl/SegmentedControl";
 export { SegmentedControl } from "./components/SegmentedControl/SegmentedControl";

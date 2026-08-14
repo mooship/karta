@@ -21,6 +21,7 @@ const mapViewMocks = vi.hoisted(() => ({
         renderFeaturePopup?: (properties: unknown) => ReactNode;
         focusLocationTarget?: unknown;
         selectedFeatureId?: string | null;
+        measurementTool?: boolean;
       },
 }));
 
@@ -135,6 +136,14 @@ describe("App map/location callback wiring", () => {
     await waitFor(() =>
       expect(useMapUiStore.getState().basemap).toBe("street"),
     );
+  });
+
+  it("enables MapView's measurement tool", async () => {
+    render(<App />);
+
+    await waitFor(() => expect(mapViewMocks.latestProps).toBeDefined());
+
+    expect(mapViewMocks.latestProps?.measurementTool).toBe(true);
   });
 
   it("renders township popup content via renderFeaturePopup", async () => {
