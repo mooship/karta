@@ -36,7 +36,13 @@ export interface MeasurementControlProps {
    * props: on narrow viewports this control caps its own height so it
    * can't grow down into space that panel's mobile sheet — or controls
    * that reposition themselves above that sheet, like the legend trigger
-   * — already claim.
+   * — already claim. It also hides its own idle (`active: false`) toggle
+   * on narrow viewports while `panelOpen` is `true` — with the host's
+   * sheet covering most of the map there's barely any surface left to
+   * click a measurement point on, and the toggle otherwise competes for
+   * the same sliver of space as the legend trigger stacked beneath it. A
+   * measurement already in progress (`active: true`) stays visible
+   * regardless, so opening the panel mid-measurement can't strand it.
    */
   panelOpen?: boolean;
   panelExpanded?: boolean;
@@ -69,6 +75,7 @@ export function MeasurementControl({
     "data-testid": "measurement-control-root",
     "data-panel-open": panelOpen ? "true" : "false",
     "data-panel-size": panelExpanded ? "full" : "medium",
+    "data-active": active ? "true" : "false",
   } as const;
 
   if (!active) {

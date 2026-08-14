@@ -210,4 +210,40 @@ describe("MeasurementControl", () => {
       "medium",
     );
   });
+
+  it("reflects active as data-active on the root, on both the inactive and active render", () => {
+    const { rerender } = render(
+      <MeasurementControl
+        active={false}
+        mode="distance"
+        pointCount={0}
+        resultLabel={null}
+        onToggleActive={vi.fn()}
+        onModeChange={vi.fn()}
+        onClear={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByTestId("measurement-control-root")).toHaveAttribute(
+      "data-active",
+      "false",
+    );
+
+    rerender(
+      <MeasurementControl
+        active
+        mode="distance"
+        pointCount={0}
+        resultLabel={null}
+        onToggleActive={vi.fn()}
+        onModeChange={vi.fn()}
+        onClear={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByTestId("measurement-control-root")).toHaveAttribute(
+      "data-active",
+      "true",
+    );
+  });
 });
