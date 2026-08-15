@@ -156,6 +156,7 @@
   --control-padding: var(--space-1);
 
   --drag-handle-width: 2.5rem;
+  --drag-handle-width-dragging: 3rem;
   --drag-handle-height: 0.25rem;
 
   --motion-duration-short: 150ms;
