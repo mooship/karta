@@ -70,7 +70,7 @@
 
 .input {
   width: 100%;
-  min-height: 44px;
+  min-height: var(--control-height, 44px);
   padding: 0.5rem 0.625rem;
   border: 1px solid var(--md-sys-color-outline);
   border-radius: var(--md-sys-shape-corner-small);
@@ -107,7 +107,7 @@
 
 .resultButton {
   width: 100%;
-  min-height: 44px;
+  min-height: var(--control-height, 44px);
   padding: 0.45rem 0.55rem;
   border: 1px solid transparent;
   border-radius: var(--md-sys-shape-corner-small);

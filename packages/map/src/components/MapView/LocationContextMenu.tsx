@@ -6,14 +6,19 @@ import {
   nominatimGeocoderProvider,
 } from "../../data/locationSearch";
 import { useAbortController } from "../../hooks/useAbortController";
+import { RetryButton } from "../RetryButton/RetryButton";
 import styles from "./LocationContextMenu.module.css";
 
-interface SearchState {
-  loading: boolean;
-  label: string | null;
-  /** `true` for a provider failure (network/HTTP error); `false` for a legitimate no-match result, which has no retry affordance since retrying wouldn't change the outcome. */
-  failed: boolean;
-}
+/**
+ * A reverse-geocode lookup's status: in flight, resolved (with a match or
+ * not), or a provider failure (network/HTTP error) -- the only case with a
+ * retry affordance, since retrying a legitimate no-match wouldn't change
+ * the outcome.
+ */
+type SearchState =
+  | { status: "loading" }
+  | { status: "success"; label: string | null }
+  | { status: "failed" };
 
 interface MenuState {
   latlng: LatLng;
@@ -168,21 +173,17 @@ export function LocationContextMenu({
       const { lat, lng } = menu.latlng;
       const signal = next();
 
-      setSearch({ loading: true, label: null, failed: false });
+      setSearch({ status: "loading" });
 
       provider.reverse(lat, lng, signal).then(
         (result) => {
           if (!signal.aborted) {
-            setSearch({
-              loading: false,
-              label: result?.label ?? null,
-              failed: false,
-            });
+            setSearch({ status: "success", label: result?.label ?? null });
           }
         },
         () => {
           if (!signal.aborted) {
-            setSearch({ loading: false, label: null, failed: true });
+            setSearch({ status: "failed" });
           }
         },
       );
@@ -198,18 +199,12 @@ export function LocationContextMenu({
       >
         {menu.search ? (
           <output className={styles.result}>
-            {menu.search.loading ? (
+            {menu.search.status === "loading" ? (
               "Looking up address…"
-            ) : menu.search.failed ? (
+            ) : menu.search.status === "failed" ? (
               <>
                 Couldn't look up this address.{" "}
-                <button
-                  type="button"
-                  className={styles.retryButton}
-                  onClick={handleSearchHere}
-                >
-                  Retry
-                </button>
+                <RetryButton onClick={handleSearchHere} />
               </>
             ) : (
               (menu.search.label ?? "No address found here.")

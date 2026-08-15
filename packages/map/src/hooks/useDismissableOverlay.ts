@@ -49,10 +49,7 @@ export function useDismissableOverlay({
     initialFocusRef?.current?.focus();
 
     function handlePointerDown(event: MouseEvent) {
-      if (
-        dismissOnOutsideClick &&
-        !containerRef.current?.contains(event.target as Node)
-      ) {
+      if (!containerRef.current?.contains(event.target as Node)) {
         onClose();
       }
     }
@@ -64,10 +61,14 @@ export function useDismissableOverlay({
       }
     }
 
-    document.addEventListener("mousedown", handlePointerDown);
+    if (dismissOnOutsideClick) {
+      document.addEventListener("mousedown", handlePointerDown);
+    }
     document.addEventListener("keydown", handleKeyDown);
     return () => {
-      document.removeEventListener("mousedown", handlePointerDown);
+      if (dismissOnOutsideClick) {
+        document.removeEventListener("mousedown", handlePointerDown);
+      }
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, [

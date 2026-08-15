@@ -126,4 +126,16 @@ describe("useDismissableOverlay", () => {
     );
     addEventListenerSpy.mockRestore();
   });
+
+  it("does not attach an outside-pointerdown listener at all when dismissOnOutsideClick is false", () => {
+    const addEventListenerSpy = vi.spyOn(document, "addEventListener");
+
+    render(<TestOverlay dismissOnOutsideClick={false} />);
+
+    expect(addEventListenerSpy).not.toHaveBeenCalledWith(
+      "mousedown",
+      expect.any(Function),
+    );
+    addEventListenerSpy.mockRestore();
+  });
 });

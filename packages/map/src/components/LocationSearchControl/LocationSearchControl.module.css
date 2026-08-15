@@ -33,7 +33,7 @@
 
 .input {
   width: 100%;
-  min-height: 44px;
+  min-height: var(--control-height, 44px);
   padding: 0.5rem 3.25rem 0.5rem 0.625rem;
   border: 1px solid var(--md-sys-color-outline);
   border-radius: var(--md-sys-shape-corner-small);
@@ -54,8 +54,8 @@
 }
 
 /*
- * 44px to meet the design system's touch-target floor -- with `.input` at
- * the same 44px min-height, this now matches it exactly rather than
+ * --control-height to meet the design system's touch-target floor -- with
+ * `.input` at the same height, this now matches it exactly rather than
  * poking out above/below, so `right` only needs to clear the input's own
  * rounded border rather than also room for a taller button.
  */
@@ -64,8 +64,8 @@
   top: 50%;
   right: 0.1rem;
   transform: translateY(-50%);
-  width: 44px;
-  height: 44px;
+  width: var(--control-height, 44px);
+  height: var(--control-height, 44px);
   min-height: 0;
 }
 
@@ -75,8 +75,7 @@
 }
 
 .input:focus-visible,
-.resultButton:focus-visible,
-.retryButton:focus-visible {
+.resultButton:focus-visible {
   outline: var(--focus-ring-width) solid var(--md-sys-color-on-surface);
   outline-offset: 2px;
 }
@@ -88,23 +87,6 @@
   margin: 0;
   color: var(--md-sys-color-on-surface-variant);
   font-size: var(--font-size-md);
-}
-
-.retryButton {
-  flex-shrink: 0;
-  padding: 0.2rem 0.55rem;
-  border: 1px solid var(--md-sys-color-outline-variant);
-  border-radius: var(--md-sys-shape-corner-small);
-  background: transparent;
-  color: var(--md-sys-color-on-surface);
-  font: inherit;
-  font-size: var(--font-size-sm);
-  cursor: pointer;
-  transition: background-color var(--motion-duration-short) ease;
-}
-
-.retryButton:hover {
-  background: var(--state-hover);
 }
 
 .results {
@@ -119,7 +101,7 @@
 
 .resultButton {
   width: 100%;
-  min-height: 44px;
+  min-height: var(--control-height, 44px);
   padding: 0.45rem 0.55rem;
   border: 1px solid transparent;
   border-radius: var(--md-sys-shape-corner-small);

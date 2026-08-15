@@ -227,7 +227,6 @@ vi.mock("react-leaflet", () => ({
 }));
 
 vi.mock("../../data/locationSearch", () => ({
-  fetchReverseGeocodeResult: geocodeMocks.fetchReverseGeocodeResult,
   nominatimGeocoderProvider: {
     search: vi.fn(),
     reverse: geocodeMocks.fetchReverseGeocodeResult,

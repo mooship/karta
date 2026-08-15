@@ -49,14 +49,16 @@ export const DEFAULT_NO_DATA_COLOR_DARK = "#5b6476";
  * choropleth fill color resolves through the same `resolveClassification`
  * machinery as line/point classifications, instead of a separate
  * implementation of the same sort-by-max/find/fallback lookup.
+ * @param fallbackColor - Already-resolved swatch/fill colour for a feature
+ *   with no bucketed value (see `resolveThemedColor`) -- resolved once by
+ *   the caller rather than threading both `noDataColor` and
+ *   `darkNoDataColor` through here just to resolve them per call.
  * @param dark - When `true`, prefers each bucket's `darkColor` over `color`,
- *   falling back to `color` for a bucket that doesn't define one; also
- *   selects `darkNoDataColor` over `noDataColor` for the fallback swatch.
+ *   falling back to `color` for a bucket that doesn't define one.
  */
 function bucketsToClassification(
   style: ChoroplethLayerStyle,
-  noDataColor: string,
-  darkNoDataColor: string,
+  fallbackColor: string,
   dark: boolean,
 ): GraduatedClassification<string> {
   return {
@@ -67,7 +69,7 @@ function bucketsToClassification(
       value: resolveThemedColor(bucket.color, bucket.darkColor, dark),
       label: bucket.label,
     })),
-    fallback: resolveThemedColor(noDataColor, darkNoDataColor, dark),
+    fallback: fallbackColor,
   };
 }
 
@@ -121,8 +123,7 @@ export function createLayerConfig(
     case "choropleth": {
       const classification = bucketsToClassification(
         style,
-        noDataColor,
-        darkNoDataColor,
+        resolveThemedColor(noDataColor, darkNoDataColor, dark),
         dark,
       );
       return {
