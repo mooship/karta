@@ -1,4 +1,4 @@
-import { useSyncExternalStore } from "react";
+import { useEffect, useSyncExternalStore } from "react";
 
 /** Explicit theme choice. `"system"` follows the OS `prefers-color-scheme`. */
 export type ThemePreference = "system" | "light" | "dark";
@@ -134,7 +134,23 @@ export function setThemePreference(preference: ThemePreference) {
 /**
  * Returns the current theme preference, updating reactively when it changes.
  * @remarks Call `initTheme` before any component using this hook mounts.
+ *   Re-applies the `data-theme` attribute (and theme-color meta tag) to the
+ *   document on mount and whenever the preference changes, rather than
+ *   trusting `initTheme`'s pre-hydration script-tag write to stick — a React
+ *   hydration-mismatch recovery elsewhere in the tree can rebuild `<html>`'s
+ *   attributes from its own JSX-managed props alone, silently dropping this
+ *   attribute since React never owned it. That in-memory preference itself
+ *   survives any such recovery untouched, so this effect self-heals the DOM
+ *   from it the moment a subscribed component next renders.
  */
 export function useThemePreference() {
-  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+  const preference = useSyncExternalStore(
+    subscribe,
+    getSnapshot,
+    getServerSnapshot,
+  );
+  useEffect(() => {
+    applyThemeAttribute(preference);
+  }, [preference]);
+  return preference;
 }
