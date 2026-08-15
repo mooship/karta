@@ -39,13 +39,17 @@ test.describe("map feature keyboard accessibility", () => {
 
     await expect(page.getByTestId(E2E.townshipPopup)).toBeVisible();
 
-    // Choosing by pointer is a separate path from the keys above.
-    await searchInput.fill("Mabopane");
-    await page
+    // Choosing by pointer is a separate path from the keys above. Several
+    // real townships share a "Mabopane" prefix (Mabopane A, Mabopane M,
+    // etc.), and feature results aren't alphabetically sorted, so the first
+    // match isn't necessarily plain "Mabopane" -- read its actual label
+    // rather than assuming which one it is.
+    const firstFeatureOption = page
       .getByTestId(E2E.locationSearchResults)
       .getByRole("option")
-      .first()
-      .click();
+      .first();
+    const selectedLabel = (await firstFeatureOption.textContent())?.trim();
+    await firstFeatureOption.click();
 
     // Leaflet's popup close animation leaves the previous (Botshabelo)
     // popup element in the DOM for a moment after the new one is added, so
@@ -53,9 +57,9 @@ test.describe("map feature keyboard accessibility", () => {
     // a strict-mode violation from briefly matching both.
     await expect(
       page.getByTestId(E2E.townshipPopup).last().locator("h2"),
-    ).toHaveText("Mabopane");
+    ).toHaveText(selectedLabel ?? "");
     await expect(page.getByTestId(E2E.mapView).getByRole("status")).toHaveText(
-      /Mabopane.*selected/i,
+      new RegExp(`${selectedLabel}.*selected`, "i"),
     );
   });
 });
