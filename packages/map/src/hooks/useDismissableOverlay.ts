@@ -1,4 +1,13 @@
-import { type RefObject, useEffect } from "react";
+import { type RefObject, useEffect, useRef } from "react";
+
+/**
+ * Module-scoped stack of currently-open `useDismissableOverlay` instances,
+ * most-recently-opened last. Escape only closes the top of the stack, so
+ * two independently-mounted overlays open at once (e.g. a persistent
+ * desktop sidebar and a popover opened on top of it) don't both react to
+ * the same keypress.
+ */
+const openOverlayIds: symbol[] = [];
 
 /** Configuration for `useDismissableOverlay`. */
 export interface UseDismissableOverlayOptions {
@@ -32,6 +41,11 @@ export interface UseDismissableOverlayOptions {
  * `dismissOnOutsideClick` is `false`) a pointerdown outside `containerRef`,
  * restoring focus to `triggerRef`, and moves focus into `initialFocusRef`
  * when the overlay opens.
+ * @remarks When more than one overlay using this hook is open at once (e.g.
+ *   a persistent desktop panel with a popover like `SettingsMenu` opened on
+ *   top of it), Escape only closes the one opened most recently — otherwise
+ *   every open overlay's own document-level listener would react to the
+ *   same keypress, each fighting to move focus to its own trigger.
  */
 export function useDismissableOverlay({
   open,
@@ -41,11 +55,18 @@ export function useDismissableOverlay({
   initialFocusRef,
   dismissOnOutsideClick = true,
 }: UseDismissableOverlayOptions): void {
+  const idRef = useRef<symbol | null>(null);
+  if (idRef.current === null) {
+    idRef.current = Symbol("dismissable-overlay");
+  }
+
   useEffect(() => {
     if (!open) {
       return;
     }
 
+    const id = idRef.current as symbol;
+    openOverlayIds.push(id);
     initialFocusRef?.current?.focus();
 
     function handlePointerDown(event: MouseEvent) {
@@ -55,10 +76,14 @@ export function useDismissableOverlay({
     }
 
     function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape") {
-        onClose();
-        triggerRef.current?.focus();
+      if (event.key !== "Escape") {
+        return;
       }
+      if (openOverlayIds[openOverlayIds.length - 1] !== id) {
+        return;
+      }
+      onClose();
+      triggerRef.current?.focus();
     }
 
     if (dismissOnOutsideClick) {
@@ -66,6 +91,10 @@ export function useDismissableOverlay({
     }
     document.addEventListener("keydown", handleKeyDown);
     return () => {
+      const index = openOverlayIds.indexOf(id);
+      if (index !== -1) {
+        openOverlayIds.splice(index, 1);
+      }
       if (dismissOnOutsideClick) {
         document.removeEventListener("mousedown", handlePointerDown);
       }
