@@ -138,4 +138,72 @@ describe("useDismissableOverlay", () => {
     );
     addEventListenerSpy.mockRestore();
   });
+
+  it("closes only the most recently opened overlay on Escape when two are open at once", () => {
+    function StackedOverlays() {
+      const [openA, setOpenA] = useState(true);
+      const containerA = useRef<HTMLDivElement>(null);
+      const triggerA = useRef<HTMLButtonElement>(null);
+
+      const [openB, setOpenB] = useState(false);
+      const containerB = useRef<HTMLDivElement>(null);
+      const triggerB = useRef<HTMLButtonElement>(null);
+      const headingB = useRef<HTMLHeadingElement>(null);
+
+      useDismissableOverlay({
+        open: openA,
+        onClose: () => setOpenA(false),
+        containerRef: containerA,
+        triggerRef: triggerA,
+      });
+      useDismissableOverlay({
+        open: openB,
+        onClose: () => setOpenB(false),
+        containerRef: containerB,
+        triggerRef: triggerB,
+        initialFocusRef: headingB,
+      });
+
+      return (
+        <div>
+          <button type="button" ref={triggerA}>
+            panel trigger
+          </button>
+          <div ref={containerA}>
+            {openA ? <section>panel content</section> : null}
+          </div>
+          <button type="button" ref={triggerB} onClick={() => setOpenB(true)}>
+            menu trigger
+          </button>
+          <div ref={containerB}>
+            {openB ? (
+              <section>
+                <h2 ref={headingB} tabIndex={-1}>
+                  menu content
+                </h2>
+              </section>
+            ) : null}
+          </div>
+        </div>
+      );
+    }
+
+    const { getByText, queryByText } = render(<StackedOverlays />);
+    expect(queryByText("panel content")).toBeInTheDocument();
+
+    act(() => {
+      getByText("menu trigger").click();
+    });
+    expect(queryByText("menu content")).toBeInTheDocument();
+
+    act(() => {
+      document.dispatchEvent(
+        new KeyboardEvent("keydown", { key: "Escape", bubbles: true }),
+      );
+    });
+
+    expect(queryByText("menu content")).not.toBeInTheDocument();
+    expect(getByText("menu trigger")).toHaveFocus();
+    expect(queryByText("panel content")).toBeInTheDocument();
+  });
 });

@@ -26,6 +26,14 @@ test.describe("map feature keyboard accessibility", () => {
     await searchInput.focus();
     await searchInput.fill("Botshabelo");
 
+    // The feature list populates asynchronously (township data fetch, then
+    // MapView's onSelectableFeaturesChange callback) after the search box
+    // itself is already interactive, so wait for the option to actually
+    // appear before driving it by keyboard -- unlike a pointer click, the
+    // keys below don't retry against a dropdown that isn't there yet.
+    await expect(
+      page.getByRole("option", { name: "Botshabelo" }),
+    ).toBeVisible();
     await page.keyboard.press("ArrowDown");
     await page.keyboard.press("Enter");
 

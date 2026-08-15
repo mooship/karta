@@ -56,6 +56,13 @@ test.describe("shareable map links", () => {
     const searchInput = page.getByTestId(E2E.locationSearchInput);
     await searchInput.focus();
     await searchInput.fill("Botshabelo");
+
+    // The feature list populates asynchronously after the search box itself
+    // is already interactive, so wait for the option to appear before
+    // driving it by keyboard -- see map-feature-accessibility.spec.ts.
+    await expect(
+      page.getByRole("option", { name: "Botshabelo" }),
+    ).toBeVisible();
     await page.keyboard.press("ArrowDown");
     await page.keyboard.press("Enter");
 
