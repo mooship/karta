@@ -72,7 +72,6 @@ export function SettingsMenu({
     >
       <IconButton
         ref={triggerRef}
-        className={styles.trigger}
         data-testid="settings-menu-trigger"
         data-e2e="settings-menu-trigger"
         aria-expanded={open}

@@ -1,11 +1,13 @@
 import type { Layer } from "@karta/core";
-import { resolveThemedColor } from "@karta/core";
+import {
+  DEFAULT_NO_DATA_COLOR,
+  DEFAULT_NO_DATA_COLOR_DARK,
+  resolveThemedColor,
+} from "@karta/core";
 import { useResolvedDarkTheme } from "@karta/react";
 import { useMemo } from "react";
 import { useDomain } from "../../context/DomainContext";
 import styles from "./Legend.module.css";
-
-const CHOROPLETH_NO_DATA_COLOR = "#8A93A5";
 
 interface LegendProps {
   mode?: "all" | "active";
@@ -39,7 +41,14 @@ function choroplethLegends(
             label: bucket.label,
             color: resolveThemedColor(bucket.color, bucket.darkColor, dark),
           })),
-          { label: "No data", color: CHOROPLETH_NO_DATA_COLOR },
+          {
+            label: "No data",
+            color: resolveThemedColor(
+              DEFAULT_NO_DATA_COLOR,
+              DEFAULT_NO_DATA_COLOR_DARK,
+              dark,
+            ),
+          },
         ],
       },
     ];

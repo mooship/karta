@@ -166,6 +166,24 @@ describe("App", () => {
     );
   });
 
+  it("selects a township directly from the unified search box, alongside place search", async () => {
+    render(<App />);
+    await waitFor(() =>
+      expect(screen.getByTestId("geojson-layer")).toBeInTheDocument(),
+    );
+
+    fireEvent.change(screen.getByTestId("location-search-input"), {
+      target: { value: "Mamelodi" },
+    });
+
+    const option = await screen.findByRole("option", { name: "Mamelodi" });
+    fireEvent.click(option);
+
+    await waitFor(() => {
+      expect(window.location.search).toContain("feature=A");
+    });
+  });
+
   it("hides the desktop legend while settings is open so the two panels don't overlap", async () => {
     render(<App />);
 
@@ -274,6 +292,57 @@ describe("App", () => {
     await waitFor(() =>
       expect(screen.getByTestId("geojson-layer")).toBeInTheDocument(),
     );
+  });
+
+  it("moves focus into the panel's active tab when it's opened via the trigger", async () => {
+    render(<App />);
+    fireEvent.click(screen.getByRole("button", { name: /close/i }));
+
+    fireEvent.click(screen.getByRole("button", { name: /explore/i }));
+
+    await waitFor(() => {
+      expect(screen.getByRole("tab", { name: /layers/i })).toHaveFocus();
+    });
+  });
+
+  it("closes the panel on Escape and restores focus to the trigger", async () => {
+    render(<App />);
+    const trigger = screen.getByRole("button", { name: /close/i });
+    expect(trigger).toHaveAttribute("aria-expanded", "true");
+
+    fireEvent.keyDown(document, { key: "Escape" });
+
+    expect(trigger).toHaveAttribute("aria-expanded", "false");
+    expect(trigger).toHaveFocus();
+  });
+
+  it("keeps the desktop panel open on an outside click, since it behaves as a persistent sidebar there", async () => {
+    render(<App />);
+    const trigger = screen.getByRole("button", { name: /close/i });
+    expect(trigger).toHaveAttribute("aria-expanded", "true");
+
+    fireEvent.mouseDown(document.body);
+
+    expect(trigger).toHaveAttribute("aria-expanded", "true");
+  });
+
+  it("closes the mobile sheet on an outside click, unlike the desktop sidebar", async () => {
+    const { panel } = await renderMobilePanel();
+
+    fireEvent.mouseDown(document.body);
+
+    expect(panel).toHaveAttribute("data-panel-closing", "true");
+    fireEvent.animationEnd(panel);
+    await waitFor(() => expect(panel).not.toBeVisible());
+  });
+
+  it("does not close the mobile sheet on a click inside it", async () => {
+    const { panel } = await renderMobilePanel();
+
+    fireEvent.mouseDown(panel);
+
+    expect(panel).not.toHaveAttribute("data-panel-closing", "true");
+    expect(panel).toBeVisible();
   });
 
   it("keeps the legend visible on desktop while layer controls are open", async () => {

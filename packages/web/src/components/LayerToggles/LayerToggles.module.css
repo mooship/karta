@@ -197,8 +197,8 @@
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  width: 1.75rem;
-  height: 1.75rem;
+  width: var(--control-height);
+  height: var(--control-height);
   border: 0;
   border-radius: var(--md-sys-shape-corner-full);
   background: transparent;

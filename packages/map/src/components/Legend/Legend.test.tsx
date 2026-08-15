@@ -66,11 +66,22 @@ describe("Legend", () => {
   });
 
   it("shows a No data swatch for every choropleth layer", () => {
+    stubMatchMedia(false);
     render(withDomain(<Legend />));
     expect(screen.getAllByText("No data")).toHaveLength(2);
     for (const entry of screen.getAllByText("No data")) {
       expect(entry.previousElementSibling).toHaveStyle({
         backgroundColor: "#8A93A5",
+      });
+    }
+  });
+
+  it("shows the dark No data swatch colour when dark theme is active", () => {
+    stubMatchMedia(true);
+    render(withDomain(<Legend />));
+    for (const entry of screen.getAllByText("No data")) {
+      expect(entry.previousElementSibling).toHaveStyle({
+        backgroundColor: "#5b6476",
       });
     }
   });

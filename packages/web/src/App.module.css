@@ -299,6 +299,26 @@
   padding: 0.75rem 0.875rem;
 }
 
+/*
+ * The only visible app name/title in the whole layout -- everything else
+ * naming this app (the <title>, the page's own <h1>) is either in the
+ * browser chrome or screen-reader-only, so a sighted first-time visitor had
+ * no on-screen cue for what they were looking at. Placed inside the
+ * search box's own surface rather than as new floating chrome, since every
+ * map corner is already claimed by other controls (see
+ * MeasurementControl.module.css's own note on this) and this box is
+ * already visible, already has padding, and needs no new stacking context.
+ */
+.appName {
+  margin: 0 0 0.375rem;
+  color: var(--md-sys-color-on-surface-variant);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
 .outOfCoverage {
   display: block;
   margin: 0.5rem 0 0;
@@ -315,6 +335,16 @@
      * active basemap's credit length; clear it with a fixed margin rather
      * than the shared control-spacing baseline. */
     bottom: calc(var(--mobile-control-bottom) + 2rem);
+    /*
+     * Without this, `bottom` jumps instantly to its post-open value the
+     * moment `data-panel-open` flips -- the same render that starts the
+     * sheet's own 260ms `panelSheetIn` slide-up below -- so the trigger
+     * teleported to its final resting spot above a sheet that hadn't
+     * risen into view yet, then just sat there until the sheet caught up.
+     * Matching the sheet's own timing/easing here makes the two move as
+     * one instead of the trigger visibly outrunning it.
+     */
+    transition: bottom 260ms cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   .panel {

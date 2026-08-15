@@ -90,6 +90,42 @@ describe("createLayerConfig", () => {
     });
   });
 
+  it("uses the dark no-data colour for a missing value when dark is true", () => {
+    const config = createLayerConfig(choroplethLayer(), { dark: true });
+    const feature = {
+      type: "Feature",
+      properties: { commuteMinutes: null },
+      geometry: null,
+    } as unknown as Feature;
+
+    expect(config.styleFn?.(feature)).toMatchObject({
+      fillColor: "#5b6476",
+    });
+  });
+
+  it("accepts a custom noDataColor/darkNoDataColor pair", () => {
+    const lightConfig = createLayerConfig(choroplethLayer(), {
+      noDataColor: "#123456",
+    });
+    const darkConfig = createLayerConfig(choroplethLayer(), {
+      dark: true,
+      noDataColor: "#123456",
+      darkNoDataColor: "#abcdef",
+    });
+    const feature = {
+      type: "Feature",
+      properties: { commuteMinutes: null },
+      geometry: null,
+    } as unknown as Feature;
+
+    expect(lightConfig.styleFn?.(feature)).toMatchObject({
+      fillColor: "#123456",
+    });
+    expect(darkConfig.styleFn?.(feature)).toMatchObject({
+      fillColor: "#abcdef",
+    });
+  });
+
   it("uses each bucket's darkColor instead of color when dark is true", () => {
     const config = createLayerConfig(choroplethLayer(), { dark: true });
     const feature = {

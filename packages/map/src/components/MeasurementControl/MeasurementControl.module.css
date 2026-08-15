@@ -69,10 +69,10 @@
 
 @media (max-width: 768px) {
   .root {
-    inset-inline-start: var(--mobile-control-edge);
+    inset-inline-start: var(--mobile-control-edge, 0.75rem);
     inset-block-start: calc(
-      var(--mobile-search-clearance) +
-      var(--mobile-safe-top)
+      var(--mobile-search-clearance, 7.5rem) +
+      var(--mobile-safe-top, env(safe-area-inset-top))
     );
   }
 

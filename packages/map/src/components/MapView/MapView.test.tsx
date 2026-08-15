@@ -227,7 +227,10 @@ vi.mock("react-leaflet", () => ({
 }));
 
 vi.mock("../../data/locationSearch", () => ({
-  fetchReverseGeocodeResult: geocodeMocks.fetchReverseGeocodeResult,
+  nominatimGeocoderProvider: {
+    search: vi.fn(),
+    reverse: geocodeMocks.fetchReverseGeocodeResult,
+  },
 }));
 
 vi.mock("./VectorBasemapLayer", () => ({
@@ -373,8 +376,8 @@ describe("MapView", () => {
     );
   });
 
-  it("wires the selectable-feature search to the visible selectable layer's features and onFeatureSelect", () => {
-    const onFeatureSelect = vi.fn();
+  it("reports the visible selectable layer's features via onSelectableFeaturesChange", () => {
+    const onSelectableFeaturesChange = vi.fn();
 
     render(
       withDomain(
@@ -382,29 +385,59 @@ describe("MapView", () => {
           {...DEFAULT_MAP_VIEW_PROPS}
           areas={areas}
           visibleLayerIds={["areas"]}
-          onFeatureSelect={onFeatureSelect}
+          onSelectableFeaturesChange={onSelectableFeaturesChange}
         />,
       ),
     );
 
-    fireEvent.change(screen.getByTestId("selectable-feature-search-input"), {
-      target: { value: "Mamelodi" },
-    });
-    fireEvent.click(screen.getByRole("option", { name: "Mamelodi" }));
-
-    expect(onFeatureSelect).toHaveBeenCalledWith("A");
+    expect(onSelectableFeaturesChange).toHaveBeenLastCalledWith([
+      { id: "A", label: "Mamelodi" },
+    ]);
   });
 
-  it("does not render the selectable-feature search when no visible layer is selectable", () => {
+  it("reports an empty selectable-features list when no visible layer is selectable", () => {
+    const onSelectableFeaturesChange = vi.fn();
+
     render(
       withDomain(
-        <MapView {...DEFAULT_MAP_VIEW_PROPS} areas={[]} visibleLayerIds={[]} />,
+        <MapView
+          {...DEFAULT_MAP_VIEW_PROPS}
+          areas={[]}
+          visibleLayerIds={[]}
+          onSelectableFeaturesChange={onSelectableFeaturesChange}
+        />,
       ),
     );
 
-    expect(
-      screen.queryByTestId("selectable-feature-search"),
-    ).not.toBeInTheDocument();
+    expect(onSelectableFeaturesChange).toHaveBeenLastCalledWith([]);
+  });
+
+  it("announces a feature selection via a live region regardless of how it happened", () => {
+    const { rerender } = render(
+      withDomain(
+        <MapView
+          {...DEFAULT_MAP_VIEW_PROPS}
+          areas={areas}
+          visibleLayerIds={["areas"]}
+          selectedFeatureId={null}
+        />,
+      ),
+    );
+
+    expect(screen.getByRole("status")).toHaveTextContent("");
+
+    rerender(
+      withDomain(
+        <MapView
+          {...DEFAULT_MAP_VIEW_PROPS}
+          areas={areas}
+          visibleLayerIds={["areas"]}
+          selectedFeatureId="A"
+        />,
+      ),
+    );
+
+    expect(screen.getByRole("status")).toHaveTextContent("Mamelodi selected");
   });
 
   it("calls renderFeaturePopup with feature properties when a feature is clicked", async () => {
@@ -2058,6 +2091,7 @@ describe("MapView", () => {
       layerGroups: [],
     };
 
+    const onSelectableFeaturesChange = vi.fn();
     render(
       <DomainProvider domain={domain}>
         <MapView
@@ -2072,17 +2106,14 @@ describe("MapView", () => {
             ] as never
           }
           visibleLayerIds={["no-label-field"]}
+          onSelectableFeaturesChange={onSelectableFeaturesChange}
         />
       </DomainProvider>,
     );
 
-    fireEvent.change(screen.getByTestId("selectable-feature-search-input"), {
-      target: { value: "Fallback" },
-    });
-
-    expect(
-      screen.getByRole("option", { name: "Fallback Name" }),
-    ).toBeInTheDocument();
+    expect(onSelectableFeaturesChange).toHaveBeenLastCalledWith([
+      { id: "X", label: "Fallback Name" },
+    ]);
   });
 
   it("falls back to properties.name when the configured labelField isn't a string", () => {
@@ -2107,6 +2138,7 @@ describe("MapView", () => {
       layerGroups: [],
     };
 
+    const onSelectableFeaturesChange = vi.fn();
     render(
       <DomainProvider domain={domain}>
         <MapView
@@ -2126,21 +2158,17 @@ describe("MapView", () => {
             ] as never
           }
           visibleLayerIds={["numeric-label-field"]}
+          onSelectableFeaturesChange={onSelectableFeaturesChange}
         />
       </DomainProvider>,
     );
 
-    fireEvent.change(screen.getByTestId("selectable-feature-search-input"), {
-      target: { value: "Mamelodi" },
-    });
-
-    expect(
-      screen.getByRole("option", { name: "Mamelodi" }),
-    ).toBeInTheDocument();
     // Feature "B" has neither a string commuteMinutes nor a name, so it
-    // resolves to an empty label -- unreachable through the search UI (there's
-    // nothing to type that would match ""), unlike the old per-feature
-    // aria-label, which still rendered as "View " for it.
+    // resolves to an empty label.
+    expect(onSelectableFeaturesChange).toHaveBeenLastCalledWith([
+      { id: "A", label: "Mamelodi" },
+      { id: "B", label: "" },
+    ]);
   });
 
   it("defaults a click's click-count to 1 when the event has no originalEvent detail", () => {

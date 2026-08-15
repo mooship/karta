@@ -39,17 +39,26 @@ export function resolveThemedColor(
   return (dark && darkColor) || color;
 }
 
+/** Default swatch/fill colour for a choropleth feature with no bucketed value. */
+export const DEFAULT_NO_DATA_COLOR = "#8A93A5";
+/** Shown instead of `DEFAULT_NO_DATA_COLOR` while dark theme is active. */
+export const DEFAULT_NO_DATA_COLOR_DARK = "#5b6476";
+
 /**
  * Adapts a choropleth style's `buckets` into a `GraduatedClassification`, so
  * choropleth fill color resolves through the same `resolveClassification`
  * machinery as line/point classifications, instead of a separate
  * implementation of the same sort-by-max/find/fallback lookup.
+ * @param fallbackColor - Already-resolved swatch/fill colour for a feature
+ *   with no bucketed value (see `resolveThemedColor`) -- resolved once by
+ *   the caller rather than threading both `noDataColor` and
+ *   `darkNoDataColor` through here just to resolve them per call.
  * @param dark - When `true`, prefers each bucket's `darkColor` over `color`,
  *   falling back to `color` for a bucket that doesn't define one.
  */
 function bucketsToClassification(
   style: ChoroplethLayerStyle,
-  noDataColor: string,
+  fallbackColor: string,
   dark: boolean,
 ): GraduatedClassification<string> {
   return {
@@ -60,7 +69,7 @@ function bucketsToClassification(
       value: resolveThemedColor(bucket.color, bucket.darkColor, dark),
       label: bucket.label,
     })),
-    fallback: noDataColor,
+    fallback: fallbackColor,
   };
 }
 
@@ -80,8 +89,10 @@ function resolveStyleValue<T>(
 
 /** Options for `createLayerConfig`. */
 export interface CreateLayerConfigOptions {
-  /** CSS color used when a choropleth feature has no value. Defaults to `"#8A93A5"`. */
+  /** CSS color used when a choropleth feature has no value. Defaults to `DEFAULT_NO_DATA_COLOR`. */
   noDataColor?: string;
+  /** Shown instead of `noDataColor` while `dark` is `true`. Defaults to `DEFAULT_NO_DATA_COLOR_DARK`. */
+  darkNoDataColor?: string;
   /**
    * When `true`, choropleth buckets prefer their `darkColor` over `color`
    * (see `ColorBucket`). Defaults to `false`.
@@ -101,12 +112,20 @@ export function createLayerConfig(
   layer: Layer,
   options: CreateLayerConfigOptions = {},
 ): LeafletLayerConfig {
-  const { noDataColor = "#8A93A5", dark = false } = options;
+  const {
+    noDataColor = DEFAULT_NO_DATA_COLOR,
+    darkNoDataColor = DEFAULT_NO_DATA_COLOR_DARK,
+    dark = false,
+  } = options;
   const style = layer.style;
 
   switch (style.kind) {
     case "choropleth": {
-      const classification = bucketsToClassification(style, noDataColor, dark);
+      const classification = bucketsToClassification(
+        style,
+        resolveThemedColor(noDataColor, darkNoDataColor, dark),
+        dark,
+      );
       return {
         styleFn: (feature) => {
           const emphasised = style.resolveEmphasis?.(feature?.properties);

@@ -13,6 +13,7 @@ export { ControlButton } from "./components/ControlButton/ControlButton";
 export { DesktopLegend } from "./components/DesktopLegend/DesktopLegend";
 export { IconButton } from "./components/IconButton/IconButton";
 export { Legend } from "./components/Legend/Legend";
+export type { SelectableFeatureSearchEntry } from "./components/LocationSearchControl/LocationSearchControl";
 export { LocationSearchControl } from "./components/LocationSearchControl/LocationSearchControl";
 export type {
   MeasurementControlProps,
@@ -45,11 +46,15 @@ export { DomainProvider, useDomain } from "./context/DomainContext";
 export type {
   GeocoderProvider,
   LocationSearchResult,
+  NominatimSearchOptions,
 } from "./data/locationSearch";
 export {
+  createNominatimGeocoderProvider,
   fetchLocationSearchResults,
   fetchReverseGeocodeResult,
   nominatimGeocoderProvider,
 } from "./data/locationSearch";
+export type { UseDismissableOverlayOptions } from "./hooks/useDismissableOverlay";
+export { useDismissableOverlay } from "./hooks/useDismissableOverlay";
 export type { LayerDataMap, LayerDataResult } from "./hooks/useLayerData";
 export { useLayerData } from "./hooks/useLayerData";
