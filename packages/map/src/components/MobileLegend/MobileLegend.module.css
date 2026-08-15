@@ -100,6 +100,14 @@
       var(--mobile-control-size, 44px) +
       var(--mobile-control-gap, 0.625rem)
     );
+    /*
+     * Matches the host panel's own entrance animation (`panelSheetIn`,
+     * `packages/web/src/App.module.css`) so this trigger climbs in step
+     * with the sheet instead of snapping to its post-open position the
+     * instant `data-panel-open` flips, ahead of the sheet actually
+     * arriving there.
+     */
+    transition: bottom 260ms cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   /*
