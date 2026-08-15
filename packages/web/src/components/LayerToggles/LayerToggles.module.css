@@ -54,7 +54,8 @@
   min-height: 48px;
   border-radius: var(--md-sys-shape-corner-small);
   font-size: var(--font-size-base);
-  transition: background-color var(--motion-duration-short) ease;
+  transition: background-color var(--motion-duration-short)
+    var(--motion-ease-standard);
 }
 
 .row:hover {
@@ -99,7 +100,8 @@
     transparent
   );
   cursor: pointer;
-  transition: background-color var(--motion-duration-short) ease;
+  transition: background-color var(--motion-duration-short)
+    var(--motion-ease-standard);
 }
 
 .checkbox::before {
@@ -111,7 +113,8 @@
   height: 1rem;
   border-radius: var(--md-sys-shape-corner-full);
   background: var(--md-sys-color-on-surface);
-  transition: transform var(--motion-duration-short) ease;
+  transition: transform var(--motion-duration-short)
+    var(--motion-ease-decelerate);
 }
 
 .checkbox:checked {
@@ -206,7 +209,8 @@
   color: var(--md-sys-color-on-surface-variant);
   font: inherit;
   cursor: pointer;
-  transition: background-color var(--motion-duration-short) ease;
+  transition: background-color var(--motion-duration-short)
+    var(--motion-ease-standard);
 }
 
 .download:hover {

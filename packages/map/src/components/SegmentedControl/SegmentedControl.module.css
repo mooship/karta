@@ -34,9 +34,9 @@
   font-weight: 500;
   cursor: pointer;
   transition:
-    background-color var(--motion-duration-short) ease,
-    color var(--motion-duration-short) ease,
-    transform 120ms ease;
+    background-color var(--motion-duration-short) var(--motion-ease-standard),
+    color var(--motion-duration-short) var(--motion-ease-standard),
+    transform var(--motion-duration-short) var(--motion-ease-standard);
 }
 
 .option:hover {

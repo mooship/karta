@@ -8,7 +8,8 @@
   font: inherit;
   font-size: var(--font-size-sm);
   cursor: pointer;
-  transition: background-color var(--motion-duration-short) ease;
+  transition: background-color var(--motion-duration-short)
+    var(--motion-ease-standard);
 }
 
 .button:hover {

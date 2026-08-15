@@ -24,8 +24,10 @@
   scrollbar-color: var(--md-sys-color-outline-variant) transparent;
   scrollbar-width: thin;
   transform: translateY(var(--sheet-drag-offset, 0px));
-  transition: transform var(--motion-duration-medium) ease;
-  animation: mobileLegendIn 170ms ease;
+  transition: transform var(--motion-duration-medium)
+    var(--motion-ease-decelerate);
+  animation: mobileLegendIn var(--motion-duration-medium)
+    var(--motion-ease-decelerate);
 }
 
 .sheet[data-dragging="true"] {
@@ -72,6 +74,13 @@
   height: var(--drag-handle-height);
   border-radius: var(--md-sys-shape-corner-full);
   background: var(--md-sys-color-outline-variant);
+  transition:
+    width var(--motion-duration-short) var(--motion-ease-standard),
+    background-color var(--motion-duration-short) var(--motion-ease-standard);
+}
+
+.sheet[data-dragging="true"] .dragHandle {
+  width: 3rem;
 }
 
 @media (prefers-reduced-motion: reduce) {
