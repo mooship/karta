@@ -335,6 +335,16 @@
      * active basemap's credit length; clear it with a fixed margin rather
      * than the shared control-spacing baseline. */
     bottom: calc(var(--mobile-control-bottom) + 2rem);
+    /*
+     * Without this, `bottom` jumps instantly to its post-open value the
+     * moment `data-panel-open` flips -- the same render that starts the
+     * sheet's own 260ms `panelSheetIn` slide-up below -- so the trigger
+     * teleported to its final resting spot above a sheet that hadn't
+     * risen into view yet, then just sat there until the sheet caught up.
+     * Matching the sheet's own timing/easing here makes the two move as
+     * one instead of the trigger visibly outrunning it.
+     */
+    transition: bottom 260ms cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   .panel {
