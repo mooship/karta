@@ -47,9 +47,13 @@ test.describe("map feature keyboard accessibility", () => {
       .first()
       .click();
 
-    await expect(page.getByTestId(E2E.townshipPopup).locator("h2")).toHaveText(
-      "Mabopane",
-    );
+    // Leaflet's popup close animation leaves the previous (Botshabelo)
+    // popup element in the DOM for a moment after the new one is added, so
+    // `.last()` -- the most recently appended, i.e. the new popup -- avoids
+    // a strict-mode violation from briefly matching both.
+    await expect(
+      page.getByTestId(E2E.townshipPopup).last().locator("h2"),
+    ).toHaveText("Mabopane");
     await expect(page.getByTestId(E2E.mapView).getByRole("status")).toHaveText(
       /Mabopane.*selected/i,
     );
