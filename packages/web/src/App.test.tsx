@@ -166,6 +166,24 @@ describe("App", () => {
     );
   });
 
+  it("selects a township directly from the unified search box, alongside place search", async () => {
+    render(<App />);
+    await waitFor(() =>
+      expect(screen.getByTestId("geojson-layer")).toBeInTheDocument(),
+    );
+
+    fireEvent.change(screen.getByTestId("location-search-input"), {
+      target: { value: "Mamelodi" },
+    });
+
+    const option = await screen.findByRole("option", { name: "Mamelodi" });
+    fireEvent.click(option);
+
+    await waitFor(() => {
+      expect(window.location.search).toContain("feature=A");
+    });
+  });
+
   it("hides the desktop legend while settings is open so the two panels don't overlap", async () => {
     render(<App />);
 

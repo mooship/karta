@@ -45,6 +45,7 @@ import type {
   LocationSearchResult,
 } from "../../data/locationSearch";
 import { useLayerData } from "../../hooks/useLayerData";
+import type { SelectableFeatureSearchEntry } from "../LocationSearchControl/LocationSearchControl";
 import { formatMeasurementResult } from "../MeasurementControl/formatMeasurementResult";
 import {
   MeasurementControl,
@@ -53,10 +54,6 @@ import {
 import { LocationContextMenu } from "./LocationContextMenu";
 import styles from "./MapView.module.css";
 import { MeasurementLayer } from "./MeasurementLayer";
-import {
-  SelectableFeatureSearch,
-  type SelectableFeatureSearchEntry,
-} from "./SelectableFeatureSearch";
 import { VectorBasemapLayer } from "./VectorBasemapLayer";
 
 /**
@@ -98,6 +95,17 @@ export interface MapViewProps<
     location: LocationSearchResult;
   } | null;
   onFeatureSelect?: (featureId: string) => void;
+  /**
+   * Called with the current set of selectable features (id + accessible
+   * label) whenever it changes, e.g. because `visibleLayerIds` or the
+   * underlying feature data changed. Lets a caller feed these into its own
+   * `LocationSearchControl` as `selectableFeatures`, so a visitor can search
+   * for a map feature by name from the same box used for place search --
+   * `MapView` itself renders no feature-search UI of its own.
+   */
+  onSelectableFeaturesChange?: (
+    entries: SelectableFeatureSearchEntry[],
+  ) => void;
   renderFeaturePopup?: (properties: TProperties) => ReactNode;
   /** Called with the ids of overlay layers whose data failed to load, whenever that set changes. */
   onLayerDataError?: (failedLayerIds: string[]) => void;
@@ -658,6 +666,7 @@ function MapViewComponent<
   selectedFeatureId = null,
   focusLocationTarget = null,
   onFeatureSelect,
+  onSelectableFeaturesChange,
   renderFeaturePopup,
   onLayerDataError,
   onBasemapError,
@@ -843,6 +852,19 @@ function MapViewComponent<
     // rows for the same id, not break selection.
     return entries;
   }, [visibleLayers, areaData, overlayData]);
+  const selectedFeatureLabel = useMemo(
+    () =>
+      selectedFeatureId
+        ? (selectableSearchEntries.find(
+            (entry) => entry.id === selectedFeatureId,
+          )?.label ?? null)
+        : null,
+    [selectableSearchEntries, selectedFeatureId],
+  );
+  // biome-ignore lint/correctness/useExhaustiveDependencies: onSelectableFeaturesChange intentionally omitted -- it's a public prop with no stability guarantee, so including it could re-fire this effect on every render for callers that don't memoize it
+  useEffect(() => {
+    onSelectableFeaturesChange?.(selectableSearchEntries);
+  }, [selectableSearchEntries]);
   const layerConfigById = useMemo(
     () =>
       new Map(
@@ -973,13 +995,16 @@ function MapViewComponent<
           panelOpen={measurementPanelOpen}
         />
       ) : null}
-      {selectableSearchEntries.length > 0 ? (
-        <SelectableFeatureSearch
-          features={selectableSearchEntries}
-          selectedFeatureId={selectedFeatureId}
-          onSelect={onFeatureSelect}
-        />
-      ) : null}
+      {/*
+        Announces a feature selection to assistive technology regardless of
+        how it happened -- a direct click/tap on the map, or a caller's own
+        `LocationSearchControl` (fed via `onSelectableFeaturesChange`) --
+        since neither path otherwise gives a screen-reader user any signal
+        that a selection changed.
+      */}
+      <output aria-live="polite" className={styles.visuallyHidden}>
+        {selectedFeatureLabel ? `${selectedFeatureLabel} selected` : ""}
+      </output>
       <MapContainer
         bounds={bounds}
         boundsOptions={boundsOptions}

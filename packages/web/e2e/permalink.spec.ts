@@ -53,7 +53,7 @@ test.describe("shareable map links", () => {
   }) => {
     await page.goto("/");
 
-    const searchInput = page.getByTestId(E2E.selectableFeatureSearchInput);
+    const searchInput = page.getByTestId(E2E.locationSearchInput);
     await searchInput.focus();
     await searchInput.fill("Botshabelo");
     await page.keyboard.press("ArrowDown");
