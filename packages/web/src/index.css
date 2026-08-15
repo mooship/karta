@@ -161,6 +161,13 @@
   --motion-duration-short: 150ms;
   --motion-duration-medium: 180ms;
 
+  /* M3 standard easing curves (developer.android.com/develop/ui/views/animations/motion).
+   * decelerate suits elements entering/settling, accelerate suits elements leaving,
+   * standard suits everything else (hover/press state changes, size/position tweens). */
+  --motion-ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --motion-ease-decelerate: cubic-bezier(0, 0, 0, 1);
+  --motion-ease-accelerate: cubic-bezier(0.3, 0, 1, 1);
+
   /* Focus ring magnitude only — colour stays contextual (a component on a
    * light surface needs a dark ring and vice versa) and offset stays
    * contextual (inset vs. outset varies with the control's geometry). */

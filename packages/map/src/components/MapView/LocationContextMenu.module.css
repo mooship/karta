@@ -15,7 +15,8 @@
   font-size: var(--font-size-md);
   text-align: left;
   cursor: pointer;
-  transition: background-color var(--motion-duration-short) ease;
+  transition: background-color var(--motion-duration-short)
+    var(--motion-ease-standard);
 }
 
 .menuItem:hover {

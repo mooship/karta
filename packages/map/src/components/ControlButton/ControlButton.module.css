@@ -17,11 +17,11 @@
   letter-spacing: 0.01em;
   cursor: pointer;
   transition:
-    background-color var(--motion-duration-short) ease,
-    border-color var(--motion-duration-short) ease,
-    box-shadow var(--motion-duration-short) ease,
-    translate 120ms ease,
-    scale 120ms ease;
+    background-color var(--motion-duration-short) var(--motion-ease-standard),
+    border-color var(--motion-duration-short) var(--motion-ease-standard),
+    box-shadow var(--motion-duration-short) var(--motion-ease-standard),
+    translate var(--motion-duration-short) var(--motion-ease-standard),
+    scale var(--motion-duration-short) var(--motion-ease-standard);
 }
 
 .button[data-shape="icon"] {

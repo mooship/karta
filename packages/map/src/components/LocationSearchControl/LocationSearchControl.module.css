@@ -42,7 +42,8 @@
   font: inherit;
   letter-spacing: 0.004em;
   text-overflow: ellipsis;
-  transition: background-color var(--motion-duration-short) ease;
+  transition: background-color var(--motion-duration-short)
+    var(--motion-ease-standard);
 }
 
 .input:focus {
@@ -113,7 +114,8 @@
   font: inherit;
   text-align: left;
   cursor: pointer;
-  transition: background-color var(--motion-duration-short) ease;
+  transition: background-color var(--motion-duration-short)
+    var(--motion-ease-standard);
 }
 
 /*

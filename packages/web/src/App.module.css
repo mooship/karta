@@ -93,6 +93,8 @@
   color: var(--md-sys-color-on-surface);
   box-shadow: var(--md-sys-elevation-shadow-3);
   transform: translate(-50%, -50%);
+  animation: dataErrorIn var(--motion-duration-medium)
+    var(--motion-ease-decelerate);
 }
 
 .dataError p {
@@ -107,6 +109,8 @@
   color: var(--md-sys-color-on-surface);
   font: inherit;
   cursor: pointer;
+  transition: background-color var(--motion-duration-short)
+    var(--motion-ease-standard);
 }
 
 .dataError button:hover {
@@ -130,6 +134,7 @@
   font-weight: 700;
   box-shadow: var(--md-sys-elevation-shadow-3);
   transform: translateY(-160%);
+  transition: transform var(--motion-duration-short) var(--motion-ease-standard);
 }
 
 .skipLink:focus {
@@ -169,7 +174,8 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  transition: box-shadow var(--motion-duration-medium) ease;
+  transition: box-shadow var(--motion-duration-medium)
+    var(--motion-ease-standard);
 }
 
 .sheetHandleButton {
@@ -189,7 +195,8 @@
   -webkit-overflow-scrolling: touch;
   scrollbar-color: var(--md-sys-color-outline-variant) transparent;
   scrollbar-width: thin;
-  animation: panelViewportIn var(--motion-duration-medium) ease;
+  animation: panelViewportIn var(--motion-duration-medium)
+    var(--motion-ease-decelerate);
 }
 
 .panelViewport::-webkit-scrollbar {
@@ -368,8 +375,8 @@
     transform: translateY(calc(var(--panel-drag-offset, 0px) * 0.14));
     transition:
       height 320ms cubic-bezier(0.2, 0.9, 0.24, 1),
-      transform var(--motion-duration-medium) linear,
-      box-shadow var(--motion-duration-medium) ease;
+      transform var(--motion-duration-medium) var(--motion-ease-decelerate),
+      box-shadow var(--motion-duration-medium) var(--motion-ease-standard);
     animation: panelSheetIn 260ms cubic-bezier(0.22, 1, 0.36, 1);
   }
 
@@ -474,8 +481,8 @@
     border-radius: var(--md-sys-shape-corner-full);
     background: var(--md-sys-color-outline-variant);
     transition:
-      width 120ms ease,
-      background-color 120ms ease;
+      width var(--motion-duration-short) var(--motion-ease-standard),
+      background-color var(--motion-duration-short) var(--motion-ease-standard);
   }
 
   .settingsControl {
@@ -533,13 +540,24 @@
   }
 }
 
+@keyframes dataErrorIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .panel,
   .panel[data-panel-dragging="true"],
   .panel[data-panel-closing="true"],
   .panelViewport {
     animation: none;
-    transition: opacity var(--motion-duration-medium) ease;
     transform: none;
   }
 
