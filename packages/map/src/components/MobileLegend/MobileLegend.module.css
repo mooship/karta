@@ -128,7 +128,7 @@
       calc(var(--sheet-height) + 0.75rem + env(safe-area-inset-bottom)),
       calc(
         100dvh -
-        var(--mobile-search-clearance, 7.5rem) -
+        var(--mobile-search-clearance, 8.25rem) -
         var(--mobile-safe-top, env(safe-area-inset-top)) -
         var(--mobile-control-size, 44px)
       )

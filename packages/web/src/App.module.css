@@ -21,9 +21,12 @@
    * MeasurementControl.module.css's mobile `inset-block-start`) — shared so
    * any other control stacking beneath the search box (the legend trigger,
    * when the info panel is open) can clamp itself to the same boundary
-   * instead of hardcoding its own copy of this measurement.
+   * instead of hardcoding its own copy of this measurement. 8.25rem leaves
+   * a comfortable double-digit-pixel gap beneath the search box's ~116px
+   * mobile footprint (its `top` offset plus wrapper padding/border plus
+   * the app-name label and search field) — 7.5rem left only a few pixels.
    */
-  --mobile-search-clearance: 7.5rem;
+  --mobile-search-clearance: 8.25rem;
 }
 
 .mapLoading {
