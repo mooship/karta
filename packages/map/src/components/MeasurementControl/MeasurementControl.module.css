@@ -7,16 +7,18 @@
  * the legend; bottom-right holds Leaflet's own zoom control. The one
  * reliably free strip is directly beneath the search box on the left —
  * settings/legend sit much further down, so this control stacks there
- * instead of contesting a corner. 7.5rem clears the search box's whole
- * rendered footprint, not just its own content box: measured at 88px
- * desktop / 84px mobile from the viewport edge (its `top` offset plus its
- * wrapper's padding/border plus its label-and-input content), with a
- * comfortable double-digit-pixel gap left beneath it.
+ * instead of contesting a corner. 9rem clears the search box's whole
+ * rendered footprint, not just its own content box: measured at ~128px
+ * from the viewport edge (its `top` offset plus its wrapper's
+ * padding/border plus the app-name label and search field it now stacks),
+ * with a comfortable double-digit-pixel gap left beneath it — the previous
+ * 7.5rem was measured before the app-name label was added above the
+ * search field and had come to overlap it by a few pixels.
  */
 .root {
   position: absolute;
   inset-inline-start: 1.25rem;
-  inset-block-start: 7.5rem;
+  inset-block-start: 9rem;
   z-index: 1240;
 }
 
@@ -71,7 +73,7 @@
   .root {
     inset-inline-start: var(--mobile-control-edge, 0.75rem);
     inset-block-start: calc(
-      var(--mobile-search-clearance, 7.5rem) +
+      var(--mobile-search-clearance, 8.25rem) +
       var(--mobile-safe-top, env(safe-area-inset-top))
     );
   }
