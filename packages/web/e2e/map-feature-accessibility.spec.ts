@@ -2,28 +2,27 @@ import { expect, test } from "./fixtures";
 import { E2E } from "./selectors";
 
 test.describe("map feature keyboard accessibility", () => {
-  test("the selectable-feature search is focusable, hidden until focused, and shows a visible focus ring", async ({
+  test("the location search box is visible up front and shows a visible focus ring", async ({
     page,
   }) => {
     await page.goto("/");
 
-    const searchInput = page.getByTestId(E2E.selectableFeatureSearchInput);
+    const searchInput = page.getByTestId(E2E.locationSearchInput);
 
-    await expect(searchInput).not.toBeInViewport();
+    await expect(searchInput).toBeVisible();
 
     await searchInput.focus();
 
-    await expect(searchInput).toBeInViewport();
     await expect(searchInput).toBeFocused();
     await expect(searchInput).toHaveCSS("outline-style", "solid");
   });
 
-  test("searching by name and choosing a result opens that feature's popup, by keyboard or pointer", async ({
+  test("searching by name and choosing a feature result opens that feature's popup, by keyboard or pointer", async ({
     page,
   }) => {
     await page.goto("/");
 
-    const searchInput = page.getByTestId(E2E.selectableFeatureSearchInput);
+    const searchInput = page.getByTestId(E2E.locationSearchInput);
     await searchInput.focus();
     await searchInput.fill("Botshabelo");
 
@@ -32,18 +31,19 @@ test.describe("map feature keyboard accessibility", () => {
 
     await expect(page.getByTestId(E2E.townshipPopup)).toBeVisible();
 
-    // Choosing by pointer is a separate path from the keys above, and the one
-    // that breaks if the reveal wrapper ever stops opting back into the
-    // pointer events its container gives up (SelectableFeatureSearch.module.css).
+    // Choosing by pointer is a separate path from the keys above.
     await searchInput.fill("Mabopane");
     await page
-      .getByTestId(E2E.selectableFeatureSearchResults)
+      .getByTestId(E2E.locationSearchResults)
       .getByRole("option")
       .first()
       .click();
 
-    await expect(
-      page.getByTestId(E2E.selectableFeatureSearch).getByRole("status"),
-    ).toHaveText(/Mabopane.*selected/i);
+    await expect(page.getByTestId(E2E.townshipPopup).locator("h2")).toHaveText(
+      "Mabopane",
+    );
+    await expect(page.getByTestId(E2E.mapView).getByRole("status")).toHaveText(
+      /Mabopane.*selected/i,
+    );
   });
 });

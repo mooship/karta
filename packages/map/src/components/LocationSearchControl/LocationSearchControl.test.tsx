@@ -180,7 +180,7 @@ describe("LocationSearchControl", () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText("No places matched that search."),
+        screen.getByText("Nothing matched that search."),
       ).toBeInTheDocument();
     });
     expect(
@@ -344,7 +344,7 @@ describe("LocationSearchControl", () => {
     fireEvent.change(input, { target: { value: "Nowhere" } });
     await waitFor(() => {
       expect(
-        screen.getByText("No places matched that search."),
+        screen.getByText("Nothing matched that search."),
       ).toBeInTheDocument();
     });
 
@@ -531,5 +531,117 @@ describe("LocationSearchControl", () => {
     fireEvent.click(option);
 
     expect(onQueryChange).not.toHaveBeenCalled();
+  });
+
+  describe("with selectableFeatures", () => {
+    it("matches feature results instantly, ahead of place results, with no network call for the feature match", async () => {
+      searchMocks.fetchLocationSearchResults.mockResolvedValue([]);
+
+      render(
+        <LocationSearchControl
+          onLocationSelect={vi.fn()}
+          selectableFeatures={[
+            { id: "A", label: "Mamelodi" },
+            { id: "B", label: "Soshanguve" },
+          ]}
+          onFeatureSelect={vi.fn()}
+        />,
+      );
+      fireEvent.change(screen.getByTestId("location-search-input"), {
+        target: { value: "Mame" },
+      });
+
+      const options = await screen.findAllByRole("option");
+      expect(options).toHaveLength(1);
+      expect(options[0]).toHaveTextContent("Mamelodi");
+    });
+
+    it("selects the feature via onFeatureSelect, not onLocationSelect, when a feature result is chosen", async () => {
+      searchMocks.fetchLocationSearchResults.mockResolvedValue([]);
+      const onLocationSelect = vi.fn();
+      const onFeatureSelect = vi.fn();
+
+      render(
+        <LocationSearchControl
+          onLocationSelect={onLocationSelect}
+          selectableFeatures={[{ id: "A", label: "Mamelodi" }]}
+          onFeatureSelect={onFeatureSelect}
+        />,
+      );
+      fireEvent.change(screen.getByTestId("location-search-input"), {
+        target: { value: "Mame" },
+      });
+
+      const option = await screen.findByRole("option", { name: "Mamelodi" });
+      fireEvent.click(option);
+
+      expect(onFeatureSelect).toHaveBeenCalledWith("A");
+      expect(onLocationSelect).not.toHaveBeenCalled();
+      expect(screen.getByTestId("location-search-input")).toHaveValue(
+        "Mamelodi",
+      );
+    });
+
+    it("lists feature results ahead of place results, and moves through both with ArrowDown as one sequence", async () => {
+      searchMocks.fetchLocationSearchResults.mockResolvedValue([
+        { id: "p1", label: "Mamelodi West", latitude: 0, longitude: 0 },
+      ]);
+
+      render(
+        <LocationSearchControl
+          onLocationSelect={vi.fn()}
+          selectableFeatures={[{ id: "f1", label: "Mamelodi" }]}
+          onFeatureSelect={vi.fn()}
+        />,
+      );
+      const input = screen.getByTestId("location-search-input");
+      fireEvent.change(input, { target: { value: "Mamelodi" } });
+      await screen.findByRole("option", { name: "Mamelodi West" });
+
+      const options = screen.getAllByRole("option");
+      expect(options[0]).toHaveTextContent("Mamelodi");
+      expect(options[1]).toHaveTextContent("Mamelodi West");
+
+      fireEvent.keyDown(input, { key: "ArrowDown" });
+      expect(options[0]).toHaveAttribute("aria-selected", "true");
+
+      fireEvent.keyDown(input, { key: "ArrowDown" });
+      expect(options[1]).toHaveAttribute("aria-selected", "true");
+    });
+
+    it("does not show 'Nothing matched' while a feature result is showing, even with zero place results", async () => {
+      searchMocks.fetchLocationSearchResults.mockResolvedValue([]);
+
+      render(
+        <LocationSearchControl
+          onLocationSelect={vi.fn()}
+          selectableFeatures={[{ id: "A", label: "Mamelodi" }]}
+          onFeatureSelect={vi.fn()}
+        />,
+      );
+      fireEvent.change(screen.getByTestId("location-search-input"), {
+        target: { value: "Mame" },
+      });
+      await screen.findByRole("option", { name: "Mamelodi" });
+
+      expect(
+        screen.queryByText("Nothing matched that search."),
+      ).not.toBeInTheDocument();
+    });
+
+    it("behaves exactly as place-only search when selectableFeatures is omitted", async () => {
+      searchMocks.fetchLocationSearchResults.mockResolvedValue([
+        { id: "1", label: "Soweto", latitude: 0, longitude: 0 },
+      ]);
+
+      render(<LocationSearchControl onLocationSelect={vi.fn()} />);
+      fireEvent.change(screen.getByTestId("location-search-input"), {
+        target: { value: "Soweto" },
+      });
+
+      const options = await screen.findAllByRole("option");
+      expect(options).toHaveLength(1);
+      expect(options[0]).toHaveTextContent("Soweto");
+    });
   });
 });

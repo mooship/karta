@@ -13,6 +13,7 @@ import {
   LocationSearchControl,
   type LocationSearchResult,
   MobileLegend,
+  type SelectableFeatureSearchEntry,
   SettingsMenu,
   useDismissableOverlay,
 } from "@karta/map";
@@ -227,6 +228,9 @@ export function App() {
   const [townshipAreas, setTownshipAreas] = useState<Feature[]>([]);
   const [dataError, setDataError] = useState(false);
   const [failedLayerIds, setFailedLayerIds] = useState<string[]>([]);
+  const [selectableFeatures, setSelectableFeatures] = useState<
+    SelectableFeatureSearchEntry[]
+  >([]);
   const [loadAttempt, setLoadAttempt] = useState(0);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [mobilePanelExpanded, setMobilePanelExpanded] = useState(false);
@@ -680,6 +684,7 @@ export function App() {
                 selectedFeatureId={selectedFeatureId}
                 focusLocationTarget={focusLocationTarget}
                 onFeatureSelect={setSelectedFeatureId}
+                onSelectableFeaturesChange={setSelectableFeatures}
                 onLayerDataError={setFailedLayerIds}
                 onReady={handleMapReady}
                 onBasemapError={() => setBasemap("street")}
@@ -720,6 +725,8 @@ export function App() {
             provider={locationSearchProvider}
             onLocationSelect={handleLocationSelect}
             onQueryChange={() => setOutOfCoverageLocationLabel(null)}
+            selectableFeatures={selectableFeatures}
+            onFeatureSelect={setSelectedFeatureId}
           />
           {outOfCoverageLocationLabel ? (
             <output
