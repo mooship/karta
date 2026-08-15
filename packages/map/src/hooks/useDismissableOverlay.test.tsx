@@ -3,7 +3,13 @@ import { useRef, useState } from "react";
 import { describe, expect, it, vi } from "vitest";
 import { useDismissableOverlay } from "./useDismissableOverlay";
 
-function TestOverlay({ initialOpen = true }: { initialOpen?: boolean }) {
+function TestOverlay({
+  initialOpen = true,
+  dismissOnOutsideClick,
+}: {
+  initialOpen?: boolean;
+  dismissOnOutsideClick?: boolean;
+}) {
   const [open, setOpen] = useState(initialOpen);
   const containerRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -15,6 +21,7 @@ function TestOverlay({ initialOpen = true }: { initialOpen?: boolean }) {
     containerRef,
     triggerRef,
     initialFocusRef: headingRef,
+    dismissOnOutsideClick,
   });
 
   return (
@@ -80,6 +87,35 @@ describe("useDismissableOverlay", () => {
     expect(queryByText("panel")).toBeInTheDocument();
   });
 
+  it("stays open on an outside pointerdown when dismissOnOutsideClick is false", () => {
+    const { getByText, queryByText } = render(
+      <TestOverlay dismissOnOutsideClick={false} />,
+    );
+
+    act(() => {
+      getByText("outside").dispatchEvent(
+        new MouseEvent("mousedown", { bubbles: true }),
+      );
+    });
+
+    expect(queryByText("panel")).toBeInTheDocument();
+  });
+
+  it("still closes on Escape when dismissOnOutsideClick is false", () => {
+    const { getByText, queryByText } = render(
+      <TestOverlay dismissOnOutsideClick={false} />,
+    );
+
+    act(() => {
+      document.dispatchEvent(
+        new KeyboardEvent("keydown", { key: "Escape", bubbles: true }),
+      );
+    });
+
+    expect(queryByText("panel")).not.toBeInTheDocument();
+    expect(document.activeElement).toBe(getByText("trigger"));
+  });
+
   it("does nothing when closed", () => {
     render(<TestOverlay initialOpen={false} />);
     const addEventListenerSpy = vi.spyOn(document, "addEventListener");
@@ -89,5 +125,85 @@ describe("useDismissableOverlay", () => {
       expect.any(Function),
     );
     addEventListenerSpy.mockRestore();
+  });
+
+  it("does not attach an outside-pointerdown listener at all when dismissOnOutsideClick is false", () => {
+    const addEventListenerSpy = vi.spyOn(document, "addEventListener");
+
+    render(<TestOverlay dismissOnOutsideClick={false} />);
+
+    expect(addEventListenerSpy).not.toHaveBeenCalledWith(
+      "mousedown",
+      expect.any(Function),
+    );
+    addEventListenerSpy.mockRestore();
+  });
+
+  it("closes only the most recently opened overlay on Escape when two are open at once", () => {
+    function StackedOverlays() {
+      const [openA, setOpenA] = useState(true);
+      const containerA = useRef<HTMLDivElement>(null);
+      const triggerA = useRef<HTMLButtonElement>(null);
+
+      const [openB, setOpenB] = useState(false);
+      const containerB = useRef<HTMLDivElement>(null);
+      const triggerB = useRef<HTMLButtonElement>(null);
+      const headingB = useRef<HTMLHeadingElement>(null);
+
+      useDismissableOverlay({
+        open: openA,
+        onClose: () => setOpenA(false),
+        containerRef: containerA,
+        triggerRef: triggerA,
+      });
+      useDismissableOverlay({
+        open: openB,
+        onClose: () => setOpenB(false),
+        containerRef: containerB,
+        triggerRef: triggerB,
+        initialFocusRef: headingB,
+      });
+
+      return (
+        <div>
+          <button type="button" ref={triggerA}>
+            panel trigger
+          </button>
+          <div ref={containerA}>
+            {openA ? <section>panel content</section> : null}
+          </div>
+          <button type="button" ref={triggerB} onClick={() => setOpenB(true)}>
+            menu trigger
+          </button>
+          <div ref={containerB}>
+            {openB ? (
+              <section>
+                <h2 ref={headingB} tabIndex={-1}>
+                  menu content
+                </h2>
+              </section>
+            ) : null}
+          </div>
+        </div>
+      );
+    }
+
+    const { getByText, queryByText } = render(<StackedOverlays />);
+    expect(queryByText("panel content")).toBeInTheDocument();
+
+    act(() => {
+      getByText("menu trigger").click();
+    });
+    expect(queryByText("menu content")).toBeInTheDocument();
+
+    act(() => {
+      document.dispatchEvent(
+        new KeyboardEvent("keydown", { key: "Escape", bubbles: true }),
+      );
+    });
+
+    expect(queryByText("menu content")).not.toBeInTheDocument();
+    expect(getByText("menu trigger")).toHaveFocus();
+    expect(queryByText("panel content")).toBeInTheDocument();
   });
 });

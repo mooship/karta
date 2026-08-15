@@ -13,7 +13,10 @@ const geocodeMocks = vi.hoisted(() => ({
 }));
 
 vi.mock("../../data/locationSearch", () => ({
-  fetchReverseGeocodeResult: geocodeMocks.fetchReverseGeocodeResult,
+  nominatimGeocoderProvider: {
+    search: vi.fn(),
+    reverse: geocodeMocks.fetchReverseGeocodeResult,
+  },
 }));
 
 const mapEventsMocks = vi.hoisted(() => ({
@@ -146,28 +149,74 @@ describe("LocationContextMenu", () => {
     );
   });
 
-  it.each(["resolves with no result", "rejects"] as const)(
-    "shows a fallback message when the lookup %s",
-    async (mode) => {
-      if (mode === "resolves with no result") {
-        geocodeMocks.fetchReverseGeocodeResult.mockResolvedValue(null);
-      } else {
-        geocodeMocks.fetchReverseGeocodeResult.mockRejectedValue(
-          new Error("network"),
-        );
-      }
+  it("shows a no-match message, with no retry, when the lookup resolves with no result", async () => {
+    geocodeMocks.fetchReverseGeocodeResult.mockResolvedValue(null);
 
-      render(<LocationContextMenu />);
-      openMenu();
-      await chooseSearchHere();
+    render(<LocationContextMenu />);
+    openMenu();
+    await chooseSearchHere();
 
-      await waitFor(() => {
-        expect(screen.getByTestId("map-context-menu")).toHaveTextContent(
-          /no address found/i,
-        );
-      });
-    },
-  );
+    await waitFor(() => {
+      expect(screen.getByTestId("map-context-menu")).toHaveTextContent(
+        /no address found/i,
+      );
+    });
+    expect(
+      screen.queryByRole("button", { name: /retry/i }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("shows a failure message with a retry button when the lookup rejects, and retrying re-issues the lookup", async () => {
+    geocodeMocks.fetchReverseGeocodeResult
+      .mockRejectedValueOnce(new Error("network"))
+      .mockResolvedValueOnce({ label: "Braamfontein, Johannesburg" });
+
+    render(<LocationContextMenu />);
+    openMenu();
+    await chooseSearchHere();
+
+    await waitFor(() => {
+      expect(screen.getByTestId("map-context-menu")).toHaveTextContent(
+        /couldn't look up this address/i,
+      );
+    });
+    const retryButton = screen.getByRole("button", { name: /retry/i });
+
+    fireEvent.click(retryButton);
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId("map-context-menu")).toHaveTextContent(
+        "Braamfontein, Johannesburg",
+      );
+    });
+    expect(geocodeMocks.fetchReverseGeocodeResult).toHaveBeenCalledTimes(2);
+  });
+
+  it("uses a custom provider instead of the default Nominatim one when given", async () => {
+    const customProvider = {
+      search: vi.fn(),
+      reverse: vi.fn().mockResolvedValue({ label: "Custom place" }),
+    };
+
+    render(<LocationContextMenu provider={customProvider} />);
+    openMenu();
+    await chooseSearchHere();
+
+    await waitFor(() => {
+      expect(screen.getByTestId("map-context-menu")).toHaveTextContent(
+        "Custom place",
+      );
+    });
+    expect(customProvider.reverse).toHaveBeenCalledWith(
+      -26.2,
+      28.0,
+      expect.any(AbortSignal),
+    );
+    expect(geocodeMocks.fetchReverseGeocodeResult).not.toHaveBeenCalled();
+  });
 
   it("re-opens fresh (with the action, not a stale result) on a new contextmenu event", async () => {
     geocodeMocks.fetchReverseGeocodeResult.mockResolvedValue({

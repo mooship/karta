@@ -17,9 +17,6 @@ export const E2E = {
   locationSearchResults: "location-search-results",
   locationSearchRetry: "location-search-retry",
   locationOutOfCoverage: "location-out-of-coverage",
-  selectableFeatureSearch: "selectable-feature-search",
-  selectableFeatureSearchInput: "selectable-feature-search-input",
-  selectableFeatureSearchResults: "selectable-feature-search-results",
   basemapOption: {
     street: "basemap-option-street",
     satellite: "basemap-option-satellite",

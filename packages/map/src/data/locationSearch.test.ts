@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
+  createNominatimGeocoderProvider,
   fetchLocationSearchResults,
   fetchReverseGeocodeResult,
   nominatimGeocoderProvider,
@@ -60,6 +61,32 @@ describe("fetchLocationSearchResults", () => {
     );
 
     await expect(fetchLocationSearchResults("Soweto")).rejects.toThrow(/503/);
+  });
+
+  it("omits countrycodes from the request when no options are given", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValue({ ok: true, json: async () => [] });
+    vi.stubGlobal("fetch", fetchMock);
+
+    await fetchLocationSearchResults("Soweto");
+
+    const [requestUrl] = fetchMock.mock.calls[0] as [string];
+    expect(new URL(requestUrl).searchParams.has("countrycodes")).toBe(false);
+  });
+
+  it("applies countryCodes to the request when given", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValue({ ok: true, json: async () => [] });
+    vi.stubGlobal("fetch", fetchMock);
+
+    await fetchLocationSearchResults("Soweto", undefined, {
+      countryCodes: "za",
+    });
+
+    const [requestUrl] = fetchMock.mock.calls[0] as [string];
+    expect(new URL(requestUrl).searchParams.get("countrycodes")).toBe("za");
   });
 
   it("omits bounds when the bounding box is malformed", async () => {
@@ -166,8 +193,47 @@ describe("fetchReverseGeocodeResult", () => {
 });
 
 describe("nominatimGeocoderProvider", () => {
-  it("delegates search and reverse to the corresponding functions", () => {
-    expect(nominatimGeocoderProvider.search).toBe(fetchLocationSearchResults);
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it("delegates reverse to fetchReverseGeocodeResult", () => {
     expect(nominatimGeocoderProvider.reverse).toBe(fetchReverseGeocodeResult);
+  });
+
+  it("searches with no country bias by default", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValue({ ok: true, json: async () => [] });
+    vi.stubGlobal("fetch", fetchMock);
+
+    await nominatimGeocoderProvider.search("Soweto");
+
+    const [requestUrl] = fetchMock.mock.calls[0] as [string];
+    expect(new URL(requestUrl).searchParams.has("countrycodes")).toBe(false);
+  });
+});
+
+describe("createNominatimGeocoderProvider", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it("delegates reverse to fetchReverseGeocodeResult, unaffected by search options", () => {
+    const provider = createNominatimGeocoderProvider({ countryCodes: "za" });
+    expect(provider.reverse).toBe(fetchReverseGeocodeResult);
+  });
+
+  it("applies the configured countryCodes to every search call", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValue({ ok: true, json: async () => [] });
+    vi.stubGlobal("fetch", fetchMock);
+    const provider = createNominatimGeocoderProvider({ countryCodes: "za" });
+
+    await provider.search("Pretoria");
+
+    const [requestUrl] = fetchMock.mock.calls[0] as [string];
+    expect(new URL(requestUrl).searchParams.get("countrycodes")).toBe("za");
   });
 });

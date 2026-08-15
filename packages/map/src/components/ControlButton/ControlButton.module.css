@@ -55,7 +55,7 @@
 }
 
 .button[data-variant="embedded"]:hover {
-  background: var(--state-selected);
+  background: var(--state-hover);
   box-shadow: none;
   translate: none;
 }
@@ -63,6 +63,14 @@
 .button:focus-visible {
   outline: var(--focus-ring-width) solid var(--md-sys-color-on-surface);
   outline-offset: 2px;
+}
+
+.button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  box-shadow: none;
+  translate: none;
+  scale: 1;
 }
 
 .button svg {

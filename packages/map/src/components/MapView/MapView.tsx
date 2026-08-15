@@ -1,4 +1,8 @@
-import { createLayerConfig, type Layer as DomainLayer } from "@karta/core";
+import {
+  createLayerConfig,
+  type Layer as DomainLayer,
+  resolveThemedColor,
+} from "@karta/core";
 import { useLatestRef, useResolvedDarkTheme } from "@karta/react";
 import type { Feature, FeatureCollection } from "geojson";
 import {
@@ -36,8 +40,12 @@ import {
 } from "../../constants/basemaps";
 import { AREA_OUTLINE } from "../../constants/mapStyles";
 import { useDomain } from "../../context/DomainContext";
-import type { LocationSearchResult } from "../../data/locationSearch";
+import type {
+  GeocoderProvider,
+  LocationSearchResult,
+} from "../../data/locationSearch";
 import { useLayerData } from "../../hooks/useLayerData";
+import type { SelectableFeatureSearchEntry } from "../LocationSearchControl/LocationSearchControl";
 import { formatMeasurementResult } from "../MeasurementControl/formatMeasurementResult";
 import {
   MeasurementControl,
@@ -46,10 +54,6 @@ import {
 import { LocationContextMenu } from "./LocationContextMenu";
 import styles from "./MapView.module.css";
 import { MeasurementLayer } from "./MeasurementLayer";
-import {
-  SelectableFeatureSearch,
-  type SelectableFeatureSearchEntry,
-} from "./SelectableFeatureSearch";
 import { VectorBasemapLayer } from "./VectorBasemapLayer";
 
 /**
@@ -91,6 +95,17 @@ export interface MapViewProps<
     location: LocationSearchResult;
   } | null;
   onFeatureSelect?: (featureId: string) => void;
+  /**
+   * Called with the current set of selectable features (id + accessible
+   * label) whenever it changes, e.g. because `visibleLayerIds` or the
+   * underlying feature data changed. Lets a caller feed these into its own
+   * `LocationSearchControl` as `selectableFeatures`, so a visitor can search
+   * for a map feature by name from the same box used for place search --
+   * `MapView` itself renders no feature-search UI of its own.
+   */
+  onSelectableFeaturesChange?: (
+    entries: SelectableFeatureSearchEntry[],
+  ) => void;
   renderFeaturePopup?: (properties: TProperties) => ReactNode;
   /** Called with the ids of overlay layers whose data failed to load, whenever that set changes. */
   onLayerDataError?: (failedLayerIds: string[]) => void;
@@ -105,6 +120,13 @@ export interface MapViewProps<
    * Defaults to `false`.
    */
   locationContextMenu?: boolean;
+  /**
+   * Geocoder backend used for that context menu's reverse lookup. Defaults
+   * to OpenStreetMap Nominatim. Pass the same `GeocoderProvider` given to
+   * `LocationSearchControl` if a caller wants both to agree on a non-default
+   * backend.
+   */
+  locationContextMenuProvider?: GeocoderProvider;
   /**
    * When `true`, shows a toggleable control for measuring straight-line
    * distance or enclosed area by clicking points on the map. Defaults to
@@ -644,10 +666,12 @@ function MapViewComponent<
   selectedFeatureId = null,
   focusLocationTarget = null,
   onFeatureSelect,
+  onSelectableFeaturesChange,
   renderFeaturePopup,
   onLayerDataError,
   onBasemapError,
   locationContextMenu = false,
+  locationContextMenuProvider,
   measurementTool = false,
   measurementPanelOpen = false,
   onReady,
@@ -828,6 +852,19 @@ function MapViewComponent<
     // rows for the same id, not break selection.
     return entries;
   }, [visibleLayers, areaData, overlayData]);
+  const selectedFeatureLabel = useMemo(
+    () =>
+      selectedFeatureId
+        ? (selectableSearchEntries.find(
+            (entry) => entry.id === selectedFeatureId,
+          )?.label ?? null)
+        : null,
+    [selectableSearchEntries, selectedFeatureId],
+  );
+  // biome-ignore lint/correctness/useExhaustiveDependencies: onSelectableFeaturesChange intentionally omitted -- it's a public prop with no stability guarantee, so including it could re-fire this effect on every render for callers that don't memoize it
+  useEffect(() => {
+    onSelectableFeaturesChange?.(selectableSearchEntries);
+  }, [selectableSearchEntries]);
   const layerConfigById = useMemo(
     () =>
       new Map(
@@ -958,13 +995,16 @@ function MapViewComponent<
           panelOpen={measurementPanelOpen}
         />
       ) : null}
-      {selectableSearchEntries.length > 0 ? (
-        <SelectableFeatureSearch
-          features={selectableSearchEntries}
-          selectedFeatureId={selectedFeatureId}
-          onSelect={onFeatureSelect}
-        />
-      ) : null}
+      {/*
+        Announces a feature selection to assistive technology regardless of
+        how it happened -- a direct click/tap on the map, or a caller's own
+        `LocationSearchControl` (fed via `onSelectableFeaturesChange`) --
+        since neither path otherwise gives a screen-reader user any signal
+        that a selection changed.
+      */}
+      <output aria-live="polite" className={styles.visuallyHidden}>
+        {selectedFeatureLabel ? `${selectedFeatureLabel} selected` : ""}
+      </output>
       <MapContainer
         bounds={bounds}
         boundsOptions={boundsOptions}
@@ -1002,8 +1042,11 @@ function MapViewComponent<
             smoothFactor={0}
             pathOptions={AREA_OUTLINE_PATH_OPTIONS}
             style={(feature: Feature | undefined) => ({
-              ...AREA_OUTLINE,
-              color: resolvedDark ? "#5b6476" : AREA_OUTLINE.color,
+              color: resolveThemedColor(
+                AREA_OUTLINE.color,
+                AREA_OUTLINE.darkColor,
+                resolvedDark,
+              ),
               opacity: resolvedDark
                 ? feature?.properties?.labelPriority === "secondary"
                   ? 0.42
@@ -1070,7 +1113,9 @@ function MapViewComponent<
         <MapReadyNotifier onReady={onReady} />
         <ResponsiveMapBounds bounds={bounds} />
         <ZoomStateWatcher onZoomChange={setMapZoom} />
-        {locationContextMenu ? <LocationContextMenu /> : null}
+        {locationContextMenu ? (
+          <LocationContextMenu provider={locationContextMenuProvider} />
+        ) : null}
         {measurementTool && measurementInteractive ? (
           <MeasurementLayer
             mode={measurement.mode}

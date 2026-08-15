@@ -49,7 +49,7 @@
   height: 1rem;
   flex-shrink: 0;
   border: 1px solid var(--md-sys-color-outline-variant);
-  border-radius: 3px;
+  border-radius: var(--md-sys-shape-corner-extra-small);
 }
 
 .lineSwatch {

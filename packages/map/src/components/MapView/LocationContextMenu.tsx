@@ -1,14 +1,24 @@
 import type { LatLng } from "leaflet";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { Popup, useMapEvents } from "react-leaflet";
-import { fetchReverseGeocodeResult } from "../../data/locationSearch";
+import {
+  type GeocoderProvider,
+  nominatimGeocoderProvider,
+} from "../../data/locationSearch";
 import { useAbortController } from "../../hooks/useAbortController";
+import { RetryButton } from "../RetryButton/RetryButton";
 import styles from "./LocationContextMenu.module.css";
 
-interface SearchState {
-  loading: boolean;
-  label: string | null;
-}
+/**
+ * A reverse-geocode lookup's status: in flight, resolved (with a match or
+ * not), or a provider failure (network/HTTP error) -- the only case with a
+ * retry affordance, since retrying a legitimate no-match wouldn't change
+ * the outcome.
+ */
+type SearchState =
+  | { status: "loading" }
+  | { status: "success"; label: string | null }
+  | { status: "failed" };
 
 interface MenuState {
   latlng: LatLng;
@@ -93,7 +103,17 @@ function armGhostClickGuard(
  *   and when it's dismissed, so a slow response can't overwrite a later
  *   (or no longer open) menu with a stale result.
  */
-export function LocationContextMenu() {
+export interface LocationContextMenuProps {
+  /**
+   * Geocoder backend used for the reverse lookup. Defaults to OpenStreetMap
+   * Nominatim, matching `LocationSearchControl`'s own default.
+   */
+  provider?: GeocoderProvider;
+}
+
+export function LocationContextMenu({
+  provider = nominatimGeocoderProvider,
+}: LocationContextMenuProps = {}) {
   const [menu, setMenu] = useState<MenuState | null>(null);
   const { next, abort } = useAbortController();
   const { next: armGhostGuard, abort: disarmGhostGuard } = useAbortController();
@@ -153,18 +173,20 @@ export function LocationContextMenu() {
       const { lat, lng } = menu.latlng;
       const signal = next();
 
-      setSearch({ loading: true, label: null });
+      setSearch({ status: "loading" });
 
-      fetchReverseGeocodeResult(lat, lng, signal)
-        .then(
-          (result) => result?.label ?? null,
-          () => null,
-        )
-        .then((label) => {
+      provider.reverse(lat, lng, signal).then(
+        (result) => {
           if (!signal.aborted) {
-            setSearch({ loading: false, label });
+            setSearch({ status: "success", label: result?.label ?? null });
           }
-        });
+        },
+        () => {
+          if (!signal.aborted) {
+            setSearch({ status: "failed" });
+          }
+        },
+      );
     }, 0);
   };
 
@@ -177,9 +199,16 @@ export function LocationContextMenu() {
       >
         {menu.search ? (
           <output className={styles.result}>
-            {menu.search.loading
-              ? "Looking up address…"
-              : (menu.search.label ?? "No address found here.")}
+            {menu.search.status === "loading" ? (
+              "Looking up address…"
+            ) : menu.search.status === "failed" ? (
+              <>
+                Couldn't look up this address.{" "}
+                <RetryButton onClick={handleSearchHere} />
+              </>
+            ) : (
+              (menu.search.label ?? "No address found here.")
+            )}
           </output>
         ) : (
           <div

@@ -18,7 +18,10 @@ export interface LayerDataResult {
  * @param layerIds - Ids of layers to fetch data for. Unavailable layers are skipped.
  * @returns The merged `FeatureCollection` per layer id, plus ids of layers whose
  *   fetch failed (logged via `console.error`). A failed layer is retried if its id
- *   is removed from `layerIds` and passed again.
+ *   is removed from `layerIds` and passed again; removing it without passing it
+ *   again (e.g. toggling the layer off) drops it from `failedLayerIds` too, so a
+ *   caller's "failed to load" UI doesn't keep pointing at a layer that's no
+ *   longer requested.
  * @remarks Must be called from within a `DomainProvider`.
  */
 export function useLayerData(layerIds: string[]): LayerDataResult {
@@ -34,6 +37,11 @@ export function useLayerData(layerIds: string[]): LayerDataResult {
     const controllers = new Map<string, AbortController>();
 
     const ids = key.length > 0 ? key.split(",") : [];
+
+    setFailedLayerIds((current) => {
+      const next = current.filter((id) => ids.includes(id));
+      return next.length === current.length ? current : next;
+    });
 
     for (const id of ids) {
       const definition = getLayer(id);
