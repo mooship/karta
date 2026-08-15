@@ -12,6 +12,7 @@ import {
 } from "../../data/locationSearch";
 import { useAbortController } from "../../hooks/useAbortController";
 import { IconButton } from "../IconButton/IconButton";
+import { RetryButton } from "../RetryButton/RetryButton";
 import styles from "./LocationSearchControl.module.css";
 
 interface LocationSearchControlProps {
@@ -243,15 +244,11 @@ export function LocationSearchControl({
         <output className={styles.status}>
           {searchError}
           {searchFailed ? (
-            <button
-              type="button"
-              className={styles.retryButton}
+            <RetryButton
               data-testid="location-search-retry"
               data-e2e="location-search-retry"
               onClick={handleRetry}
-            >
-              Retry
-            </button>
+            />
           ) : null}
         </output>
       ) : null}

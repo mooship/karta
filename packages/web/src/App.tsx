@@ -260,9 +260,17 @@ export function App() {
     [],
   );
   const story = domain.story;
-  const panelViews: readonly PanelView[] = story
-    ? (["layers", "story"] as const)
-    : (["layers"] as const);
+  /**
+   * Memoised (not just `story`-derived inline) so this array keeps one
+   * identity across renders unless `story` itself changes -- `useCallback`
+   * dependencies below (`resolveInitialPanelFocusTarget`) key off it, and a
+   * fresh array literal every render would defeat that memoisation and
+   * re-attach `useDismissableOverlay`'s listeners on every unrelated render.
+   */
+  const panelViews = useMemo<readonly PanelView[]>(
+    () => (story ? (["layers", "story"] as const) : (["layers"] as const)),
+    [story],
+  );
   const panelLabels: Record<PanelView, string> = {
     layers: m.panel_tab_layers(),
     story: m.panel_tab_story(),
@@ -405,13 +413,21 @@ export function App() {
 
   useMapPermalink({ dataReady: townships.length > 0 });
 
-  function finishClose() {
+  /**
+   * Memoised (along with `closePanel` below) so `useDismissableOverlay`'s
+   * effect -- which lists `onClose` as a dependency -- only re-subscribes
+   * its document-level listeners when what actually changed is relevant
+   * (`isDesktopViewport`), not on every unrelated render. Left unmemoised,
+   * this pair was recreated on every `App` render, including every
+   * animation-frame tick of the mobile sheet's own drag gesture.
+   */
+  const finishClose = useCallback(() => {
     setMobileSheetClosing(false);
     setPanelOpen(false);
     requestAnimationFrame(() => panelTriggerRef.current?.focus());
-  }
+  }, [setPanelOpen]);
 
-  function closePanel() {
+  const closePanel = useCallback(() => {
     const playsExitAnimation =
       !isDesktopViewport &&
       !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -420,7 +436,7 @@ export function App() {
       return;
     }
     setMobileSheetClosing(true);
-  }
+  }, [isDesktopViewport, finishClose]);
 
   /**
    * Closes the panel on Escape (from anywhere, matching `SettingsMenu`/
