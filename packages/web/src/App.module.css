@@ -27,6 +27,21 @@
    * the app-name label and search field) — 7.5rem left only a few pixels.
    */
   --mobile-search-clearance: 8.25rem;
+  /*
+   * How long the Explore panel's own entrance fade (`panelIn`, shared by
+   * both `.panel` and `.panelViewport`) takes, named once so the two can't
+   * drift out of sync with each other by hand-typing the same duration
+   * twice.
+   */
+  --panel-motion-duration: 260ms;
+  /*
+   * How long any control that repositions itself around the mobile Explore
+   * sheet (the panel toggle, `MobileLegend`'s trigger) takes to slide back
+   * to its base position, shared across `packages/web` and `@karta/map` so
+   * the two move at the same speed instead of two independently hand-tuned
+   * durations drifting apart.
+   */
+  --panel-reposition-duration: 300ms;
 }
 
 .mapLoading {
@@ -181,8 +196,14 @@
    * panelSheetIn's own slide-up. Without an entrance animation here the
    * sidebar simply appeared the instant `hidden` came off, which read as
    * an abrupt pop next to `.panelViewport`'s own much subtler content fade.
+   * `--panel-in-distance`/`--panel-in-scale` give this element's fade a bit
+   * more travel and a scale-in `.panelViewport` doesn't get, via the same
+   * shared `panelIn` keyframes (see their fallback defaults there) rather
+   * than a second, near-identical keyframes block.
    */
-  animation: panelIn 260ms var(--motion-ease-decelerate);
+  --panel-in-distance: 8px;
+  --panel-in-scale: 0.98;
+  animation: panelIn var(--panel-motion-duration) var(--motion-ease-decelerate);
 }
 
 .sheetHandleButton {
@@ -202,7 +223,9 @@
   -webkit-overflow-scrolling: touch;
   scrollbar-color: var(--md-sys-color-outline-variant) transparent;
   scrollbar-width: thin;
-  animation: panelViewportIn 260ms var(--motion-ease-decelerate);
+  /* Shorter travel, no scale -- see `.panel`'s own `panelIn` for why the two share one keyframes block. */
+  --panel-in-distance: 6px;
+  animation: panelIn var(--panel-motion-duration) var(--motion-ease-decelerate);
 }
 
 .panelViewport::-webkit-scrollbar {
@@ -385,7 +408,7 @@
   button.panelTrigger {
     transition:
       var(--control-button-transition),
-      bottom 300ms var(--motion-ease-standard);
+      bottom var(--panel-reposition-duration) var(--motion-ease-standard);
   }
 
   .panel {
@@ -539,18 +562,6 @@
   }
 }
 
-@keyframes panelViewportIn {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 @keyframes panelSheetIn {
   from {
     transform: translateY(100%);
@@ -571,10 +582,17 @@
   }
 }
 
+/*
+ * Shared by `.panel` (desktop entrance) and `.panelViewport` (its content,
+ * both breakpoints) -- each sets its own `--panel-in-distance`/
+ * `--panel-in-scale` above rather than this duplicating as two near-
+ * identical keyframes blocks that only differed by a few pixels.
+ */
 @keyframes panelIn {
   from {
     opacity: 0;
-    transform: translateY(8px) scale(0.98);
+    transform: translateY(var(--panel-in-distance, 8px))
+      scale(var(--panel-in-scale, 1));
   }
 
   to {

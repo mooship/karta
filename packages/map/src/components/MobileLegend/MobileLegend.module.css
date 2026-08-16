@@ -110,18 +110,18 @@
       var(--mobile-control-gap, 0.625rem)
     );
     /*
-     * Roughly matches the host panel's own entrance animation
-     * (`panelSheetIn`, `packages/web/src/App.module.css`) so this trigger
-     * climbs in step with the sheet instead of snapping to its post-open
-     * position the instant `data-panel-open` flips, ahead of the sheet
-     * actually arriving there. The host flips its own `data-panel-open`
-     * back to `false` the moment the sheet *starts* closing (not once its
-     * exit animation has already finished -- see App.tsx's
-     * `panelVisuallyOpen`), so this same transition also carries the
-     * trigger back down in step with the sheet's slide-out rather than
-     * snapping into place a beat after it's already gone.
+     * `--panel-reposition-duration` (App.module.css, consumed here by
+     * inheritance since this trigger renders inside `.app`) is the same
+     * duration the host's own panel-toggle button uses for this identical
+     * kind of move, so the two controls climb/descend at one shared speed
+     * rather than two hand-tuned durations drifting apart. See App.tsx's
+     * `panelVisuallyOpen` for why `data-panel-open` here flips back to
+     * `false` the moment the sheet *starts* closing, carrying this trigger
+     * back down in step with the sheet's slide-out instead of snapping into
+     * place only after it's already gone.
      */
-    transition: bottom 300ms var(--motion-ease-standard);
+    transition: bottom var(--panel-reposition-duration, 300ms)
+      var(--motion-ease-standard);
   }
 
   /*
