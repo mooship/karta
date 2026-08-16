@@ -215,11 +215,20 @@ function PanelViewContent({
  *   URL in sync afterwards, so the address bar is always a shareable link
  *   to the current view; it defers applying a shared `selectedFeatureId`
  *   until `townships` has data, since Leaflet has nothing to select before then.
- *   `panelOpen` is also passed to `MapView` as `measurementPanelOpen` — the
- *   same value `MobileLegend` already receives as its own `panelOpen` — so
- *   the measurement tool hides itself instead of competing with the mobile
- *   Explore sheet (or a control that's repositioned itself above it, like
- *   the legend trigger) for the same sliver of screen.
+ *   `!isDesktopViewport && panelOpen` is passed to `MapView` as
+ *   `measurementPanelOpen`, and `closePanel` as `onMeasurementPanelClose`,
+ *   so the measurement tool collapses to its idle toggle instead of
+ *   competing with the mobile Explore sheet for the same sliver of screen
+ *   -- tapping that toggle while the sheet is open closes the sheet (via
+ *   the same `closePanel` used by Escape/outside-click) rather than
+ *   disappearing outright, so there's always a visible way back to a
+ *   measurement in progress. Gated to mobile because the desktop sidebar is
+ *   open by default (see the hydration effect below) -- without that gate
+ *   the measurement tool could never actually open on desktop, since its
+ *   host panel is "open" from the moment the page loads.
+ *   `MobileLegend`'s own `panelOpen` prop and the `.app` element's
+ *   `data-panel-open` attribute are driven by the derived `panelVisuallyOpen`
+ *   below, not raw `panelOpen` -- see that constant's own doc comment for why.
  */
 export function App() {
   const [hydrated, setHydrated] = useState(false);
@@ -361,6 +370,17 @@ export function App() {
       : mobileSheetDragOffset > 4
         ? "down"
         : "none";
+  /**
+   * `panelOpen` itself only flips to `false` once the mobile sheet's exit
+   * animation has fully finished (see `finishClose`), so anything reactive
+   * to raw `panelOpen` -- the legend trigger's climb, the panel toggle's
+   * collapse to a small icon button -- stayed in its "open" position for the
+   * whole 280ms the sheet was already sliding away, then snapped back
+   * down afterwards instead of moving with it. This flips the moment the
+   * close animation *starts* instead, so those controls animate back in
+   * step with the sheet's own slide-out rather than a beat behind it.
+   */
+  const panelVisuallyOpen = panelOpen && !mobileSheetClosing;
   const mobilePanelDragStyle = {
     "--panel-drag-offset": `${mobileSheetDragOffset}px`,
   } as CSSProperties;
@@ -642,7 +662,7 @@ export function App() {
     <DomainProvider domain={domain}>
       <div
         className={styles.app}
-        data-panel-open={panelOpen ? "true" : "false"}
+        data-panel-open={panelVisuallyOpen ? "true" : "false"}
         data-panel-size={mobilePanelExpanded ? "full" : "medium"}
         data-panel-dragging={mobileSheetDragging ? "true" : "false"}
         data-panel-drag-direction={mobileSheetDragDirection}
@@ -691,7 +711,8 @@ export function App() {
                 locationContextMenu
                 locationContextMenuProvider={locationSearchProvider}
                 measurementTool
-                measurementPanelOpen={panelOpen}
+                measurementPanelOpen={!isDesktopViewport && panelOpen}
+                onMeasurementPanelClose={closePanel}
                 renderFeaturePopup={renderFeaturePopup}
               />
             </Suspense>
@@ -767,7 +788,7 @@ export function App() {
           <MobileLegend
             visibleLayerIds={visibleLayerIds}
             suppressed={false}
-            panelOpen={panelOpen}
+            panelOpen={panelVisuallyOpen}
             panelExpanded={mobilePanelExpanded}
           />
         )}

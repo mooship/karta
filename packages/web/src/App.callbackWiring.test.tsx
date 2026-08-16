@@ -147,25 +147,54 @@ describe("App map/location callback wiring", () => {
     expect(mapViewMocks.latestProps?.measurementTool).toBe(true);
   });
 
-  it("keeps MapView's measurementPanelOpen in sync with the app's own panel state", async () => {
+  it("keeps MapView's measurementPanelOpen in sync with the app's own panel state on mobile", async () => {
+    const originalInnerWidth = window.innerWidth;
+    Object.defineProperty(window, "innerWidth", {
+      configurable: true,
+      value: 375,
+      writable: true,
+    });
+
+    try {
+      render(<App />);
+
+      await waitFor(() => expect(mapViewMocks.latestProps).toBeDefined());
+
+      act(() => {
+        useMapUiStore.getState().setPanelOpen(false);
+      });
+
+      await waitFor(() =>
+        expect(mapViewMocks.latestProps?.measurementPanelOpen).toBe(false),
+      );
+
+      act(() => {
+        useMapUiStore.getState().setPanelOpen(true);
+      });
+
+      await waitFor(() =>
+        expect(mapViewMocks.latestProps?.measurementPanelOpen).toBe(true),
+      );
+    } finally {
+      Object.defineProperty(window, "innerWidth", {
+        configurable: true,
+        value: originalInnerWidth,
+        writable: true,
+      });
+    }
+  });
+
+  it("never opens measurementPanelOpen on desktop, since the sidebar is open there by default", async () => {
     render(<App />);
 
     await waitFor(() => expect(mapViewMocks.latestProps).toBeDefined());
-
-    act(() => {
-      useMapUiStore.getState().setPanelOpen(false);
-    });
-
-    await waitFor(() =>
-      expect(mapViewMocks.latestProps?.measurementPanelOpen).toBe(false),
-    );
 
     act(() => {
       useMapUiStore.getState().setPanelOpen(true);
     });
 
     await waitFor(() =>
-      expect(mapViewMocks.latestProps?.measurementPanelOpen).toBe(true),
+      expect(mapViewMocks.latestProps?.measurementPanelOpen).toBe(false),
     );
   });
 

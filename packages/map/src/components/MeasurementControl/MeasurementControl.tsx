@@ -31,20 +31,29 @@ export interface MeasurementControlProps {
   onClear: () => void;
   /**
    * Whether the host app's own overlapping panel (if it has one) is open.
-   * Defaults to `false`. On narrow viewports this control hides itself
-   * entirely — both the idle toggle and an in-progress measurement's own
-   * panel — while `panelOpen` is `true`. With the host's sheet covering
-   * most of the map there's barely any surface left to click a measurement
-   * point on, and the control otherwise competes for the same sliver of
-   * space as `MobileLegend`'s trigger stacked beneath it. `active`/`mode`/
-   * `points` stay owned by the caller and untouched while hidden, so a
-   * measurement in progress resumes exactly where it left off once the
-   * host panel closes — the caller is expected to also stop listening for
-   * map clicks in the meantime (see `MapView`'s `measurementInteractive`),
-   * so clicks on whatever sliver of map stays visible don't silently add
-   * points nobody can see.
+   * Defaults to `false`. While `panelOpen` is `true`, this control collapses
+   * to its idle toggle button regardless of `active` — with the host's sheet
+   * covering most of the map there's no room to show the full measurement
+   * panel or click a measurement point — but stays visible and tappable
+   * rather than disappearing outright: tapping it calls `onRequestPanelClose`
+   * instead of `onToggleActive`, so it doubles as a way to dismiss the
+   * host's panel and get the map back. `active`/`mode`/`points` stay owned
+   * by the caller and untouched while collapsed, so a measurement in
+   * progress resumes exactly where it left off once the host panel closes —
+   * the caller is expected to also stop listening for map clicks in the
+   * meantime (see `MapView`'s `measurementInteractive`), so clicks on
+   * whatever sliver of map stays visible don't silently add points nobody
+   * can see.
    */
   panelOpen?: boolean;
+  /**
+   * Called when the idle toggle is tapped while `panelOpen` is `true`, in
+   * place of `onToggleActive`. Omit if the caller has no overlapping panel
+   * (or no way to close it) — the toggle simply no-ops in that case rather
+   * than falling back to `onToggleActive`, which would start a measurement
+   * behind a panel that's still covering the map.
+   */
+  onRequestPanelClose?: () => void;
 }
 
 /**
@@ -67,6 +76,7 @@ export function MeasurementControl({
   onModeChange,
   onClear,
   panelOpen = false,
+  onRequestPanelClose,
 }: MeasurementControlProps) {
   const rootProps = {
     className: styles.root,
@@ -74,14 +84,14 @@ export function MeasurementControl({
     "data-panel-open": panelOpen ? "true" : "false",
   } as const;
 
-  if (!active) {
+  if (!active || panelOpen) {
     return (
       <div {...rootProps}>
         <IconButton
-          label="Measure distance and area"
+          label={panelOpen ? "Back to map" : "Measure distance and area"}
           data-testid="measurement-control-toggle"
           data-e2e="measurement-control-toggle"
-          onClick={onToggleActive}
+          onClick={panelOpen ? onRequestPanelClose : onToggleActive}
         >
           <Ruler aria-hidden="true" />
         </IconButton>
