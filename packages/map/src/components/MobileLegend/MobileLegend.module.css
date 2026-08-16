@@ -114,14 +114,20 @@
      * inheritance since this trigger renders inside `.app`) is the same
      * duration the host's own panel-toggle button uses for this identical
      * kind of move, so the two controls climb/descend at one shared speed
-     * rather than two hand-tuned durations drifting apart. See App.tsx's
-     * `panelVisuallyOpen` for why `data-panel-open` here flips back to
-     * `false` the moment the sheet *starts* closing, carrying this trigger
-     * back down in step with the sheet's slide-out instead of snapping into
-     * place only after it's already gone.
+     * rather than two hand-tuned durations drifting apart. Ease-decelerate
+     * (not the generic ease-standard a plain position tween would otherwise
+     * get) for the same reason as that button's own transition: matching
+     * the Explore sheet's own entrance curve, not just its duration, is
+     * what keeps this trigger's climb and the sheet's rise visually
+     * arriving together rather than merely finishing their transitions at
+     * the same declared length. See App.tsx's `panelVisuallyOpen` for why
+     * `data-panel-open` here flips back to `false` the moment the sheet
+     * *starts* closing, carrying this trigger back down in step with the
+     * sheet's slide-out instead of snapping into place only after it's
+     * already gone.
      */
     transition: bottom var(--panel-reposition-duration, 300ms)
-      var(--motion-ease-standard);
+      var(--motion-ease-decelerate);
   }
 
   /*
