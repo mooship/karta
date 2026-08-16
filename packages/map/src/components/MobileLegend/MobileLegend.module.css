@@ -80,7 +80,7 @@
 }
 
 .sheet[data-dragging="true"] .dragHandle {
-  width: 3rem;
+  width: var(--drag-handle-width-dragging);
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -42,4 +42,26 @@ test.describe("language toggle", () => {
       "Soek dorp, voorstad of stasie",
     );
   });
+
+  test("server-renders the locale cookie's language on the very first response, not just after client hydration corrects it", async ({
+    page,
+    baseURL,
+  }) => {
+    // Pre-set the locale cookie (as setLocale()'s reload would have already
+    // done) before the very first navigation, then read the *raw* response
+    // body -- not the live DOM, which client-side hydration could silently
+    // repair even if the server got the locale wrong.
+    await page.context().addCookies([
+      {
+        name: LOCALE_COOKIE_NAME,
+        value: "af",
+        url: baseURL,
+      },
+    ]);
+
+    const response = await page.goto("/");
+    const body = (await response?.text()) ?? "";
+
+    expect(body).toContain('<html lang="af"');
+  });
 });

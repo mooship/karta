@@ -275,6 +275,42 @@ describe("MobileLegend", () => {
     expect(screen.getByTestId("mobile-legend-content")).toBeInTheDocument();
   });
 
+  it("marks the sheet as dragging for the duration of a drag gesture, and clears it on release", () => {
+    render(
+      withDomain(
+        <MobileLegend
+          visibleLayerIds={["areas"]}
+          suppressed={false}
+          panelOpen={false}
+          panelExpanded={false}
+        />,
+      ),
+    );
+
+    fireEvent.click(screen.getByTestId("mobile-legend-trigger"));
+    const content = screen.getByTestId("mobile-legend-content");
+    const dragHandle = screen.getByTestId("mobile-legend-drag-handle");
+
+    expect(content).toHaveAttribute("data-dragging", "false");
+
+    fireEvent.pointerDown(dragHandle, {
+      pointerType: "touch",
+      pointerId: 1,
+      clientY: 100,
+      button: 0,
+    });
+
+    expect(content).toHaveAttribute("data-dragging", "true");
+
+    fireEvent.pointerUp(window, {
+      pointerType: "touch",
+      pointerId: 1,
+      clientY: 105,
+    });
+
+    expect(content).toHaveAttribute("data-dragging", "false");
+  });
+
   it("reflects panelOpen and panelExpanded via data attributes", () => {
     const { container } = render(
       withDomain(

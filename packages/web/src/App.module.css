@@ -353,8 +353,28 @@
      * risen into view yet, then just sat there until the sheet caught up.
      * Matching the sheet's own timing/easing here makes the two move as
      * one instead of the trigger visibly outrunning it.
+     *
+     * This button is a `ControlButton`, whose own stylesheet
+     * (ControlButton.module.css's `.button`) declares its own `transition`
+     * shorthand at the same specificity as `.panelTrigger` here. CSS's
+     * `transition` shorthand doesn't merge across rules -- whichever
+     * declaration wins the cascade wins outright, silently dropping the
+     * other's transitioned properties -- so `.button`'s list was winning
+     * over this one and `bottom` was never actually transitioning at all
+     * (the trigger just snapped, exactly reproducing the bug the comment
+     * above describes). `button.panelTrigger` outranks the plain `.button`
+     * class selector regardless of stylesheet order, and reusing
+     * `.button`'s own `--control-button-transition` custom property (rather
+     * than hand-copying its value) keeps this rule in sync with
+     * `.button`'s hover/press-feedback transitions automatically, instead
+     * of silently going stale the next time that list changes.
      */
-    transition: bottom 260ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  button.panelTrigger {
+    transition:
+      var(--control-button-transition),
+      bottom 260ms cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   .panel {
@@ -449,7 +469,7 @@
   }
 
   .sheetHandleButton[data-dragging="true"] .sheetHandle {
-    width: 3rem;
+    width: var(--drag-handle-width-dragging);
   }
 
   .sheetHandleButton[data-drag-direction="up"] .sheetHandle {

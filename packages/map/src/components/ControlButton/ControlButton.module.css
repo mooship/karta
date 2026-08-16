@@ -16,12 +16,24 @@
   font-weight: 600;
   letter-spacing: 0.01em;
   cursor: pointer;
-  transition:
+  /*
+   * Exposed as a custom property (rather than inlined directly into
+   * `transition` below) so a caller that must win the cascade for this
+   * element's `transition` shorthand -- e.g. App.module.css's
+   * `button.panelTrigger`, which also needs to transition its own `bottom`
+   * position -- can still include this list via `var()` instead of hand-
+   * copying it. CSS's `transition` shorthand doesn't merge across rules of
+   * equal specificity; whichever rule wins takes the whole property, so a
+   * hand-copied duplicate silently goes stale the next time this list
+   * changes.
+   */
+  --control-button-transition:
     background-color var(--motion-duration-short) var(--motion-ease-standard),
     border-color var(--motion-duration-short) var(--motion-ease-standard),
     box-shadow var(--motion-duration-short) var(--motion-ease-standard),
     translate var(--motion-duration-short) var(--motion-ease-standard),
     scale var(--motion-duration-short) var(--motion-ease-standard);
+  transition: var(--control-button-transition);
 }
 
 .button[data-shape="icon"] {

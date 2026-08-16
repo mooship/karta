@@ -162,4 +162,23 @@ describe("useThemePreference theme-color meta sync", () => {
     expect(meta).toHaveAttribute("content", TEST_COLORS.dark);
     expect(document.documentElement.dataset.theme).toBe("dark");
   });
+
+  it("re-applies data-theme on mount, self-healing if something else already cleared it", async () => {
+    const { initTheme, setThemePreference, useThemePreference } =
+      await importFreshModule();
+    initTheme({ storageKey: "test-theme", colors: TEST_COLORS });
+    setThemePreference("light");
+    expect(document.documentElement.dataset.theme).toBe("light");
+
+    // A React hydration-mismatch recovery can rebuild <html>'s attributes
+    // from its own JSX-managed props alone, silently dropping any attribute
+    // (like this one) that was only ever set imperatively. Simulate that.
+    document.documentElement.removeAttribute("data-theme");
+    expect(document.documentElement.dataset.theme).toBeUndefined();
+
+    const { renderHook } = await import("@testing-library/react");
+    renderHook(() => useThemePreference());
+
+    expect(document.documentElement.dataset.theme).toBe("light");
+  });
 });

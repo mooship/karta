@@ -1,4 +1,19 @@
-import { useSyncExternalStore } from "react";
+import { useEffect, useLayoutEffect, useSyncExternalStore } from "react";
+
+/**
+ * `useLayoutEffect` on the client, `useEffect` on the server.
+ * @remarks `useLayoutEffect` fires synchronously before the browser paints,
+ *   which matters here: the effect it backs re-applies `data-theme` after a
+ *   React hydration-mismatch recovery elsewhere in the tree can silently
+ *   drop it (see `useThemePreference` below), and a plain `useEffect` is a
+ *   passive effect that only runs *after* paint — leaving one visible frame
+ *   of the wrong theme before it catches up, exactly the flash this exists
+ *   to prevent. `useLayoutEffect` itself is a no-op during SSR and logs a
+ *   warning if called there, so this swaps to `useEffect` server-side rather
+ *   than suppressing that warning.
+ */
+const useIsomorphicLayoutEffect =
+  typeof window === "undefined" ? useEffect : useLayoutEffect;
 
 /** Explicit theme choice. `"system"` follows the OS `prefers-color-scheme`. */
 export type ThemePreference = "system" | "light" | "dark";
@@ -134,7 +149,28 @@ export function setThemePreference(preference: ThemePreference) {
 /**
  * Returns the current theme preference, updating reactively when it changes.
  * @remarks Call `initTheme` before any component using this hook mounts.
+ *   Re-applies the `data-theme` attribute (and theme-color meta tag) to the
+ *   document on mount and whenever the preference value itself changes,
+ *   rather than trusting `initTheme`'s pre-hydration script-tag write to
+ *   stick — a React hydration-mismatch recovery elsewhere in the tree can
+ *   rebuild `<html>`'s attributes from its own JSX-managed props alone,
+ *   silently dropping this attribute since React never owned it. That
+ *   in-memory preference itself survives any such recovery untouched, so
+ *   this effect self-heals the DOM from it on this hook's next mount (e.g.
+ *   the remount a mismatch recovery forces) or next `preference` change —
+ *   not on every unrelated render, since the effect's dependency array is
+ *   `[preference]`; an attribute cleared by something that leaves both the
+ *   component tree and `preference` untouched would need a fresh
+ *   `setThemePreference()` call to be repaired.
  */
 export function useThemePreference() {
-  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+  const preference = useSyncExternalStore(
+    subscribe,
+    getSnapshot,
+    getServerSnapshot,
+  );
+  useIsomorphicLayoutEffect(() => {
+    applyThemeAttribute(preference);
+  }, [preference]);
+  return preference;
 }
