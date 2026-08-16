@@ -77,18 +77,4 @@
       var(--mobile-safe-top, env(safe-area-inset-top))
     );
   }
-
-  /*
-   * With the host's own sheet open, there's barely any map left to click a
-   * measurement point on, and this control otherwise competes for the same
-   * sliver of space as the legend trigger stacked beneath it (see
-   * MobileLegend.module.css's own clamp). Hide the whole control — toggle
-   * or open panel alike — in that state rather than fitting it into
-   * whatever headroom is left; `active`/`mode`/`points` stay owned by the
-   * caller (`MapView`) and untouched while hidden, so a measurement in
-   * progress resumes exactly where it left off once the host panel closes.
-   */
-  .root[data-panel-open="true"] {
-    display: none;
-  }
 }

@@ -137,12 +137,21 @@ export interface MapViewProps<
    * Whether the caller's own overlapping panel (if it has one — e.g. an
    * info/layers panel rendered alongside `MapView`) is currently open.
    * Passed straight through to the measurement tool's control (see
-   * `MeasurementControl`'s `panelOpen` prop) so it hides itself, and to
-   * gating map click handling (see `measurementInteractive` below), while
-   * that panel's own mobile layout is claiming most of the screen. Defaults
-   * to `false`; harmless to omit for a caller with no such panel.
+   * `MeasurementControl`'s `panelOpen` prop) so it collapses to its idle
+   * toggle, and to gating map click handling (see `measurementInteractive`
+   * below), while that panel's own mobile layout is claiming most of the
+   * screen. Defaults to `false`; harmless to omit for a caller with no such
+   * panel.
    */
   measurementPanelOpen?: boolean;
+  /**
+   * Called when the measurement toggle is tapped while `measurementPanelOpen`
+   * is `true` (see `MeasurementControl`'s `onRequestPanelClose`). The caller
+   * is expected to close its own overlapping panel in response, since that's
+   * the only reason the toggle stopped opening the measurement tool directly.
+   * Omit for a caller with no such panel, or no way to close it.
+   */
+  onMeasurementPanelClose?: () => void;
   /**
    * Called once, after Leaflet has initialised the map and the browser has
    * painted it.
@@ -674,6 +683,7 @@ function MapViewComponent<
   locationContextMenuProvider,
   measurementTool = false,
   measurementPanelOpen = false,
+  onMeasurementPanelClose,
   onReady,
 }: MapViewProps<TProperties>) {
   const { getLayers } = useDomain();
@@ -993,6 +1003,7 @@ function MapViewComponent<
           onModeChange={handleMeasurementModeChange}
           onClear={handleMeasurementClear}
           panelOpen={measurementPanelOpen}
+          onRequestPanelClose={onMeasurementPanelClose}
         />
       ) : null}
       {/*

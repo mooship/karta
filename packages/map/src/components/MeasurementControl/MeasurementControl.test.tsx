@@ -164,6 +164,71 @@ describe("MeasurementControl", () => {
     );
   });
 
+  it("collapses to the idle toggle when panelOpen is true, even mid-measurement", () => {
+    render(
+      <MeasurementControl
+        active
+        mode="distance"
+        pointCount={2}
+        resultLabel="1.2 km"
+        onToggleActive={vi.fn()}
+        onModeChange={vi.fn()}
+        onClear={vi.fn()}
+        panelOpen
+      />,
+    );
+
+    expect(
+      screen.getByTestId("measurement-control-toggle"),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByTestId("measurement-control-panel"),
+    ).not.toBeInTheDocument();
+  });
+
+  it("calls onRequestPanelClose, not onToggleActive, when the idle toggle is tapped while panelOpen is true", () => {
+    const onToggleActive = vi.fn();
+    const onRequestPanelClose = vi.fn();
+    render(
+      <MeasurementControl
+        active
+        mode="distance"
+        pointCount={0}
+        resultLabel={null}
+        onToggleActive={onToggleActive}
+        onModeChange={vi.fn()}
+        onClear={vi.fn()}
+        panelOpen
+        onRequestPanelClose={onRequestPanelClose}
+      />,
+    );
+
+    fireEvent.click(screen.getByTestId("measurement-control-toggle"));
+
+    expect(onRequestPanelClose).toHaveBeenCalled();
+    expect(onToggleActive).not.toHaveBeenCalled();
+  });
+
+  it("does not fall back to onToggleActive when onRequestPanelClose is omitted while panelOpen is true", () => {
+    const onToggleActive = vi.fn();
+    render(
+      <MeasurementControl
+        active={false}
+        mode="distance"
+        pointCount={0}
+        resultLabel={null}
+        onToggleActive={onToggleActive}
+        onModeChange={vi.fn()}
+        onClear={vi.fn()}
+        panelOpen
+      />,
+    );
+
+    fireEvent.click(screen.getByTestId("measurement-control-toggle"));
+
+    expect(onToggleActive).not.toHaveBeenCalled();
+  });
+
   it("reflects panelOpen as data-panel-open, on both the inactive and active render", () => {
     const { rerender } = render(
       <MeasurementControl
