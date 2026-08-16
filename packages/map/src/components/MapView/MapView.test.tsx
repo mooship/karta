@@ -1458,6 +1458,29 @@ describe("MapView", () => {
     );
   });
 
+  it("calls onMeasurementPanelClose, not the measurement toggle, when the collapsed toggle is tapped while measurementPanelOpen is true", () => {
+    const onMeasurementPanelClose = vi.fn();
+    render(
+      withDomain(
+        <MapView
+          {...DEFAULT_MAP_VIEW_PROPS}
+          areas={[]}
+          visibleLayerIds={[]}
+          measurementTool
+          measurementPanelOpen
+          onMeasurementPanelClose={onMeasurementPanelClose}
+        />,
+      ),
+    );
+
+    fireEvent.click(screen.getByTestId("measurement-control-toggle"));
+
+    expect(onMeasurementPanelClose).toHaveBeenCalled();
+    expect(
+      screen.queryByTestId("measurement-control-panel"),
+    ).not.toBeInTheDocument();
+  });
+
   it("stops listening for measurement clicks (and re-enables feature clicks) while the host panel is open, then resumes with the same points once it closes", async () => {
     vi.useFakeTimers();
     const renderFeaturePopup = vi.fn().mockReturnValue(<div>Custom popup</div>);
