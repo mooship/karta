@@ -124,10 +124,12 @@
      * `data-panel-open` here flips back to `false` the moment the sheet
      * *starts* closing, carrying this trigger back down in step with the
      * sheet's slide-out instead of snapping into place only after it's
-     * already gone.
+     * already gone. Falls back to the token's own value (index.css) like
+     * `--panel-reposition-duration` above, in case a host app embedding
+     * this SDK component hasn't defined it.
      */
     transition: bottom var(--panel-reposition-duration, 300ms)
-      var(--motion-ease-decelerate);
+      var(--motion-ease-decelerate, cubic-bezier(0, 0, 0, 1));
   }
 
   /*
