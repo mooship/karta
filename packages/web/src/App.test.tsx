@@ -126,11 +126,39 @@ describe("App", () => {
     );
   });
 
+  it("defers the desktop panel's auto-open until the map itself is ready, instead of opening in the same tick MapView starts mounting", async () => {
+    render(<App />);
+
+    const trigger = screen.getByTestId("panel-toggle");
+    expect(trigger).toHaveAttribute("aria-expanded", "false");
+
+    await waitFor(() =>
+      expect(trigger).toHaveAttribute("aria-expanded", "true"),
+    );
+  });
+
+  it("does not reopen the desktop panel once the map becomes ready if the user already closed it", async () => {
+    render(<App />);
+
+    const trigger = screen.getByTestId("panel-toggle");
+    // Open, then close again, both before the map (and its auto-open effect)
+    // have had a chance to run.
+    fireEvent.click(trigger);
+    expect(trigger).toHaveAttribute("aria-expanded", "true");
+    fireEvent.click(trigger);
+    expect(trigger).toHaveAttribute("aria-expanded", "false");
+
+    await waitFor(() =>
+      expect(screen.getByTestId("geojson-layer")).toBeInTheDocument(),
+    );
+    expect(trigger).toHaveAttribute("aria-expanded", "false");
+  });
+
   it("keeps an explicit accessible name on the panel toggle regardless of its visible label's CSS visibility", async () => {
     render(<App />);
 
     const trigger = screen.getByTestId("panel-toggle");
-    expect(trigger).toHaveAttribute("aria-label", "Close");
+    await waitFor(() => expect(trigger).toHaveAttribute("aria-label", "Close"));
 
     fireEvent.click(trigger);
 
@@ -276,7 +304,7 @@ describe("App", () => {
   it("collapses and restores the controls panel", async () => {
     render(<App />);
 
-    const trigger = screen.getByRole("button", { name: /close/i });
+    const trigger = await screen.findByRole("button", { name: /close/i });
     expect(trigger).toHaveAttribute("aria-expanded", "true");
 
     fireEvent.click(trigger);
@@ -297,7 +325,7 @@ describe("App", () => {
 
   it("moves focus into the panel's active tab when it's opened via the trigger", async () => {
     render(<App />);
-    fireEvent.click(screen.getByRole("button", { name: /close/i }));
+    fireEvent.click(await screen.findByRole("button", { name: /close/i }));
 
     fireEvent.click(screen.getByRole("button", { name: /explore/i }));
 
@@ -308,7 +336,7 @@ describe("App", () => {
 
   it("closes the panel on Escape and restores focus to the trigger", async () => {
     render(<App />);
-    const trigger = screen.getByRole("button", { name: /close/i });
+    const trigger = await screen.findByRole("button", { name: /close/i });
     expect(trigger).toHaveAttribute("aria-expanded", "true");
 
     fireEvent.keyDown(document, { key: "Escape" });
@@ -319,7 +347,7 @@ describe("App", () => {
 
   it("keeps the desktop panel open on an outside click, since it behaves as a persistent sidebar there", async () => {
     render(<App />);
-    const trigger = screen.getByRole("button", { name: /close/i });
+    const trigger = await screen.findByRole("button", { name: /close/i });
     expect(trigger).toHaveAttribute("aria-expanded", "true");
 
     fireEvent.mouseDown(document.body);
@@ -329,10 +357,9 @@ describe("App", () => {
 
   it("still opens the full measurement panel on desktop, even though the Explore sidebar is open by default", async () => {
     render(<App />);
-    expect(screen.getByRole("button", { name: /close/i })).toHaveAttribute(
-      "aria-expanded",
-      "true",
-    );
+    expect(
+      await screen.findByRole("button", { name: /close/i }),
+    ).toHaveAttribute("aria-expanded", "true");
 
     fireEvent.click(await screen.findByTestId("measurement-control-toggle"));
 
