@@ -60,13 +60,14 @@ async function renderMobilePanel() {
   });
   useMapUiStore.getState().reset();
 
-  render(<App />);
+  const { container } = render(<App />);
   await waitFor(() =>
     expect(screen.getByTestId("geojson-layer")).toBeInTheDocument(),
   );
   fireEvent.click(screen.getByRole("button", { name: /explore/i }));
 
   return {
+    container,
     panel: screen.getByTestId("panel-container"),
     handle: screen.getByTestId("panel-sheet-handle"),
   };
@@ -326,6 +327,19 @@ describe("App", () => {
     expect(trigger).toHaveAttribute("aria-expanded", "true");
   });
 
+  it("still opens the full measurement panel on desktop, even though the Explore sidebar is open by default", async () => {
+    render(<App />);
+    expect(screen.getByRole("button", { name: /close/i })).toHaveAttribute(
+      "aria-expanded",
+      "true",
+    );
+
+    fireEvent.click(await screen.findByTestId("measurement-control-toggle"));
+
+    expect(screen.getByTestId("measurement-control-panel")).toBeInTheDocument();
+    expect(screen.getByTestId("measurement-control-hint")).toBeInTheDocument();
+  });
+
   it("closes the mobile sheet on an outside click, unlike the desktop sidebar", async () => {
     const { panel } = await renderMobilePanel();
 
@@ -343,6 +357,39 @@ describe("App", () => {
 
     expect(panel).not.toHaveAttribute("data-panel-closing", "true");
     expect(panel).toBeVisible();
+  });
+
+  it("keeps the measurement toggle visible (not hidden) while the mobile Explore panel is open", async () => {
+    await renderMobilePanel();
+
+    expect(
+      screen.getByTestId("measurement-control-toggle"),
+    ).toBeInTheDocument();
+  });
+
+  it("closes the Explore panel, rather than opening the measurement tool, when the measurement toggle is tapped while the panel is open", async () => {
+    const { panel } = await renderMobilePanel();
+
+    fireEvent.click(screen.getByTestId("measurement-control-toggle"));
+
+    expect(panel).toHaveAttribute("data-panel-closing", "true");
+    fireEvent.animationEnd(panel);
+    await waitFor(() => expect(panel).not.toBeVisible());
+    expect(
+      screen.queryByTestId("measurement-control-panel"),
+    ).not.toBeInTheDocument();
+  });
+
+  it("returns the panel toggle and legend trigger to their base position as soon as the sheet starts closing, not after its exit animation finishes", async () => {
+    const { container, panel } = await renderMobilePanel();
+
+    const appRoot = container.querySelector("[data-panel-open]");
+    expect(appRoot).toHaveAttribute("data-panel-open", "true");
+
+    fireEvent.mouseDown(document.body);
+
+    expect(panel).toHaveAttribute("data-panel-closing", "true");
+    expect(appRoot).toHaveAttribute("data-panel-open", "false");
   });
 
   it("keeps the legend visible on desktop while layer controls are open", async () => {

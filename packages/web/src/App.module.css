@@ -27,6 +27,21 @@
    * the app-name label and search field) — 7.5rem left only a few pixels.
    */
   --mobile-search-clearance: 8.25rem;
+  /*
+   * How long the Explore panel's own entrance fade (`panelIn`, shared by
+   * both `.panel` and `.panelViewport`) takes, named once so the two can't
+   * drift out of sync with each other by hand-typing the same duration
+   * twice.
+   */
+  --panel-motion-duration: 260ms;
+  /*
+   * How long any control that repositions itself around the mobile Explore
+   * sheet (the panel toggle, `MobileLegend`'s trigger) takes to slide back
+   * to its base position, shared across `packages/web` and `@karta/map` so
+   * the two move at the same speed instead of two independently hand-tuned
+   * durations drifting apart.
+   */
+  --panel-reposition-duration: 300ms;
 }
 
 .mapLoading {
@@ -176,6 +191,19 @@
   gap: 1.5rem;
   transition: box-shadow var(--motion-duration-medium)
     var(--motion-ease-standard);
+  /*
+   * Desktop only -- the mobile media query below overrides this with
+   * panelSheetIn's own slide-up. Without an entrance animation here the
+   * sidebar simply appeared the instant `hidden` came off, which read as
+   * an abrupt pop next to `.panelViewport`'s own much subtler content fade.
+   * `--panel-in-distance`/`--panel-in-scale` give this element's fade a bit
+   * more travel and a scale-in `.panelViewport` doesn't get, via the same
+   * shared `panelIn` keyframes (see their fallback defaults there) rather
+   * than a second, near-identical keyframes block.
+   */
+  --panel-in-distance: 8px;
+  --panel-in-scale: 0.98;
+  animation: panelIn var(--panel-motion-duration) var(--motion-ease-decelerate);
 }
 
 .sheetHandleButton {
@@ -195,8 +223,9 @@
   -webkit-overflow-scrolling: touch;
   scrollbar-color: var(--md-sys-color-outline-variant) transparent;
   scrollbar-width: thin;
-  animation: panelViewportIn var(--motion-duration-medium)
-    var(--motion-ease-decelerate);
+  /* Shorter travel, no scale -- see `.panel`'s own `panelIn` for why the two share one keyframes block. */
+  --panel-in-distance: 6px;
+  animation: panelIn var(--panel-motion-duration) var(--motion-ease-decelerate);
 }
 
 .panelViewport::-webkit-scrollbar {
@@ -348,11 +377,16 @@
     /*
      * Without this, `bottom` jumps instantly to its post-open value the
      * moment `data-panel-open` flips -- the same render that starts the
-     * sheet's own 260ms `panelSheetIn` slide-up below -- so the trigger
+     * sheet's own 340ms `panelSheetIn` slide-up below -- so the trigger
      * teleported to its final resting spot above a sheet that hadn't
      * risen into view yet, then just sat there until the sheet caught up.
-     * Matching the sheet's own timing/easing here makes the two move as
-     * one instead of the trigger visibly outrunning it.
+     * Roughly matching the sheet's own timing here makes the two move as
+     * one instead of the trigger visibly outrunning it. `data-panel-open`
+     * (see App.tsx's `panelVisuallyOpen`) flips back to `false` the moment
+     * the sheet *starts* closing too, not once its own exit animation has
+     * already finished, so this transition also carries the trigger back
+     * down in step with the sheet's slide-out instead of snapping into
+     * place a beat after it's already gone.
      *
      * This button is a `ControlButton`, whose own stylesheet
      * (ControlButton.module.css's `.button`) declares its own `transition`
@@ -374,7 +408,7 @@
   button.panelTrigger {
     transition:
       var(--control-button-transition),
-      bottom 260ms cubic-bezier(0.22, 1, 0.36, 1);
+      bottom var(--panel-reposition-duration) var(--motion-ease-standard);
   }
 
   .panel {
@@ -397,7 +431,7 @@
       height 320ms cubic-bezier(0.2, 0.9, 0.24, 1),
       transform var(--motion-duration-medium) var(--motion-ease-decelerate),
       box-shadow var(--motion-duration-medium) var(--motion-ease-standard);
-    animation: panelSheetIn 260ms cubic-bezier(0.22, 1, 0.36, 1);
+    animation: panelSheetIn 340ms cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   .panel[data-panel-dragging="true"] {
@@ -406,7 +440,7 @@
   }
 
   .panel[data-panel-closing="true"] {
-    animation: panelSheetOut 220ms cubic-bezier(0.4, 0, 1, 1) forwards;
+    animation: panelSheetOut 280ms cubic-bezier(0.4, 0, 1, 1) forwards;
     pointer-events: none;
   }
 
@@ -528,18 +562,6 @@
   }
 }
 
-@keyframes panelViewportIn {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 @keyframes panelSheetIn {
   from {
     transform: translateY(100%);
@@ -557,6 +579,25 @@
 
   to {
     transform: translateY(100%);
+  }
+}
+
+/*
+ * Shared by `.panel` (desktop entrance) and `.panelViewport` (its content,
+ * both breakpoints) -- each sets its own `--panel-in-distance`/
+ * `--panel-in-scale` above rather than this duplicating as two near-
+ * identical keyframes blocks that only differed by a few pixels.
+ */
+@keyframes panelIn {
+  from {
+    opacity: 0;
+    transform: translateY(var(--panel-in-distance, 8px))
+      scale(var(--panel-in-scale, 1));
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
 }
 
