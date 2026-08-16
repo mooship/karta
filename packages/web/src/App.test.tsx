@@ -327,6 +327,19 @@ describe("App", () => {
     expect(trigger).toHaveAttribute("aria-expanded", "true");
   });
 
+  it("still opens the full measurement panel on desktop, even though the Explore sidebar is open by default", async () => {
+    render(<App />);
+    expect(screen.getByRole("button", { name: /close/i })).toHaveAttribute(
+      "aria-expanded",
+      "true",
+    );
+
+    fireEvent.click(await screen.findByTestId("measurement-control-toggle"));
+
+    expect(screen.getByTestId("measurement-control-panel")).toBeInTheDocument();
+    expect(screen.getByTestId("measurement-control-hint")).toBeInTheDocument();
+  });
+
   it("closes the mobile sheet on an outside click, unlike the desktop sidebar", async () => {
     const { panel } = await renderMobilePanel();
 
