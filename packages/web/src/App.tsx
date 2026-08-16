@@ -215,13 +215,17 @@ function PanelViewContent({
  *   URL in sync afterwards, so the address bar is always a shareable link
  *   to the current view; it defers applying a shared `selectedFeatureId`
  *   until `townships` has data, since Leaflet has nothing to select before then.
- *   `panelOpen` is also passed to `MapView` as `measurementPanelOpen`, and
- *   `closePanel` as `onMeasurementPanelClose`, so the measurement tool
- *   collapses to its idle toggle instead of competing with the mobile
- *   Explore sheet for the same sliver of screen -- tapping that toggle
- *   while the sheet is open closes the sheet (via the same `closePanel`
- *   used by Escape/outside-click) rather than disappearing outright, so
- *   there's always a visible way back to a measurement in progress.
+ *   `!isDesktopViewport && panelOpen` is passed to `MapView` as
+ *   `measurementPanelOpen`, and `closePanel` as `onMeasurementPanelClose`,
+ *   so the measurement tool collapses to its idle toggle instead of
+ *   competing with the mobile Explore sheet for the same sliver of screen
+ *   -- tapping that toggle while the sheet is open closes the sheet (via
+ *   the same `closePanel` used by Escape/outside-click) rather than
+ *   disappearing outright, so there's always a visible way back to a
+ *   measurement in progress. Gated to mobile because the desktop sidebar is
+ *   open by default (see the hydration effect below) -- without that gate
+ *   the measurement tool could never actually open on desktop, since its
+ *   host panel is "open" from the moment the page loads.
  *   `MobileLegend`'s own `panelOpen` prop and the `.app` element's
  *   `data-panel-open` attribute are driven by the derived `panelVisuallyOpen`
  *   below, not raw `panelOpen` -- see that constant's own doc comment for why.
@@ -707,7 +711,7 @@ export function App() {
                 locationContextMenu
                 locationContextMenuProvider={locationSearchProvider}
                 measurementTool
-                measurementPanelOpen={panelOpen}
+                measurementPanelOpen={!isDesktopViewport && panelOpen}
                 onMeasurementPanelClose={closePanel}
                 renderFeaturePopup={renderFeaturePopup}
               />
