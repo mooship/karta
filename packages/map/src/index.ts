@@ -41,6 +41,8 @@ export {
   resolveTileScaleToken,
 } from "./constants/basemaps";
 export { AREA_OUTLINE } from "./constants/mapStyles";
+export type { MobileLayoutCssVar } from "./constants/mobileLayoutTokens";
+export { MOBILE_LAYOUT_CSS_VAR_DEFAULTS } from "./constants/mobileLayoutTokens";
 export type { DomainRegistry } from "./context/DomainContext";
 export { DomainProvider, useDomain } from "./context/DomainContext";
 export type {

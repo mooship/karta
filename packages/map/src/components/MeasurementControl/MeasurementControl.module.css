@@ -70,6 +70,16 @@
 }
 
 @media (max-width: 768px) {
+  /*
+   * `--mobile-control-edge`/`--mobile-search-clearance`/`--mobile-safe-top`
+   * are `@karta/map`'s own documented mobile layout contract (see
+   * `MOBILE_LAYOUT_CSS_VAR_DEFAULTS`, ../../constants/mobileLayoutTokens.ts,
+   * for the full set and their defaults, used verbatim in the fallbacks
+   * below) -- a host app defines these to tell every mobile floating
+   * control where its own search box and safe-area insets actually are,
+   * rather than each control needing its own bespoke prop for the same
+   * handful of app-composition values.
+   */
   .root {
     inset-inline-start: var(--mobile-control-edge, 0.75rem);
     inset-block-start: calc(
