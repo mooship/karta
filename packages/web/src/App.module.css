@@ -3,6 +3,22 @@
   height: 100%;
   width: 100%;
   overflow: hidden;
+  /*
+   * `--mobile-safe-top` through `--panel-reposition-duration` below fill
+   * `@karta/map`'s own documented mobile layout contract (see
+   * `MOBILE_LAYOUT_CSS_VAR_DEFAULTS`, packages/map/src/constants/
+   * mobileLayoutTokens.ts) -- the values `MobileLegend`/`MeasurementControl`
+   * read to position and time themselves around this app's own search box,
+   * Explore sheet, and safe-area insets. They happen to equal that
+   * contract's own defaults here (this app's layout is the one those
+   * defaults were drawn from), but are declared explicitly rather than
+   * left to fall through, so this file stays the single place that
+   * describes this app's own mobile chrome geometry, and a future change
+   * here doesn't silently rely on the SDK's defaults matching by
+   * coincidence. `--panel-motion-duration` just below is *not* part of
+   * that shared contract -- it's this app's own Explore-panel-only fade
+   * timing, with no `@karta/map` consumer.
+   */
   --mobile-safe-top: env(safe-area-inset-top);
   --mobile-control-edge: 0.75rem;
   --mobile-control-size: 44px;
