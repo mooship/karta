@@ -222,15 +222,9 @@ function PanelViewContent({
  *   while the sheet is open closes the sheet (via the same `closePanel`
  *   used by Escape/outside-click) rather than disappearing outright, so
  *   there's always a visible way back to a measurement in progress.
- *   `panelVisuallyOpen` (`panelOpen && !mobileSheetClosing`) drives
  *   `MobileLegend`'s own `panelOpen` prop and the `.app` element's
- *   `data-panel-open` attribute (which the mobile `.panelTrigger` styles key
- *   off), rather than raw `panelOpen` -- both the legend trigger and the
- *   panel toggle button need to start returning to their base position the
- *   moment the sheet *starts* closing (`mobileSheetClosing`), not only after
- *   `finishClose` flips `panelOpen` once the exit animation has already
- *   finished, which left them snapping back down a beat after the sheet had
- *   already slid away.
+ *   `data-panel-open` attribute are driven by the derived `panelVisuallyOpen`
+ *   below, not raw `panelOpen` -- see that constant's own doc comment for why.
  */
 export function App() {
   const [hydrated, setHydrated] = useState(false);
