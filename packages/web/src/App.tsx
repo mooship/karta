@@ -300,12 +300,10 @@ export function App() {
   const activeSheetPointerIdRef = useRef<number | null>(null);
   const pendingSheetDragOffsetRef = useRef(0);
   const sheetDragFrameRef = useRef<number | null>(null);
-  const desktopAutoOpenPendingRef = useRef(false);
+  const desktopAutoOpenPendingRef = useRef(true);
 
   useEffect(() => {
     setHydrated(true);
-    desktopAutoOpenPendingRef.current =
-      window.innerWidth > MOBILE_BREAKPOINT_PX;
   }, []);
 
   /**
@@ -316,13 +314,19 @@ export function App() {
    * the same commit made it visibly stutter, competing with that work for
    * frames, rather than the smooth fade `panelIn`/`panelSheetIn` play the
    * rest of the time (confirmed by profiling — the same CSS animation runs
-   * at a clean 60fps when triggered after the map has settled). `closePanel`
-   * clears the ref, so a user who opens and explicitly closes the panel
-   * before the map finishes loading doesn't get it reopened out from under
-   * them once `mapReady` catches up.
+   * at a clean 60fps when triggered after the map has settled). Reading
+   * `window.innerWidth` here rather than caching it at mount reflects the
+   * viewport at the actual moment of the decision, not a stale snapshot.
+   * `closePanel` clears the ref, so a user who opens and explicitly closes
+   * the panel before the map finishes loading doesn't get it reopened out
+   * from under them once `mapReady` catches up.
    */
   useEffect(() => {
-    if (mapReady && desktopAutoOpenPendingRef.current) {
+    if (
+      mapReady &&
+      desktopAutoOpenPendingRef.current &&
+      window.innerWidth > MOBILE_BREAKPOINT_PX
+    ) {
       desktopAutoOpenPendingRef.current = false;
       setPanelOpen(true);
     }
