@@ -223,7 +223,8 @@ function PanelViewContent({
  *   the same `closePanel` used by Escape/outside-click) rather than
  *   disappearing outright, so there's always a visible way back to a
  *   measurement in progress. Gated to mobile because the desktop sidebar is
- *   open by default (see the hydration effect below) -- without that gate
+ *   open by default (see the `mapReady`-gated auto-open effect below) --
+ *   without that gate
  *   the measurement tool could never actually open on desktop, since its
  *   host panel is "open" from the moment the page loads.
  *   `MobileLegend`'s own `panelOpen` prop and the `.app` element's
@@ -299,13 +300,33 @@ export function App() {
   const activeSheetPointerIdRef = useRef<number | null>(null);
   const pendingSheetDragOffsetRef = useRef(0);
   const sheetDragFrameRef = useRef<number | null>(null);
+  const desktopAutoOpenPendingRef = useRef(false);
 
   useEffect(() => {
     setHydrated(true);
-    if (window.innerWidth > MOBILE_BREAKPOINT_PX) {
+    desktopAutoOpenPendingRef.current =
+      window.innerWidth > MOBILE_BREAKPOINT_PX;
+  }, []);
+
+  /**
+   * Waits for `mapReady` rather than opening the desktop sidebar in the same
+   * effect that flips `hydrated` (and so starts `MapView`'s own lazy-load
+   * and Leaflet mount): that mount is the heaviest main-thread work in the
+   * whole app's startup, and kicking off the panel's entrance animation in
+   * the same commit made it visibly stutter, competing with that work for
+   * frames, rather than the smooth fade `panelIn`/`panelSheetIn` play the
+   * rest of the time (confirmed by profiling — the same CSS animation runs
+   * at a clean 60fps when triggered after the map has settled). `closePanel`
+   * clears the ref, so a user who opens and explicitly closes the panel
+   * before the map finishes loading doesn't get it reopened out from under
+   * them once `mapReady` catches up.
+   */
+  useEffect(() => {
+    if (mapReady && desktopAutoOpenPendingRef.current) {
+      desktopAutoOpenPendingRef.current = false;
       setPanelOpen(true);
     }
-  }, [setPanelOpen]);
+  }, [mapReady, setPanelOpen]);
 
   useEffect(() => {
     if (!mapReady) {
@@ -452,6 +473,7 @@ export function App() {
   }, [setPanelOpen]);
 
   const closePanel = useCallback(() => {
+    desktopAutoOpenPendingRef.current = false;
     const playsExitAnimation =
       !isDesktopViewport &&
       !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
