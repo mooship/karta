@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { METROS, type TransitLayerFeatureCollection } from "@karta/app";
+import { mergeFeatureCollections } from "@karta/core";
 import {
   fetchAReYengRoutes,
   normalizeAReYeng,
@@ -63,16 +64,6 @@ async function readExistingTransitLayer(
   }
 
   return null;
-}
-
-function mergeFeatureCollections(
-  collections: readonly TransitLayerFeatureCollection[],
-): TransitLayerFeatureCollection {
-  const features: TransitLayerFeatureCollection["features"] = [];
-  for (const collection of collections) {
-    features.push(...collection.features);
-  }
-  return { type: "FeatureCollection", features };
 }
 
 interface FetchWithPublishedFallbackOptions {
@@ -192,25 +183,21 @@ async function fetchBus(): Promise<TransitLayerFeatureCollection> {
 const sources: PipelineSource[] = [
   {
     layerId: "rapid-rail",
-    regionId: REGION_ID,
     fetch: fetchRapidRail,
     outputFileName: "rapid-rail.display.v1.geojson",
   },
   {
     layerId: "commuter-rail",
-    regionId: REGION_ID,
     fetch: fetchCommuterRail,
     outputFileName: "commuter-rail.display.v1.geojson",
   },
   {
     layerId: "bus-rapid-transit",
-    regionId: REGION_ID,
     fetch: fetchBusRapidTransit,
     outputFileName: "bus-rapid-transit.display.v1.geojson",
   },
   {
     layerId: "bus",
-    regionId: REGION_ID,
     fetch: fetchBus,
     outputFileName: "bus.display.v1.geojson",
   },

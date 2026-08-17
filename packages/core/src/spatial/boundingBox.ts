@@ -11,12 +11,15 @@ export function unionBoundingBoxes(boxes: readonly BBox[]): BBox {
     throw new Error("At least one bounding box is required");
   }
 
-  const minLng = Math.min(...boxes.map((box) => box[0]));
-  const minLat = Math.min(...boxes.map((box) => box[1]));
-  const maxLng = Math.max(...boxes.map((box) => box[2]));
-  const maxLat = Math.max(...boxes.map((box) => box[3]));
-
-  return [minLng, minLat, maxLng, maxLat];
+  return boxes.reduce<BBox>(
+    (union, box) => [
+      Math.min(union[0], box[0]),
+      Math.min(union[1], box[1]),
+      Math.max(union[2], box[2]),
+      Math.max(union[3], box[3]),
+    ],
+    boxes[0] as BBox,
+  );
 }
 
 /**

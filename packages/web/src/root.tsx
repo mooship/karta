@@ -12,7 +12,7 @@ import {
   ScrollRestoration,
   useRouteError,
 } from "react-router";
-import { THEME_STORAGE_KEY } from "./constants/themeConfig";
+import { THEME_COLOR, THEME_STORAGE_KEY } from "./constants/themeConfig";
 import "./index.css";
 import { m } from "./paraglide/messages.js";
 import { getLocale, getTextDirection } from "./paraglide/runtime.js";
@@ -114,12 +114,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta charSet="utf-8" />
         <meta
           name="theme-color"
-          content="#f5f1e6"
+          content={THEME_COLOR.light}
           media="(prefers-color-scheme: light)"
         />
         <meta
           name="theme-color"
-          content="#15110b"
+          content={THEME_COLOR.dark}
           media="(prefers-color-scheme: dark)"
         />
         <script

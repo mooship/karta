@@ -44,8 +44,8 @@ import { DomainStory } from "./components/DomainStory/DomainStory";
 import { LanguageToggle } from "./components/LanguageToggle/LanguageToggle";
 import { LayerToggles } from "./components/LayerToggles/LayerToggles";
 import { TownshipPopup } from "./components/TownshipPopup/TownshipPopup";
+import { fetchTownships } from "./data/fetchTownships";
 import { buildRegionDataUrls } from "./data/regionDataUrls";
-import { createTownshipDataRepository } from "./data/TownshipDataRepository";
 import { useMapModelContextTools } from "./hooks/useMapModelContextTools";
 import { useMapPermalink } from "./hooks/useMapPermalink";
 import { getLayerGroups, getLayers, getStory } from "./layers/registry";
@@ -348,11 +348,7 @@ export function App() {
     );
 
     Promise.all([
-      Promise.all(
-        townshipUrls.map((url) =>
-          createTownshipDataRepository(url).getTownships(),
-        ),
-      ),
+      Promise.all(townshipUrls.map((url) => fetchTownships(url))),
       Promise.all(areaUrls.map((url) => fetchFeatureCollection(url))),
     ])
       .then(([townshipsByRegion, areasByRegion]) => {
