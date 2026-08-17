@@ -27,12 +27,9 @@
 }
 
 .title {
-  margin: 0;
+  composes: eyebrowLabel from "../../shared.module.css";
   color: var(--md-sys-color-on-surface);
-  font-family: var(--font-mono, "Martian Mono Variable", monospace);
   font-size: var(--font-size-sm, 0.6875rem);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
 }
 
 .basemapHint {

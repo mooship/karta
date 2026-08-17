@@ -11,15 +11,12 @@
 }
 
 .label {
+  composes: eyebrowLabel from "../../shared.module.css";
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  margin: 0;
   color: var(--md-sys-color-on-surface-variant);
-  font-family: var(--font-mono, "Martian Mono Variable", monospace);
   font-size: var(--font-size-md, 0.75rem);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
 }
 
 .label svg {
