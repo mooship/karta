@@ -126,39 +126,20 @@ describe("App", () => {
     );
   });
 
-  it("defers the desktop panel's auto-open until the map itself is ready, instead of opening in the same tick MapView starts mounting", async () => {
+  it("opens the desktop panel synchronously on hydration, not deferred", () => {
     render(<App />);
 
-    const trigger = screen.getByTestId("panel-toggle");
-    expect(trigger).toHaveAttribute("aria-expanded", "false");
-
-    await waitFor(() =>
-      expect(trigger).toHaveAttribute("aria-expanded", "true"),
+    expect(screen.getByTestId("panel-toggle")).toHaveAttribute(
+      "aria-expanded",
+      "true",
     );
   });
 
-  it("does not reopen the desktop panel once the map becomes ready if the user already closed it", async () => {
+  it("keeps an explicit accessible name on the panel toggle regardless of its visible label's CSS visibility", () => {
     render(<App />);
 
     const trigger = screen.getByTestId("panel-toggle");
-    // Open, then close again, both before the map (and its auto-open effect)
-    // have had a chance to run.
-    fireEvent.click(trigger);
-    expect(trigger).toHaveAttribute("aria-expanded", "true");
-    fireEvent.click(trigger);
-    expect(trigger).toHaveAttribute("aria-expanded", "false");
-
-    await waitFor(() =>
-      expect(screen.getByTestId("geojson-layer")).toBeInTheDocument(),
-    );
-    expect(trigger).toHaveAttribute("aria-expanded", "false");
-  });
-
-  it("keeps an explicit accessible name on the panel toggle regardless of its visible label's CSS visibility", async () => {
-    render(<App />);
-
-    const trigger = screen.getByTestId("panel-toggle");
-    await waitFor(() => expect(trigger).toHaveAttribute("aria-label", "Close"));
+    expect(trigger).toHaveAttribute("aria-label", "Close");
 
     fireEvent.click(trigger);
 

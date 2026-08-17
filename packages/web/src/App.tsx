@@ -226,8 +226,7 @@ function PanelViewContent({
  *   the same `closePanel` used by Escape/outside-click) rather than
  *   disappearing outright, so there's always a visible way back to a
  *   measurement in progress. Gated to mobile because the desktop sidebar is
- *   open by default (see the `mapReady`-gated auto-open effect below) --
- *   without that gate
+ *   open by default (see the hydration effect below) -- without that gate
  *   the measurement tool could never actually open on desktop, since its
  *   host panel is "open" from the moment the page loads.
  *   `MobileLegend`'s own `panelOpen` prop and the `.app` element's
@@ -301,37 +300,36 @@ export function App() {
   const activeSheetPointerIdRef = useRef<number | null>(null);
   const pendingSheetDragOffsetRef = useRef(0);
   const sheetDragFrameRef = useRef<number | null>(null);
-  const desktopAutoOpenPendingRef = useRef(true);
-
-  useEffect(() => {
-    setHydrated(true);
-  }, []);
 
   /**
-   * Waits for `mapReady` rather than opening the desktop sidebar in the same
-   * effect that flips `hydrated` (and so starts `MapView`'s own lazy-load
-   * and Leaflet mount): that mount is the heaviest main-thread work in the
-   * whole app's startup, and kicking off the panel's entrance animation in
-   * the same commit made it visibly stutter, competing with that work for
-   * frames, rather than the smooth fade `panelIn`/`panelSheetIn` play the
-   * rest of the time (confirmed by profiling — the same CSS animation runs
-   * at a clean 60fps when triggered after the map has settled). Reading
-   * `window.innerWidth` here rather than caching it at mount reflects the
-   * viewport at the actual moment of the decision, not a stale snapshot.
-   * `closePanel` clears the ref, so a user who opens and explicitly closes
-   * the panel before the map finishes loading doesn't get it reopened out
-   * from under them once `mapReady` catches up.
+   * Opens the desktop sidebar synchronously, in the same commit as
+   * `hydrated` (which also starts `MapView`'s own lazy-load and Leaflet
+   * mount) -- deliberately, not deferred. An earlier version deferred this
+   * (via `mapReady`, then via a couple of animation frames) specifically to
+   * stop the panel's entrance animation from visibly competing with that
+   * mount for frames, but *any* deferral of `panelOpen` itself -- even a
+   * couple of frames -- turned out to be unsafe: under real load (a
+   * throttled CPU, contended CI) the gap between a test/user's `mousedown`
+   * and the resulting `click` can outlast the deferral, so the auto-open
+   * could fire *in between* -- flipping `panelOpen` to `true` while that
+   * click was still in flight, so by the time it landed, `handlePanelToggle`
+   * saw an already-open panel and closed it instead. `panelOpen` itself
+   * (and everything downstream of it -- ARIA state, `useDismissableOverlay`'s
+   * Escape-stack position, what's clickable where on desktop) needs to be
+   * deterministic, not racing a side effect. The entrance *animation* is
+   * still deferred, just not through `panelOpen` -- see the
+   * `data-entrance-ready` attribute below, which starts every
+   * `.panel`/`.panelViewport` animation paused at its first frame and only
+   * resumes it once `mapReady`, so nothing is actively ticking (and so
+   * nothing to visibly stutter) while `MapView`'s mount is still competing
+   * for frames.
    */
   useEffect(() => {
-    if (
-      mapReady &&
-      desktopAutoOpenPendingRef.current &&
-      window.innerWidth > MOBILE_BREAKPOINT_PX
-    ) {
-      desktopAutoOpenPendingRef.current = false;
+    setHydrated(true);
+    if (window.innerWidth > MOBILE_BREAKPOINT_PX) {
       setPanelOpen(true);
     }
-  }, [mapReady, setPanelOpen]);
+  }, [setPanelOpen]);
 
   useEffect(() => {
     if (!mapReady) {
@@ -478,7 +476,6 @@ export function App() {
   }, [setPanelOpen]);
 
   const closePanel = useCallback(() => {
-    desktopAutoOpenPendingRef.current = false;
     const playsExitAnimation =
       !isDesktopViewport &&
       !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -693,6 +690,7 @@ export function App() {
         data-panel-size={mobilePanelExpanded ? "full" : "medium"}
         data-panel-dragging={mobileSheetDragging ? "true" : "false"}
         data-panel-drag-direction={mobileSheetDragDirection}
+        data-entrance-ready={mapReady ? "true" : "false"}
       >
         <a className={styles.skipLink} href="#map-information">
           {m.skip_to_map_information()}
