@@ -21,8 +21,8 @@
 .groupTitle {
   margin: 0 0 0.5rem;
   color: var(--md-sys-color-on-surface-variant);
-  font-family: var(--font-mono);
-  font-size: var(--font-size-sm);
+  font-family: var(--font-mono, "Martian Mono Variable", monospace);
+  font-size: var(--font-size-sm, 0.6875rem);
   font-weight: 600;
   letter-spacing: 0;
   text-transform: uppercase;
@@ -79,20 +79,20 @@
 
 .symbolNote {
   color: var(--md-sys-color-on-surface-variant);
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-sm, 0.6875rem);
 }
 
 .label {
-  font-size: var(--font-size-base);
+  font-size: var(--font-size-base, 0.8125rem);
   color: var(--md-sys-color-on-surface);
 }
 
 .groups[data-compact="true"] .label {
-  font-size: var(--font-size-md);
+  font-size: var(--font-size-md, 0.75rem);
 }
 
 .empty {
   margin: 0;
   color: var(--md-sys-color-on-surface-variant);
-  font-size: var(--font-size-md);
+  font-size: var(--font-size-md, 0.75rem);
 }

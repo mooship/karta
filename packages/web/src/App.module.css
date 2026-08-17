@@ -4,26 +4,39 @@
   width: 100%;
   overflow: hidden;
   /*
-   * `--mobile-safe-top` through `--panel-reposition-duration` below fill
-   * `@karta/map`'s own documented mobile layout contract (see
-   * `MOBILE_LAYOUT_CSS_VAR_DEFAULTS`, packages/map/src/constants/
-   * mobileLayoutTokens.ts) -- the values `MobileLegend`/`MeasurementControl`
-   * read to position and time themselves around this app's own search box,
-   * Explore sheet, and safe-area insets. They happen to equal that
-   * contract's own defaults here (this app's layout is the one those
-   * defaults were drawn from), but are declared explicitly rather than
-   * left to fall through, so this file stays the single place that
-   * describes this app's own mobile chrome geometry, and a future change
-   * here doesn't silently rely on the SDK's defaults matching by
-   * coincidence. `--panel-motion-duration` just below is *not* part of
-   * that shared contract -- it's this app's own Explore-panel-only fade
-   * timing, with no `@karta/map` consumer.
+   * `--mobile-safe-top` through `--floating-control-z-index` below fill two
+   * of `@karta/map`'s own documented CSS contracts -- `MOBILE_LAYOUT_CSS_VAR_
+   * DEFAULTS` and `Z_INDEX_CSS_VAR_DEFAULTS` (packages/map/src/constants/
+   * mobileLayoutTokens.ts and zIndexTokens.ts) -- the values `MobileLegend`/
+   * `MeasurementControl`/`DesktopLegend` read to position, time, and stack
+   * themselves around this app's own search box, Explore sheet, safe-area
+   * insets, and peer floating controls. They happen to equal those
+   * contracts' own defaults here (this app's layout is what those defaults
+   * were drawn from), but are declared explicitly rather than left to fall
+   * through, so this file stays the single place that describes this app's
+   * own mobile chrome geometry, and a future change here doesn't silently
+   * rely on the SDK's defaults matching by coincidence. `--panel-motion-
+   * duration` further below is *not* part of either shared contract -- it's
+   * this app's own Explore-panel-only fade timing, with no `@karta/map`
+   * consumer.
    */
   --mobile-safe-top: env(safe-area-inset-top);
   --mobile-control-edge: 0.75rem;
   --mobile-control-size: 44px;
   --mobile-control-gap: 0.625rem;
   --mobile-control-bottom: calc(1.5rem + env(safe-area-inset-bottom));
+  /*
+   * The stacking layer this app's own peer floating controls
+   * (`.settingsControl`, `.locationSearchControl` below) share with
+   * `@karta/map`'s `DesktopLegend`/`MobileLegend`/`MeasurementControl` --
+   * see the intro comment above. `.panel`, `.panelTrigger`, `.dataError`,
+   * and `.skipLink` further down are deliberately sequenced above this
+   * layer (1245/1250/1300/2000); each is single-use and not duplicated
+   * anywhere else, so they stay plain literals rather than `calc()`
+   * offsets from this token, but their ordering relative to it is
+   * intentional, not coincidental.
+   */
+  --floating-control-z-index: 1240;
   /*
    * The mobile info panel's two sheet heights, shared with any control
    * (the legend trigger, the measurement tool) that needs to reposition
@@ -343,14 +356,14 @@
   position: absolute;
   bottom: 3.25rem;
   left: 1.25rem;
-  z-index: 1240;
+  z-index: var(--floating-control-z-index);
 }
 
 .locationSearchControl {
   position: absolute;
   top: 1.25rem;
   left: 1.25rem;
-  z-index: 1240;
+  z-index: var(--floating-control-z-index);
   padding: 0.75rem 0.875rem;
 }
 

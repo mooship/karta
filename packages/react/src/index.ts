@@ -1,4 +1,9 @@
 export { useCanHover } from "./hooks/useCanHover";
+export {
+  getViewportWidth,
+  MOBILE_BREAKPOINT_PX,
+  useIsDesktopViewport,
+} from "./hooks/useIsDesktopViewport";
 export { useLatestRef } from "./hooks/useLatestRef";
 export type {
   ModelContextToolContentBlock,

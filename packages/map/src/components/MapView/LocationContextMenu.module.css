@@ -12,7 +12,7 @@
   background: transparent;
   color: var(--md-sys-color-on-surface);
   font: inherit;
-  font-size: var(--font-size-md);
+  font-size: var(--font-size-md, 0.75rem);
   text-align: left;
   cursor: pointer;
   transition: background-color var(--motion-duration-short)
@@ -24,7 +24,7 @@
 }
 
 .menuItem:focus-visible {
-  outline: var(--focus-ring-width) solid var(--md-sys-color-on-surface);
+  outline: var(--focus-ring-width, 2px) solid var(--md-sys-color-on-surface);
   outline-offset: 2px;
 }
 
@@ -33,5 +33,5 @@
   margin: 0;
   padding: 0.4rem 0.5rem;
   color: var(--md-sys-color-on-surface);
-  font-size: var(--font-size-md);
+  font-size: var(--font-size-md, 0.75rem);
 }

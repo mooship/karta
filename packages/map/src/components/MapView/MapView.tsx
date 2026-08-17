@@ -3,7 +3,12 @@ import {
   type Layer as DomainLayer,
   resolveThemedColor,
 } from "@karta/core";
-import { useLatestRef, useResolvedDarkTheme } from "@karta/react";
+import {
+  getViewportWidth,
+  MOBILE_BREAKPOINT_PX,
+  useLatestRef,
+  useResolvedDarkTheme,
+} from "@karta/react";
 import type { Feature, FeatureCollection } from "geojson";
 import {
   circleMarker,
@@ -175,7 +180,6 @@ const AREA_OUTLINE_PATH_OPTIONS = {
   fillOpacity: 0,
   interactive: false,
 } as const;
-const MOBILE_BREAKPOINT_PX = 768;
 const AREA_CLICK_DELAY_MS = 220;
 const PRIMARY_LABEL_REVEAL_ZOOM = 10;
 const SECONDARY_LABEL_REVEAL_ZOOM = 12;
@@ -190,16 +194,6 @@ type SelectableFeatureLayer = Layer & {
   openPopup?: () => void;
   getBounds?: () => LatLngBounds;
 };
-
-function getViewportWidth(): number {
-  /* v8 ignore start -- SSR guard: packages/web never renders MapView server-side (gated behind a client-only hydrated flag), but this is a reusable SDK component with no visibility into other consumers */
-  if (typeof window === "undefined") {
-    return MOBILE_BREAKPOINT_PX;
-  }
-  /* v8 ignore stop */
-
-  return window.innerWidth;
-}
 
 function getDevicePixelRatio(): number {
   /* v8 ignore start -- SSR guard, see getViewportWidth above */

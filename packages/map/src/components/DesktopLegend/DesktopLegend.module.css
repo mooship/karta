@@ -1,8 +1,10 @@
 .container {
   position: absolute;
   left: 1.25rem;
-  bottom: calc(3.25rem + var(--control-height) + 0.75rem);
-  z-index: 1240;
+  bottom: calc(3.25rem + var(--control-height, 44px) + 0.75rem);
+  /* Shared floating-control stacking layer -- see Z_INDEX_CSS_VAR_DEFAULTS,
+   * ../../constants/zIndexTokens.ts. */
+  z-index: var(--floating-control-z-index, 1240);
   width: min(15rem, calc(100vw - 2.5rem));
   max-height: min(40dvh, 20rem);
   padding: 0.875rem;
@@ -32,10 +34,10 @@
 }
 
 .title {
-  margin: 0 0 var(--space-3);
+  margin: 0 0 var(--space-3, 0.75rem);
   color: var(--md-sys-color-on-surface);
-  font-family: var(--font-mono);
-  font-size: var(--font-size-sm);
+  font-family: var(--font-mono, "Martian Mono Variable", monospace);
+  font-size: var(--font-size-sm, 0.6875rem);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
