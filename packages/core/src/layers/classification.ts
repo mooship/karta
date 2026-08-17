@@ -1,4 +1,8 @@
-import type { Classification, GraduatedClassification } from "../types/layer";
+import type {
+  CategorizedClassification,
+  Classification,
+  GraduatedClassification,
+} from "../types/layer";
 
 /**
  * Cache of each graduated classification's stops sorted by `max`, keyed by
@@ -18,6 +22,37 @@ function getSortedStops<T>(
   const sorted = [...classification.stops].sort((a, b) => a.max - b.max);
   sortedStopsCache.set(classification, sorted);
   return sorted;
+}
+
+/**
+ * Cache of each categorized classification's stops indexed by `match` value,
+ * keyed by object identity — the same rationale as `sortedStopsCache`, so a
+ * feature's `styleFn` call resolves its category with a `Map` lookup instead
+ * of a linear `Array.find` scan repeated per feature.
+ */
+const stopsByMatchCache = new WeakMap<object, Map<string, unknown>>();
+
+function getStopsByMatch<T>(
+  classification: CategorizedClassification<T>,
+): Map<string, T> {
+  const cached = stopsByMatchCache.get(classification);
+  if (cached) {
+    return cached as Map<string, T>;
+  }
+  /**
+   * @remarks Built with an explicit `has` guard, rather than `new Map(stops.map(...))`,
+   *   so an (unexpected) duplicate `match` value keeps the first stop's value —
+   *   matching `Array.find`'s first-match semantics exactly rather than the
+   *   last-write-wins behaviour a plain `Map` construction from pairs would give.
+   */
+  const indexed = new Map<string, T>();
+  for (const stop of classification.stops) {
+    if (!indexed.has(stop.match)) {
+      indexed.set(stop.match, stop.value);
+    }
+  }
+  stopsByMatchCache.set(classification, indexed);
+  return indexed;
 }
 
 /**
@@ -47,6 +82,6 @@ export function resolveClassification<T>(
   if (typeof raw !== "string") {
     return classification.fallback;
   }
-  const stop = classification.stops.find((s) => s.match === raw);
-  return stop?.value ?? classification.fallback;
+  const stopsByMatch = getStopsByMatch(classification);
+  return stopsByMatch.get(raw) ?? classification.fallback;
 }

@@ -4,7 +4,7 @@ import {
   type Layer,
 } from "@karta/core";
 import { Download, FileSpreadsheet } from "lucide-react";
-import { Fragment, type ReactNode, useState } from "react";
+import { Fragment, memo, type ReactNode, useMemo, useState } from "react";
 import { getLayer, getLayerGroups } from "../../layers/registry";
 import { m } from "../../paraglide/messages.js";
 import styles from "./LayerToggles.module.css";
@@ -36,30 +36,35 @@ interface LayerTogglesProps {
   failedLayerIds?: string[];
 }
 
-/**
- * Renders every layer group from the domain registry as a checkbox list,
- * grouped under its title/description. Each layer shows its own
- * `description`, when it has one, beneath its label. An unavailable layer's
- * checkbox is disabled with a "Not yet available" badge; a failed-to-load
- * visible layer shows a "Failed to load" badge instead.
- * @remarks Every available layer also gets a download link per
- *   `dataSource` URL, so a visitor can save the exact GeoJSON the map
- *   renders, plus a CSV export button that fetches that same URL on click,
- *   flattens its properties (via `@karta/core`'s `featureCollectionToCsv`)
- *   and triggers a browser download — CSV isn't pre-generated like the
- *   static GeoJSON files, since it's a spreadsheet-friendly convenience
- *   format rather than something the map itself consumes. The checkbox's
- *   `<label>` wraps only the checkbox/text/badges, not the download
- *   link/button — nesting them inside that label too would make clicking
- *   them also toggle the checkbox, since a `<label>` forwards any click
- *   within it to its associated control.
- */
-export function LayerToggles({
+function LayerTogglesComponent({
   visibleLayerIds,
   onToggle,
   failedLayerIds = [],
 }: LayerTogglesProps) {
-  const groups = getLayerGroups();
+  /**
+   * @remarks Memoized with no dependencies: `getLayerGroups()`/`getLayer()`
+   *   re-run `packages/web`'s translation overlay on every call, and the
+   *   active locale can't change without a full document reload (see
+   *   `LanguageToggle`'s own remarks), so re-deriving these on every
+   *   unrelated re-render of this (frequently remounted-in-place, e.g. by
+   *   mobile drag-frame updates in a parent) component would just redo the
+   *   same translation work for the same result.
+   */
+  const groups = useMemo(() => getLayerGroups(), []);
+  const layersById = useMemo(() => {
+    const map = new Map<string, Layer>();
+    for (const group of groups) {
+      for (const layerId of group.layerIds) {
+        if (!map.has(layerId)) {
+          const layer = getLayer(layerId);
+          if (layer) {
+            map.set(layerId, layer);
+          }
+        }
+      }
+    }
+    return map;
+  }, [groups]);
   const [csvExportStatus, setCsvExportStatus] = useState<
     Record<string, "loading" | "error">
   >({});
@@ -90,8 +95,8 @@ export function LayerToggles({
   }
 
   function renderLayer(layerId: string) {
-    const layer = getLayer(layerId);
-    /* v8 ignore next 3 -- unreachable: every layer group's layerIds is drawn from the same registry, so getLayer always finds a match */
+    const layer = layersById.get(layerId);
+    /* v8 ignore next 3 -- unreachable: every layer group's layerIds is drawn from the same registry, so layersById always has a match */
     if (!layer) {
       return null;
     }
@@ -236,3 +241,26 @@ export function LayerToggles({
     </div>
   );
 }
+
+/**
+ * Renders every layer group from the domain registry as a checkbox list,
+ * grouped under its title/description. Each layer shows its own
+ * `description`, when it has one, beneath its label. An unavailable layer's
+ * checkbox is disabled with a "Not yet available" badge; a failed-to-load
+ * visible layer shows a "Failed to load" badge instead.
+ * @remarks Every available layer also gets a download link per
+ *   `dataSource` URL, so a visitor can save the exact GeoJSON the map
+ *   renders, plus a CSV export button that fetches that same URL on click,
+ *   flattens its properties (via `@karta/core`'s `featureCollectionToCsv`)
+ *   and triggers a browser download — CSV isn't pre-generated like the
+ *   static GeoJSON files, since it's a spreadsheet-friendly convenience
+ *   format rather than something the map itself consumes. The checkbox's
+ *   `<label>` wraps only the checkbox/text/badges, not the download
+ *   link/button — nesting them inside that label too would make clicking
+ *   them also toggle the checkbox, since a `<label>` forwards any click
+ *   within it to its associated control. Memoized so unrelated re-renders of
+ *   its parent (the info panel stays mounted, just `hidden`, so it re-renders
+ *   on things like the mobile bottom-sheet's drag-frame updates) don't force
+ *   this list back through reconciliation when its props haven't changed.
+ */
+export const LayerToggles = memo(LayerTogglesComponent);

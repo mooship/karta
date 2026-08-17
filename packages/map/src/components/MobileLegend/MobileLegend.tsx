@@ -1,6 +1,6 @@
 import { BookOpen, X } from "lucide-react";
 import type { CSSProperties } from "react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
 import { useDismissableOverlay } from "../../hooks/useDismissableOverlay";
 import { useSwipeToDismiss } from "../../hooks/useSwipeToDismiss";
 import { IconButton } from "../IconButton/IconButton";
@@ -14,12 +14,7 @@ interface MobileLegendProps {
   panelExpanded: boolean;
 }
 
-/**
- * Collapsible bottom-sheet legend trigger for mobile viewports, showing only
- * the currently active layers when opened.
- * @remarks Must be rendered inside a `DomainProvider`.
- */
-export function MobileLegend({
+function MobileLegendComponent({
   visibleLayerIds,
   suppressed,
   panelOpen,
@@ -108,3 +103,14 @@ export function MobileLegend({
     </div>
   );
 }
+
+/**
+ * Collapsible bottom-sheet legend trigger for mobile viewports, showing only
+ * the currently active layers when opened.
+ * @remarks Must be rendered inside a `DomainProvider`. Memoized so unrelated
+ *   parent re-renders don't force this subtree through reconciliation when
+ *   its own props haven't changed; the sheet's own drag-frame updates
+ *   (`dragOffsetPx`, from `useSwipeToDismiss`) still re-render it as before,
+ *   since that state lives inside this component.
+ */
+export const MobileLegend = memo(MobileLegendComponent);

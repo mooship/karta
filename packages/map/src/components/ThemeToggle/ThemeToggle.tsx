@@ -6,10 +6,14 @@ interface ThemeToggleProps {
   onChange: (preference: ThemePreference) => void;
 }
 
-const THEME_OPTIONS: { id: ThemePreference; label: string }[] = [
-  { id: "system", label: "System" },
-  { id: "light", label: "Light" },
-  { id: "dark", label: "Dark" },
+const THEME_OPTIONS: {
+  id: ThemePreference;
+  label: string;
+  ariaLabel: string;
+}[] = [
+  { id: "system", label: "System", ariaLabel: "System theme" },
+  { id: "light", label: "Light", ariaLabel: "Light theme" },
+  { id: "dark", label: "Dark", ariaLabel: "Dark theme" },
 ];
 
 /** A `SegmentedControl` for choosing between system/light/dark theme preference. */
@@ -17,10 +21,7 @@ export function ThemeToggle({ preference, onChange }: ThemeToggleProps) {
   return (
     <SegmentedControl
       label="Theme"
-      options={THEME_OPTIONS.map((option) => ({
-        ...option,
-        ariaLabel: `${option.label} theme`,
-      }))}
+      options={THEME_OPTIONS}
       value={preference}
       onChange={onChange}
       testId="theme"
