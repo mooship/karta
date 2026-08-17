@@ -1,9 +1,11 @@
 /*
  * Small style utilities shared across `packages/web`'s own CSS Modules via
- * `composes:`, so App.module.css's `.sectionTitle`/`.appName` and
- * LayerToggles.module.css's `.groupTitle` share one eyebrow-label
- * definition instead of three hand-copied (and previously drifting)
- * letter-spacing values.
+ * `composes:` -- the project's convention for a rule set two or more
+ * components need identically, in place of hand-copying it. Add to this
+ * file rather than re-copying an existing component's rules; a property
+ * that varies per consumer (see `eyebrowLabel`'s own `color`/`font-size`
+ * split in `packages/map/src/shared.module.css` for why) belongs in the
+ * consumer's own stylesheet instead.
  */
 
 .eyebrowLabel {
@@ -13,4 +15,16 @@
   font-size: var(--font-size-xs);
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
 }

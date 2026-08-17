@@ -1,17 +1,15 @@
 /*
  * Small style utilities shared across `packages/map`'s own CSS Modules via
- * `composes:`, so a component's stylesheet only declares what's actually
- * specific to it rather than hand-copying the same eyebrow-label/scrollbar/
- * sr-only rule sets other components already define.
+ * `composes:` -- this package's convention for a rule set two or more
+ * components need identically, in place of hand-copying it. Add to this
+ * file rather than re-copying an existing component's rules.
  */
 
 /*
- * `color` and `font-size` are deliberately left out: consumers use
- * `--md-sys-color-on-surface` (most) or the muted `-variant` token
- * (`LocationSearchControl`), and `--font-size-sm` or `-md`, depending on
- * context, and composing a value here that a consumer's own rule then had
- * to override would rely on cascade order between two same-specificity
- * class selectors -- order the CSS Modules spec doesn't actually guarantee.
+ * `color` and `font-size` are deliberately left out here: they vary per
+ * consumer, and composing a value a consumer's rule then had to override
+ * would rely on cascade order between two same-specificity class
+ * selectors -- order the CSS Modules spec doesn't actually guarantee.
  */
 .eyebrowLabel {
   margin: 0;
