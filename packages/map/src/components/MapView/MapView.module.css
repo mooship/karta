@@ -52,7 +52,7 @@
 @media (max-width: 768px) {
   :global(.leaflet-control-attribution) {
     max-width: 52vw;
-    font-size: var(--font-size-md);
+    font-size: var(--font-size-md, 0.75rem);
   }
 }
 
@@ -63,8 +63,8 @@
   background: var(--color-map-label-surface);
   box-shadow: var(--md-sys-elevation-shadow-1);
   color: var(--color-map-label-text);
-  font-family: var(--font-mono);
-  font-size: var(--font-size-md);
+  font-family: var(--font-mono, "Martian Mono Variable", monospace);
+  font-size: var(--font-size-md, 0.75rem);
   font-weight: 700;
   letter-spacing: 0;
   pointer-events: none;
@@ -85,7 +85,7 @@
 .areaLabelSecondary {
   display: none;
   background: var(--color-map-label-surface-secondary);
-  font-size: var(--font-size-md);
+  font-size: var(--font-size-md, 0.75rem);
   font-weight: 600;
   opacity: 0.94;
 }

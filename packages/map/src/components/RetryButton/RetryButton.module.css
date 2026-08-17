@@ -6,7 +6,7 @@
   background: transparent;
   color: var(--md-sys-color-on-surface);
   font: inherit;
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-sm, 0.6875rem);
   cursor: pointer;
   transition: background-color var(--motion-duration-short)
     var(--motion-ease-standard);
@@ -17,6 +17,6 @@
 }
 
 .button:focus-visible {
-  outline: var(--focus-ring-width) solid var(--md-sys-color-on-surface);
+  outline: var(--focus-ring-width, 2px) solid var(--md-sys-color-on-surface);
   outline-offset: 2px;
 }

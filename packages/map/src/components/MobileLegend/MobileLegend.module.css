@@ -2,7 +2,9 @@
   position: absolute;
   left: 1.25rem;
   bottom: calc(3.25rem + var(--control-height, 44px) + 0.75rem);
-  z-index: 1240;
+  /* Shared floating-control stacking layer -- see Z_INDEX_CSS_VAR_DEFAULTS,
+   * ../../constants/zIndexTokens.ts. */
+  z-index: var(--floating-control-z-index, 1240);
   display: block;
 }
 
@@ -55,7 +57,7 @@
   width: 100%;
   min-height: var(--control-height, 44px);
   padding: 0;
-  margin-bottom: var(--space-2);
+  margin-bottom: var(--space-2, 0.5rem);
   border: 0;
   border-radius: var(--md-sys-shape-corner-small);
   background: transparent;
@@ -64,14 +66,14 @@
 }
 
 .dragHandleButton:focus-visible {
-  outline: var(--focus-ring-width) solid var(--md-sys-color-on-surface);
+  outline: var(--focus-ring-width, 2px) solid var(--md-sys-color-on-surface);
   outline-offset: 2px;
 }
 
 .dragHandle {
   display: block;
-  width: var(--drag-handle-width);
-  height: var(--drag-handle-height);
+  width: var(--drag-handle-width, 2.5rem);
+  height: var(--drag-handle-height, 0.25rem);
   border-radius: var(--md-sys-shape-corner-full);
   background: var(--md-sys-color-outline-variant);
   transition:
@@ -80,7 +82,7 @@
 }
 
 .sheet[data-dragging="true"] .dragHandle {
-  width: var(--drag-handle-width-dragging);
+  width: var(--drag-handle-width-dragging, 3rem);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -91,10 +93,10 @@
 }
 
 .title {
-  margin: 0 0 var(--space-3);
+  margin: 0 0 var(--space-3, 0.75rem);
   color: var(--md-sys-color-on-surface);
-  font-family: var(--font-mono);
-  font-size: var(--font-size-sm);
+  font-family: var(--font-mono, "Martian Mono Variable", monospace);
+  font-size: var(--font-size-sm, 0.6875rem);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }

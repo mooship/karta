@@ -17,7 +17,12 @@ import {
   SettingsMenu,
   useDismissableOverlay,
 } from "@karta/map";
-import { setThemePreference, useThemePreference } from "@karta/react";
+import {
+  MOBILE_BREAKPOINT_PX,
+  setThemePreference,
+  useIsDesktopViewport,
+  useThemePreference,
+} from "@karta/react";
 import clsx from "clsx";
 import type { Feature } from "geojson";
 import { Layers, X } from "lucide-react";
@@ -34,7 +39,6 @@ import {
   useRef,
   useState,
 } from "react";
-import { useWindowSize } from "usehooks-ts";
 import styles from "./App.module.css";
 import { DomainStory } from "./components/DomainStory/DomainStory";
 import { LanguageToggle } from "./components/LanguageToggle/LanguageToggle";
@@ -107,7 +111,6 @@ const PANEL_VIEWPORT_PROPS = {
   "data-e2e": "panel-viewport",
 } as const;
 
-const MOBILE_BREAKPOINT_PX = 768;
 const SHEET_DRAG_THRESHOLD_PX = 36;
 const SHEET_DRAG_PREVIEW_LIMIT_PX = 96;
 const SHEET_PROJECTION_DECELERATION = 0.992;
@@ -289,9 +292,7 @@ export function App() {
     layers: m.panel_tab_layers(),
     story: m.panel_tab_story(),
   };
-  const { width } = useWindowSize({ initializeWithValue: false });
-  const isDesktopViewport =
-    (width ?? MOBILE_BREAKPOINT_PX) > MOBILE_BREAKPOINT_PX;
+  const isDesktopViewport = useIsDesktopViewport();
   const panelTriggerRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLElement>(null);
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);

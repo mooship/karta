@@ -1,5 +1,20 @@
 :root {
   --font-display: "Inter Variable", sans-serif;
+  /*
+   * `--font-body` here through `--focus-ring-width` further below (typography,
+   * spacing, control sizing, drag handles) fill `@karta/map`'s own documented
+   * design-token contract -- see `DESIGN_TOKEN_CSS_VAR_DEFAULTS`,
+   * packages/map/src/constants/designTokenDefaults.ts. Unlike the M3
+   * colour/shape/elevation tokens below (an unconditional dependency with no
+   * sensible generic fallback), that contract's own defaults exist
+   * specifically so a host that hasn't adopted this app's exact type/spacing
+   * scale still gets a working (if generic) `@karta/map` UI. This app's own
+   * values happen to equal those defaults (they're what the defaults were
+   * drawn from), declared explicitly for the same reason
+   * `MOBILE_LAYOUT_CSS_VAR_DEFAULTS`' values are in App.module.css.
+   * `--font-display` just above is *not* part of that shared contract -- no
+   * `@karta/map` component reads it.
+   */
   --font-body: "Inter Variable", sans-serif;
   --font-mono: "Martian Mono Variable", monospace;
 
@@ -135,6 +150,13 @@
     transparent
   );
 
+  /*
+   * `--space-2`/`--space-3`, `--font-size-sm`/`-md`/`-base`, `--control-height`/
+   * `-gap`/`-padding`, and `--drag-handle-*` below are part of `@karta/map`'s
+   * design-token contract (see the note on `--font-body` above); `--space-1`/
+   * `-4`, `--font-size-xs`/`-lg`, and `--control-height-compact` aren't --
+   * no `@karta/map` component reads them, they're this app's own.
+   */
   --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;

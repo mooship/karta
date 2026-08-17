@@ -40,9 +40,13 @@ export {
   resetBasemapRegistry,
   resolveTileScaleToken,
 } from "./constants/basemaps";
+export type { DesignTokenCssVar } from "./constants/designTokenDefaults";
+export { DESIGN_TOKEN_CSS_VAR_DEFAULTS } from "./constants/designTokenDefaults";
 export { AREA_OUTLINE } from "./constants/mapStyles";
 export type { MobileLayoutCssVar } from "./constants/mobileLayoutTokens";
 export { MOBILE_LAYOUT_CSS_VAR_DEFAULTS } from "./constants/mobileLayoutTokens";
+export type { ZIndexCssVar } from "./constants/zIndexTokens";
+export { Z_INDEX_CSS_VAR_DEFAULTS } from "./constants/zIndexTokens";
 export type { DomainRegistry } from "./context/DomainContext";
 export { DomainProvider, useDomain } from "./context/DomainContext";
 export type {
