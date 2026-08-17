@@ -3,11 +3,40 @@
   height: 100%;
   width: 100%;
   overflow: hidden;
+  /*
+   * `--mobile-safe-top` through `--floating-control-z-index` below fill two
+   * of `@karta/map`'s own documented CSS contracts -- `MOBILE_LAYOUT_CSS_VAR_
+   * DEFAULTS` and `Z_INDEX_CSS_VAR_DEFAULTS` (packages/map/src/constants/
+   * mobileLayoutTokens.ts and zIndexTokens.ts) -- the values `MobileLegend`/
+   * `MeasurementControl`/`DesktopLegend` read to position, time, and stack
+   * themselves around this app's own search box, Explore sheet, safe-area
+   * insets, and peer floating controls. They happen to equal those
+   * contracts' own defaults here (this app's layout is what those defaults
+   * were drawn from), but are declared explicitly rather than left to fall
+   * through, so this file stays the single place that describes this app's
+   * own mobile chrome geometry, and a future change here doesn't silently
+   * rely on the SDK's defaults matching by coincidence. `--panel-motion-
+   * duration` further below is *not* part of either shared contract -- it's
+   * this app's own Explore-panel-only fade timing, with no `@karta/map`
+   * consumer.
+   */
   --mobile-safe-top: env(safe-area-inset-top);
   --mobile-control-edge: 0.75rem;
   --mobile-control-size: 44px;
   --mobile-control-gap: 0.625rem;
   --mobile-control-bottom: calc(1.5rem + env(safe-area-inset-bottom));
+  /*
+   * The stacking layer this app's own peer floating controls
+   * (`.settingsControl`, `.locationSearchControl` below) share with
+   * `@karta/map`'s `DesktopLegend`/`MobileLegend`/`MeasurementControl` --
+   * see the intro comment above. `.panel`, `.panelTrigger`, `.dataError`,
+   * and `.skipLink` further down are deliberately sequenced above this
+   * layer (1245/1250/1300/2000); each is single-use and not duplicated
+   * anywhere else, so they stay plain literals rather than `calc()`
+   * offsets from this token, but their ordering relative to it is
+   * intentional, not coincidental.
+   */
+  --floating-control-z-index: 1240;
   /*
    * The mobile info panel's two sheet heights, shared with any control
    * (the legend trigger, the measurement tool) that needs to reposition
@@ -228,6 +257,31 @@
   animation: panelIn var(--panel-motion-duration) var(--motion-ease-decelerate);
 }
 
+/*
+ * Desktop only (the mobile sheet opens purely from a user tap, never
+ * auto-opens, so it has no equivalent race to guard against). `panelOpen`
+ * itself flips synchronously on hydration -- see the effect that sets it in
+ * App.tsx for why that has to stay deterministic -- but starting the whole
+ * app synchronously *and* animating the panel in the very same commit as
+ * `MapView`'s own heaviest mount work is what originally made the entrance
+ * visibly stutter. Freezing `panelIn` at its first frame here, then
+ * resuming it once `mapReady` (`data-entrance-ready`), keeps `panelOpen`
+ * itself immediate while the animation only starts *ticking* once that
+ * heavy work has settled -- nothing to visibly stutter while it's paused,
+ * since a paused animation has no frame-to-frame changes to repaint.
+ */
+@media (min-width: 769px) {
+  .panel,
+  .panelViewport {
+    animation-play-state: paused;
+  }
+
+  .app[data-entrance-ready="true"] .panel,
+  .app[data-entrance-ready="true"] .panelViewport {
+    animation-play-state: running;
+  }
+}
+
 .panelViewport::-webkit-scrollbar {
   width: 8px;
 }
@@ -327,14 +381,14 @@
   position: absolute;
   bottom: 3.25rem;
   left: 1.25rem;
-  z-index: 1240;
+  z-index: var(--floating-control-z-index);
 }
 
 .locationSearchControl {
   position: absolute;
   top: 1.25rem;
   left: 1.25rem;
-  z-index: 1240;
+  z-index: var(--floating-control-z-index);
   padding: 0.75rem 0.875rem;
 }
 
@@ -377,16 +431,23 @@
     /*
      * Without this, `bottom` jumps instantly to its post-open value the
      * moment `data-panel-open` flips -- the same render that starts the
-     * sheet's own 340ms `panelSheetIn` slide-up below -- so the trigger
-     * teleported to its final resting spot above a sheet that hadn't
-     * risen into view yet, then just sat there until the sheet caught up.
-     * Roughly matching the sheet's own timing here makes the two move as
-     * one instead of the trigger visibly outrunning it. `data-panel-open`
-     * (see App.tsx's `panelVisuallyOpen`) flips back to `false` the moment
-     * the sheet *starts* closing too, not once its own exit animation has
-     * already finished, so this transition also carries the trigger back
-     * down in step with the sheet's slide-out instead of snapping into
-     * place a beat after it's already gone.
+     * sheet's own `panelSheetIn` slide-up below -- so the trigger teleported
+     * to its final resting spot above a sheet that hadn't risen into view
+     * yet, then just sat there until the sheet caught up. Sharing the
+     * sheet's own duration *and* easing here (not just a roughly-matched
+     * duration) is what actually makes the two move as one: two transitions
+     * of equal length but different curves still visually settle at
+     * different times, since an ease-*decelerate* curve (this one) reaches
+     * "visually still" well before an ease-*standard* curve of the same
+     * length does. `data-panel-open` (see App.tsx's `panelVisuallyOpen`)
+     * flips back to `false` the moment the sheet *starts* closing too, not
+     * once its own exit animation has already finished, so this transition
+     * also carries the trigger back down in step with the sheet's
+     * slide-out instead of snapping into place a beat after it's already
+     * gone -- the sheet's own closing curve is ease-*accelerate*, not this
+     * rule's ease-decelerate, so that direction stays a close-but-not-exact
+     * match, a small asymmetry accepted over hand-rolling a second,
+     * `data-panel-closing`-scoped transition just for this one control.
      *
      * This button is a `ControlButton`, whose own stylesheet
      * (ControlButton.module.css's `.button`) declares its own `transition`
@@ -408,7 +469,7 @@
   button.panelTrigger {
     transition:
       var(--control-button-transition),
-      bottom var(--panel-reposition-duration) var(--motion-ease-standard);
+      bottom var(--panel-reposition-duration) var(--motion-ease-decelerate);
   }
 
   .panel {
@@ -428,10 +489,23 @@
       var(--md-sys-shape-corner-large) 0 0;
     transform: translateY(calc(var(--panel-drag-offset, 0px) * 0.14));
     transition:
-      height 320ms cubic-bezier(0.2, 0.9, 0.24, 1),
+      height 320ms var(--motion-ease-standard),
       transform var(--motion-duration-medium) var(--motion-ease-decelerate),
       box-shadow var(--motion-duration-medium) var(--motion-ease-standard);
-    animation: panelSheetIn 340ms cubic-bezier(0.22, 1, 0.36, 1);
+    /*
+     * `--panel-reposition-duration`, not a hand-tuned literal here -- see
+     * `button.panelTrigger`'s own comment above. The two used to drift (this
+     * was 340ms against the trigger's 300ms, "roughly" matching by the
+     * previous comment's own admission); sharing the identical token is what
+     * actually makes them move as one rather than a near-miss. The M3
+     * decelerate/accelerate curves (index.css) replace the bespoke
+     * cubic-beziers this used to hand-roll, matching the desktop `.panel`'s
+     * own `panelIn` entrance and this file's stated convention (decelerate
+     * in, accelerate out) instead of a third, unrelated feel for the same
+     * sheet appearing/leaving.
+     */
+    animation: panelSheetIn var(--panel-reposition-duration)
+      var(--motion-ease-decelerate);
   }
 
   .panel[data-panel-dragging="true"] {
@@ -440,7 +514,8 @@
   }
 
   .panel[data-panel-closing="true"] {
-    animation: panelSheetOut 280ms cubic-bezier(0.4, 0, 1, 1) forwards;
+    animation: panelSheetOut var(--panel-reposition-duration)
+      var(--motion-ease-accelerate) forwards;
     pointer-events: none;
   }
 

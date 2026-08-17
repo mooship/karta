@@ -17,7 +17,12 @@ import {
   SettingsMenu,
   useDismissableOverlay,
 } from "@karta/map";
-import { setThemePreference, useThemePreference } from "@karta/react";
+import {
+  MOBILE_BREAKPOINT_PX,
+  setThemePreference,
+  useIsDesktopViewport,
+  useThemePreference,
+} from "@karta/react";
 import clsx from "clsx";
 import type { Feature } from "geojson";
 import { Layers, X } from "lucide-react";
@@ -34,7 +39,6 @@ import {
   useRef,
   useState,
 } from "react";
-import { useWindowSize } from "usehooks-ts";
 import styles from "./App.module.css";
 import { DomainStory } from "./components/DomainStory/DomainStory";
 import { LanguageToggle } from "./components/LanguageToggle/LanguageToggle";
@@ -107,7 +111,6 @@ const PANEL_VIEWPORT_PROPS = {
   "data-e2e": "panel-viewport",
 } as const;
 
-const MOBILE_BREAKPOINT_PX = 768;
 const SHEET_DRAG_THRESHOLD_PX = 36;
 const SHEET_DRAG_PREVIEW_LIMIT_PX = 96;
 const SHEET_PROJECTION_DECELERATION = 0.992;
@@ -288,9 +291,7 @@ export function App() {
     layers: m.panel_tab_layers(),
     story: m.panel_tab_story(),
   };
-  const { width } = useWindowSize({ initializeWithValue: false });
-  const isDesktopViewport =
-    (width ?? MOBILE_BREAKPOINT_PX) > MOBILE_BREAKPOINT_PX;
+  const isDesktopViewport = useIsDesktopViewport();
   const panelTriggerRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLElement>(null);
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
@@ -300,6 +301,29 @@ export function App() {
   const pendingSheetDragOffsetRef = useRef(0);
   const sheetDragFrameRef = useRef<number | null>(null);
 
+  /**
+   * Opens the desktop sidebar synchronously, in the same commit as
+   * `hydrated` (which also starts `MapView`'s own lazy-load and Leaflet
+   * mount) -- deliberately, not deferred. An earlier version deferred this
+   * (via `mapReady`, then via a couple of animation frames) specifically to
+   * stop the panel's entrance animation from visibly competing with that
+   * mount for frames, but *any* deferral of `panelOpen` itself -- even a
+   * couple of frames -- turned out to be unsafe: under real load (a
+   * throttled CPU, contended CI) the gap between a test/user's `mousedown`
+   * and the resulting `click` can outlast the deferral, so the auto-open
+   * could fire *in between* -- flipping `panelOpen` to `true` while that
+   * click was still in flight, so by the time it landed, `handlePanelToggle`
+   * saw an already-open panel and closed it instead. `panelOpen` itself
+   * (and everything downstream of it -- ARIA state, `useDismissableOverlay`'s
+   * Escape-stack position, what's clickable where on desktop) needs to be
+   * deterministic, not racing a side effect. The entrance *animation* is
+   * still deferred, just not through `panelOpen` -- see the
+   * `data-entrance-ready` attribute below, which starts every
+   * `.panel`/`.panelViewport` animation paused at its first frame and only
+   * resumes it once `mapReady`, so nothing is actively ticking (and so
+   * nothing to visibly stutter) while `MapView`'s mount is still competing
+   * for frames.
+   */
   useEffect(() => {
     setHydrated(true);
     if (window.innerWidth > MOBILE_BREAKPOINT_PX) {
@@ -666,6 +690,7 @@ export function App() {
         data-panel-size={mobilePanelExpanded ? "full" : "medium"}
         data-panel-dragging={mobileSheetDragging ? "true" : "false"}
         data-panel-drag-direction={mobileSheetDragDirection}
+        data-entrance-ready={mapReady ? "true" : "false"}
       >
         <a className={styles.skipLink} href="#map-information">
           {m.skip_to_map_information()}
