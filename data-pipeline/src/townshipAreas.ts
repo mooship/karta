@@ -45,12 +45,9 @@ export function createTownshipAreas(
     if (definitionId === undefined) {
       continue;
     }
-    const members = membersByAreaId.get(definitionId);
-    if (members) {
-      members.push(township);
-    } else {
-      membersByAreaId.set(definitionId, [township]);
-    }
+    const members = membersByAreaId.get(definitionId) ?? [];
+    members.push(township);
+    membersByAreaId.set(definitionId, members);
   }
 
   const features = TOWNSHIP_AREA_DEFINITIONS.flatMap((definition) => {
