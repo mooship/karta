@@ -1,5 +1,6 @@
 import type { TownshipProperties } from "@karta/app";
 import { m } from "../../paraglide/messages.js";
+import { getLocale } from "../../paraglide/runtime.js";
 import { formatCommuteTime } from "../../utils/formatCommuteTime";
 import styles from "./TownshipPopup.module.css";
 
@@ -31,7 +32,7 @@ export function TownshipPopup({ properties }: TownshipPopupProps) {
           <>
             <dt>{m.township_popup_population()}</dt>
             <dd className={styles.value}>
-              {properties.population.toLocaleString("en-ZA")}
+              {properties.population.toLocaleString(getLocale())}
             </dd>
           </>
         )}
