@@ -9,13 +9,8 @@
 }
 
 .groupTitle {
-  margin: 0;
+  composes: eyebrowLabel from "../../shared.module.css";
   padding: 0 0.625rem;
-  color: var(--md-sys-color-on-surface-variant);
-  font-family: var(--font-mono);
-  font-size: var(--font-size-xs);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
 }
 
 .groupHint {

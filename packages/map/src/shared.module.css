@@ -1,0 +1,51 @@
+/*
+ * Small style utilities shared across `packages/map`'s own CSS Modules via
+ * `composes:` -- this package's convention for a rule set two or more
+ * components need identically, in place of hand-copying it. Add to this
+ * file rather than re-copying an existing component's rules.
+ */
+
+/*
+ * `color` and `font-size` are deliberately left out here: they vary per
+ * consumer, and composing a value a consumer's rule then had to override
+ * would rely on cascade order between two same-specificity class
+ * selectors -- order the CSS Modules spec doesn't actually guarantee.
+ */
+.eyebrowLabel {
+  margin: 0;
+  font-family: var(--font-mono, "Martian Mono Variable", monospace);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.customScrollbar {
+  scrollbar-color: var(--md-sys-color-outline-variant) transparent;
+  scrollbar-width: thin;
+}
+
+.customScrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.customScrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.customScrollbar::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  border-radius: var(--md-sys-shape-corner-full);
+  background: var(--md-sys-color-on-surface-variant);
+  background-clip: padding-box;
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
