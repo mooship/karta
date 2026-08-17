@@ -1,0 +1,16 @@
+/*
+ * Small style utilities shared across `packages/web`'s own CSS Modules via
+ * `composes:`, so App.module.css's `.sectionTitle`/`.appName` and
+ * LayerToggles.module.css's `.groupTitle` share one eyebrow-label
+ * definition instead of three hand-copied (and previously drifting)
+ * letter-spacing values.
+ */
+
+.eyebrowLabel {
+  margin: 0;
+  color: var(--md-sys-color-on-surface-variant);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
