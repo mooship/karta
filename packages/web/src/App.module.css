@@ -257,6 +257,31 @@
   animation: panelIn var(--panel-motion-duration) var(--motion-ease-decelerate);
 }
 
+/*
+ * Desktop only (the mobile sheet opens purely from a user tap, never
+ * auto-opens, so it has no equivalent race to guard against). `panelOpen`
+ * itself flips synchronously on hydration -- see the effect that sets it in
+ * App.tsx for why that has to stay deterministic -- but starting the whole
+ * app synchronously *and* animating the panel in the very same commit as
+ * `MapView`'s own heaviest mount work is what originally made the entrance
+ * visibly stutter. Freezing `panelIn` at its first frame here, then
+ * resuming it once `mapReady` (`data-entrance-ready`), keeps `panelOpen`
+ * itself immediate while the animation only starts *ticking* once that
+ * heavy work has settled -- nothing to visibly stutter while it's paused,
+ * since a paused animation has no frame-to-frame changes to repaint.
+ */
+@media (min-width: 769px) {
+  .panel,
+  .panelViewport {
+    animation-play-state: paused;
+  }
+
+  .app[data-entrance-ready="true"] .panel,
+  .app[data-entrance-ready="true"] .panelViewport {
+    animation-play-state: running;
+  }
+}
+
 .panelViewport::-webkit-scrollbar {
   width: 8px;
 }
