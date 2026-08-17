@@ -6,12 +6,14 @@ const registryMocks = vi.hoisted(() => ({
   getLayers: vi.fn(() => []),
   getLayerGroups: vi.fn(() => []),
   getLayerGroupStructure: vi.fn(() => []),
+  getLayerStructure: vi.fn(() => []),
 }));
 
 vi.mock("../layers/registry", () => ({
   getLayers: registryMocks.getLayers,
   getLayerGroups: registryMocks.getLayerGroups,
   getLayerGroupStructure: registryMocks.getLayerGroupStructure,
+  getLayerStructure: registryMocks.getLayerStructure,
 }));
 
 vi.mock("@karta/map", async (importOriginal) => {
@@ -136,6 +138,7 @@ describe("buildMapPermalinkSearch", () => {
 describe("useMapPermalink", () => {
   beforeEach(() => {
     registryMocks.getLayers.mockReturnValue(LAYERS);
+    registryMocks.getLayerStructure.mockReturnValue(LAYERS);
     act(() => {
       useMapUiStore.getState().reset();
     });

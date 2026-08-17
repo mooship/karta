@@ -28,12 +28,33 @@ interface TownshipAreaProperties {
 export function createTownshipAreas(
   townships: NormalizedTownship[],
 ): FeatureCollection<Polygon | MultiPolygon, TownshipAreaProperties> {
+  /**
+   * @remarks Built in one pass over `townships` (each resolved to its area
+   *   at most once) rather than filtering the full `townships` list once per
+   *   `TOWNSHIP_AREA_DEFINITIONS` entry — the definitions list and the
+   *   sub-place list can both run into the hundreds/thousands across
+   *   Gauteng's nine metros, so the previous O(definitions × townships)
+   *   nested scan cost far more than this single O(townships + definitions) pass.
+   */
+  const membersByAreaId = new Map<string, NormalizedTownship[]>();
+  for (const township of townships) {
+    const definitionId = getTownshipAreaDefinition(
+      township.name,
+      township.id,
+    )?.id;
+    if (definitionId === undefined) {
+      continue;
+    }
+    const members = membersByAreaId.get(definitionId);
+    if (members) {
+      members.push(township);
+    } else {
+      membersByAreaId.set(definitionId, [township]);
+    }
+  }
+
   const features = TOWNSHIP_AREA_DEFINITIONS.flatMap((definition) => {
-    const members = townships.filter(
-      (township) =>
-        getTownshipAreaDefinition(township.name, township.id)?.id ===
-        definition.id,
-    );
+    const members = membersByAreaId.get(definition.id) ?? [];
     const polygons = members.map((township) => turf.feature(township.geometry));
     if (polygons.length === 0) {
       return [];

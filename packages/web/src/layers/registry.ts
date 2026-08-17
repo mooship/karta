@@ -49,6 +49,18 @@ export function getLayerGroupStructure(): readonly LayerGroup[] {
   return registry.getLayerGroups();
 }
 
+/**
+ * Returns every layer's structural fields (`id`, `defaultVisible`,
+ * `dataSource`, etc.) without applying the translation overlay. `label`/
+ * `description`/choropleth bucket labels come back in English regardless of
+ * locale — prefer `getLayers()` for anything user-facing; this exists for
+ * callers (e.g. `defaultVisible` id lookups) that only need structure, so
+ * they don't pay for translation work whose result they'd never read.
+ */
+export function getLayerStructure(): readonly Layer[] {
+  return registry.getLayers();
+}
+
 /** Returns the `gauteng-spatial-legacy` domain's story copy localized to the current locale, or `undefined` if it has none. */
 export function getStory(): DomainStory | undefined {
   return localizeStory(registry.getStory());

@@ -6,6 +6,7 @@ const registryMocks = vi.hoisted(() => ({
   getLayer: vi.fn(),
   getLayerGroups: vi.fn(() => []),
   getLayerGroupStructure: vi.fn(() => []),
+  getLayerStructure: vi.fn(() => []),
 }));
 
 const mapMocks = vi.hoisted(() => ({
@@ -21,6 +22,7 @@ vi.mock("../layers/registry", () => ({
   getLayer: registryMocks.getLayer,
   getLayerGroups: registryMocks.getLayerGroups,
   getLayerGroupStructure: registryMocks.getLayerGroupStructure,
+  getLayerStructure: registryMocks.getLayerStructure,
 }));
 
 vi.mock("@karta/map", async (importOriginal) => {
