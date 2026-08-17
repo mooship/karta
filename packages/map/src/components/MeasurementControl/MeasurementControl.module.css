@@ -19,7 +19,9 @@
   position: absolute;
   inset-inline-start: 1.25rem;
   inset-block-start: 9rem;
-  z-index: 1240;
+  /* Shared floating-control stacking layer -- see Z_INDEX_CSS_VAR_DEFAULTS,
+   * ../../constants/zIndexTokens.ts. */
+  z-index: var(--floating-control-z-index, 1240);
 }
 
 .panel {
@@ -42,8 +44,8 @@
 .title {
   margin: 0;
   color: var(--md-sys-color-on-surface-variant);
-  font-family: var(--font-mono);
-  font-size: var(--font-size-md);
+  font-family: var(--font-mono, "Martian Mono Variable", monospace);
+  font-size: var(--font-size-md, 0.75rem);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -51,7 +53,7 @@
 .hint {
   margin: 0;
   color: var(--md-sys-color-on-surface-variant);
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-sm, 0.6875rem);
   line-height: 1.35;
 }
 
@@ -64,12 +66,22 @@
 
 .result {
   color: var(--md-sys-color-on-surface);
-  font-family: var(--font-mono);
-  font-size: var(--font-size-base);
+  font-family: var(--font-mono, "Martian Mono Variable", monospace);
+  font-size: var(--font-size-base, 0.8125rem);
   font-weight: 700;
 }
 
 @media (max-width: 768px) {
+  /*
+   * `--mobile-control-edge`/`--mobile-search-clearance`/`--mobile-safe-top`
+   * are `@karta/map`'s own documented mobile layout contract (see
+   * `MOBILE_LAYOUT_CSS_VAR_DEFAULTS`, ../../constants/mobileLayoutTokens.ts,
+   * for the full set and their defaults, used verbatim in the fallbacks
+   * below) -- a host app defines these to tell every mobile floating
+   * control where its own search box and safe-area insets actually are,
+   * rather than each control needing its own bespoke prop for the same
+   * handful of app-composition values.
+   */
   .root {
     inset-inline-start: var(--mobile-control-edge, 0.75rem);
     inset-block-start: calc(
