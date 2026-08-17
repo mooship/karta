@@ -19,6 +19,11 @@ function downloadFileName(
   return `${layer.id}${suffix}.${extension}`;
 }
 
+/** Key identifying one layer/dataSource pair's CSV export status in `csvExportStatus`. */
+function csvExportKey(layer: Layer, sourceIndex: number): string {
+  return `${layer.id}-${sourceIndex}`;
+}
+
 /** Prompts the browser to save `blob` as `fileName`, without navigating away from the page. */
 function downloadBlob(blob: Blob, fileName: string): void {
   const url = URL.createObjectURL(blob);
@@ -74,7 +79,7 @@ function LayerTogglesComponent({
     sourceIndex: number,
     url: string,
   ) {
-    const key = `${layer.id}-${sourceIndex}`;
+    const key = csvExportKey(layer, sourceIndex);
     setCsvExportStatus((status) => ({ ...status, [key]: "loading" }));
     try {
       const collection = await fetchFeatureCollection(url);
@@ -119,7 +124,7 @@ function LayerTogglesComponent({
     const csvErrors: ReactNode[] = [];
     if (layer.available) {
       layer.dataSource.forEach((url, sourceIndex) => {
-        const csvKey = `${layer.id}-${sourceIndex}`;
+        const csvKey = csvExportKey(layer, sourceIndex);
         downloadControls.push(
           <Fragment key={url}>
             <a

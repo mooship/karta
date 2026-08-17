@@ -1,6 +1,6 @@
 import { renderHook } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { stubMatchMedia } from "./stubMatchMedia";
+import { stubMatchMedia } from "../testUtils/stubMatchMedia";
 import { useResolvedDarkTheme } from "./useResolvedDarkTheme";
 import { setThemePreference } from "./useThemePreference";
 

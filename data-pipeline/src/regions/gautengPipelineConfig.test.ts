@@ -150,12 +150,6 @@ describe("GAUTENG_PIPELINE_CONFIG", () => {
   it("includes all 9 Gauteng metros", () => {
     expect(GAUTENG_PIPELINE_CONFIG.metros).toHaveLength(9);
   });
-
-  it("tags every source with the gauteng region id", () => {
-    for (const source of GAUTENG_PIPELINE_CONFIG.sources) {
-      expect(source.regionId).toBe("gauteng");
-    }
-  });
 });
 
 describe("fetchRapidRail (rapid-rail source)", () => {

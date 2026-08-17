@@ -1,4 +1,4 @@
-import type { LayerGroup } from "../../types/genericLayer";
+import type { LayerGroup } from "@karta/core";
 
 /**
  * The `gauteng-spatial-legacy` domain's layer groups: the two accessibility
