@@ -1,10 +1,19 @@
 import type { TownshipProperties } from "@karta/app";
 import { m } from "../../paraglide/messages.js";
+import { getLocale } from "../../paraglide/runtime.js";
 import { formatCommuteTime } from "../../utils/formatCommuteTime";
 import styles from "./TownshipPopup.module.css";
 
 interface TownshipPopupProps {
   properties: TownshipProperties;
+}
+
+/** Formats a kilometre figure to one decimal place using the active locale's decimal separator. */
+function formatDistanceKm(km: number): string {
+  return km.toLocaleString(getLocale(), {
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1,
+  });
 }
 
 /**
@@ -31,7 +40,7 @@ export function TownshipPopup({ properties }: TownshipPopupProps) {
           <>
             <dt>{m.township_popup_population()}</dt>
             <dd className={styles.value}>
-              {properties.population.toLocaleString("en-ZA")}
+              {properties.population.toLocaleString(getLocale())}
             </dd>
           </>
         )}
@@ -39,7 +48,9 @@ export function TownshipPopup({ properties }: TownshipPopupProps) {
           <>
             <dt>{m.township_popup_distance()}</dt>
             <dd className={styles.value}>
-              {m.distance_km({ value: properties.distanceKm.toFixed(1) })}
+              {m.distance_km({
+                value: formatDistanceKm(properties.distanceKm),
+              })}
             </dd>
           </>
         )}
@@ -48,7 +59,7 @@ export function TownshipPopup({ properties }: TownshipPopupProps) {
             <dt>{m.township_popup_transit_distance()}</dt>
             <dd className={styles.value}>
               {m.distance_km({
-                value: properties.nearestTransitKm.toFixed(1),
+                value: formatDistanceKm(properties.nearestTransitKm),
               })}
             </dd>
           </>
