@@ -74,4 +74,14 @@ describe("TownshipPopup", () => {
 
     expect(screen.getByText("334 577")).toBeInTheDocument();
   });
+
+  it("formats distance figures using the active locale's decimal separator, not a fixed one", () => {
+    getLocale.mockReturnValue("af");
+    render(
+      <TownshipPopup properties={{ ...properties, nearestTransitKm: 4.28 }} />,
+    );
+
+    expect(screen.getByText("28,4 km")).toBeInTheDocument();
+    expect(screen.getByText("4,3 km")).toBeInTheDocument();
+  });
 });
