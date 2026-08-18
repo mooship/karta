@@ -1,6 +1,6 @@
 import { getRegisteredBasemapIds } from "@karta/map";
 import { useEffect, useMemo, useRef } from "react";
-import { getLayers } from "../layers/registry";
+import { getLayerStructure } from "../layers/registry";
 import {
   getDefaultMapUiState,
   type PanelView,
@@ -135,10 +135,15 @@ export interface UseMapPermalinkOptions {
 export function useMapPermalink({ dataReady }: UseMapPermalinkOptions): void {
   /**
    * The registry's layer ids, in order. Memoized rather than recomputed in
-   * every effect below — `getLayers()` returns a stable reference to the
-   * domain's static layer catalogue for the app's whole lifetime.
+   * every effect below — the domain's layer catalogue is stable for the
+   * app's whole lifetime. Uses the unlocalized `getLayerStructure()` rather
+   * than `getLayers()`, since only `id` is needed here and running the
+   * translation overlay just to discard its result would be wasted work.
    */
-  const layerIds = useMemo(() => getLayers().map((layer) => layer.id), []);
+  const layerIds = useMemo(
+    () => getLayerStructure().map((layer) => layer.id),
+    [],
+  );
   const defaults = useMemo(() => getDefaultMapUiState(), []);
   const pendingFeatureId = useRef<string | undefined>(undefined);
 

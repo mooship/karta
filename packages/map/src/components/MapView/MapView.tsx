@@ -732,10 +732,15 @@ function MapViewComponent<
       ),
     [visibleLayerIds, getLayers],
   );
+  const nonChoroplethLayerIds = useMemo(
+    () =>
+      visibleLayers
+        .filter((layer) => layer.geometryKind !== "choropleth")
+        .map((layer) => layer.id),
+    [visibleLayers],
+  );
   const { data: overlayData, failedLayerIds } = useLayerData(
-    visibleLayers
-      .filter((layer) => layer.geometryKind !== "choropleth")
-      .map((layer) => layer.id),
+    nonChoroplethLayerIds,
   );
   // biome-ignore lint/correctness/useExhaustiveDependencies: onLayerDataError intentionally omitted -- it's a public prop with no stability guarantee, so including it could re-fire this effect on every render for callers that don't memoize it
   useEffect(() => {
@@ -801,10 +806,14 @@ function MapViewComponent<
     () => ({ tileerror: handleTileError }),
     [handleTileError],
   );
-  const showAreaLabels = getLayers().some(
-    (layer) =>
-      visibleLayerIds.includes(layer.id) &&
-      layer.interaction?.labelField !== undefined,
+  const showAreaLabels = useMemo(
+    () =>
+      getLayers().some(
+        (layer) =>
+          visibleLayerIds.includes(layer.id) &&
+          layer.interaction?.labelField !== undefined,
+      ),
+    [visibleLayerIds, getLayers],
   );
   const isOverviewZoom = mapZoom < OVERVIEW_ZOOM_THRESHOLD;
   const isDetailZoom = mapZoom >= DETAIL_ZOOM_THRESHOLD;

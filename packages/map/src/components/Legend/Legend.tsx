@@ -5,7 +5,7 @@ import {
   resolveThemedColor,
 } from "@karta/core";
 import { useResolvedDarkTheme } from "@karta/react";
-import { useMemo } from "react";
+import { memo, useMemo } from "react";
 import { useDomain } from "../../context/DomainContext";
 import styles from "./Legend.module.css";
 
@@ -90,17 +90,7 @@ function getLegendAriaLabel(mode: "all" | "active", label: string) {
   return label;
 }
 
-/**
- * Renders choropleth and transit layer legend entries for a map domain.
- * @remarks Must be rendered inside a `DomainProvider`. Choropleth swatches
- *   resolve each bucket's `darkColor` over `color` while dark theme is
- *   active, matching the fill `MapView` renders for the same theme.
- * @example
- * <DomainProvider domain={GAUTENG_SPATIAL_LEGACY_DOMAIN}>
- *   <Legend mode="active" visibleLayerIds={["townships"]} />
- * </DomainProvider>
- */
-export function Legend({
+function LegendComponent({
   mode = "all",
   visibleLayerIds = [],
   compact = false,
@@ -194,3 +184,17 @@ export function Legend({
     </div>
   );
 }
+
+/**
+ * Renders choropleth and transit layer legend entries for a map domain.
+ * @remarks Must be rendered inside a `DomainProvider`. Choropleth swatches
+ *   resolve each bucket's `darkColor` over `color` while dark theme is
+ *   active, matching the fill `MapView` renders for the same theme. Memoized
+ *   like `MapView` itself, since it renders inside the same panel/bottom-sheet
+ *   tree that re-renders on unrelated parent state (drag frames, menu toggles).
+ * @example
+ * <DomainProvider domain={GAUTENG_SPATIAL_LEGACY_DOMAIN}>
+ *   <Legend mode="active" visibleLayerIds={["townships"]} />
+ * </DomainProvider>
+ */
+export const Legend = memo(LegendComponent);

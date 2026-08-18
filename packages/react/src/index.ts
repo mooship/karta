@@ -20,5 +20,6 @@ export type { ThemeConfig, ThemePreference } from "./hooks/useThemePreference";
 export {
   initTheme,
   setThemePreference,
+  THEME_PREFERENCES,
   useThemePreference,
 } from "./hooks/useThemePreference";

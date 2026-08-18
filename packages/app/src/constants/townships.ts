@@ -1013,11 +1013,6 @@ export const TOWNSHIP_AREA_DEFINITIONS: readonly TownshipAreaDefinition[] = [
   })),
 ];
 
-/** Every township area's display name, in the same order as `TOWNSHIP_AREA_DEFINITIONS`. */
-export const TOWNSHIP_GROUPS = TOWNSHIP_AREA_DEFINITIONS.map(
-  (area) => area.name,
-);
-
 function findByCensusCode(
   areas: TownshipAreaDefinition[],
   censusId: string,

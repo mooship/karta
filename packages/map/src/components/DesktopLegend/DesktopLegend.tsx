@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Legend } from "../Legend/Legend";
 import styles from "./DesktopLegend.module.css";
 
@@ -7,12 +8,7 @@ interface DesktopLegendProps {
   suppressed?: boolean;
 }
 
-/**
- * Always-visible legend panel for desktop viewports, showing only the
- * currently active layers.
- * @remarks Must be rendered inside a `DomainProvider`.
- */
-export function DesktopLegend({
+function DesktopLegendComponent({
   visibleLayerIds,
   suppressed = false,
 }: DesktopLegendProps) {
@@ -32,3 +28,12 @@ export function DesktopLegend({
     </section>
   );
 }
+
+/**
+ * Always-visible legend panel for desktop viewports, showing only the
+ * currently active layers.
+ * @remarks Must be rendered inside a `DomainProvider`. Memoized so unrelated
+ *   parent re-renders (e.g. panel drag frames) don't force this subtree
+ *   through reconciliation when `visibleLayerIds`/`suppressed` haven't changed.
+ */
+export const DesktopLegend = memo(DesktopLegendComponent);

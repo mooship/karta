@@ -1,6 +1,6 @@
 import type { Basemap } from "@karta/map";
 import { create } from "zustand";
-import { getLayerGroupStructure, getLayers } from "../layers/registry";
+import { getLayerGroupStructure, getLayerStructure } from "../layers/registry";
 
 function findGroupContaining(id: string) {
   return getLayerGroupStructure().find((group) => group.layerIds.includes(id));
@@ -44,7 +44,7 @@ interface MapUiState {
  */
 export function getDefaultMapUiState() {
   return {
-    visibleLayerIds: getLayers()
+    visibleLayerIds: getLayerStructure()
       .filter((layer) => layer.defaultVisible)
       .map((layer) => layer.id),
     basemap: "street" as const,
