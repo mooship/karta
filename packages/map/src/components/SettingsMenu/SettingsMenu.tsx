@@ -1,12 +1,6 @@
-import type { ThemePreference } from "@karta/react";
+import { type ThemePreference, useLatestRef } from "@karta/react";
 import { Settings, X } from "lucide-react";
-import {
-  type ReactNode,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { type ReactNode, useCallback, useRef, useState } from "react";
 import { type Basemap, getBasemapDefinition } from "../../constants/basemaps";
 import { useDismissableOverlay } from "../../hooks/useDismissableOverlay";
 import { BasemapToggle } from "../BasemapToggle/BasemapToggle";
@@ -43,16 +37,15 @@ export function SettingsMenu({
   const containerRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
-  const onOpenChangeRef = useRef(onOpenChange);
+  const onOpenChangeRef = useLatestRef(onOpenChange);
 
-  useEffect(() => {
-    onOpenChangeRef.current = onOpenChange;
-  });
-
-  const updateOpen = useCallback((value: boolean) => {
-    setOpen(value);
-    onOpenChangeRef.current?.(value);
-  }, []);
+  const updateOpen = useCallback(
+    (value: boolean) => {
+      setOpen(value);
+      onOpenChangeRef.current?.(value);
+    },
+    [onOpenChangeRef],
+  );
   const close = useCallback(() => updateOpen(false), [updateOpen]);
 
   useDismissableOverlay({

@@ -47,10 +47,8 @@ vi.mock("@karta/core", async (importOriginal) => {
   };
 });
 
-vi.mock("./data/TownshipDataRepository", () => ({
-  createTownshipDataRepository: () => ({
-    getTownships: dataMocks.getTownships,
-  }),
+vi.mock("./data/fetchTownships", () => ({
+  fetchTownships: dataMocks.getTownships,
 }));
 
 import { App } from "./App";

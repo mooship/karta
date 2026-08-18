@@ -10,7 +10,6 @@ describe("PipelineSource/RegionPipelineConfig", () => {
     };
     const source: PipelineSource = {
       layerId: "example",
-      regionId: "gauteng",
       fetch: async () => emptyCollection,
       outputFileName: "example.display.v1.geojson",
     };

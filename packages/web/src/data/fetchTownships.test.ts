@@ -1,8 +1,8 @@
 import { clearFeatureCollectionCache } from "@karta/core";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { createTownshipDataRepository } from "./TownshipDataRepository";
+import { fetchTownships } from "./fetchTownships";
 
-describe("createTownshipDataRepository", () => {
+describe("fetchTownships", () => {
   afterEach(() => {
     vi.unstubAllGlobals();
     clearFeatureCollectionCache();
@@ -41,8 +41,7 @@ describe("createTownshipDataRepository", () => {
       vi.fn().mockResolvedValue({ ok: true, json: async () => geojson }),
     );
 
-    const repo = createTownshipDataRepository("/data/townships.v1.geojson");
-    const result = await repo.getTownships();
+    const result = await fetchTownships("/data/townships.v1.geojson");
 
     expect(fetch).toHaveBeenCalledWith(
       "/data/townships.v1.geojson",
@@ -84,8 +83,7 @@ describe("createTownshipDataRepository", () => {
       vi.fn().mockResolvedValue({ ok: true, json: async () => geojson }),
     );
 
-    const repo = createTownshipDataRepository("/data/townships.v1.geojson");
-    const result = await repo.getTownships();
+    const result = await fetchTownships("/data/townships.v1.geojson");
 
     expect(result[0]?.properties.nearestTransitKm).toBe(1.5);
   });
@@ -122,8 +120,7 @@ describe("createTownshipDataRepository", () => {
       vi.fn().mockResolvedValue({ ok: true, json: async () => geojson }),
     );
 
-    const repo = createTownshipDataRepository("/data/townships.v1.geojson");
-    const result = await repo.getTownships();
+    const result = await fetchTownships("/data/townships.v1.geojson");
 
     expect(result[0]?.properties.nearestTransitKm).toBeNull();
   });
@@ -133,9 +130,8 @@ describe("createTownshipDataRepository", () => {
       "fetch",
       vi.fn().mockResolvedValue({ ok: false, status: 404 }),
     );
-    const repo = createTownshipDataRepository("/data/missing.geojson");
 
-    await expect(repo.getTownships()).rejects.toThrow(
+    await expect(fetchTownships("/data/missing.geojson")).rejects.toThrow(
       "Failed to load /data/missing.geojson: 404",
     );
   });
@@ -162,8 +158,7 @@ describe("createTownshipDataRepository", () => {
       }),
     );
 
-    const repo = createTownshipDataRepository("/data/townships.geojson");
-    await expect(repo.getTownships()).rejects.toThrow(
+    await expect(fetchTownships("/data/townships.geojson")).rejects.toThrow(
       /invalid geojson.*commuteMinutes/i,
     );
   });
@@ -193,8 +188,9 @@ describe("createTownshipDataRepository", () => {
       }),
     );
 
-    const repo = createTownshipDataRepository("/data/townships.geojson");
-    await expect(repo.getTownships()).rejects.toThrow(/geometry/i);
+    await expect(fetchTownships("/data/townships.geojson")).rejects.toThrow(
+      /geometry/i,
+    );
   });
 
   it("rejects a payload with no features array", async () => {
@@ -206,9 +202,7 @@ describe("createTownshipDataRepository", () => {
       }),
     );
 
-    const repo = createTownshipDataRepository("/data/townships.v1.geojson");
-
-    await expect(repo.getTownships()).rejects.toThrow(
+    await expect(fetchTownships("/data/townships.v1.geojson")).rejects.toThrow(
       /invalid geojson.*features/i,
     );
   });

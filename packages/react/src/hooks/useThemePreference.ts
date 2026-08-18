@@ -18,6 +18,17 @@ const useIsomorphicLayoutEffect =
 /** Explicit theme choice. `"system"` follows the OS `prefers-color-scheme`. */
 export type ThemePreference = "system" | "light" | "dark";
 
+/**
+ * Every valid `ThemePreference` value, for callers that need to enumerate
+ * them (e.g. building a picker's option list) rather than just narrow to
+ * the type.
+ */
+export const THEME_PREFERENCES: readonly ThemePreference[] = [
+  "system",
+  "light",
+  "dark",
+];
+
 /** Configuration for the theme preference system. */
 export interface ThemeConfig {
   /** localStorage key used to persist the preference. */

@@ -1,4 +1,4 @@
-import { act, render, screen } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
 import type { LatLng } from "leaflet";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
@@ -178,7 +178,33 @@ describe("MeasurementLayer", () => {
       ).not.toBeInTheDocument();
     });
 
-    it("previews a dashed line to the hovered point in distance mode", () => {
+    it("coalesces mousemoves within the same animation frame into a single scheduled update", () => {
+      const rafSpy = vi.fn().mockReturnValue(1);
+      vi.stubGlobal("requestAnimationFrame", rafSpy);
+
+      render(
+        <MeasurementLayer
+          mode="distance"
+          points={[POINT_A]}
+          onAddPoint={vi.fn()}
+        />,
+      );
+
+      moveMouseTo(HOVER_POINT);
+      moveMouseTo(POINT_C);
+
+      expect(rafSpy).toHaveBeenCalledTimes(1);
+
+      act(() => {
+        rafSpy.mock.calls[0]?.[0]?.(0);
+      });
+
+      expect(screen.getByTestId("measurement-polyline")).toHaveTextContent("2");
+
+      vi.unstubAllGlobals();
+    });
+
+    it("previews a dashed line to the hovered point in distance mode", async () => {
       render(
         <MeasurementLayer
           mode="distance"
@@ -189,11 +215,15 @@ describe("MeasurementLayer", () => {
 
       moveMouseTo(HOVER_POINT);
 
-      expect(screen.getByTestId("measurement-polyline")).toHaveTextContent("2");
+      await waitFor(() =>
+        expect(screen.getByTestId("measurement-polyline")).toHaveTextContent(
+          "2",
+        ),
+      );
       expect(screen.getAllByTestId("measurement-vertex")).toHaveLength(2);
     });
 
-    it("previews the polygon shape once hovering past two points in area mode", () => {
+    it("previews the polygon shape once hovering past two points in area mode", async () => {
       render(
         <MeasurementLayer
           mode="area"
@@ -204,13 +234,17 @@ describe("MeasurementLayer", () => {
 
       moveMouseTo(HOVER_POINT);
 
-      expect(screen.getByTestId("measurement-polygon")).toHaveTextContent("3");
+      await waitFor(() =>
+        expect(screen.getByTestId("measurement-polygon")).toHaveTextContent(
+          "3",
+        ),
+      );
       expect(
         screen.queryByTestId("measurement-polyline"),
       ).not.toBeInTheDocument();
     });
 
-    it("clears the preview on mouseout", () => {
+    it("clears the preview on mouseout", async () => {
       render(
         <MeasurementLayer
           mode="distance"
@@ -220,7 +254,9 @@ describe("MeasurementLayer", () => {
       );
 
       moveMouseTo(HOVER_POINT);
-      expect(screen.getByTestId("measurement-polyline")).toBeInTheDocument();
+      await waitFor(() =>
+        expect(screen.getByTestId("measurement-polyline")).toBeInTheDocument(),
+      );
 
       moveMouseOut();
 

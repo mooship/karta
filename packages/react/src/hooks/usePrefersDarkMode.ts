@@ -1,4 +1,4 @@
-import { useMediaQuery } from "usehooks-ts";
+import { useSsrSafeMediaQuery } from "./useSsrSafeMediaQuery";
 
 const QUERY = "(prefers-color-scheme: dark)";
 
@@ -7,8 +7,5 @@ const QUERY = "(prefers-color-scheme: dark)";
  * @remarks Initialises to `false` on first render to avoid SSR mismatch.
  */
 export function usePrefersDarkMode() {
-  return useMediaQuery(QUERY, {
-    defaultValue: false,
-    initializeWithValue: false,
-  });
+  return useSsrSafeMediaQuery(QUERY);
 }

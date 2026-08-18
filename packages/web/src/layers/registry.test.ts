@@ -10,7 +10,13 @@ vi.mock("../paraglide/runtime.js", async (importOriginal) => {
   return { ...actual, getLocale };
 });
 
-import { getLayer, getLayerGroups, getLayers, getStory } from "./registry";
+import {
+  getLayer,
+  getLayerGroups,
+  getLayerStructure,
+  getLayers,
+  getStory,
+} from "./registry";
 
 describe("registry", () => {
   afterEach(() => {
@@ -65,5 +71,13 @@ describe("registry", () => {
     expect(getLayer("bus")?.label).toBe("Ibhasi");
     expect(getLayerGroups()[0]?.title).toBe("Izingqimba zokufinyelela");
     expect(getStory()?.title).toBe("Kungani leli balazwe likhona");
+  });
+
+  it("returns layer structure (ids, defaultVisible) without translating labels", () => {
+    getLocale.mockReturnValue("zu");
+
+    const structure = getLayerStructure();
+    expect(structure.map((l) => l.id)).toEqual(getLayers().map((l) => l.id));
+    expect(structure.find((l) => l.id === "bus")?.label).toBe("Bus");
   });
 });

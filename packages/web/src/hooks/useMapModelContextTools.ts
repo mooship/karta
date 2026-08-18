@@ -5,16 +5,14 @@ import {
   type LocationSearchResult,
 } from "@karta/map";
 import type { ThemePreference } from "@karta/react";
-import { setThemePreference, useModelContextTool } from "@karta/react";
+import {
+  setThemePreference,
+  THEME_PREFERENCES,
+  useModelContextTool,
+} from "@karta/react";
 import { getLayer, getLayers } from "../layers/registry";
 import { m } from "../paraglide/messages.js";
 import { useMapUiStore } from "../stores/useMapUiStore";
-
-const THEME_PREFERENCES: readonly ThemePreference[] = [
-  "system",
-  "light",
-  "dark",
-];
 
 interface ToggleLayerInput {
   layerId: string;

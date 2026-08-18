@@ -1,4 +1,4 @@
-import { useMediaQuery } from "usehooks-ts";
+import { useSsrSafeMediaQuery } from "./useSsrSafeMediaQuery";
 
 const QUERY = "(hover: hover) and (pointer: fine)";
 
@@ -10,8 +10,5 @@ const QUERY = "(hover: hover) and (pointer: fine)";
  *   would otherwise misfire from a touch device's synthetic mouse events.
  */
 export function useCanHover() {
-  return useMediaQuery(QUERY, {
-    defaultValue: false,
-    initializeWithValue: false,
-  });
+  return useSsrSafeMediaQuery(QUERY);
 }
