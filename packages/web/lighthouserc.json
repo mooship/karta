@@ -1,7 +1,10 @@
 {
   "ci": {
     "collect": {
-      "url": ["http://localhost:4173/"],
+      "url": [
+        "http://localhost:4173/d/gauteng-spatial-legacy",
+        "http://localhost:4173/d/heritage-sites"
+      ],
       "numberOfRuns": 3,
       "startServerCommand": "npm run preview:e2e --workspace @karta/web -- --port 4173",
       "startServerReadyPattern": "Ready on",

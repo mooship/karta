@@ -1,11 +1,7 @@
 import type { Layer } from "@karta/core";
 import { getRegisteredBasemapIds } from "@karta/map";
 import { useEffect, useMemo, useRef } from "react";
-import {
-  getDefaultMapUiState,
-  type PanelView,
-  useMapUiStore,
-} from "../stores/useMapUiStore";
+import { type PanelView, useMapUiStore } from "../stores/useMapUiStore";
 
 const LAYERS_PARAM = "layers";
 const BASEMAP_PARAM = "basemap";
@@ -152,7 +148,23 @@ export function useMapPermalink({
    * localized.
    */
   const layerIds = useMemo(() => layers.map((layer) => layer.id), [layers]);
-  const defaults = useMemo(() => getDefaultMapUiState(), []);
+  /**
+   * The subset of `useMapUiStore`'s defaults `buildMapPermalinkSearch` diffs
+   * against — derived from `layers` rather than the store's own
+   * `initializeForDomain` output, since `basemap`/`panelView` never vary by
+   * domain and `visibleLayerIds`' default is exactly each `defaultVisible`
+   * layer's id.
+   */
+  const defaults = useMemo(
+    () => ({
+      visibleLayerIds: layers
+        .filter((layer) => layer.defaultVisible)
+        .map((layer) => layer.id),
+      basemap: "street" as const,
+      panelView: "layers" as const,
+    }),
+    [layers],
+  );
   const pendingFeatureId = useRef<string | undefined>(undefined);
 
   useEffect(() => {

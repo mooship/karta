@@ -135,7 +135,12 @@ describe("useMapPermalink", () => {
   beforeEach(() => {
     registryMocks.getLayerStructure.mockReturnValue(LAYERS);
     act(() => {
-      useMapUiStore.getState().reset();
+      // initializeForDomain (not reset) so the store's own default
+      // visibleLayerIds — computed from the mocked getLayerStructure, same
+      // as the hook's own `layers`-derived defaults — actually matches
+      // what useMapPermalink expects; reset() alone leaves domainId null
+      // on a fresh store, which would default visibleLayerIds to [].
+      useMapUiStore.getState().initializeForDomain("gauteng-spatial-legacy");
     });
     setUrl("");
   });

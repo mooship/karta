@@ -238,8 +238,15 @@ function PanelViewContent({
  *   `MobileLegend`'s own `panelOpen` prop and the `.app` element's
  *   `data-panel-open` attribute are driven by the derived `panelVisuallyOpen`
  *   below, not raw `panelOpen` -- see that constant's own doc comment for why.
+ * @param domainId See `AppProps`.
  */
-export function App() {
+/** Props for `App`. */
+export interface AppProps {
+  /** The domain to render, as a registered `@karta/app` `DOMAINS` id. Defaults to `DEFAULT_DOMAIN_ID`, matching every route before `/d/:domainId` routing existed. */
+  domainId?: string;
+}
+
+export function App({ domainId = DEFAULT_DOMAIN_ID }: AppProps = {}) {
   const [hydrated, setHydrated] = useState(false);
   const [mapReady, setMapReady] = useState(false);
   const [townships, setTownships] = useState<TownshipFeature[]>([]);
@@ -272,15 +279,19 @@ export function App() {
   const setSelectedFeatureId = useMapUiStore(
     (state) => state.setSelectedFeatureId,
   );
+  const initializeForDomain = useMapUiStore(
+    (state) => state.initializeForDomain,
+  );
   const themePreference = useThemePreference();
   /**
-   * Hardcoded to `DEFAULT_DOMAIN_ID` rather than a routed `domainId` prop —
-   * `App` doesn't yet receive one, since `/d/:domainId` routing hasn't
-   * landed. Still resolved fresh per render via `getLocalizedDomain`
-   * (never cached at module scope), matching the per-request-locale
-   * discipline `layers/registry.ts` already documents.
+   * Resolved fresh per render via `getLocalizedDomain` (never cached at
+   * module scope), matching the per-request-locale discipline
+   * `layers/registry.ts` already documents — `domainId` itself is stable
+   * for `App`'s whole mounted lifetime (switching domains is a full-document
+   * navigation, not a prop change), so this only actually recomputes when
+   * the locale does.
    */
-  const domain = useMemo(() => getLocalizedDomain(DEFAULT_DOMAIN_ID), []);
+  const domain = useMemo(() => getLocalizedDomain(domainId), [domainId]);
   const story = domain.story;
   /**
    * Memoised (not just `story`-derived inline) so this array keeps one
@@ -308,6 +319,12 @@ export function App() {
   const sheetDragFrameRef = useRef<number | null>(null);
 
   /**
+   * Also calls `initializeForDomain(domainId)` first, in the same effect —
+   * this is what populates `useMapUiStore`'s real `visibleLayerIds`
+   * defaults (module scope starts empty, so SSR and the client's
+   * pre-hydration render agree with nothing to mismatch over) and enforces
+   * each layer group's `selectionMode` for whichever domain is actually
+   * active, not just `gauteng-spatial-legacy`'s.
    * Opens the desktop sidebar synchronously, in the same commit as
    * `hydrated` (which also starts `MapView`'s own lazy-load and Leaflet
    * mount) -- deliberately, not deferred. An earlier version deferred this
@@ -331,11 +348,12 @@ export function App() {
    * for frames.
    */
   useEffect(() => {
+    initializeForDomain(domainId);
     setHydrated(true);
     if (window.innerWidth > MOBILE_BREAKPOINT_PX) {
       setPanelOpen(true);
     }
-  }, [setPanelOpen]);
+  }, [domainId, initializeForDomain, setPanelOpen]);
 
   useEffect(() => {
     if (!mapReady) {

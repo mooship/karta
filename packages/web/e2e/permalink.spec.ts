@@ -87,7 +87,7 @@ test.describe("shareable map links", () => {
   }) => {
     await page.goto("/");
 
-    await expect(page).toHaveURL(/\/$/);
+    await expect(page).toHaveURL(/\/d\/gauteng-spatial-legacy$/);
     expect(new URL(page.url()).search).toBe("");
   });
 });
