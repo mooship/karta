@@ -19,8 +19,9 @@
 }
 
 .sectionTitle {
-  composes: eyebrowLabel from "../../shared.module.css";
   margin: var(--space-4) 0 var(--space-1);
+  font-size: 1.125rem;
+  font-weight: 600;
 }
 
 .body {
