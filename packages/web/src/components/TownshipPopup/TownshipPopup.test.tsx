@@ -1,6 +1,17 @@
 import type { TownshipProperties } from "@karta/app";
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
+
+const { getLocale } = vi.hoisted(() => ({
+  getLocale: vi.fn(() => "en"),
+}));
+
+vi.mock("../../paraglide/runtime.js", async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import("../../paraglide/runtime.js")>();
+  return { ...actual, getLocale };
+});
+
 import { TownshipPopup } from "./TownshipPopup";
 
 const properties: TownshipProperties = {
@@ -15,6 +26,10 @@ const properties: TownshipProperties = {
 };
 
 describe("TownshipPopup", () => {
+  afterEach(() => {
+    getLocale.mockReturnValue("en");
+  });
+
   it("shows name, population, modelled car time, and nearest job center", () => {
     render(<TownshipPopup properties={properties} />);
 
@@ -51,5 +66,22 @@ describe("TownshipPopup", () => {
 
     expect(screen.getByText("Distance to nearest transit")).toBeInTheDocument();
     expect(screen.getByText("4.3 km")).toBeInTheDocument();
+  });
+
+  it("formats population using the active locale's number grouping, not a fixed one", () => {
+    getLocale.mockReturnValue("af");
+    render(<TownshipPopup properties={properties} />);
+
+    expect(screen.getByText("334 577")).toBeInTheDocument();
+  });
+
+  it("formats distance figures using the active locale's decimal separator, not a fixed one", () => {
+    getLocale.mockReturnValue("af");
+    render(
+      <TownshipPopup properties={{ ...properties, nearestTransitKm: 4.28 }} />,
+    );
+
+    expect(screen.getByText("28,4 km")).toBeInTheDocument();
+    expect(screen.getByText("4,3 km")).toBeInTheDocument();
   });
 });
