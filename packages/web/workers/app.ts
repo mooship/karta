@@ -1,5 +1,5 @@
 import { createRequestHandler } from "react-router";
-import { getAllKnownLayerIds } from "../src/analytics/knownLayerIds";
+import { ALL_KNOWN_LAYER_IDS } from "../src/analytics/knownLayerIds";
 import type { AnalyticsEngineDataset } from "../src/analytics/layerUsage";
 import { handleLayerUsageRequest } from "../src/analytics/layerUsage";
 import { LAYER_USAGE_ENDPOINT } from "../src/constants/analyticsConfig";
@@ -63,7 +63,7 @@ export default {
       return handleLayerUsageRequest(
         request,
         env.LAYER_USAGE,
-        getAllKnownLayerIds(),
+        ALL_KNOWN_LAYER_IDS,
       );
     }
     return requestHandler(request);

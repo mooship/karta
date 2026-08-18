@@ -148,7 +148,13 @@ describe("useMapPermalink", () => {
   it("applies visible layers, basemap, and panel view from the URL on mount", () => {
     setUrl("?layers=rapid-rail&basemap=satellite&panel=story");
 
-    renderHook(() => useMapPermalink({ dataReady: true, layers: LAYERS }));
+    renderHook(() =>
+      useMapPermalink({
+        dataReady: true,
+        layers: LAYERS,
+        domainId: "gauteng-spatial-legacy",
+      }),
+    );
 
     const state = useMapUiStore.getState();
     expect(state.visibleLayerIds).toEqual(["rapid-rail"]);
@@ -161,7 +167,11 @@ describe("useMapPermalink", () => {
 
     const { rerender } = renderHook(
       ({ dataReady }: { dataReady: boolean }) =>
-        useMapPermalink({ dataReady, layers: LAYERS }),
+        useMapPermalink({
+          dataReady,
+          layers: LAYERS,
+          domainId: "gauteng-spatial-legacy",
+        }),
       { initialProps: { dataReady: false } },
     );
 
@@ -174,7 +184,13 @@ describe("useMapPermalink", () => {
 
   it("writes non-default state back to the URL without pushing a new history entry", () => {
     const pushStateSpy = vi.spyOn(window.history, "pushState");
-    renderHook(() => useMapPermalink({ dataReady: true, layers: LAYERS }));
+    renderHook(() =>
+      useMapPermalink({
+        dataReady: true,
+        layers: LAYERS,
+        domainId: "gauteng-spatial-legacy",
+      }),
+    );
 
     expect(window.location.search).toBe("");
 
@@ -189,7 +205,13 @@ describe("useMapPermalink", () => {
   });
 
   it("reflects the selected feature in the URL once applied", () => {
-    renderHook(() => useMapPermalink({ dataReady: true, layers: LAYERS }));
+    renderHook(() =>
+      useMapPermalink({
+        dataReady: true,
+        layers: LAYERS,
+        domainId: "gauteng-spatial-legacy",
+      }),
+    );
 
     act(() => {
       useMapUiStore.getState().setSelectedFeatureId("xyz");

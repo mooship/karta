@@ -195,6 +195,24 @@ describe("resolvePopupFields", () => {
     expect(fields).toEqual([]);
   });
 
+  it("reuses the cached properties→layer index across repeated calls with the same data object", () => {
+    const data: LayerDataMap = {
+      townships: {
+        type: "FeatureCollection",
+        features: [
+          { type: "Feature", geometry: null, properties: townshipProperties },
+        ],
+      },
+    };
+    const domain = domainWith(townshipLayer);
+
+    const first = resolvePopupFields(townshipProperties, domain, data);
+    const second = resolvePopupFields(townshipProperties, domain, data);
+
+    expect(first.map((f) => f.key)).toContain("commuteMinutes");
+    expect(second.map((f) => f.key)).toContain("commuteMinutes");
+  });
+
   it("returns an empty field list for a matched layer that declares no popupFields", () => {
     const layerWithNoPopupFields: Layer = {
       ...genericLayer,

@@ -544,6 +544,7 @@ function AppShell({ domainId, domain }: AppShellProps) {
   useMapPermalink({
     dataReady: Object.keys(data).length > 0,
     layers: domain.layers,
+    domainId,
   });
 
   const handleToggleLayer = useLayerUsageBeacon({

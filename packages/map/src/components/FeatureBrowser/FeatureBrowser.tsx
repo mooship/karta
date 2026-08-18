@@ -179,31 +179,7 @@ export function FeatureBrowser({
     }
   }
 
-  if (flatOrder.length === 0 && searchable) {
-    return (
-      <div
-        className={styles.root}
-        data-testid="feature-browser"
-        data-e2e="feature-browser"
-      >
-        <input
-          type="search"
-          className={styles.search}
-          placeholder={searchPlaceholder}
-          aria-label={searchPlaceholder}
-          data-testid="feature-browser-search"
-          data-e2e="feature-browser-search"
-          value={searchQuery}
-          onChange={(event) => {
-            setSearchQuery(event.target.value);
-            setActiveIndex(0);
-          }}
-        />
-        {emptyMessage ? <p className={styles.empty}>{emptyMessage}</p> : null}
-      </div>
-    );
-  }
-
+  const isEmpty = flatOrder.length === 0;
   let flatIndex = 0;
 
   return (
@@ -227,64 +203,70 @@ export function FeatureBrowser({
           }}
         />
       ) : null}
-      <div
-        role="listbox"
-        aria-label={ariaLabel}
-        className={styles.listbox}
-        data-testid="feature-browser-list"
-        data-e2e="feature-browser-list"
-      >
-        {groups.map((group) => {
-          const optionElements = group.entries.map((entry) => {
-            const index = flatIndex;
-            flatIndex += 1;
-            return (
-              <div
-                key={entry.id}
-                role="option"
-                id={`feature-browser-option-${entry.id}`}
-                aria-selected={entry.id === selectedId}
-                tabIndex={index === safeActiveIndex ? 0 : -1}
-                className={styles.option}
-                data-testid={`feature-browser-option-${entry.id}`}
-                data-e2e={`feature-browser-option-${entry.id}`}
-                ref={(element) => {
-                  optionRefs.current[index] = element;
-                }}
-                onClick={() => {
-                  setActiveIndex(index);
-                  onSelect(entry.id);
-                }}
-                onKeyDown={(event) => handleOptionKeyDown(event, index)}
-              >
-                {entry.label}
-              </div>
-            );
-          });
-
-          if (!isGrouped) {
-            return optionElements;
-          }
-
-          return (
-            <fieldset
-              key={group.groupId ?? "__ungrouped"}
-              className={styles.group}
-            >
-              {group.groupLabel ? (
-                <legend
-                  className={styles.groupHeading}
-                  data-testid={`feature-browser-group-${group.groupId ?? "ungrouped"}`}
-                  data-e2e={`feature-browser-group-${group.groupId ?? "ungrouped"}`}
+      {isEmpty && searchable ? (
+        emptyMessage ? (
+          <p className={styles.empty}>{emptyMessage}</p>
+        ) : null
+      ) : (
+        <div
+          role="listbox"
+          aria-label={ariaLabel}
+          className={styles.listbox}
+          data-testid="feature-browser-list"
+          data-e2e="feature-browser-list"
+        >
+          {groups.map((group) => {
+            const optionElements = group.entries.map((entry) => {
+              const index = flatIndex;
+              flatIndex += 1;
+              return (
+                <div
+                  key={entry.id}
+                  role="option"
+                  id={`feature-browser-option-${entry.id}`}
+                  aria-selected={entry.id === selectedId}
+                  tabIndex={index === safeActiveIndex ? 0 : -1}
+                  className={styles.option}
+                  data-testid={`feature-browser-option-${entry.id}`}
+                  data-e2e={`feature-browser-option-${entry.id}`}
+                  ref={(element) => {
+                    optionRefs.current[index] = element;
+                  }}
+                  onClick={() => {
+                    setActiveIndex(index);
+                    onSelect(entry.id);
+                  }}
+                  onKeyDown={(event) => handleOptionKeyDown(event, index)}
                 >
-                  {group.groupLabel}
-                </legend>
-              ) : null}
-              {optionElements}
-            </fieldset>
-          );
-        })}
-      </div>
+                  {entry.label}
+                </div>
+              );
+            });
+
+            if (!isGrouped) {
+              return optionElements;
+            }
+
+            return (
+              <fieldset
+                key={group.groupId ?? "__ungrouped"}
+                className={styles.group}
+              >
+                {group.groupLabel ? (
+                  <legend
+                    className={styles.groupHeading}
+                    data-testid={`feature-browser-group-${group.groupId ?? "ungrouped"}`}
+                    data-e2e={`feature-browser-group-${group.groupId ?? "ungrouped"}`}
+                  >
+                    {group.groupLabel}
+                  </legend>
+                ) : null}
+                {optionElements}
+              </fieldset>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

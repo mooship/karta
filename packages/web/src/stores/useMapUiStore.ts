@@ -50,9 +50,11 @@ interface MapUiState {
  * The default state for `domainId` (or the pre-initialization defaults, for
  * `null`): every `defaultVisible` layer shown, the street basemap, and no
  * selection. Also the reference point `useMapPermalink` diffs against to
- * decide which fields a shareable URL needs to carry.
+ * decide which fields a shareable URL needs to carry — exported for exactly
+ * that, so the two stay a single source of truth instead of two
+ * hand-maintained copies of the same defaults.
  */
-function getDefaultMapUiState(domainId: string | null) {
+export function getDefaultMapUiState(domainId: string | null) {
   return {
     domainId,
     visibleLayerIds: domainId

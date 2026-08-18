@@ -1,7 +1,11 @@
 import type { Layer } from "@karta/core";
 import { getRegisteredBasemapIds } from "@karta/map";
 import { useEffect, useMemo, useRef } from "react";
-import { type PanelView, useMapUiStore } from "../stores/useMapUiStore";
+import {
+  getDefaultMapUiState,
+  type PanelView,
+  useMapUiStore,
+} from "../stores/useMapUiStore";
 
 const LAYERS_PARAM = "layers";
 const BASEMAP_PARAM = "basemap";
@@ -125,6 +129,8 @@ export interface UseMapPermalinkOptions {
    * reachable from here.
    */
   layers: readonly Layer[];
+  /** The active domain's id, passed through to `getDefaultMapUiState` for the same reason `layers` is passed explicitly above. */
+  domainId: string;
 }
 
 /**
@@ -139,6 +145,7 @@ export interface UseMapPermalinkOptions {
 export function useMapPermalink({
   dataReady,
   layers,
+  domainId,
 }: UseMapPermalinkOptions): void {
   /**
    * The active domain's layer ids, in order. Memoized rather than
@@ -150,21 +157,11 @@ export function useMapPermalink({
   const layerIds = useMemo(() => layers.map((layer) => layer.id), [layers]);
   /**
    * The subset of `useMapUiStore`'s defaults `buildMapPermalinkSearch` diffs
-   * against — derived from `layers` rather than the store's own
-   * `initializeForDomain` output, since `basemap`/`panelView` never vary by
-   * domain and `visibleLayerIds`' default is exactly each `defaultVisible`
-   * layer's id.
+   * against — the same `getDefaultMapUiState` the store itself uses for
+   * `initializeForDomain`/`reset`, so this can't drift from those defaults
+   * the way a second, hand-rolled copy could.
    */
-  const defaults = useMemo(
-    () => ({
-      visibleLayerIds: layers
-        .filter((layer) => layer.defaultVisible)
-        .map((layer) => layer.id),
-      basemap: "street" as const,
-      panelView: "layers" as const,
-    }),
-    [layers],
-  );
+  const defaults = useMemo(() => getDefaultMapUiState(domainId), [domainId]);
   const pendingFeatureId = useRef<string | undefined>(undefined);
 
   useEffect(() => {

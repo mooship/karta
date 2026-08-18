@@ -11,6 +11,15 @@ export interface UseLayerUsageBeaconOptions {
 }
 
 /**
+ * `useUsageBeacon`'s `dedupeKey`, hoisted to module scope rather than an
+ * inline arrow function — keeps `send`'s identity (and so the returned
+ * toggle handler's) stable across unrelated `AppShell` renders.
+ */
+function dedupeByLayerId(event: LayerUsageEvent): string {
+  return event.layerId;
+}
+
+/**
  * Wraps `toggleLayer` so every explicit layer toggle also reports a
  * cookieless `{layerId, visible}` usage event to `LAYER_USAGE_ENDPOINT`, via
  * `@karta/react`'s generic `useUsageBeacon`.
@@ -33,7 +42,7 @@ export function useLayerUsageBeacon({
 }: UseLayerUsageBeaconOptions): (id: string) => void {
   const { send } = useUsageBeacon<LayerUsageEvent>({
     endpoint: LAYER_USAGE_ENDPOINT,
-    dedupeKey: (event) => event.layerId,
+    dedupeKey: dedupeByLayerId,
   });
 
   return useCallback(

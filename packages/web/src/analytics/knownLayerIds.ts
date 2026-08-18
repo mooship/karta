@@ -22,3 +22,12 @@ export function getAllKnownLayerIds(): string[] {
   }
   return [...ids];
 }
+
+/**
+ * `getAllKnownLayerIds()`'s result, computed once at module load rather
+ * than per request. Safe to cache at module scope — unlike `layers/registry.ts`'s
+ * per-request-locale getters, `DOMAINS`/`getDomain` read only hardcoded,
+ * locale-independent structure, so this can't go stale across requests on a
+ * reused Cloudflare Workers isolate.
+ */
+export const ALL_KNOWN_LAYER_IDS: readonly string[] = getAllKnownLayerIds();
