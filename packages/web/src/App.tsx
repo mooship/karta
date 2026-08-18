@@ -48,6 +48,7 @@ import { DomainSwitcher } from "./components/DomainSwitcher/DomainSwitcher";
 import { LanguageToggle } from "./components/LanguageToggle/LanguageToggle";
 import { LayerToggles } from "./components/LayerToggles/LayerToggles";
 import { PrivacyLink } from "./components/PrivacyLink/PrivacyLink";
+import { useLayerUsageBeacon } from "./hooks/useLayerUsageBeacon";
 import { useMapModelContextTools } from "./hooks/useMapModelContextTools";
 import { useMapPermalink } from "./hooks/useMapPermalink";
 import { getLocalizedDomain } from "./layers/registry";
@@ -545,6 +546,11 @@ function AppShell({ domainId, domain }: AppShellProps) {
     layers: domain.layers,
   });
 
+  const handleToggleLayer = useLayerUsageBeacon({
+    visibleLayerIds,
+    toggleLayer,
+  });
+
   /**
    * Memoised (along with `closePanel` below) so `useDismissableOverlay`'s
    * effect -- which lists `onClose` as a dependency -- only re-subscribes
@@ -756,7 +762,7 @@ function AppShell({ domainId, domain }: AppShellProps) {
     <PanelViewContent
       panelView={panelView}
       visibleLayerIds={visibleLayerIds}
-      onToggle={toggleLayer}
+      onToggle={handleToggleLayer}
       failedLayerIds={failedLayerIds}
       story={story}
       browsableLayer={browsableLayer}

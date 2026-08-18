@@ -30,6 +30,13 @@ describe("PrivacyPolicy", () => {
     expect(screen.getByText(/cookieless/)).toBeInTheDocument();
   });
 
+  it("discloses the layer-usage analytics endpoint and what it does and doesn't record", () => {
+    render(<PrivacyPolicy />);
+
+    expect(screen.getByText(/\/api\/layer-usage/)).toBeInTheDocument();
+    expect(screen.getByText(/no timestamp, no/)).toBeInTheDocument();
+  });
+
   it("discloses the basemap tile and location-search third parties", () => {
     render(<PrivacyPolicy />);
 

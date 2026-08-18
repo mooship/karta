@@ -1,3 +1,4 @@
+import { LAYER_USAGE_ENDPOINT } from "../../constants/analyticsConfig";
 import { THEME_STORAGE_KEY } from "../../constants/themeConfig";
 import { cookieName as LOCALE_COOKIE_NAME } from "../../paraglide/runtime.js";
 import styles from "./PrivacyPolicy.module.css";
@@ -55,6 +56,19 @@ export function PrivacyPolicy() {
         across sites, and stores no personal data. Requests are made to{" "}
         <code>static.cloudflareinsights.com</code> and{" "}
         <code>cloudflareinsights.com</code>.
+      </p>
+
+      <h2 className={styles.sectionTitle}>Layer-usage analytics</h2>
+      <p className={styles.body}>
+        When you turn a map layer on or off, the site sends a same-origin
+        request to <code>{LAYER_USAGE_ENDPOINT}</code> recording only which
+        layer id changed and whether it's now visible — no timestamp, no session
+        id, no IP address, no cookie, and nothing else that could identify you
+        or your visit. It's aggregated with Cloudflare Analytics Engine into
+        layer-level totals; there is no way to reconstruct an individual
+        visitor's session from it. Sent via <code>navigator.sendBeacon</code>,
+        and skipped entirely if your browser signals Do Not Track or Global
+        Privacy Control.
       </p>
 
       <h2 className={styles.sectionTitle}>Hosting logs</h2>

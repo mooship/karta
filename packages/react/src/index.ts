@@ -23,3 +23,8 @@ export {
   THEME_PREFERENCES,
   useThemePreference,
 } from "./hooks/useThemePreference";
+export type {
+  UsageBeacon,
+  UsageBeaconOptions,
+} from "./hooks/useUsageBeacon";
+export { useUsageBeacon } from "./hooks/useUsageBeacon";

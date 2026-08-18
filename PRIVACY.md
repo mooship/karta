@@ -24,6 +24,15 @@ counts. It is cookieless, does not fingerprint visitors, does not track you
 across sites, and stores no personal data. Requests are made to
 `static.cloudflareinsights.com` and `cloudflareinsights.com`.
 
+**Layer-usage analytics:** when you turn a map layer on or off, the site
+sends a same-origin request to `/api/layer-usage` recording only which layer
+id changed and whether it's now visible — no timestamp, no session id, no IP
+address, no cookie, and nothing else that could identify you or your visit.
+It's aggregated with Cloudflare Analytics Engine into layer-level totals;
+there is no way to reconstruct an individual visitor's session from it. Sent
+via `navigator.sendBeacon`, and skipped entirely if your browser signals Do
+Not Track or Global Privacy Control.
+
 **Hosting logs:** Cloudflare, as host, may log standard request metadata (IP
 address, user agent, timestamp) as part of normal operation — see Cloudflare's
 own privacy policy.

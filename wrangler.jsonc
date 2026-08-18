@@ -15,6 +15,9 @@
   "assets": {
     "directory": "./packages/web/build/client"
   },
+  "analytics_engine_datasets": [
+    { "binding": "LAYER_USAGE", "dataset": "karta_layer_usage" }
+  ],
   "observability": {
     "logs": {
       "enabled": true,
