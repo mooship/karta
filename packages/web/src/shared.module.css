@@ -17,6 +17,10 @@
   text-transform: uppercase;
 }
 
+.link {
+  color: var(--md-sys-color-primary);
+}
+
 .visuallyHidden {
   position: absolute;
   width: 1px;
