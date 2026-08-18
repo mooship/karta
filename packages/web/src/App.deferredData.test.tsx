@@ -3,8 +3,7 @@ import { forwardRef, type ReactNode } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const dataMocks = vi.hoisted(() => ({
-  getTownships: vi.fn(),
-  fetchAreas: vi.fn(),
+  fetchFeatureCollection: vi.fn(),
 }));
 
 const mapReadyMocks = vi.hoisted(() => ({
@@ -43,13 +42,9 @@ vi.mock("@karta/core", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@karta/core")>();
   return {
     ...actual,
-    fetchFeatureCollection: dataMocks.fetchAreas,
+    fetchFeatureCollection: dataMocks.fetchFeatureCollection,
   };
 });
-
-vi.mock("./data/fetchTownships", () => ({
-  fetchTownships: dataMocks.getTownships,
-}));
 
 import { App } from "./App";
 import { useMapUiStore } from "./stores/useMapUiStore";
@@ -58,44 +53,28 @@ describe("App choropleth data loading", () => {
   beforeEach(() => {
     useMapUiStore.getState().reset();
     mapReadyMocks.pendingReadyCallbacks = [];
-    dataMocks.getTownships.mockReset().mockResolvedValue([
-      {
-        type: "Feature",
-        properties: {
-          id: "A",
-          name: "Mamelodi",
-          commuteMinutes: 20,
-          nearestJobCenter: "Pretoria CBD",
-          distanceKm: null,
-          nearestTransitKm: null,
-        },
-        geometry: null,
-      },
-    ]);
-    dataMocks.fetchAreas.mockReset().mockResolvedValue({
+    dataMocks.fetchFeatureCollection.mockReset().mockResolvedValue({
       type: "FeatureCollection",
       features: [],
     });
   });
 
-  it("holds the township request back until the map reports it is ready", async () => {
+  it("holds the layer data request back until the map reports it is ready", async () => {
     render(<App />);
 
     await waitFor(() => {
       expect(mapReadyMocks.pendingReadyCallbacks.length).toBeGreaterThan(0);
     });
 
-    expect(dataMocks.getTownships).not.toHaveBeenCalled();
-    expect(dataMocks.fetchAreas).not.toHaveBeenCalled();
+    expect(dataMocks.fetchFeatureCollection).not.toHaveBeenCalled();
 
     for (const callback of mapReadyMocks.pendingReadyCallbacks) {
       callback();
     }
 
     await waitFor(() => {
-      expect(dataMocks.getTownships).toHaveBeenCalled();
+      expect(dataMocks.fetchFeatureCollection).toHaveBeenCalled();
     });
-    expect(dataMocks.fetchAreas).toHaveBeenCalled();
     await waitFor(() =>
       expect(screen.getAllByTestId("geojson-layer").length).toBeGreaterThan(0),
     );

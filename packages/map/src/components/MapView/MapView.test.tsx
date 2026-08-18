@@ -355,7 +355,7 @@ describe("MapView", () => {
       withDomain(
         <TypedMapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={[]}
+          layerData={{}}
           visibleLayerIds={[]}
         />,
       ),
@@ -367,7 +367,11 @@ describe("MapView", () => {
   it("passes bounds to MapContainer", () => {
     render(
       withDomain(
-        <MapView {...DEFAULT_MAP_VIEW_PROPS} areas={[]} visibleLayerIds={[]} />,
+        <MapView
+          {...DEFAULT_MAP_VIEW_PROPS}
+          layerData={{}}
+          visibleLayerIds={[]}
+        />,
       ),
     );
     expect(screen.getByTestId("map-container")).toHaveAttribute(
@@ -383,7 +387,7 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={areas}
+          layerData={{ areas: { type: "FeatureCollection", features: areas } }}
           visibleLayerIds={["areas"]}
           onSelectableFeaturesChange={onSelectableFeaturesChange}
         />,
@@ -402,7 +406,7 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={[]}
+          layerData={{}}
           visibleLayerIds={[]}
           onSelectableFeaturesChange={onSelectableFeaturesChange}
         />,
@@ -417,7 +421,7 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={areas}
+          layerData={{ areas: { type: "FeatureCollection", features: areas } }}
           visibleLayerIds={["areas"]}
           selectedFeatureId={null}
         />,
@@ -430,7 +434,7 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={areas}
+          layerData={{ areas: { type: "FeatureCollection", features: areas } }}
           visibleLayerIds={["areas"]}
           selectedFeatureId="A"
         />,
@@ -449,7 +453,7 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={areas}
+          layerData={{ areas: { type: "FeatureCollection", features: areas } }}
           visibleLayerIds={["areas"]}
           onFeatureSelect={onFeatureSelect}
           renderFeaturePopup={renderFeaturePopup}
@@ -476,7 +480,7 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={areas}
+          layerData={{ areas: { type: "FeatureCollection", features: areas } }}
           visibleLayerIds={["areas"]}
           onFeatureSelect={onFeatureSelect}
           renderFeaturePopup={renderFeaturePopup}
@@ -503,7 +507,7 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={[]}
+          layerData={{}}
           visibleLayerIds={[]}
           onReady={onReady}
         />,
@@ -523,7 +527,7 @@ describe("MapView", () => {
         withDomain(
           <MapView
             {...DEFAULT_MAP_VIEW_PROPS}
-            areas={[]}
+            layerData={{}}
             visibleLayerIds={[]}
           />,
         ),
@@ -536,7 +540,7 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={areas}
+          layerData={{ areas: { type: "FeatureCollection", features: areas } }}
           visibleLayerIds={["areas"]}
         />,
       ),
@@ -570,7 +574,7 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={areas}
+          layerData={{ areas: { type: "FeatureCollection", features: areas } }}
           visibleLayerIds={["areas"]}
         />,
       ),
@@ -594,7 +598,7 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={areas}
+          layerData={{ areas: { type: "FeatureCollection", features: areas } }}
           visibleLayerIds={["areas"]}
         />,
       ),
@@ -613,7 +617,7 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={areas}
+          layerData={{ areas: { type: "FeatureCollection", features: areas } }}
           visibleLayerIds={["areas"]}
           onFeatureSelect={onFeatureSelect}
           renderFeaturePopup={testRenderFeaturePopup}
@@ -644,7 +648,7 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={areas}
+          layerData={{ areas: { type: "FeatureCollection", features: areas } }}
           visibleLayerIds={["areas"]}
         />,
       ),
@@ -659,7 +663,7 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={areas}
+          layerData={{ areas: { type: "FeatureCollection", features: areas } }}
           visibleLayerIds={["areas"]}
           selectedFeatureId="A"
         />,
@@ -677,7 +681,7 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={areas}
+          layerData={{ areas: { type: "FeatureCollection", features: areas } }}
           visibleLayerIds={["areas"]}
           onFeatureSelect={onFeatureSelect}
         />,
@@ -701,7 +705,7 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={areas}
+          layerData={{ areas: { type: "FeatureCollection", features: areas } }}
           visibleLayerIds={["areas"]}
           selectedFeatureId="A"
           renderFeaturePopup={testRenderFeaturePopup}
@@ -721,7 +725,7 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={areas}
+          layerData={{ areas: { type: "FeatureCollection", features: areas } }}
           visibleLayerIds={["areas"]}
           selectedFeatureId="A"
           renderFeaturePopup={(properties) => (
@@ -740,7 +744,7 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={areas}
+          layerData={{ areas: { type: "FeatureCollection", features: areas } }}
           visibleLayerIds={["areas"]}
           selectedFeatureId="A"
           renderFeaturePopup={(properties) => (
@@ -767,7 +771,7 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={areas}
+          layerData={{ areas: { type: "FeatureCollection", features: areas } }}
           visibleLayerIds={["areas"]}
           onFeatureSelect={staleOnFeatureSelect}
           renderFeaturePopup={testRenderFeaturePopup}
@@ -782,7 +786,7 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={areas}
+          layerData={{ areas: { type: "FeatureCollection", features: areas } }}
           visibleLayerIds={["areas"]}
           onFeatureSelect={freshOnFeatureSelect}
           renderFeaturePopup={testRenderFeaturePopup}
@@ -808,7 +812,7 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={areas}
+          layerData={{ areas: { type: "FeatureCollection", features: areas } }}
           visibleLayerIds={["areas"]}
           renderFeaturePopup={stalePopup}
         />,
@@ -819,7 +823,7 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={areas}
+          layerData={{ areas: { type: "FeatureCollection", features: areas } }}
           visibleLayerIds={["areas"]}
           renderFeaturePopup={freshPopup}
         />,
@@ -840,7 +844,11 @@ describe("MapView", () => {
   it("keeps the tile layer's eventHandlers object referentially stable across re-renders", () => {
     const { rerender } = render(
       withDomain(
-        <MapView {...DEFAULT_MAP_VIEW_PROPS} areas={[]} visibleLayerIds={[]} />,
+        <MapView
+          {...DEFAULT_MAP_VIEW_PROPS}
+          layerData={{}}
+          visibleLayerIds={[]}
+        />,
       ),
     );
 
@@ -848,7 +856,7 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={[]}
+          layerData={{}}
           visibleLayerIds={[]}
           ariaLabel="Test map, renamed"
         />,
@@ -867,7 +875,7 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={areas}
+          layerData={{ areas: { type: "FeatureCollection", features: areas } }}
           visibleLayerIds={["areas"]}
           selectedFeatureId="does-not-exist"
           renderFeaturePopup={testRenderFeaturePopup}
@@ -898,7 +906,9 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={twoAreas}
+          layerData={{
+            areas: { type: "FeatureCollection", features: twoAreas },
+          }}
           visibleLayerIds={["areas"]}
           selectedFeatureId="A"
           renderFeaturePopup={testRenderFeaturePopup}
@@ -916,7 +926,9 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={twoAreas}
+          layerData={{
+            areas: { type: "FeatureCollection", features: twoAreas },
+          }}
           visibleLayerIds={["areas"]}
           selectedFeatureId="B"
           renderFeaturePopup={testRenderFeaturePopup}
@@ -935,7 +947,11 @@ describe("MapView", () => {
   it("renders no GeoJSON layers when visibleLayerIds is empty", () => {
     render(
       withDomain(
-        <MapView {...DEFAULT_MAP_VIEW_PROPS} areas={[]} visibleLayerIds={[]} />,
+        <MapView
+          {...DEFAULT_MAP_VIEW_PROPS}
+          layerData={{}}
+          visibleLayerIds={[]}
+        />,
       ),
     );
 
@@ -947,7 +963,7 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={[]}
+          layerData={{}}
           visibleLayerIds={["areas"]}
         />,
       ),
@@ -959,7 +975,7 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={areas}
+          layerData={{ areas: { type: "FeatureCollection", features: areas } }}
           visibleLayerIds={["areas"]}
         />,
       ),
@@ -975,7 +991,7 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={areas}
+          layerData={{ areas: { type: "FeatureCollection", features: areas } }}
           visibleLayerIds={["areas"]}
         />,
       ),
@@ -998,7 +1014,7 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={areas}
+          layerData={{ areas: { type: "FeatureCollection", features: areas } }}
           visibleLayerIds={["areas"]}
         />,
       ),
@@ -1030,7 +1046,7 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={areas}
+          layerData={{ areas: { type: "FeatureCollection", features: areas } }}
           visibleLayerIds={["areas"]}
         />,
       ),
@@ -1042,7 +1058,7 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={[]}
+          layerData={{ rail: { type: "FeatureCollection", features: [] } }}
           visibleLayerIds={["rail"]}
         />,
       ),
@@ -1057,7 +1073,9 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={areas}
+          layerData={{
+            "unavailable-layer": { type: "FeatureCollection", features: areas },
+          }}
           visibleLayerIds={["unavailable-layer"]}
         />,
       ),
@@ -1066,23 +1084,17 @@ describe("MapView", () => {
     expect(screen.queryByTestId("geojson-layer")).not.toBeInTheDocument();
   });
 
-  it("fetches and renders overlay data for a visible transit layer", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn().mockResolvedValue({
-        ok: true,
-        json: async () => ({
-          type: "FeatureCollection",
-          features: [{ type: "Feature", properties: {}, geometry: null }],
-        }),
-      }),
-    );
-
+  it("renders overlay data for a visible transit layer", async () => {
     render(
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={[]}
+          layerData={{
+            rail: {
+              type: "FeatureCollection",
+              features: [{ type: "Feature", properties: {}, geometry: null }],
+            },
+          }}
           visibleLayerIds={["rail"]}
         />,
       ),
@@ -1092,10 +1104,6 @@ describe("MapView", () => {
       "data-pane",
       "transit",
     );
-    expect(fetch).toHaveBeenCalledWith(
-      "/data/example/rail.display.v1.geojson",
-      expect.objectContaining({ signal: expect.any(AbortSignal) }),
-    );
   });
 
   it("keeps area polygons in the pane below transit overlays", () => {
@@ -1103,7 +1111,7 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={areas}
+          layerData={{ areas: { type: "FeatureCollection", features: areas } }}
           visibleLayerIds={["areas"]}
         />,
       ),
@@ -1128,8 +1136,10 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={areas}
-          areaBoundaries={areaBoundaries}
+          layerData={{ areas: { type: "FeatureCollection", features: areas } }}
+          companionData={{
+            areas: { type: "FeatureCollection", features: areaBoundaries },
+          }}
           visibleLayerIds={["areas"]}
         />,
       ),
@@ -1155,8 +1165,12 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={areas}
-          areaBoundaries={areaBoundaries}
+          layerData={{
+            coverage: { type: "FeatureCollection", features: areas },
+          }}
+          companionData={{
+            coverage: { type: "FeatureCollection", features: areaBoundaries },
+          }}
           visibleLayerIds={["coverage"]}
         />,
       ),
@@ -1174,7 +1188,7 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={[]}
+          layerData={{}}
           visibleLayerIds={[]}
           focusLocationTarget={{
             token: 1,
@@ -1202,7 +1216,7 @@ describe("MapView", () => {
         withDomain(
           <MapView
             {...DEFAULT_MAP_VIEW_PROPS}
-            areas={[]}
+            layerData={{}}
             visibleLayerIds={[]}
             basemap={basemap}
           />,
@@ -1218,7 +1232,11 @@ describe("MapView", () => {
 
     render(
       withDomain(
-        <MapView {...DEFAULT_MAP_VIEW_PROPS} areas={[]} visibleLayerIds={[]} />,
+        <MapView
+          {...DEFAULT_MAP_VIEW_PROPS}
+          layerData={{}}
+          visibleLayerIds={[]}
+        />,
       ),
     );
 
@@ -1230,7 +1248,11 @@ describe("MapView", () => {
 
     render(
       withDomain(
-        <MapView {...DEFAULT_MAP_VIEW_PROPS} areas={[]} visibleLayerIds={[]} />,
+        <MapView
+          {...DEFAULT_MAP_VIEW_PROPS}
+          layerData={{}}
+          visibleLayerIds={[]}
+        />,
       ),
     );
 
@@ -1242,7 +1264,11 @@ describe("MapView", () => {
 
     render(
       withDomain(
-        <MapView {...DEFAULT_MAP_VIEW_PROPS} areas={[]} visibleLayerIds={[]} />,
+        <MapView
+          {...DEFAULT_MAP_VIEW_PROPS}
+          layerData={{}}
+          visibleLayerIds={[]}
+        />,
       ),
     );
 
@@ -1260,7 +1286,11 @@ describe("MapView", () => {
 
     render(
       withDomain(
-        <MapView {...DEFAULT_MAP_VIEW_PROPS} areas={[]} visibleLayerIds={[]} />,
+        <MapView
+          {...DEFAULT_MAP_VIEW_PROPS}
+          layerData={{}}
+          visibleLayerIds={[]}
+        />,
       ),
     );
 
@@ -1284,7 +1314,7 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={[]}
+          layerData={{}}
           visibleLayerIds={[]}
           basemap="satellite"
         />,
@@ -1306,7 +1336,7 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={[]}
+          layerData={{}}
           visibleLayerIds={[]}
           basemap={basemap}
         />,
@@ -1333,7 +1363,7 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={areas}
+          layerData={{ areas: { type: "FeatureCollection", features: areas } }}
           visibleLayerIds={["areas"]}
         />,
       ),
@@ -1355,7 +1385,11 @@ describe("MapView", () => {
   it("does not open a location context menu when locationContextMenu is not set", () => {
     render(
       withDomain(
-        <MapView {...DEFAULT_MAP_VIEW_PROPS} areas={[]} visibleLayerIds={[]} />,
+        <MapView
+          {...DEFAULT_MAP_VIEW_PROPS}
+          layerData={{}}
+          visibleLayerIds={[]}
+        />,
       ),
     );
 
@@ -1375,7 +1409,7 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={[]}
+          layerData={{}}
           visibleLayerIds={[]}
           locationContextMenu
         />,
@@ -1407,7 +1441,11 @@ describe("MapView", () => {
   it("does not show the measurement control when measurementTool is not set", () => {
     render(
       withDomain(
-        <MapView {...DEFAULT_MAP_VIEW_PROPS} areas={[]} visibleLayerIds={[]} />,
+        <MapView
+          {...DEFAULT_MAP_VIEW_PROPS}
+          layerData={{}}
+          visibleLayerIds={[]}
+        />,
       ),
     );
 
@@ -1421,7 +1459,7 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={[]}
+          layerData={{}}
           visibleLayerIds={[]}
           measurementTool
         />,
@@ -1444,7 +1482,7 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={[]}
+          layerData={{}}
           visibleLayerIds={[]}
           measurementTool
           measurementPanelOpen
@@ -1464,7 +1502,7 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={[]}
+          layerData={{}}
           visibleLayerIds={[]}
           measurementTool
           measurementPanelOpen
@@ -1490,7 +1528,7 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={areas}
+          layerData={{ areas: { type: "FeatureCollection", features: areas } }}
           visibleLayerIds={["areas"]}
           onFeatureSelect={onFeatureSelect}
           renderFeaturePopup={renderFeaturePopup}
@@ -1512,7 +1550,7 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={areas}
+          layerData={{ areas: { type: "FeatureCollection", features: areas } }}
           visibleLayerIds={["areas"]}
           onFeatureSelect={onFeatureSelect}
           renderFeaturePopup={renderFeaturePopup}
@@ -1540,7 +1578,7 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={areas}
+          layerData={{ areas: { type: "FeatureCollection", features: areas } }}
           visibleLayerIds={["areas"]}
           onFeatureSelect={onFeatureSelect}
           renderFeaturePopup={renderFeaturePopup}
@@ -1557,7 +1595,7 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={[]}
+          layerData={{}}
           visibleLayerIds={[]}
           measurementTool
         />,
@@ -1583,7 +1621,7 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={[]}
+          layerData={{}}
           visibleLayerIds={[]}
           measurementTool
         />,
@@ -1605,7 +1643,7 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={[]}
+          layerData={{}}
           visibleLayerIds={[]}
           measurementTool
         />,
@@ -1631,7 +1669,7 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={[]}
+          layerData={{}}
           visibleLayerIds={[]}
           measurementTool
         />,
@@ -1657,15 +1695,18 @@ describe("MapView", () => {
       withNonSelectableDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={
-            [
-              {
-                type: "Feature",
-                properties: { id: "X", value: 1 },
-                geometry: null,
-              },
-            ] as never
-          }
+          layerData={{
+            "custom-choropleth": {
+              type: "FeatureCollection",
+              features: [
+                {
+                  type: "Feature",
+                  properties: { id: "X", value: 1 },
+                  geometry: null,
+                },
+              ] as never,
+            },
+          }}
           visibleLayerIds={["custom-choropleth"]}
           onFeatureSelect={onFeatureSelect}
           renderFeaturePopup={testRenderFeaturePopup}
@@ -1691,9 +1732,14 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={
-            [{ type: "Feature", properties: null, geometry: null }] as never
-          }
+          layerData={{
+            areas: {
+              type: "FeatureCollection",
+              features: [
+                { type: "Feature", properties: null, geometry: null },
+              ] as never,
+            },
+          }}
           visibleLayerIds={["areas"]}
           onFeatureSelect={onFeatureSelect}
           renderFeaturePopup={testRenderFeaturePopup}
@@ -1718,7 +1764,7 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={areas}
+          layerData={{ areas: { type: "FeatureCollection", features: areas } }}
           visibleLayerIds={["areas"]}
           onFeatureSelect={onFeatureSelect}
           renderFeaturePopup={testRenderFeaturePopup}
@@ -1745,7 +1791,7 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={areas}
+          layerData={{ areas: { type: "FeatureCollection", features: areas } }}
           visibleLayerIds={["areas"]}
           onFeatureSelect={onFeatureSelect}
           renderFeaturePopup={testRenderFeaturePopup}
@@ -1774,7 +1820,7 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={areas}
+          layerData={{ areas: { type: "FeatureCollection", features: areas } }}
           visibleLayerIds={["areas"]}
         />,
       ),
@@ -1798,7 +1844,7 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={areas}
+          layerData={{ areas: { type: "FeatureCollection", features: areas } }}
           visibleLayerIds={["areas"]}
         />,
       ),
@@ -1816,7 +1862,7 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={[]}
+          layerData={{}}
           visibleLayerIds={[]}
           focusLocationTarget={{
             token: 1,
@@ -1850,16 +1896,19 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={[]}
-          areaBoundaries={
-            [
-              {
-                type: "Feature",
-                properties: {},
-                geometry: null,
-              },
-            ] as never
-          }
+          layerData={{}}
+          companionData={{
+            areas: {
+              type: "FeatureCollection",
+              features: [
+                {
+                  type: "Feature",
+                  properties: {},
+                  geometry: null,
+                },
+              ] as never,
+            },
+          }}
           visibleLayerIds={["areas"]}
         />,
       ),
@@ -1873,16 +1922,19 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={[]}
-          areaBoundaries={
-            [
-              {
-                type: "Feature",
-                properties: { name: "Mamelodi", labelOffset: [5, -10] },
-                geometry: null,
-              },
-            ] as never
-          }
+          layerData={{}}
+          companionData={{
+            areas: {
+              type: "FeatureCollection",
+              features: [
+                {
+                  type: "Feature",
+                  properties: { name: "Mamelodi", labelOffset: [5, -10] },
+                  geometry: null,
+                },
+              ] as never,
+            },
+          }}
           visibleLayerIds={["areas"]}
         />,
       ),
@@ -1899,19 +1951,22 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={[]}
-          areaBoundaries={
-            [
-              {
-                type: "Feature",
-                properties: {
-                  name: "Rest of Mamelodi",
-                  labelPriority: "secondary",
+          layerData={{}}
+          companionData={{
+            areas: {
+              type: "FeatureCollection",
+              features: [
+                {
+                  type: "Feature",
+                  properties: {
+                    name: "Rest of Mamelodi",
+                    labelPriority: "secondary",
+                  },
+                  geometry: null,
                 },
-                geometry: null,
-              },
-            ] as never
-          }
+              ] as never,
+            },
+          }}
           visibleLayerIds={["areas"]}
         />,
       ),
@@ -1930,16 +1985,19 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={[]}
-          areaBoundaries={
-            [
-              {
-                type: "Feature",
-                properties: { name: "Soweto", subPlaceCount: 15 },
-                geometry: null,
-              },
-            ] as never
-          }
+          layerData={{}}
+          companionData={{
+            areas: {
+              type: "FeatureCollection",
+              features: [
+                {
+                  type: "Feature",
+                  properties: { name: "Soweto", subPlaceCount: 15 },
+                  geometry: null,
+                },
+              ] as never,
+            },
+          }}
           visibleLayerIds={["areas"]}
         />,
       ),
@@ -1958,7 +2016,11 @@ describe("MapView", () => {
 
     render(
       withDomain(
-        <MapView {...DEFAULT_MAP_VIEW_PROPS} areas={[]} visibleLayerIds={[]} />,
+        <MapView
+          {...DEFAULT_MAP_VIEW_PROPS}
+          layerData={{}}
+          visibleLayerIds={[]}
+        />,
       ),
     );
 
@@ -1982,22 +2044,16 @@ describe("MapView", () => {
   });
 
   it("builds a circle marker for a transit point feature using the layer's resolved style", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn().mockResolvedValue({
-        ok: true,
-        json: async () => ({
-          type: "FeatureCollection",
-          features: [{ type: "Feature", properties: {}, geometry: null }],
-        }),
-      }),
-    );
-
     render(
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={[]}
+          layerData={{
+            rail: {
+              type: "FeatureCollection",
+              features: [{ type: "Feature", properties: {}, geometry: null }],
+            },
+          }}
           visibleLayerIds={["rail"]}
         />,
       ),
@@ -2037,8 +2093,10 @@ describe("MapView", () => {
         withDomain(
           <MapView
             {...DEFAULT_MAP_VIEW_PROPS}
-            areas={[]}
-            areaBoundaries={areaBoundaries}
+            layerData={{}}
+            companionData={{
+              areas: { type: "FeatureCollection", features: areaBoundaries },
+            }}
             visibleLayerIds={["areas"]}
           />,
         ),
@@ -2119,15 +2177,18 @@ describe("MapView", () => {
       <DomainProvider domain={domain}>
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={
-            [
-              {
-                type: "Feature",
-                properties: { id: "X", name: "Fallback Name" },
-                geometry: null,
-              },
-            ] as never
-          }
+          layerData={{
+            "no-label-field": {
+              type: "FeatureCollection",
+              features: [
+                {
+                  type: "Feature",
+                  properties: { id: "X", name: "Fallback Name" },
+                  geometry: null,
+                },
+              ] as never,
+            },
+          }}
           visibleLayerIds={["no-label-field"]}
           onSelectableFeaturesChange={onSelectableFeaturesChange}
         />
@@ -2166,20 +2227,23 @@ describe("MapView", () => {
       <DomainProvider domain={domain}>
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={
-            [
-              {
-                type: "Feature",
-                properties: { id: "A", name: "Mamelodi", commuteMinutes: 15 },
-                geometry: null,
-              },
-              {
-                type: "Feature",
-                properties: { id: "B", commuteMinutes: 20 },
-                geometry: null,
-              },
-            ] as never
-          }
+          layerData={{
+            "numeric-label-field": {
+              type: "FeatureCollection",
+              features: [
+                {
+                  type: "Feature",
+                  properties: { id: "A", name: "Mamelodi", commuteMinutes: 15 },
+                  geometry: null,
+                },
+                {
+                  type: "Feature",
+                  properties: { id: "B", commuteMinutes: 20 },
+                  geometry: null,
+                },
+              ] as never,
+            },
+          }}
           visibleLayerIds={["numeric-label-field"]}
           onSelectableFeaturesChange={onSelectableFeaturesChange}
         />
@@ -2202,7 +2266,7 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={areas}
+          layerData={{ areas: { type: "FeatureCollection", features: areas } }}
           visibleLayerIds={["areas"]}
           onFeatureSelect={onFeatureSelect}
           renderFeaturePopup={testRenderFeaturePopup}
@@ -2225,15 +2289,18 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={
-            [
-              {
-                type: "Feature",
-                properties: { id: 42, name: "Numeric" },
-                geometry: null,
-              },
-            ] as never
-          }
+          layerData={{
+            areas: {
+              type: "FeatureCollection",
+              features: [
+                {
+                  type: "Feature",
+                  properties: { id: 42, name: "Numeric" },
+                  geometry: null,
+                },
+              ] as never,
+            },
+          }}
           visibleLayerIds={["areas"]}
           onFeatureSelect={onFeatureSelect}
           renderFeaturePopup={testRenderFeaturePopup}
@@ -2255,7 +2322,7 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={areas}
+          layerData={{ areas: { type: "FeatureCollection", features: areas } }}
           visibleLayerIds={["areas"]}
         />,
       ),
@@ -2267,22 +2334,17 @@ describe("MapView", () => {
 
   it("gives transit point markers a larger radius at detail zoom levels", async () => {
     mapMocks.zoom = 12;
-    vi.stubGlobal(
-      "fetch",
-      vi.fn().mockResolvedValue({
-        ok: true,
-        json: async () => ({
-          type: "FeatureCollection",
-          features: [{ type: "Feature", properties: {}, geometry: null }],
-        }),
-      }),
-    );
 
     render(
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={[]}
+          layerData={{
+            rail: {
+              type: "FeatureCollection",
+              features: [{ type: "Feature", properties: {}, geometry: null }],
+            },
+          }}
           visibleLayerIds={["rail"]}
         />,
       ),
@@ -2307,7 +2369,7 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={[]}
+          layerData={{}}
           visibleLayerIds={[]}
           basemap="custom-vector"
         />,
@@ -2333,7 +2395,7 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={[]}
+          layerData={{}}
           visibleLayerIds={[]}
           basemap="custom-vector"
         />,
@@ -2354,7 +2416,7 @@ describe("MapView", () => {
       withDomain(
         <MapView
           {...DEFAULT_MAP_VIEW_PROPS}
-          areas={[]}
+          layerData={{}}
           visibleLayerIds={[]}
           basemap="custom-vector"
           onBasemapError={onBasemapError}

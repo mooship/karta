@@ -1,12 +1,7 @@
-import {
-  DEFAULT_DOMAIN_ID,
-  type TownshipFeature,
-  type TownshipProperties,
-} from "@karta/app";
-import {
-  type DomainStory as DomainStoryContent,
-  fetchFeatureCollection,
-  mergeFeatureCollections,
+import { DEFAULT_DOMAIN_ID, type TownshipProperties } from "@karta/app";
+import type {
+  DomainConfig,
+  DomainStory as DomainStoryContent,
 } from "@karta/core";
 import {
   ControlButton,
@@ -19,6 +14,7 @@ import {
   type SelectableFeatureSearchEntry,
   SettingsMenu,
   useDismissableOverlay,
+  useLayerData,
 } from "@karta/map";
 import {
   MOBILE_BREAKPOINT_PX,
@@ -27,7 +23,6 @@ import {
   useThemePreference,
 } from "@karta/react";
 import clsx from "clsx";
-import type { Feature } from "geojson";
 import { Layers, X } from "lucide-react";
 import {
   type AnimationEvent,
@@ -49,8 +44,6 @@ import { LanguageToggle } from "./components/LanguageToggle/LanguageToggle";
 import { LayerToggles } from "./components/LayerToggles/LayerToggles";
 import { PrivacyLink } from "./components/PrivacyLink/PrivacyLink";
 import { TownshipPopup } from "./components/TownshipPopup/TownshipPopup";
-import { fetchTownships } from "./data/fetchTownships";
-import { buildRegionDataUrls } from "./data/regionDataUrls";
 import { useMapModelContextTools } from "./hooks/useMapModelContextTools";
 import { useMapPermalink } from "./hooks/useMapPermalink";
 import { getLocalizedDomain } from "./layers/registry";
@@ -181,33 +174,77 @@ function PanelViewContent({
   );
 }
 
+/** Props for `App`. */
+export interface AppProps {
+  /** The domain to render, as a registered `@karta/app` `DOMAINS` id. Defaults to `DEFAULT_DOMAIN_ID`, matching every route before `/d/:domainId` routing existed. */
+  domainId?: string;
+}
+
+/** Props for `AppShell`. */
+interface AppShellProps {
+  /** The routed domain id, unchanged from `AppProps.domainId`. */
+  domainId: string;
+  /** The active domain's resolved, locale-localized config, computed once by `App` and threaded through as a prop rather than read via `useDomain()` here — `AppShell` runs inside the very `DomainProvider` this value seeds, so it can't consume that context itself. */
+  domain: DomainConfig;
+}
+
 /**
- * The reference app's root shell: fetches and merges the Gauteng township
- * choropleth data, wraps the render tree in a `DomainProvider` for the
- * active domain, and renders the map alongside the desktop/mobile info
- * panel and its settings menu.
- * @remarks That township fetch deliberately waits for `MapView`'s `onReady`
- *   (tracked as `mapReady`) rather than starting at mount. Downloading,
- *   validating and handing Leaflet ~2,500 polygons is seconds of
- *   main-thread work on a mid-range phone, and none of it can be drawn
- *   before the map exists — started at mount it simply ran in front of the
- *   map's own first paint and delayed it by all of that. The retry path
- *   (`loadAttempt`) still works unchanged, since the map stays ready.
- *   The info panel shows layer toggles, plus a Story tab reading its
- *   copy from the domain's `story` whenever the active domain defines
+ * Thin outer component: resolves the active domain once per locale/domainId
+ * pair and seeds `DomainProvider` with it, then renders `AppShell` for
+ * everything else. Split out specifically so hooks that legitimately depend
+ * on `useDomain()` (like `@karta/map`'s `useLayerData`) can be called from
+ * `AppShell`'s own body — a component can't consume a context provider it
+ * instantiates itself in the same render, since hooks run before that
+ * provider's JSX commits.
+ * @param domainId See `AppProps`.
+ */
+export function App({ domainId = DEFAULT_DOMAIN_ID }: AppProps = {}) {
+  /**
+   * Resolved fresh per render via `getLocalizedDomain` (never cached at
+   * module scope), matching the per-request-locale discipline
+   * `layers/registry.ts` already documents — `domainId` itself is stable
+   * for `App`'s whole mounted lifetime (switching domains is a full-document
+   * navigation, not a prop change), so this only actually recomputes when
+   * the locale does.
+   */
+  const domain = useMemo(() => getLocalizedDomain(domainId), [domainId]);
+  return (
+    <DomainProvider domain={domain}>
+      <AppShell domainId={domainId} domain={domain} />
+    </DomainProvider>
+  );
+}
+
+/**
+ * The reference app's inner shell: fetches every visible layer's data via
+ * `@karta/map`'s `useLayerData`, and renders the map alongside the
+ * desktop/mobile info panel and its settings menu.
+ * @remarks That fetch deliberately waits for `MapView`'s `onReady` (tracked
+ *   as `mapReady`) rather than starting at mount — `useLayerData(mapReady ?
+ *   visibleLayerIds : [])` passes an empty array until then. Downloading,
+ *   validating and handing Leaflet the default choropleth's ~2,500 polygons
+ *   is seconds of main-thread work on a mid-range phone, and none of it can
+ *   be drawn before the map exists — started at mount it simply ran in
+ *   front of the map's own first paint and delayed it by all of that.
+ *   `failedLayerIds`/`retryFailedLayers` (from that same `useLayerData`
+ *   call) drive the data-load-error banner and its retry button; `MapView`
+ *   itself does no fetching of its own and just renders whatever `data`/
+ *   `companionData` it's handed. The info panel shows layer toggles, plus a
+ *   Story tab reading its copy from the domain's `story` whenever the
+ *   active domain defines
  *   one — a domain that omits `story` gets no tab UI at all, matching
- *   today's single-view panel. `domain` is still hardcoded to
- *   `DEFAULT_DOMAIN_ID` (see `layers/registry.ts`'s `getLocalizedDomain`)
- *   rather than a routed `domainId` prop, since `/d/:domainId` routing
- *   hasn't landed yet; `panelViews`/`panelLabels` are computed inside the
- *   component body, not at module scope: their content is locale-dependent
- *   (`getLocalizedDomain()` and the `m.panel_tab_*()` calls both read the
- *   current request's locale), and Cloudflare Workers reuse isolates across
- *   requests — a module-scope value would freeze in whichever locale first
- *   touched that isolate instead of reflecting each request's own. `domain`
- *   alone is wrapped in `useMemo` for referential stability across
- *   re-renders (matching `DomainProvider`'s own internal memoization);
- *   `panelViews`/`panelLabels` are cheap enough to recompute every render.
+ *   today's single-view panel. `domain` is received as a prop from `App`
+ *   (see that component's own doc comment), which resolves it from the
+ *   routed `domainId` (see `routes/domain.tsx`'s loader), defaulting to
+ *   `DEFAULT_DOMAIN_ID` for any caller that doesn't pass one (e.g. this
+ *   package's own tests); `panelViews`/`panelLabels` are computed inside
+ *   `AppShell`'s own body, not at module scope: their content is
+ *   locale-dependent (`getLocalizedDomain()` and the `m.panel_tab_*()` calls
+ *   both read the current request's locale), and Cloudflare Workers reuse
+ *   isolates across requests — a module-scope value would freeze in
+ *   whichever locale first touched that isolate instead of reflecting each
+ *   request's own. `panelViews`/`panelLabels` are cheap enough to recompute
+ *   every render.
  *   Also owns the mobile bottom-sheet drag/swipe gesture state (pointer
  *   sampling, velocity-based snap projection) in addition to layout state
  *   from `useMapUiStore`. Swiping down from the sheet's medium height closes
@@ -239,25 +276,15 @@ function PanelViewContent({
  *   `MobileLegend`'s own `panelOpen` prop and the `.app` element's
  *   `data-panel-open` attribute are driven by the derived `panelVisuallyOpen`
  *   below, not raw `panelOpen` -- see that constant's own doc comment for why.
- * @param domainId See `AppProps`.
+ * @param domainId The routed domain id, unchanged from `AppShellProps`.
+ * @param domain The active domain's resolved, locale-localized config, unchanged from `AppShellProps`.
  */
-/** Props for `App`. */
-export interface AppProps {
-  /** The domain to render, as a registered `@karta/app` `DOMAINS` id. Defaults to `DEFAULT_DOMAIN_ID`, matching every route before `/d/:domainId` routing existed. */
-  domainId?: string;
-}
-
-export function App({ domainId = DEFAULT_DOMAIN_ID }: AppProps = {}) {
+function AppShell({ domainId, domain }: AppShellProps) {
   const [hydrated, setHydrated] = useState(false);
   const [mapReady, setMapReady] = useState(false);
-  const [townships, setTownships] = useState<TownshipFeature[]>([]);
-  const [townshipAreas, setTownshipAreas] = useState<Feature[]>([]);
-  const [dataError, setDataError] = useState(false);
-  const [failedLayerIds, setFailedLayerIds] = useState<string[]>([]);
   const [selectableFeatures, setSelectableFeatures] = useState<
     SelectableFeatureSearchEntry[]
   >([]);
-  const [loadAttempt, setLoadAttempt] = useState(0);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [mobilePanelExpanded, setMobilePanelExpanded] = useState(false);
   const [mobileSheetDragOffset, setMobileSheetDragOffset] = useState(0);
@@ -284,15 +311,6 @@ export function App({ domainId = DEFAULT_DOMAIN_ID }: AppProps = {}) {
     (state) => state.initializeForDomain,
   );
   const themePreference = useThemePreference();
-  /**
-   * Resolved fresh per render via `getLocalizedDomain` (never cached at
-   * module scope), matching the per-request-locale discipline
-   * `layers/registry.ts` already documents — `domainId` itself is stable
-   * for `App`'s whole mounted lifetime (switching domains is a full-document
-   * navigation, not a prop change), so this only actually recomputes when
-   * the locale does.
-   */
-  const domain = useMemo(() => getLocalizedDomain(domainId), [domainId]);
   const story = domain.story;
   /**
    * Memoised (not just `story`-derived inline) so this array keeps one
@@ -356,41 +374,13 @@ export function App({ domainId = DEFAULT_DOMAIN_ID }: AppProps = {}) {
     }
   }, [domainId, initializeForDomain, setPanelOpen]);
 
-  useEffect(() => {
-    if (!mapReady) {
-      return;
-    }
-    let cancelled = false;
-    setDataError(false);
-    setTownships([]);
-    setTownshipAreas([]);
-    const cacheBust = loadAttempt > 0 ? `?retry=${loadAttempt}` : "";
-    const townshipUrls = buildRegionDataUrls(
-      `townships.display.v1.geojson${cacheBust}`,
-    );
-    const areaUrls = buildRegionDataUrls(
-      `township-areas.display.v1.geojson${cacheBust}`,
-    );
-
-    Promise.all([
-      Promise.all(townshipUrls.map((url) => fetchTownships(url))),
-      Promise.all(areaUrls.map((url) => fetchFeatureCollection(url))),
-    ])
-      .then(([townshipsByRegion, areasByRegion]) => {
-        if (!cancelled) {
-          setTownships(townshipsByRegion.flat());
-          setTownshipAreas(mergeFeatureCollections(areasByRegion).features);
-        }
-      })
-      .catch(() => {
-        if (!cancelled) {
-          setDataError(true);
-        }
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [loadAttempt, mapReady]);
+  /**
+   * Deliberately `mapReady ? visibleLayerIds : []` rather than
+   * `visibleLayerIds` alone -- see the mount effect above for why nothing
+   * can start fetching layer data before the map itself has painted.
+   */
+  const { data, companionData, failedLayerIds, retryFailedLayers } =
+    useLayerData(mapReady ? visibleLayerIds : []);
 
   useEffect(() => {
     if (!panelOpen) {
@@ -482,7 +472,7 @@ export function App({ domainId = DEFAULT_DOMAIN_ID }: AppProps = {}) {
   });
 
   useMapPermalink({
-    dataReady: townships.length > 0,
+    dataReady: Object.keys(data).length > 0,
     layers: domain.layers,
   });
 
@@ -708,236 +698,233 @@ export function App({ domainId = DEFAULT_DOMAIN_ID }: AppProps = {}) {
     : m.panel_toggle_explore();
 
   return (
-    <DomainProvider domain={domain}>
-      <div
-        className={styles.app}
-        data-panel-open={panelVisuallyOpen ? "true" : "false"}
+    <div
+      className={styles.app}
+      data-panel-open={panelVisuallyOpen ? "true" : "false"}
+      data-panel-size={mobilePanelExpanded ? "full" : "medium"}
+      data-panel-dragging={mobileSheetDragging ? "true" : "false"}
+      data-panel-drag-direction={mobileSheetDragDirection}
+      data-entrance-ready={mapReady ? "true" : "false"}
+    >
+      <a className={styles.skipLink} href="#map-information">
+        {m.skip_to_map_information()}
+      </a>
+
+      <header className={styles.visuallyHidden}>
+        <h1>{m.app_heading()}</h1>
+      </header>
+
+      <main id="map-information" tabIndex={-1}>
+        {/*
+          Rendered unconditionally (server-rendered, then left mounted
+          through hydration and MapView's own lazy-load/mount) rather than
+          swapped out via a ternary or Suspense fallback: Chrome stops
+          counting an element towards Largest Contentful Paint the moment
+          it's removed from the DOM, so a placeholder that gets unmounted
+          can never end up being the reported LCP element even if it was
+          the largest thing on screen for seconds. `MapView`'s own
+          full-viewport container paints over this in normal DOM-order
+          stacking once it mounts; `aria-hidden` (not removal) keeps
+          screen readers from re-announcing "loading" once the real map
+          is ready.
+        */}
+        <output className={styles.mapLoading} aria-hidden={mapReady}>
+          {m.loading_map()}
+        </output>
+        {hydrated && (
+          <Suspense fallback={null}>
+            <MapView
+              bounds={GAUTENG_BOUNDS}
+              ariaLabel={m.map_aria_label()}
+              layerData={data}
+              companionData={companionData}
+              visibleLayerIds={visibleLayerIds}
+              basemap={basemap}
+              selectedFeatureId={selectedFeatureId}
+              focusLocationTarget={focusLocationTarget}
+              onFeatureSelect={setSelectedFeatureId}
+              onSelectableFeaturesChange={setSelectableFeatures}
+              onReady={handleMapReady}
+              onBasemapError={() => setBasemap("street")}
+              locationContextMenu
+              locationContextMenuProvider={locationSearchProvider}
+              measurementTool
+              measurementPanelOpen={!isDesktopViewport && panelOpen}
+              onMeasurementPanelClose={closePanel}
+              renderFeaturePopup={renderFeaturePopup}
+            />
+          </Suspense>
+        )}
+        {failedLayerIds.length > 0 ? (
+          <div
+            className={styles.dataError}
+            role="alert"
+            data-testid="data-load-error"
+            data-e2e="data-load-error"
+          >
+            <p>{m.data_load_error()}</p>
+            <button
+              type="button"
+              data-testid="retry-data-load"
+              data-e2e="retry-data-load"
+              onClick={retryFailedLayers}
+            >
+              {m.retry()}
+            </button>
+          </div>
+        ) : null}
+      </main>
+
+      <div className={clsx(styles.locationSearchControl, styles.surface)}>
+        <p className={styles.appName} data-testid="app-name">
+          {m.app_title()}
+        </p>
+        <LocationSearchControl
+          placeholder={m.search_placeholder()}
+          provider={locationSearchProvider}
+          onLocationSelect={handleLocationSelect}
+          onQueryChange={() => setOutOfCoverageLocationLabel(null)}
+          selectableFeatures={selectableFeatures}
+          onFeatureSelect={setSelectedFeatureId}
+        />
+        {outOfCoverageLocationLabel ? (
+          <output
+            className={styles.outOfCoverage}
+            data-testid="location-out-of-coverage"
+            data-e2e="location-out-of-coverage"
+          >
+            {m.location_out_of_coverage({
+              location: outOfCoverageLocationLabel,
+            })}
+          </output>
+        ) : null}
+      </div>
+
+      <ControlButton
+        ref={panelTriggerRef}
+        className={styles.panelTrigger}
+        shape="pill"
+        data-testid="panel-toggle"
+        data-e2e="panel-toggle"
+        aria-expanded={panelOpen}
+        aria-controls="map-controls"
+        label={panelToggleLabel}
+        onClick={handlePanelToggle}
+      >
+        {panelOpen ? <X aria-hidden="true" /> : <Layers aria-hidden="true" />}
+        <span className={styles.panelTriggerLabel} aria-hidden="true">
+          {panelToggleLabel}
+        </span>
+      </ControlButton>
+
+      {isDesktopViewport ? (
+        <DesktopLegend
+          visibleLayerIds={visibleLayerIds}
+          suppressed={settingsOpen}
+        />
+      ) : (
+        <MobileLegend
+          visibleLayerIds={visibleLayerIds}
+          suppressed={false}
+          panelOpen={panelVisuallyOpen}
+          panelExpanded={mobilePanelExpanded}
+        />
+      )}
+
+      <aside
+        id="map-controls"
+        ref={panelRef}
+        className={clsx(styles.panel, styles.surface)}
+        data-testid="panel-container"
+        data-e2e="panel-container"
         data-panel-size={mobilePanelExpanded ? "full" : "medium"}
         data-panel-dragging={mobileSheetDragging ? "true" : "false"}
         data-panel-drag-direction={mobileSheetDragDirection}
-        data-entrance-ready={mapReady ? "true" : "false"}
+        data-panel-closing={mobileSheetClosing ? "true" : "false"}
+        style={mobilePanelDragStyle}
+        hidden={!panelOpen}
+        onAnimationEnd={handleSheetAnimationEnd}
       >
-        <a className={styles.skipLink} href="#map-information">
-          {m.skip_to_map_information()}
-        </a>
-
-        <header className={styles.visuallyHidden}>
-          <h1>{m.app_heading()}</h1>
-        </header>
-
-        <main id="map-information" tabIndex={-1}>
-          {/*
-            Rendered unconditionally (server-rendered, then left mounted
-            through hydration and MapView's own lazy-load/mount) rather than
-            swapped out via a ternary or Suspense fallback: Chrome stops
-            counting an element towards Largest Contentful Paint the moment
-            it's removed from the DOM, so a placeholder that gets unmounted
-            can never end up being the reported LCP element even if it was
-            the largest thing on screen for seconds. `MapView`'s own
-            full-viewport container paints over this in normal DOM-order
-            stacking once it mounts; `aria-hidden` (not removal) keeps
-            screen readers from re-announcing "loading" once the real map
-            is ready.
-          */}
-          <output className={styles.mapLoading} aria-hidden={mapReady}>
-            {m.loading_map()}
-          </output>
-          {hydrated && (
-            <Suspense fallback={null}>
-              <MapView
-                bounds={GAUTENG_BOUNDS}
-                ariaLabel={m.map_aria_label()}
-                areas={townships}
-                areaBoundaries={townshipAreas}
-                visibleLayerIds={visibleLayerIds}
-                basemap={basemap}
-                selectedFeatureId={selectedFeatureId}
-                focusLocationTarget={focusLocationTarget}
-                onFeatureSelect={setSelectedFeatureId}
-                onSelectableFeaturesChange={setSelectableFeatures}
-                onLayerDataError={setFailedLayerIds}
-                onReady={handleMapReady}
-                onBasemapError={() => setBasemap("street")}
-                locationContextMenu
-                locationContextMenuProvider={locationSearchProvider}
-                measurementTool
-                measurementPanelOpen={!isDesktopViewport && panelOpen}
-                onMeasurementPanelClose={closePanel}
-                renderFeaturePopup={renderFeaturePopup}
-              />
-            </Suspense>
-          )}
-          {dataError ? (
+        <button
+          type="button"
+          className={styles.sheetHandleButton}
+          data-testid="panel-sheet-handle"
+          data-e2e="panel-sheet-handle"
+          data-dragging={mobileSheetDragging ? "true" : "false"}
+          data-drag-direction={mobileSheetDragDirection}
+          aria-pressed={mobilePanelExpanded}
+          aria-label={
+            mobilePanelExpanded
+              ? m.panel_reduce_height()
+              : m.panel_expand_height()
+          }
+          onPointerDown={handleSheetHandlePointerDown}
+          onClick={handleSheetHeightToggle}
+        >
+          <span className={styles.sheetHandle} aria-hidden="true" />
+        </button>
+        {panelViews.length > 1 ? (
+          <>
             <div
-              className={styles.dataError}
-              role="alert"
-              data-testid="data-load-error"
-              data-e2e="data-load-error"
+              className={styles.panelTabs}
+              role="tablist"
+              aria-label={m.panel_tablist_aria_label()}
+              data-testid="panel-tablist"
+              data-e2e="panel-tablist"
             >
-              <p>{m.data_load_error()}</p>
-              <button
-                type="button"
-                data-testid="retry-data-load"
-                data-e2e="retry-data-load"
-                onClick={() => setLoadAttempt((value) => value + 1)}
-              >
-                {m.retry()}
-              </button>
+              {panelViews.map((view, index) => (
+                <button
+                  key={view}
+                  type="button"
+                  data-testid={`panel-tab-${view}`}
+                  data-e2e={`panel-tab-${view}`}
+                  ref={(element) => {
+                    tabRefs.current[index] = element;
+                  }}
+                  id={`panel-tab-${view}`}
+                  role="tab"
+                  tabIndex={panelView === view ? 0 : -1}
+                  aria-selected={panelView === view}
+                  aria-controls={`panel-view-${view}`}
+                  className={styles.panelTab}
+                  onClick={() => setPanelView(view)}
+                  onKeyDown={handleTabKeyDown}
+                >
+                  {panelLabels[view]}
+                </button>
+              ))}
             </div>
-          ) : null}
-        </main>
-
-        <div className={clsx(styles.locationSearchControl, styles.surface)}>
-          <p className={styles.appName} data-testid="app-name">
-            {m.app_title()}
-          </p>
-          <LocationSearchControl
-            placeholder={m.search_placeholder()}
-            provider={locationSearchProvider}
-            onLocationSelect={handleLocationSelect}
-            onQueryChange={() => setOutOfCoverageLocationLabel(null)}
-            selectableFeatures={selectableFeatures}
-            onFeatureSelect={setSelectedFeatureId}
-          />
-          {outOfCoverageLocationLabel ? (
-            <output
-              className={styles.outOfCoverage}
-              data-testid="location-out-of-coverage"
-              data-e2e="location-out-of-coverage"
+            <div
+              {...PANEL_VIEWPORT_PROPS}
+              id={`panel-view-${panelView}`}
+              role="tabpanel"
+              aria-labelledby={`panel-tab-${panelView}`}
+              // biome-ignore lint/a11y/noNoninteractiveTabindex: WAI-ARIA APG recommends tabindex=0 on a tabpanel so keyboard users can reach panels (like Story) whose content has no focusable element of its own
+              tabIndex={0}
             >
-              {m.location_out_of_coverage({
-                location: outOfCoverageLocationLabel,
-              })}
-            </output>
-          ) : null}
-        </div>
-
-        <ControlButton
-          ref={panelTriggerRef}
-          className={styles.panelTrigger}
-          shape="pill"
-          data-testid="panel-toggle"
-          data-e2e="panel-toggle"
-          aria-expanded={panelOpen}
-          aria-controls="map-controls"
-          label={panelToggleLabel}
-          onClick={handlePanelToggle}
-        >
-          {panelOpen ? <X aria-hidden="true" /> : <Layers aria-hidden="true" />}
-          <span className={styles.panelTriggerLabel} aria-hidden="true">
-            {panelToggleLabel}
-          </span>
-        </ControlButton>
-
-        {isDesktopViewport ? (
-          <DesktopLegend
-            visibleLayerIds={visibleLayerIds}
-            suppressed={settingsOpen}
-          />
-        ) : (
-          <MobileLegend
-            visibleLayerIds={visibleLayerIds}
-            suppressed={false}
-            panelOpen={panelVisuallyOpen}
-            panelExpanded={mobilePanelExpanded}
-          />
-        )}
-
-        <aside
-          id="map-controls"
-          ref={panelRef}
-          className={clsx(styles.panel, styles.surface)}
-          data-testid="panel-container"
-          data-e2e="panel-container"
-          data-panel-size={mobilePanelExpanded ? "full" : "medium"}
-          data-panel-dragging={mobileSheetDragging ? "true" : "false"}
-          data-panel-drag-direction={mobileSheetDragDirection}
-          data-panel-closing={mobileSheetClosing ? "true" : "false"}
-          style={mobilePanelDragStyle}
-          hidden={!panelOpen}
-          onAnimationEnd={handleSheetAnimationEnd}
-        >
-          <button
-            type="button"
-            className={styles.sheetHandleButton}
-            data-testid="panel-sheet-handle"
-            data-e2e="panel-sheet-handle"
-            data-dragging={mobileSheetDragging ? "true" : "false"}
-            data-drag-direction={mobileSheetDragDirection}
-            aria-pressed={mobilePanelExpanded}
-            aria-label={
-              mobilePanelExpanded
-                ? m.panel_reduce_height()
-                : m.panel_expand_height()
-            }
-            onPointerDown={handleSheetHandlePointerDown}
-            onClick={handleSheetHeightToggle}
-          >
-            <span className={styles.sheetHandle} aria-hidden="true" />
-          </button>
-          {panelViews.length > 1 ? (
-            <>
-              <div
-                className={styles.panelTabs}
-                role="tablist"
-                aria-label={m.panel_tablist_aria_label()}
-                data-testid="panel-tablist"
-                data-e2e="panel-tablist"
-              >
-                {panelViews.map((view, index) => (
-                  <button
-                    key={view}
-                    type="button"
-                    data-testid={`panel-tab-${view}`}
-                    data-e2e={`panel-tab-${view}`}
-                    ref={(element) => {
-                      tabRefs.current[index] = element;
-                    }}
-                    id={`panel-tab-${view}`}
-                    role="tab"
-                    tabIndex={panelView === view ? 0 : -1}
-                    aria-selected={panelView === view}
-                    aria-controls={`panel-view-${view}`}
-                    className={styles.panelTab}
-                    onClick={() => setPanelView(view)}
-                    onKeyDown={handleTabKeyDown}
-                  >
-                    {panelLabels[view]}
-                  </button>
-                ))}
-              </div>
-              <div
-                {...PANEL_VIEWPORT_PROPS}
-                id={`panel-view-${panelView}`}
-                role="tabpanel"
-                aria-labelledby={`panel-tab-${panelView}`}
-                // biome-ignore lint/a11y/noNoninteractiveTabindex: WAI-ARIA APG recommends tabindex=0 on a tabpanel so keyboard users can reach panels (like Story) whose content has no focusable element of its own
-                tabIndex={0}
-              >
-                {panelViewContent}
-              </div>
-            </>
-          ) : (
-            <div {...PANEL_VIEWPORT_PROPS} ref={singleViewRef} tabIndex={-1}>
               {panelViewContent}
             </div>
-          )}
-        </aside>
+          </>
+        ) : (
+          <div {...PANEL_VIEWPORT_PROPS} ref={singleViewRef} tabIndex={-1}>
+            {panelViewContent}
+          </div>
+        )}
+      </aside>
 
-        <div className={styles.settingsControl}>
-          <SettingsMenu
-            basemap={basemap}
-            onBasemapChange={setBasemap}
-            themePreference={themePreference}
-            onThemePreferenceChange={setThemePreference}
-            onOpenChange={setSettingsOpen}
-          >
-            <DomainSwitcher activeDomainId={domainId} />
-            <LanguageToggle />
-            <PrivacyLink />
-          </SettingsMenu>
-        </div>
+      <div className={styles.settingsControl}>
+        <SettingsMenu
+          basemap={basemap}
+          onBasemapChange={setBasemap}
+          themePreference={themePreference}
+          onThemePreferenceChange={setThemePreference}
+          onOpenChange={setSettingsOpen}
+        >
+          <DomainSwitcher activeDomainId={domainId} />
+          <LanguageToggle />
+          <PrivacyLink />
+        </SettingsMenu>
       </div>
-    </DomainProvider>
+    </div>
   );
 }

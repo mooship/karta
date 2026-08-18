@@ -3,9 +3,33 @@ import { forwardRef, type ReactNode } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const dataMocks = vi.hoisted(() => ({
-  getTownships: vi.fn(),
   fetchAreas: vi.fn(),
 }));
+
+/** A single township feature, returned whenever a test's mocked fetch sees a `townships` data source URL. */
+const TOWNSHIP_FEATURE_COLLECTION = {
+  type: "FeatureCollection" as const,
+  features: [
+    {
+      type: "Feature" as const,
+      properties: {
+        id: "A",
+        name: "Mamelodi",
+        commuteMinutes: 20,
+        nearestJobCenter: "Pretoria CBD",
+        distanceKm: null,
+        nearestTransitKm: null,
+        nearestAReYengStopKm: null,
+      },
+      geometry: null,
+    },
+  ],
+};
+
+const EMPTY_FEATURE_COLLECTION = {
+  type: "FeatureCollection" as const,
+  features: [],
+};
 
 vi.mock("react-leaflet", () => ({
   MapContainer: ({ children }: { children: ReactNode }) => (
@@ -43,10 +67,6 @@ vi.mock("@karta/core", async (importOriginal) => {
   };
 });
 
-vi.mock("./data/fetchTownships", () => ({
-  fetchTownships: dataMocks.getTownships,
-}));
-
 import { App } from "./App";
 import { useMapUiStore } from "./stores/useMapUiStore";
 
@@ -81,25 +101,13 @@ describe("App", () => {
       writable: true,
     });
     useMapUiStore.getState().reset();
-    dataMocks.getTownships.mockReset().mockResolvedValue([
-      {
-        type: "Feature",
-        properties: {
-          id: "A",
-          name: "Mamelodi",
-          commuteMinutes: 20,
-          nearestJobCenter: "Pretoria CBD",
-          distanceKm: null,
-          nearestTransitKm: null,
-          nearestAReYengStopKm: null,
-        },
-        geometry: null,
-      },
-    ]);
-    dataMocks.fetchAreas.mockReset().mockResolvedValue({
-      type: "FeatureCollection",
-      features: [],
-    });
+    dataMocks.fetchAreas
+      .mockReset()
+      .mockImplementation(async (url: string) =>
+        url.includes("townships.display")
+          ? TOWNSHIP_FEATURE_COLLECTION
+          : EMPTY_FEATURE_COLLECTION,
+      );
   });
 
   afterEach(() => {
@@ -816,14 +824,17 @@ describe("App", () => {
   it.each(["resolve", "reject"] as const)(
     "does not update state if the component unmounts before the township fetch settles (%s)",
     async (mode) => {
-      let resolveTownships: ((value: unknown[]) => void) | undefined;
+      let resolveTownships: ((value: unknown) => void) | undefined;
       let rejectTownships: ((reason: unknown) => void) | undefined;
-      dataMocks.getTownships.mockReset().mockReturnValue(
-        new Promise((resolve, reject) => {
+      dataMocks.fetchAreas.mockReset().mockImplementation((url: string) => {
+        if (!url.includes("townships.display")) {
+          return Promise.resolve(EMPTY_FEATURE_COLLECTION);
+        }
+        return new Promise((resolve, reject) => {
           resolveTownships = resolve;
           rejectTownships = reject;
-        }),
-      );
+        });
+      });
       const consoleError = vi
         .spyOn(console, "error")
         .mockImplementation(() => {});
@@ -832,10 +843,10 @@ describe("App", () => {
       // The fetch only starts once the map reports itself ready, so wait for
       // it to be in flight before unmounting — otherwise this asserts
       // nothing about a settling request.
-      await waitFor(() => expect(dataMocks.getTownships).toHaveBeenCalled());
+      await waitFor(() => expect(resolveTownships).toBeDefined());
       unmount();
       if (mode === "resolve") {
-        resolveTownships?.([]);
+        resolveTownships?.(TOWNSHIP_FEATURE_COLLECTION);
       } else {
         rejectTownships?.(new Error("data load failed"));
       }
@@ -848,7 +859,17 @@ describe("App", () => {
   );
 
   it("shows a data error and retries the validated requests", async () => {
-    dataMocks.getTownships.mockRejectedValueOnce(new Error("invalid data"));
+    dataMocks.fetchAreas
+      .mockReset()
+      .mockImplementation((url: string) =>
+        !url.includes("townships.display") || url.includes("retry")
+          ? Promise.resolve(
+              url.includes("townships.display")
+                ? TOWNSHIP_FEATURE_COLLECTION
+                : EMPTY_FEATURE_COLLECTION,
+            )
+          : Promise.reject(new Error("invalid data")),
+      );
     render(<App />);
 
     expect(await screen.findByRole("alert")).toHaveTextContent(
@@ -856,9 +877,6 @@ describe("App", () => {
     );
     fireEvent.click(screen.getByRole("button", { name: "Retry" }));
 
-    await waitFor(() =>
-      expect(dataMocks.getTownships).toHaveBeenCalledTimes(2),
-    );
     await waitFor(() =>
       expect(screen.queryByRole("alert")).not.toBeInTheDocument(),
     );

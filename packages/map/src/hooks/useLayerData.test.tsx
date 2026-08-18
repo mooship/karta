@@ -260,6 +260,102 @@ describe("useLayerData", () => {
     consoleError.mockRestore();
   });
 
+  it("fetches and returns a layer's companionSource collection alongside its data", async () => {
+    vi.mocked(global.fetch).mockImplementation(async (url) => ({
+      ok: true,
+      json: async () => ({
+        type: "FeatureCollection",
+        features: [],
+        properties: { requestedUrl: String(url) },
+      }),
+    }));
+
+    const { result } = renderHook(() => useLayerData(["areas"]), {
+      wrapper: withTestDomain,
+    });
+
+    await waitFor(() => {
+      expect(result.current.data).toHaveProperty("areas");
+      expect(result.current.companionData).toHaveProperty("areas");
+    });
+
+    expect(global.fetch).toHaveBeenCalledWith(
+      expect.stringContaining("/data/example/areas.display.v1.geojson"),
+      expect.objectContaining({ signal: expect.any(AbortSignal) }),
+    );
+    expect(global.fetch).toHaveBeenCalledWith(
+      expect.stringContaining(
+        "/data/example/area-boundaries.display.v1.geojson",
+      ),
+      expect.objectContaining({ signal: expect.any(AbortSignal) }),
+    );
+  });
+
+  it("does not populate companionData for a layer with no companionSource", async () => {
+    const { result } = renderHook(() => useLayerData(["rail"]), {
+      wrapper: withTestDomain,
+    });
+
+    await waitFor(() => {
+      expect(result.current.data).toHaveProperty("rail");
+    });
+
+    expect(result.current.companionData).toEqual({});
+  });
+
+  it("re-fetches a failed layer via retryFailedLayers, without needing it removed and re-added", async () => {
+    vi.mocked(global.fetch)
+      .mockRejectedValueOnce(new Error("network"))
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ type: "FeatureCollection", features: [] }),
+      } as Response);
+
+    const { result } = renderHook(() => useLayerData(["rail"]), {
+      wrapper: withTestDomain,
+    });
+
+    await waitFor(() => {
+      expect(result.current.failedLayerIds).toEqual(["rail"]);
+    });
+
+    result.current.retryFailedLayers();
+
+    await waitFor(() => {
+      expect(result.current.data).toHaveProperty("rail");
+    });
+    expect(global.fetch).toHaveBeenCalledTimes(2);
+    expect(result.current.failedLayerIds).toEqual([]);
+  });
+
+  it("cache-busts the retried request's URL", async () => {
+    vi.mocked(global.fetch)
+      .mockRejectedValueOnce(new Error("network"))
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ type: "FeatureCollection", features: [] }),
+      } as Response);
+
+    const { result } = renderHook(() => useLayerData(["rail"]), {
+      wrapper: withTestDomain,
+    });
+
+    await waitFor(() => {
+      expect(result.current.failedLayerIds).toEqual(["rail"]);
+    });
+
+    result.current.retryFailedLayers();
+
+    await waitFor(() => {
+      expect(global.fetch).toHaveBeenCalledTimes(2);
+    });
+    expect(global.fetch).toHaveBeenNthCalledWith(
+      2,
+      expect.stringMatching(/rail\.display\.v1\.geojson\?retry=1$/),
+      expect.objectContaining({ signal: expect.any(AbortSignal) }),
+    );
+  });
+
   it("merges features from every region source configured for a layer", async () => {
     vi.mocked(global.fetch)
       .mockResolvedValueOnce({

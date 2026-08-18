@@ -3,7 +3,6 @@ import { forwardRef, type ReactNode } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const dataMocks = vi.hoisted(() => ({
-  getTownships: vi.fn(),
   fetchAreas: vi.fn(),
 }));
 
@@ -43,10 +42,6 @@ vi.mock("@karta/core", async (importOriginal) => {
   };
 });
 
-vi.mock("./data/fetchTownships", () => ({
-  fetchTownships: dataMocks.getTownships,
-}));
-
 import { App } from "./App";
 import { useMapUiStore } from "./stores/useMapUiStore";
 
@@ -76,7 +71,6 @@ function clearModelContext() {
 describe("App WebMCP tool wiring", () => {
   beforeEach(() => {
     useMapUiStore.getState().reset();
-    dataMocks.getTownships.mockReset().mockResolvedValue([]);
     dataMocks.fetchAreas.mockReset().mockResolvedValue({
       type: "FeatureCollection",
       features: [],

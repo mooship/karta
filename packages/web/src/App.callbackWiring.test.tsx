@@ -9,7 +9,6 @@ import type { ReactNode } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const dataMocks = vi.hoisted(() => ({
-  getTownships: vi.fn(),
   fetchAreas: vi.fn(),
 }));
 
@@ -103,10 +102,6 @@ vi.mock("@karta/core", async (importOriginal) => {
   };
 });
 
-vi.mock("./data/fetchTownships", () => ({
-  fetchTownships: dataMocks.getTownships,
-}));
-
 import { App } from "./App";
 import { useMapUiStore } from "./stores/useMapUiStore";
 
@@ -114,7 +109,6 @@ describe("App map/location callback wiring", () => {
   beforeEach(() => {
     useMapUiStore.getState().reset();
     mapViewMocks.latestProps = undefined;
-    dataMocks.getTownships.mockReset().mockResolvedValue([]);
     dataMocks.fetchAreas.mockReset().mockResolvedValue({
       type: "FeatureCollection",
       features: [],

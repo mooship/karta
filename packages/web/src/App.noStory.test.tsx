@@ -3,7 +3,6 @@ import { forwardRef, type ReactNode } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const dataMocks = vi.hoisted(() => ({
-  getTownships: vi.fn(),
   fetchAreas: vi.fn(),
 }));
 
@@ -43,10 +42,6 @@ vi.mock("@karta/core", async (importOriginal) => {
   };
 });
 
-vi.mock("./data/fetchTownships", () => ({
-  fetchTownships: dataMocks.getTownships,
-}));
-
 vi.mock("./layers/registry", async (importOriginal) => {
   const actual = await importOriginal<typeof import("./layers/registry")>();
   return {
@@ -64,21 +59,6 @@ import { useMapUiStore } from "./stores/useMapUiStore";
 describe("App with a domain that has no story", () => {
   beforeEach(() => {
     useMapUiStore.getState().reset();
-    dataMocks.getTownships.mockReset().mockResolvedValue([
-      {
-        type: "Feature",
-        properties: {
-          id: "A",
-          name: "Mamelodi",
-          commuteMinutes: 20,
-          nearestJobCenter: "Pretoria CBD",
-          distanceKm: null,
-          nearestTransitKm: null,
-          nearestAReYengStopKm: null,
-        },
-        geometry: null,
-      },
-    ]);
     dataMocks.fetchAreas.mockReset().mockResolvedValue({
       type: "FeatureCollection",
       features: [],

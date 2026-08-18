@@ -9,7 +9,7 @@ import {
   useLatestRef,
   useResolvedDarkTheme,
 } from "@karta/react";
-import type { Feature, FeatureCollection } from "geojson";
+import type { Feature } from "geojson";
 import {
   circleMarker,
   type LatLng,
@@ -49,7 +49,7 @@ import type {
   GeocoderProvider,
   LocationSearchResult,
 } from "../../data/locationSearch";
-import { useLayerData } from "../../hooks/useLayerData";
+import type { LayerDataMap } from "../../hooks/useLayerData";
 import type { SelectableFeatureSearchEntry } from "../LocationSearchControl/LocationSearchControl";
 import { formatMeasurementResult } from "../MeasurementControl/formatMeasurementResult";
 import {
@@ -90,8 +90,21 @@ export interface MapViewProps<
   bounds: [[number, number], [number, number]];
   /** The accessible name for the map region, e.g. "Map of flood risk near Cape Town". */
   ariaLabel: string;
-  areas: Feature[];
-  areaBoundaries?: Feature[];
+  /**
+   * Every visible layer's fetched `FeatureCollection`, keyed by layer id —
+   * normally the `data` a caller's own `useLayerData(visibleLayerIds)` call
+   * returned. `MapView` renders whatever it's given here for both
+   * choropleth and line/point layers alike; it does no fetching of its own.
+   */
+  layerData: LayerDataMap;
+  /**
+   * Each visible choropleth layer's `companionSource` collection (e.g. area
+   * boundary/label geometry), keyed by layer id — normally the
+   * `companionData` the same `useLayerData` call returned. A layer with no
+   * entry here (because it declares no `companionSource`, or that source
+   * hasn't loaded yet) simply renders without boundary/label geometry.
+   */
+  companionData?: LayerDataMap;
   visibleLayerIds: string[];
   basemap?: Basemap;
   selectedFeatureId?: string | null;
@@ -112,8 +125,6 @@ export interface MapViewProps<
     entries: SelectableFeatureSearchEntry[],
   ) => void;
   renderFeaturePopup?: (properties: TProperties) => ReactNode;
-  /** Called with the ids of overlay layers whose data failed to load, whenever that set changes. */
-  onLayerDataError?: (failedLayerIds: string[]) => void;
   /**
    * Called if the current vector basemap's style fails to load, so a caller
    * can fall back to another basemap instead of leaving the map blank.
@@ -662,8 +673,8 @@ function MapViewComponent<
 >({
   bounds,
   ariaLabel,
-  areas,
-  areaBoundaries = [],
+  layerData,
+  companionData = {},
   visibleLayerIds,
   basemap = "street",
   selectedFeatureId = null,
@@ -671,7 +682,6 @@ function MapViewComponent<
   onFeatureSelect,
   onSelectableFeaturesChange,
   renderFeaturePopup,
-  onLayerDataError,
   onBasemapError,
   locationContextMenu = false,
   locationContextMenuProvider,
@@ -732,20 +742,6 @@ function MapViewComponent<
       ),
     [visibleLayerIds, getLayers],
   );
-  const nonChoroplethLayerIds = useMemo(
-    () =>
-      visibleLayers
-        .filter((layer) => layer.geometryKind !== "choropleth")
-        .map((layer) => layer.id),
-    [visibleLayers],
-  );
-  const { data: overlayData, failedLayerIds } = useLayerData(
-    nonChoroplethLayerIds,
-  );
-  // biome-ignore lint/correctness/useExhaustiveDependencies: onLayerDataError intentionally omitted -- it's a public prop with no stability guarantee, so including it could re-fire this effect on every render for callers that don't memoize it
-  useEffect(() => {
-    onLayerDataError?.(failedLayerIds);
-  }, [failedLayerIds]);
   const resolvedDark = useResolvedDarkTheme();
   const basemapDefinition = getBasemapDefinition(basemap);
   const isRasterBasemap = basemapDefinition.kind === "raster";
@@ -806,32 +802,9 @@ function MapViewComponent<
     () => ({ tileerror: handleTileError }),
     [handleTileError],
   );
-  const showAreaLabels = useMemo(
-    () =>
-      getLayers().some(
-        (layer) =>
-          visibleLayerIds.includes(layer.id) &&
-          layer.interaction?.labelField !== undefined,
-      ),
-    [visibleLayerIds, getLayers],
-  );
   const isOverviewZoom = mapZoom < OVERVIEW_ZOOM_THRESHOLD;
   const isDetailZoom = mapZoom >= DETAIL_ZOOM_THRESHOLD;
   const transitStopRadius = isOverviewZoom ? 2 : isDetailZoom ? 4 : 3;
-  const areaBoundaryData = useMemo<FeatureCollection>(
-    () => ({
-      type: "FeatureCollection",
-      features: areaBoundaries,
-    }),
-    [areaBoundaries],
-  );
-  const areaData = useMemo<FeatureCollection>(
-    () => ({
-      type: "FeatureCollection",
-      features: areas,
-    }),
-    [areas],
-  );
   const selectableSearchEntries = useMemo<
     SelectableFeatureSearchEntry[]
   >(() => {
@@ -840,8 +813,7 @@ function MapViewComponent<
       if (!layer.interaction?.selectable) {
         continue;
       }
-      const isChoropleth = layer.geometryKind === "choropleth";
-      const data = isChoropleth ? areaData : overlayData[layer.id];
+      const data = layerData[layer.id];
       if (!data) {
         continue;
       }
@@ -864,7 +836,7 @@ function MapViewComponent<
     // future domain violating that assumption would just show duplicate
     // rows for the same id, not break selection.
     return entries;
-  }, [visibleLayers, areaData, overlayData]);
+  }, [visibleLayers, layerData]);
   const selectedFeatureLabel = useMemo(
     () =>
       selectedFeatureId
@@ -1050,41 +1022,51 @@ function MapViewComponent<
         <Pane name={AREA_PANE} style={{ zIndex: 400 }} />
         <Pane name={AREA_OUTLINE_PANE} style={{ zIndex: 425 }} />
         <Pane name={TRANSIT_PANE} style={{ zIndex: 450 }} />
-        {showAreaLabels && areaBoundaries.length > 0 ? (
-          <GeoJSON
-            data={areaBoundaryData}
-            smoothFactor={0}
-            pathOptions={AREA_OUTLINE_PATH_OPTIONS}
-            style={(feature: Feature | undefined) => ({
-              color: resolveThemedColor(
-                AREA_OUTLINE.color,
-                AREA_OUTLINE.darkColor,
-                resolvedDark,
-              ),
-              opacity: resolvedDark
-                ? feature?.properties?.labelPriority === "secondary"
-                  ? 0.42
-                  : 0.62
-                : feature?.properties?.labelPriority === "secondary"
-                  ? 0.72
-                  : 1,
-              weight: resolvedDark
-                ? feature?.properties?.labelPriority === "secondary"
-                  ? 1
-                  : isOverviewZoom
+        {visibleLayers.map((layer) => {
+          if (layer.interaction?.labelField === undefined) {
+            return null;
+          }
+          const boundaryData = companionData[layer.id];
+          if (!boundaryData || boundaryData.features.length === 0) {
+            return null;
+          }
+          return (
+            <GeoJSON
+              key={`boundary-${layer.id}`}
+              data={boundaryData}
+              smoothFactor={0}
+              pathOptions={AREA_OUTLINE_PATH_OPTIONS}
+              style={(feature: Feature | undefined) => ({
+                color: resolveThemedColor(
+                  AREA_OUTLINE.color,
+                  AREA_OUTLINE.darkColor,
+                  resolvedDark,
+                ),
+                opacity: resolvedDark
+                  ? feature?.properties?.labelPriority === "secondary"
+                    ? 0.42
+                    : 0.62
+                  : feature?.properties?.labelPriority === "secondary"
+                    ? 0.72
+                    : 1,
+                weight: resolvedDark
+                  ? feature?.properties?.labelPriority === "secondary"
                     ? 1
-                    : 2
-                : feature?.properties?.labelPriority === "secondary"
-                  ? isOverviewZoom
-                    ? 1
-                    : 2
-                  : isOverviewZoom
-                    ? 2
-                    : 4,
-            })}
-            onEachFeature={bindAreaBoundaryLabel}
-          />
-        ) : null}
+                    : isOverviewZoom
+                      ? 1
+                      : 2
+                  : feature?.properties?.labelPriority === "secondary"
+                    ? isOverviewZoom
+                      ? 1
+                      : 2
+                    : isOverviewZoom
+                      ? 2
+                      : 4,
+              })}
+              onEachFeature={bindAreaBoundaryLabel}
+            />
+          );
+        })}
         {visibleLayers.map((layer) => {
           const config = layerConfigById.get(layer.id);
           /* v8 ignore next 3 -- unreachable: layerConfigById is built from this same visibleLayers list, so every layer.id here always has an entry */
@@ -1093,9 +1075,9 @@ function MapViewComponent<
           }
           const isChoropleth = layer.geometryKind === "choropleth";
           const isSelectable = Boolean(layer.interaction?.selectable);
-          const data = isChoropleth ? areaData : overlayData[layer.id];
+          const data = layerData[layer.id];
 
-          if (!data || (isChoropleth && areas.length === 0)) {
+          if (!data) {
             return null;
           }
 
@@ -1147,15 +1129,22 @@ function MapViewComponent<
  * and transit overlays resolved from the active `DomainProvider`, area
  * boundary outline labels, feature selection/keyboard interaction, and
  * location-search fly-to behaviour.
- * @remarks Must be rendered inside a `DomainProvider`. `renderFeaturePopup`
- *   is invoked to produce the popup markup for a selectable feature; when
- *   omitted, clicking or selecting a feature will not show a popup.
+ * @remarks Must be rendered inside a `DomainProvider`. Does no data fetching
+ *   of its own — `layerData`/`companionData` are normally the `data`/
+ *   `companionData` a caller's own `useLayerData(visibleLayerIds)` call
+ *   returned, so a caller can decide when to start that fetch (e.g. deferred
+ *   until `onReady` fires) and how to surface `failedLayerIds`/
+ *   `retryFailedLayers`. `renderFeaturePopup` is invoked to produce the
+ *   popup markup for a selectable feature; when omitted, clicking or
+ *   selecting a feature will not show a popup.
  * @example
+ * const { data, companionData } = useLayerData(["townships"]);
  * <DomainProvider domain={GAUTENG_SPATIAL_LEGACY_DOMAIN}>
  *   <MapView
  *     bounds={[[-27.15, 27.1], [-25.3, 28.75]]}
  *     ariaLabel="Map of South African township access to job centres"
- *     areas={townships}
+ *     layerData={data}
+ *     companionData={companionData}
  *     visibleLayerIds={["townships"]}
  *     renderFeaturePopup={(props) => <TownshipPopup properties={props} />}
  *   />
