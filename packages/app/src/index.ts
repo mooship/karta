@@ -1,3 +1,4 @@
+export * from "./constants/domains";
 export * from "./constants/metros";
 export * from "./constants/regions";
 export * from "./constants/townships";
