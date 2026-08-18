@@ -43,6 +43,7 @@ import styles from "./App.module.css";
 import { DomainStory } from "./components/DomainStory/DomainStory";
 import { LanguageToggle } from "./components/LanguageToggle/LanguageToggle";
 import { LayerToggles } from "./components/LayerToggles/LayerToggles";
+import { PrivacyLink } from "./components/PrivacyLink/PrivacyLink";
 import { TownshipPopup } from "./components/TownshipPopup/TownshipPopup";
 import { fetchTownships } from "./data/fetchTownships";
 import { buildRegionDataUrls } from "./data/regionDataUrls";
@@ -904,6 +905,7 @@ export function App() {
             onOpenChange={setSettingsOpen}
           >
             <LanguageToggle />
+            <PrivacyLink />
           </SettingsMenu>
         </div>
       </div>

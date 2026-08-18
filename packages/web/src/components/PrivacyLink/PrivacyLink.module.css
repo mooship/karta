@@ -1,0 +1,6 @@
+.link {
+  align-self: flex-start;
+  color: var(--md-sys-color-primary);
+  font-family: var(--font-body, "Inter Variable", sans-serif);
+  font-size: var(--font-size-md, 0.75rem);
+}

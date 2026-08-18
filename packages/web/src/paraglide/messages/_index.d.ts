@@ -37,6 +37,7 @@ export * from './error_boundary_generic_title.js';
 export * from './error_boundary_generic_message.js';
 export * from './error_boundary_reload.js';
 export * from './language_toggle_label.js';
+export * from './settings_privacy_link_label.js';
 export * from './layer_townships_label.js';
 export * from './layer_townships_description.js';
 export * from './layer_nearest_transit_label.js';
