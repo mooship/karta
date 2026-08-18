@@ -1,0 +1,36 @@
+.page {
+  box-sizing: border-box;
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: var(--space-4) var(--space-3) 3rem;
+  color: var(--md-sys-color-on-surface);
+  font-family: var(--font-body);
+}
+
+.heading {
+  margin: 0 0 var(--space-2);
+  font-size: 1.5rem;
+}
+
+.updated {
+  margin: 0 0 var(--space-4);
+  color: var(--md-sys-color-on-surface-variant);
+  font-size: var(--font-size-base);
+}
+
+.sectionTitle {
+  margin: var(--space-4) 0 var(--space-1);
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.body {
+  margin: 0 0 var(--space-2);
+  line-height: 1.6;
+}
+
+.backLink {
+  composes: link from "../../shared.module.css";
+  display: inline-block;
+  margin-top: var(--space-4);
+}
