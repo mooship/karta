@@ -1,0 +1,35 @@
+.page {
+  box-sizing: border-box;
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: var(--space-4, 1rem) var(--space-3, 0.75rem) 3rem;
+  color: var(--md-sys-color-on-surface);
+  font-family: var(--font-body, "Inter Variable", sans-serif);
+}
+
+.heading {
+  margin: 0 0 var(--space-2, 0.5rem);
+  font-size: 1.5rem;
+}
+
+.updated {
+  margin: 0 0 var(--space-4, 1rem);
+  color: var(--md-sys-color-on-surface-variant);
+  font-size: var(--font-size-base, 0.8125rem);
+}
+
+.sectionTitle {
+  margin: var(--space-4, 1rem) 0 var(--space-1, 0.25rem);
+  font-size: 1.05rem;
+}
+
+.body {
+  margin: 0 0 var(--space-2, 0.5rem);
+  line-height: 1.6;
+}
+
+.backLink {
+  display: inline-block;
+  margin-top: var(--space-4, 1rem);
+  color: var(--md-sys-color-primary);
+}
