@@ -58,9 +58,18 @@
   "layer_group_access_to_opportunity_title": "Toeganklikheidslae",
   "layer_group_access_to_opportunity_description": "Slegs een laag kan op 'n slag aktief wees.",
   "layer_group_transit_networks_title": "Vervoernetwerke",
+  "layer_group_heritage_title": "Erfenis",
 
-  "domain_story_title": "Waarom hierdie kaart bestaan",
-  "domain_story_body": "Apartheidswetgewing het bepaal waar Swart, Kleurling- en Indiër-mense kon woon. Swart lokasies is doelbewus van ekonomiese sentrums geskei, en daardie afstande bepaal vandag steeds toegang tot werk. Hierdie kaart meet daardie gaping met gemodelleerde motortyd en afstand tot vervoer.",
+  "layer_heritage_sites_label": "Erfenisplekke van die vryheidstryd",
+  "layer_heritage_sites_description": "Benaderde liggings van openbaar gedokumenteerde plekke wat belangrik is vir Suid-Afrika se anti-apartheid- en demokrasiegeskiedenis.",
+
+  "domain_label_gauteng_spatial_legacy": "Ruimtelike nalatenskap",
+  "domain_label_heritage_sites": "Erfenisplekke",
+
+  "domain_gauteng_spatial_legacy_story_title": "Waarom hierdie kaart bestaan",
+  "domain_gauteng_spatial_legacy_story_body": "Apartheidswetgewing het bepaal waar Swart, Kleurling- en Indiër-mense kon woon. Swart lokasies is doelbewus van ekonomiese sentrums geskei, en daardie afstande bepaal vandag steeds toegang tot werk. Hierdie kaart meet daardie gaping met gemodelleerde motortyd en afstand tot vervoer.",
+  "domain_heritage_sites_story_title": "Waarom hierdie plekke saak maak",
+  "domain_heritage_sites_story_body": "Apartheid het probeer om Swart politieke lewe van die kaart te vee. Die plekke waar mense georganiseer, aanbid, aangehou is, en gesterf het terwyl hulle daarteen geveg het, is steeds hier — hierdie laag karteer dié wat openbaar gedokumenteer en vandag oop is om te besoek.",
 
   "bucket_car_time_short": "Kort (≤ 20 min)",
   "bucket_car_time_moderate": "Matig (21–40 min)",

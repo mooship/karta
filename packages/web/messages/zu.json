@@ -58,9 +58,18 @@
   "layer_group_access_to_opportunity_title": "Izingqimba zokufinyelela",
   "layer_group_access_to_opportunity_description": "Yingqimba eyodwa kuphela engasebenza ngesikhathi esisodwa.",
   "layer_group_transit_networks_title": "Amanethiwekhi ezokuthutha",
+  "layer_group_heritage_title": "Ifa",
 
-  "domain_story_title": "Kungani leli balazwe likhona",
-  "domain_story_body": "Umthetho wobandlululo wawulawula ukuthi abantu abaMnyama, amaKhaladi kanye namaNdiya bangahlala kuphi. Amalokishi abantu abaMnyama ahlukaniswa ngamabomu nezikhungo zomnotho, futhi lawo mabanga asabumba ukufinyelela emsebenzini nanamuhla. Leli balazwe likala lelo gebe ngesikhathi semoto esilinganiselwe nebanga eliya ezokuthutha.",
+  "layer_heritage_sites_label": "Izindawo zefa lomzabalazo",
+  "layer_heritage_sites_description": "Izindawo ezilinganiselwe zezindawo ezibhalwe ngokusemthethweni ezibalulekile emlandweni wokulwa nobandlululo nowentando yeningi eNingizimu Afrika.",
+
+  "domain_label_gauteng_spatial_legacy": "Ifa lendawo",
+  "domain_label_heritage_sites": "Izindawo zefa",
+
+  "domain_gauteng_spatial_legacy_story_title": "Kungani leli balazwe likhona",
+  "domain_gauteng_spatial_legacy_story_body": "Umthetho wobandlululo wawulawula ukuthi abantu abaMnyama, amaKhaladi kanye namaNdiya bangahlala kuphi. Amalokishi abantu abaMnyama ahlukaniswa ngamabomu nezikhungo zomnotho, futhi lawo mabanga asabumba ukufinyelela emsebenzini nanamuhla. Leli balazwe likala lelo gebe ngesikhathi semoto esilinganiselwe nebanga eliya ezokuthutha.",
+  "domain_heritage_sites_story_title": "Kungani lezi zindawo zibalulekile",
+  "domain_heritage_sites_story_body": "Ubandlululo lwazama ukususa impilo yezepolitiki yabantu abaMnyama ebalazweni. Izindawo lapho abantu babehlangana khona, bekhulekela, beboshiwe, futhi bebulawelwa ukumelana nalo, zisekhona — le ngqimba ikhombisa lezo ezibhalwe ngokusemthethweni futhi ezivulelekile ukuvakashelwa namuhla.",
 
   "bucket_car_time_short": "Isikhathi esifushane (≤ 20 min)",
   "bucket_car_time_moderate": "Isikhathi esimaphakathi (21–40 min)",

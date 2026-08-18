@@ -1,7 +1,9 @@
-import type { Layer, LayerGroup } from "@karta/core";
+import { GAUTENG_SPATIAL_LEGACY_DOMAIN } from "@karta/app";
+import type { DomainConfig, Layer, LayerGroup } from "@karta/core";
+import { DomainProvider } from "@karta/map";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import type { ReactElement } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import * as registry from "../../layers/registry";
 import { LayerToggles } from "./LayerToggles";
 
 const coreMocks = vi.hoisted(() => ({
@@ -17,6 +19,19 @@ vi.mock("@karta/core", async (importOriginal) => {
     featureCollectionToCsv: coreMocks.featureCollectionToCsv,
   };
 });
+
+/** Renders `LayerToggles` inside a `DomainProvider`, defaulting to the real gauteng-spatial-legacy domain. */
+function renderLayerToggles(
+  element: ReactElement,
+  domain: DomainConfig = GAUTENG_SPATIAL_LEGACY_DOMAIN,
+) {
+  return render(<DomainProvider domain={domain}>{element}</DomainProvider>);
+}
+
+/** Builds a single-layer, single-group `DomainConfig` for tests exercising one specific layer's rendering. */
+function singleLayerDomain(layer: Layer, group: LayerGroup): DomainConfig {
+  return { layers: [layer], layerGroups: [group] };
+}
 
 describe("LayerToggles", () => {
   afterEach(() => {
@@ -38,10 +53,11 @@ describe("LayerToggles", () => {
       title: "Transit",
       layerIds: ["myciti"],
     };
-    vi.spyOn(registry, "getLayer").mockReturnValue(unavailableLayer);
-    vi.spyOn(registry, "getLayerGroups").mockReturnValue([group]);
 
-    render(<LayerToggles visibleLayerIds={[]} onToggle={vi.fn()} />);
+    renderLayerToggles(
+      <LayerToggles visibleLayerIds={[]} onToggle={vi.fn()} />,
+      singleLayerDomain(unavailableLayer, group),
+    );
 
     expect(screen.getByTestId("layer-toggle-myciti-row")).toHaveAttribute(
       "data-unavailable",
@@ -52,7 +68,9 @@ describe("LayerToggles", () => {
   });
 
   it("reflects visibility state on each layer's checkbox", () => {
-    render(<LayerToggles visibleLayerIds={["townships"]} onToggle={vi.fn()} />);
+    renderLayerToggles(
+      <LayerToggles visibleLayerIds={["townships"]} onToggle={vi.fn()} />,
+    );
 
     expect(screen.getByTestId("layer-toggle-townships")).toBeChecked();
     expect(screen.getByTestId("layer-toggle-rapid-rail")).not.toBeChecked();
@@ -60,7 +78,9 @@ describe("LayerToggles", () => {
 
   it("calls onToggle with the layer id when its checkbox is clicked", () => {
     const onToggle = vi.fn();
-    render(<LayerToggles visibleLayerIds={[]} onToggle={onToggle} />);
+    renderLayerToggles(
+      <LayerToggles visibleLayerIds={[]} onToggle={onToggle} />,
+    );
 
     screen.getByTestId("layer-toggle-rapid-rail").click();
 
@@ -90,10 +110,11 @@ describe("LayerToggles", () => {
       selectionMode: "exclusive",
       layerIds: ["townships"],
     };
-    vi.spyOn(registry, "getLayer").mockReturnValue(layerWithDescription);
-    vi.spyOn(registry, "getLayerGroups").mockReturnValue([group]);
 
-    render(<LayerToggles visibleLayerIds={[]} onToggle={vi.fn()} />);
+    renderLayerToggles(
+      <LayerToggles visibleLayerIds={[]} onToggle={vi.fn()} />,
+      singleLayerDomain(layerWithDescription, group),
+    );
 
     expect(
       screen.getByTestId("layer-toggle-townships-description"),
@@ -118,10 +139,11 @@ describe("LayerToggles", () => {
       selectionMode: "independent",
       layerIds: ["myciti"],
     };
-    vi.spyOn(registry, "getLayer").mockReturnValue(layerWithoutDescription);
-    vi.spyOn(registry, "getLayerGroups").mockReturnValue([group]);
 
-    render(<LayerToggles visibleLayerIds={[]} onToggle={vi.fn()} />);
+    renderLayerToggles(
+      <LayerToggles visibleLayerIds={[]} onToggle={vi.fn()} />,
+      singleLayerDomain(layerWithoutDescription, group),
+    );
 
     expect(
       screen.queryByTestId("layer-toggle-myciti-description"),
@@ -129,7 +151,9 @@ describe("LayerToggles", () => {
   });
 
   it("shows no failure badge by default", () => {
-    render(<LayerToggles visibleLayerIds={[]} onToggle={vi.fn()} />);
+    renderLayerToggles(
+      <LayerToggles visibleLayerIds={[]} onToggle={vi.fn()} />,
+    );
 
     expect(
       screen.queryByTestId("layer-toggle-rapid-rail-error"),
@@ -137,7 +161,7 @@ describe("LayerToggles", () => {
   });
 
   it("shows a failure badge for a layer whose data failed to load", () => {
-    render(
+    renderLayerToggles(
       <LayerToggles
         visibleLayerIds={["rapid-rail"]}
         onToggle={vi.fn()}
@@ -154,7 +178,9 @@ describe("LayerToggles", () => {
   });
 
   it("links to an available layer's data source as a GeoJSON download", () => {
-    render(<LayerToggles visibleLayerIds={[]} onToggle={vi.fn()} />);
+    renderLayerToggles(
+      <LayerToggles visibleLayerIds={[]} onToggle={vi.fn()} />,
+    );
 
     const download = screen.getByRole("link", {
       name: /download rapid rail data/i,
@@ -182,10 +208,11 @@ describe("LayerToggles", () => {
       selectionMode: "independent",
       layerIds: ["combined"],
     };
-    vi.spyOn(registry, "getLayer").mockReturnValue(multiSourceLayer);
-    vi.spyOn(registry, "getLayerGroups").mockReturnValue([group]);
 
-    render(<LayerToggles visibleLayerIds={[]} onToggle={vi.fn()} />);
+    renderLayerToggles(
+      <LayerToggles visibleLayerIds={[]} onToggle={vi.fn()} />,
+      singleLayerDomain(multiSourceLayer, group),
+    );
 
     const downloads = screen.getAllByRole("link", {
       name: /download combined data/i,
@@ -212,10 +239,11 @@ describe("LayerToggles", () => {
       title: "Transit",
       layerIds: ["myciti"],
     };
-    vi.spyOn(registry, "getLayer").mockReturnValue(unavailableLayer);
-    vi.spyOn(registry, "getLayerGroups").mockReturnValue([group]);
 
-    render(<LayerToggles visibleLayerIds={[]} onToggle={vi.fn()} />);
+    renderLayerToggles(
+      <LayerToggles visibleLayerIds={[]} onToggle={vi.fn()} />,
+      singleLayerDomain(unavailableLayer, group),
+    );
 
     expect(
       screen.queryByRole("link", { name: /download/i }),
@@ -224,7 +252,9 @@ describe("LayerToggles", () => {
 
   it("doesn't toggle the layer when its download link is clicked", () => {
     const onToggle = vi.fn();
-    render(<LayerToggles visibleLayerIds={[]} onToggle={onToggle} />);
+    renderLayerToggles(
+      <LayerToggles visibleLayerIds={[]} onToggle={onToggle} />,
+    );
 
     fireEvent.click(
       screen.getByRole("link", { name: /download rapid rail data/i }),
@@ -240,7 +270,9 @@ describe("LayerToggles", () => {
     });
 
     it("shows a CSV download button alongside the GeoJSON download link", () => {
-      render(<LayerToggles visibleLayerIds={[]} onToggle={vi.fn()} />);
+      renderLayerToggles(
+        <LayerToggles visibleLayerIds={[]} onToggle={vi.fn()} />,
+      );
 
       expect(
         screen.getByRole("button", {
@@ -263,7 +295,9 @@ describe("LayerToggles", () => {
         .spyOn(HTMLAnchorElement.prototype, "click")
         .mockImplementation(() => {});
 
-      render(<LayerToggles visibleLayerIds={[]} onToggle={vi.fn()} />);
+      renderLayerToggles(
+        <LayerToggles visibleLayerIds={[]} onToggle={vi.fn()} />,
+      );
       fireEvent.click(
         screen.getByRole("button", {
           name: /download rapid rail data \(csv\)/i,
@@ -291,7 +325,9 @@ describe("LayerToggles", () => {
         .spyOn(HTMLAnchorElement.prototype, "click")
         .mockImplementation(() => {});
 
-      render(<LayerToggles visibleLayerIds={[]} onToggle={vi.fn()} />);
+      renderLayerToggles(
+        <LayerToggles visibleLayerIds={[]} onToggle={vi.fn()} />,
+      );
       fireEvent.click(
         screen.getByRole("button", {
           name: /download rapid rail data \(csv\)/i,
@@ -312,7 +348,9 @@ describe("LayerToggles", () => {
       const onToggle = vi.fn();
       coreMocks.fetchFeatureCollection.mockReturnValue(new Promise(() => {}));
 
-      render(<LayerToggles visibleLayerIds={[]} onToggle={onToggle} />);
+      renderLayerToggles(
+        <LayerToggles visibleLayerIds={[]} onToggle={onToggle} />,
+      );
       fireEvent.click(
         screen.getByRole("button", {
           name: /download rapid rail data \(csv\)/i,

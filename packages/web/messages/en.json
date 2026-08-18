@@ -58,9 +58,18 @@
   "layer_group_access_to_opportunity_title": "Accessibility overlays",
   "layer_group_access_to_opportunity_description": "Only one overlay can be active at a time.",
   "layer_group_transit_networks_title": "Transit networks",
+  "layer_group_heritage_title": "Heritage",
 
-  "domain_story_title": "Why this map exists",
-  "domain_story_body": "Apartheid law controlled where Black, Coloured and Indian people could live. Black townships were deliberately separated from economic centres, and those distances still shape access to work today. This map measures that gap with modelled car time and distance to transit.",
+  "layer_heritage_sites_label": "Struggle heritage sites",
+  "layer_heritage_sites_description": "Approximate locations of publicly documented sites significant to South Africa's anti-apartheid and democracy history.",
+
+  "domain_label_gauteng_spatial_legacy": "Spatial legacy",
+  "domain_label_heritage_sites": "Heritage sites",
+
+  "domain_gauteng_spatial_legacy_story_title": "Why this map exists",
+  "domain_gauteng_spatial_legacy_story_body": "Apartheid law controlled where Black, Coloured and Indian people could live. Black townships were deliberately separated from economic centres, and those distances still shape access to work today. This map measures that gap with modelled car time and distance to transit.",
+  "domain_heritage_sites_story_title": "Why these sites matter",
+  "domain_heritage_sites_story_body": "Apartheid tried to erase Black political life from the map. The places where people organised, worshipped, were detained, and were killed for resisting it are still here — this layer plots the ones that are publicly documented and open to visit today.",
 
   "bucket_car_time_short": "Short (≤ 20 min)",
   "bucket_car_time_moderate": "Moderate (21–40 min)",

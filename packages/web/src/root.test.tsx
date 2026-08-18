@@ -1,3 +1,4 @@
+import { DEFAULT_DOMAIN_ID } from "@karta/app";
 import { render, screen } from "@testing-library/react";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -27,7 +28,7 @@ const {
 describe("root links", () => {
   it("does not preload any layer GeoJSON, so it never competes with render-critical requests", () => {
     const layerDataUrls = new Set(
-      getLayers().flatMap((layer) =>
+      getLayers(DEFAULT_DOMAIN_ID).flatMap((layer) =>
         layer.companionSource
           ? [...layer.dataSource, layer.companionSource]
           : layer.dataSource,

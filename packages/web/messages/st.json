@@ -58,9 +58,18 @@
   "layer_group_access_to_opportunity_title": "Maera a phihlello",
   "layer_group_access_to_opportunity_description": "Ke lera le le leng feela le ka sebetsang ka nako e le nngwe.",
   "layer_group_transit_networks_title": "Marangrang a dipalangwa",
+  "layer_group_heritage_title": "Bohwa",
 
-  "domain_story_title": "Hobaneng 'mapa ona o le teng",
-  "domain_story_body": "Molao wa kgethollo o ne o laola moo batho ba Batsho, ba Bammala le ba Maindia ba neng ba ka phela teng. Metse ya batho ba Batsho e ne e arohantswe ka boomo le ditsi tsa moruo, mme dibaka tseo di sa bontsha phihlello ya mesebetsi kajeno. 'Mapa ona o lekanya lekgalo leo ka nako ya koloi e akantsweng le bohole ho isa dipalangwaneng.",
+  "layer_heritage_sites_label": "Mafelo a bohwa ba ntwa ya tokoloho",
+  "layer_heritage_sites_description": "Dibaka tse akantsweng tsa mafelo a ngotsweng phatlalatsa a bohlokwa historing ya kgahlanong le kgethollo le temokrasi ya Afrika Borwa.",
+
+  "domain_label_gauteng_spatial_legacy": "Lefa la sebaka",
+  "domain_label_heritage_sites": "Mafelo a bohwa",
+
+  "domain_gauteng_spatial_legacy_story_title": "Hobaneng 'mapa ona o le teng",
+  "domain_gauteng_spatial_legacy_story_body": "Molao wa kgethollo o ne o laola moo batho ba Batsho, ba Bammala le ba Maindia ba neng ba ka phela teng. Metse ya batho ba Batsho e ne e arohantswe ka boomo le ditsi tsa moruo, mme dibaka tseo di sa bontsha phihlello ya mesebetsi kajeno. 'Mapa ona o lekanya lekgalo leo ka nako ya koloi e akantsweng le bohole ho isa dipalangwaneng.",
+  "domain_heritage_sites_story_title": "Hobaneng mafelo ana a le bohlokwa",
+  "domain_heritage_sites_story_body": "Kgethollo e ne e leka ho hlakola bophelo ba dipolotiki ba batho ba Batsho mapeng. Mafelo ao batho ba neng ba kopana ho ona, ba rapela, ba tshwarwa, mme ba bolawa ha ba hanyetsa yona, a sa le teng — sengoloa sena se bontsha ao a ngotsweng phatlalatsa mme a butswe ho etelwa kajeno.",
 
   "bucket_car_time_short": "Nako e khutshwane (≤ 20 min)",
   "bucket_car_time_moderate": "Nako e bohareng (21–40 min)",

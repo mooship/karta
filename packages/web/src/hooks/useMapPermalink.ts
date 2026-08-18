@@ -1,6 +1,6 @@
+import type { Layer } from "@karta/core";
 import { getRegisteredBasemapIds } from "@karta/map";
 import { useEffect, useMemo, useRef } from "react";
-import { getLayerStructure } from "../layers/registry";
 import {
   getDefaultMapUiState,
   type PanelView,
@@ -121,6 +121,14 @@ export interface UseMapPermalinkOptions {
    * has nothing to select until then.
    */
   dataReady: boolean;
+  /**
+   * The active domain's layers, in registry order. Passed explicitly by
+   * `App` rather than read via `useDomain()` — this hook is called directly
+   * in `App`'s own component body, not as a descendant of the
+   * `DomainProvider` `App` itself renders, so the domain's context isn't
+   * reachable from here.
+   */
+  layers: readonly Layer[];
 }
 
 /**
@@ -132,18 +140,18 @@ export interface UseMapPermalinkOptions {
  *   toggle or feature click would otherwise spam the back button with a new
  *   history entry.
  */
-export function useMapPermalink({ dataReady }: UseMapPermalinkOptions): void {
+export function useMapPermalink({
+  dataReady,
+  layers,
+}: UseMapPermalinkOptions): void {
   /**
-   * The registry's layer ids, in order. Memoized rather than recomputed in
-   * every effect below — the domain's layer catalogue is stable for the
-   * app's whole lifetime. Uses the unlocalized `getLayerStructure()` rather
-   * than `getLayers()`, since only `id` is needed here and running the
-   * translation overlay just to discard its result would be wasted work.
+   * The active domain's layer ids, in order. Memoized rather than
+   * recomputed in every effect below — `layers` is stable for as long as
+   * the active domain doesn't change (see `App`'s own `domain` memo). Only
+   * `id` is read here, so it doesn't matter that `layers` is already
+   * localized.
    */
-  const layerIds = useMemo(
-    () => getLayerStructure().map((layer) => layer.id),
-    [],
-  );
+  const layerIds = useMemo(() => layers.map((layer) => layer.id), [layers]);
   const defaults = useMemo(() => getDefaultMapUiState(), []);
   const pendingFeatureId = useRef<string | undefined>(undefined);
 

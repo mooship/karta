@@ -1,9 +1,12 @@
+import { DEFAULT_DOMAIN_ID } from "@karta/app";
 import type { Basemap } from "@karta/map";
 import { create } from "zustand";
 import { getLayerGroupStructure, getLayerStructure } from "../layers/registry";
 
 function findGroupContaining(id: string) {
-  return getLayerGroupStructure().find((group) => group.layerIds.includes(id));
+  return getLayerGroupStructure(DEFAULT_DOMAIN_ID).find((group) =>
+    group.layerIds.includes(id),
+  );
 }
 
 function isExclusiveGroupMember(id: string): boolean {
@@ -41,10 +44,16 @@ interface MapUiState {
  * The store's default state: every `defaultVisible` layer shown, the street
  * basemap, and no selection. Also the reference point `useMapPermalink` diffs
  * against to decide which fields a shareable URL needs to carry.
+ * @remarks Still hardcoded to `DEFAULT_DOMAIN_ID` rather than taking a
+ *   `domainId` parameter — this store doesn't yet know which domain is
+ *   active, since nothing threads a per-request domain id into it. That
+ *   lands with the `/d/:domainId` routing work, at which point this
+ *   becomes properly domain-aware (see the store's own module doc once
+ *   that change lands).
  */
 export function getDefaultMapUiState() {
   return {
-    visibleLayerIds: getLayerStructure()
+    visibleLayerIds: getLayerStructure(DEFAULT_DOMAIN_ID)
       .filter((layer) => layer.defaultVisible)
       .map((layer) => layer.id),
     basemap: "street" as const,

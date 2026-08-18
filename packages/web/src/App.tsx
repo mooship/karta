@@ -1,6 +1,9 @@
-import type { TownshipFeature, TownshipProperties } from "@karta/app";
 import {
-  type DomainConfig,
+  DEFAULT_DOMAIN_ID,
+  type TownshipFeature,
+  type TownshipProperties,
+} from "@karta/app";
+import {
   type DomainStory as DomainStoryContent,
   fetchFeatureCollection,
   mergeFeatureCollections,
@@ -49,7 +52,7 @@ import { fetchTownships } from "./data/fetchTownships";
 import { buildRegionDataUrls } from "./data/regionDataUrls";
 import { useMapModelContextTools } from "./hooks/useMapModelContextTools";
 import { useMapPermalink } from "./hooks/useMapPermalink";
-import { getLayerGroups, getLayers, getStory } from "./layers/registry";
+import { getLocalizedDomain } from "./layers/registry";
 import { m } from "./paraglide/messages.js";
 import { type PanelView, useMapUiStore } from "./stores/useMapUiStore";
 
@@ -179,9 +182,9 @@ function PanelViewContent({
 
 /**
  * The reference app's root shell: fetches and merges the Gauteng township
- * choropleth data, wraps the render tree in a `DomainProvider` for
- * `gauteng-spatial-legacy`, and renders the map alongside the desktop/mobile
- * info panel and its settings menu.
+ * choropleth data, wraps the render tree in a `DomainProvider` for the
+ * active domain, and renders the map alongside the desktop/mobile info
+ * panel and its settings menu.
  * @remarks That township fetch deliberately waits for `MapView`'s `onReady`
  *   (tracked as `mapReady`) rather than starting at mount. Downloading,
  *   validating and handing Leaflet ~2,500 polygons is seconds of
@@ -190,18 +193,20 @@ function PanelViewContent({
  *   map's own first paint and delayed it by all of that. The retry path
  *   (`loadAttempt`) still works unchanged, since the map stays ready.
  *   The info panel shows layer toggles, plus a Story tab reading its
- *   copy from the domain's `story` (via `getStory()`) whenever the active
- *   domain defines one — a domain that omits `story` gets no tab UI at all,
- *   matching today's single-view panel. `domain`/`panelViews`/`panelLabels`
- *   are computed inside the component body, not at module scope: their
- *   content is locale-dependent (`getLayers()`/`getLayerGroups()`/`getStory()`
- *   and the `m.panel_tab_*()` calls all read the current request's locale),
- *   and Cloudflare Workers reuse isolates across requests — a module-scope
- *   value would freeze in whichever locale first touched that isolate
- *   instead of reflecting each request's own. `domain` alone is wrapped in
- *   `useMemo` for referential stability across re-renders (matching
- *   `DomainProvider`'s own internal memoization); `panelViews`/`panelLabels`
- *   are cheap enough to recompute every render.
+ *   copy from the domain's `story` whenever the active domain defines
+ *   one — a domain that omits `story` gets no tab UI at all, matching
+ *   today's single-view panel. `domain` is still hardcoded to
+ *   `DEFAULT_DOMAIN_ID` (see `layers/registry.ts`'s `getLocalizedDomain`)
+ *   rather than a routed `domainId` prop, since `/d/:domainId` routing
+ *   hasn't landed yet; `panelViews`/`panelLabels` are computed inside the
+ *   component body, not at module scope: their content is locale-dependent
+ *   (`getLocalizedDomain()` and the `m.panel_tab_*()` calls both read the
+ *   current request's locale), and Cloudflare Workers reuse isolates across
+ *   requests — a module-scope value would freeze in whichever locale first
+ *   touched that isolate instead of reflecting each request's own. `domain`
+ *   alone is wrapped in `useMemo` for referential stability across
+ *   re-renders (matching `DomainProvider`'s own internal memoization);
+ *   `panelViews`/`panelLabels` are cheap enough to recompute every render.
  *   Also owns the mobile bottom-sheet drag/swipe gesture state (pointer
  *   sampling, velocity-based snap projection) in addition to layout state
  *   from `useMapUiStore`. Swiping down from the sheet's medium height closes
@@ -268,14 +273,14 @@ export function App() {
     (state) => state.setSelectedFeatureId,
   );
   const themePreference = useThemePreference();
-  const domain = useMemo<DomainConfig>(
-    () => ({
-      layers: getLayers(),
-      layerGroups: getLayerGroups(),
-      story: getStory(),
-    }),
-    [],
-  );
+  /**
+   * Hardcoded to `DEFAULT_DOMAIN_ID` rather than a routed `domainId` prop —
+   * `App` doesn't yet receive one, since `/d/:domainId` routing hasn't
+   * landed. Still resolved fresh per render via `getLocalizedDomain`
+   * (never cached at module scope), matching the per-request-locale
+   * discipline `layers/registry.ts` already documents.
+   */
+  const domain = useMemo(() => getLocalizedDomain(DEFAULT_DOMAIN_ID), []);
   const story = domain.story;
   /**
    * Memoised (not just `story`-derived inline) so this array keeps one
@@ -454,9 +459,13 @@ export function App() {
       setPanelView("story");
       setPanelOpen(true);
     },
+    layers: domain.layers,
   });
 
-  useMapPermalink({ dataReady: townships.length > 0 });
+  useMapPermalink({
+    dataReady: townships.length > 0,
+    layers: domain.layers,
+  });
 
   /**
    * Memoised (along with `closePanel` below) so `useDismissableOverlay`'s

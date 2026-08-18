@@ -1,4 +1,4 @@
-import type { DomainStory as DomainStoryContent } from "@karta/core";
+import type { DomainStory as DomainStoryContent, Layer } from "@karta/core";
 import {
   fetchLocationSearchResults,
   getRegisteredBasemapIds,
@@ -10,7 +10,6 @@ import {
   THEME_PREFERENCES,
   useModelContextTool,
 } from "@karta/react";
-import { getLayer, getLayers } from "../layers/registry";
 import { m } from "../paraglide/messages.js";
 import { useMapUiStore } from "../stores/useMapUiStore";
 
@@ -42,6 +41,14 @@ export interface UseMapModelContextToolsOptions {
   story: DomainStoryContent | undefined;
   /** Switches the info panel to the story view and opens it, so a sighted user watching the screen sees what the agent just read. */
   onShowStory: () => void;
+  /**
+   * The active domain's layers, in registry order. Passed explicitly by
+   * `App` rather than read via `useDomain()` — this hook is called
+   * directly in `App`'s own component body, not as a descendant of the
+   * `DomainProvider` `App` itself renders, so the domain's context isn't
+   * reachable from here.
+   */
+  layers: readonly Layer[];
 }
 
 /**
@@ -50,17 +57,20 @@ export interface UseMapModelContextToolsOptions {
  * map layers, search for a place, switch the basemap or theme, and read the
  * domain's story — without reverse-engineering the UI.
  * @remarks A no-op wherever WebMCP is unsupported; `useModelContextTool`
- *   handles that feature detection. Layer, basemap, and theme tools read and
- *   write `useMapUiStore`/the layer registry/`setThemePreference` directly
- *   rather than through props, since all three are already stable, globally
- *   reachable APIs; `onLocationSelect`/`onShowStory` stay props because they
- *   close over `App`'s own local component state (the search focus target,
- *   the panel's open/view state) that isn't in the shared store.
+ *   handles that feature detection. Basemap and theme tools read and write
+ *   `useMapUiStore`/`setThemePreference` directly rather than through props,
+ *   since both are already stable, globally reachable APIs; `layers` and
+ *   `onLocationSelect`/`onShowStory` stay props — `layers` because this hook
+ *   can't reach `useDomain()` (see `UseMapModelContextToolsOptions`'s
+ *   remarks), the other two because they close over `App`'s own local
+ *   component state (the search focus target, the panel's open/view state)
+ *   that isn't in the shared store.
  */
 export function useMapModelContextTools({
   onLocationSelect,
   story,
   onShowStory,
+  layers,
 }: UseMapModelContextToolsOptions): void {
   useModelContextTool<Record<string, never>>({
     name: "list-map-layers",
@@ -72,7 +82,7 @@ export function useMapModelContextTools({
     },
     execute: () => {
       const visibleLayerIds = useMapUiStore.getState().visibleLayerIds;
-      const lines = getLayers()
+      const lines = layers
         .filter((layer) => layer.available)
         .map((layer) => {
           const visibility = visibleLayerIds.includes(layer.id)
@@ -112,7 +122,7 @@ export function useMapModelContextTools({
       additionalProperties: false,
     },
     execute: ({ layerId }) => {
-      const layer = getLayer(layerId);
+      const layer = layers.find((candidate) => candidate.id === layerId);
       if (!layer) {
         return {
           content: [

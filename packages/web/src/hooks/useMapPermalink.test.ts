@@ -3,15 +3,11 @@ import { act, renderHook } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const registryMocks = vi.hoisted(() => ({
-  getLayers: vi.fn(() => []),
-  getLayerGroups: vi.fn(() => []),
   getLayerGroupStructure: vi.fn(() => []),
   getLayerStructure: vi.fn(() => []),
 }));
 
 vi.mock("../layers/registry", () => ({
-  getLayers: registryMocks.getLayers,
-  getLayerGroups: registryMocks.getLayerGroups,
   getLayerGroupStructure: registryMocks.getLayerGroupStructure,
   getLayerStructure: registryMocks.getLayerStructure,
 }));
@@ -137,7 +133,6 @@ describe("buildMapPermalinkSearch", () => {
 
 describe("useMapPermalink", () => {
   beforeEach(() => {
-    registryMocks.getLayers.mockReturnValue(LAYERS);
     registryMocks.getLayerStructure.mockReturnValue(LAYERS);
     act(() => {
       useMapUiStore.getState().reset();
@@ -148,7 +143,7 @@ describe("useMapPermalink", () => {
   it("applies visible layers, basemap, and panel view from the URL on mount", () => {
     setUrl("?layers=rapid-rail&basemap=satellite&panel=story");
 
-    renderHook(() => useMapPermalink({ dataReady: true }));
+    renderHook(() => useMapPermalink({ dataReady: true, layers: LAYERS }));
 
     const state = useMapUiStore.getState();
     expect(state.visibleLayerIds).toEqual(["rapid-rail"]);
@@ -160,7 +155,8 @@ describe("useMapPermalink", () => {
     setUrl("?feature=abc123");
 
     const { rerender } = renderHook(
-      ({ dataReady }) => useMapPermalink({ dataReady }),
+      ({ dataReady }: { dataReady: boolean }) =>
+        useMapPermalink({ dataReady, layers: LAYERS }),
       { initialProps: { dataReady: false } },
     );
 
@@ -173,7 +169,7 @@ describe("useMapPermalink", () => {
 
   it("writes non-default state back to the URL without pushing a new history entry", () => {
     const pushStateSpy = vi.spyOn(window.history, "pushState");
-    renderHook(() => useMapPermalink({ dataReady: true }));
+    renderHook(() => useMapPermalink({ dataReady: true, layers: LAYERS }));
 
     expect(window.location.search).toBe("");
 
@@ -188,7 +184,7 @@ describe("useMapPermalink", () => {
   });
 
   it("reflects the selected feature in the URL once applied", () => {
-    renderHook(() => useMapPermalink({ dataReady: true }));
+    renderHook(() => useMapPermalink({ dataReady: true, layers: LAYERS }));
 
     act(() => {
       useMapUiStore.getState().setSelectedFeatureId("xyz");

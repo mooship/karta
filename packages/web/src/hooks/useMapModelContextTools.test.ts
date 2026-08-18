@@ -1,12 +1,15 @@
+import type { Layer } from "@karta/core";
 import { renderHook } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const registryMocks = vi.hoisted(() => ({
-  getLayers: vi.fn(() => []),
-  getLayer: vi.fn(),
-  getLayerGroups: vi.fn(() => []),
   getLayerGroupStructure: vi.fn(() => []),
   getLayerStructure: vi.fn(() => []),
+}));
+
+vi.mock("../layers/registry", () => ({
+  getLayerGroupStructure: registryMocks.getLayerGroupStructure,
+  getLayerStructure: registryMocks.getLayerStructure,
 }));
 
 const mapMocks = vi.hoisted(() => ({
@@ -15,14 +18,6 @@ const mapMocks = vi.hoisted(() => ({
 
 const themeMocks = vi.hoisted(() => ({
   setThemePreference: vi.fn(),
-}));
-
-vi.mock("../layers/registry", () => ({
-  getLayers: registryMocks.getLayers,
-  getLayer: registryMocks.getLayer,
-  getLayerGroups: registryMocks.getLayerGroups,
-  getLayerGroupStructure: registryMocks.getLayerGroupStructure,
-  getLayerStructure: registryMocks.getLayerStructure,
 }));
 
 vi.mock("@karta/map", async (importOriginal) => {
@@ -81,23 +76,32 @@ async function textOf(
   return (await result).content[0]?.text;
 }
 
-const LAYERS = [
-  {
+/** Builds a minimal but fully-valid `Layer`, filling in fields this test suite never reads. */
+function makeLayer(
+  overrides: Pick<Layer, "id" | "label" | "available"> & Partial<Layer>,
+): Layer {
+  return {
+    dataSource: [`/data/${overrides.id}.geojson`],
+    geometryKind: "line",
+    defaultVisible: false,
+    style: { kind: "line", color: "#000", weight: 2 },
+    ...overrides,
+  };
+}
+
+const LAYERS: Layer[] = [
+  makeLayer({
     id: "townships",
     label: "Modelled car time",
     description: "Drive time to job centres.",
     available: true,
-  },
-  {
-    id: "roads",
-    label: "Roads",
-    available: true,
-  },
-  {
+  }),
+  makeLayer({ id: "roads", label: "Roads", available: true }),
+  makeLayer({
     id: "unavailable-layer",
     label: "Coming soon",
     available: false,
-  },
+  }),
 ];
 
 describe("useMapModelContextTools", () => {
@@ -106,12 +110,6 @@ describe("useMapModelContextTools", () => {
 
   beforeEach(() => {
     useMapUiStore.getState().reset();
-    registryMocks.getLayers.mockReset().mockReturnValue(LAYERS);
-    registryMocks.getLayer
-      .mockReset()
-      .mockImplementation((id: string) =>
-        LAYERS.find((layer) => layer.id === id),
-      );
     mapMocks.fetchLocationSearchResults.mockReset();
     themeMocks.setThemePreference.mockReset();
     onLocationSelect.mockClear();
@@ -126,6 +124,7 @@ describe("useMapModelContextTools", () => {
           onLocationSelect,
           story: undefined,
           onShowStory,
+          layers: LAYERS,
         }),
       ),
     ).not.toThrow();
@@ -138,6 +137,7 @@ describe("useMapModelContextTools", () => {
         onLocationSelect,
         story: undefined,
         onShowStory,
+        layers: LAYERS,
       }),
     );
 
@@ -153,6 +153,7 @@ describe("useMapModelContextTools", () => {
         onLocationSelect,
         story: { title: "Why this map exists", body: "Some background." },
         onShowStory,
+        layers: LAYERS,
       }),
     );
 
@@ -171,6 +172,7 @@ describe("useMapModelContextTools", () => {
         onLocationSelect,
         story: undefined,
         onShowStory,
+        layers: LAYERS,
       }),
     );
 
@@ -186,12 +188,12 @@ describe("useMapModelContextTools", () => {
 
   it("reports when there are no layers at all", async () => {
     const registerTool = stubModelContext();
-    registryMocks.getLayers.mockReturnValue([]);
     renderHook(() =>
       useMapModelContextTools({
         onLocationSelect,
         story: undefined,
         onShowStory,
+        layers: [],
       }),
     );
 
@@ -208,6 +210,7 @@ describe("useMapModelContextTools", () => {
         onLocationSelect,
         story: undefined,
         onShowStory,
+        layers: LAYERS,
       }),
     );
 
@@ -226,6 +229,7 @@ describe("useMapModelContextTools", () => {
         onLocationSelect,
         story: undefined,
         onShowStory,
+        layers: LAYERS,
       }),
     );
 
@@ -243,6 +247,7 @@ describe("useMapModelContextTools", () => {
         onLocationSelect,
         story: undefined,
         onShowStory,
+        layers: LAYERS,
       }),
     );
 
@@ -262,6 +267,7 @@ describe("useMapModelContextTools", () => {
         onLocationSelect,
         story: undefined,
         onShowStory,
+        layers: LAYERS,
       }),
     );
 
@@ -286,6 +292,7 @@ describe("useMapModelContextTools", () => {
         onLocationSelect,
         story: undefined,
         onShowStory,
+        layers: LAYERS,
       }),
     );
 
@@ -309,6 +316,7 @@ describe("useMapModelContextTools", () => {
         onLocationSelect,
         story: undefined,
         onShowStory,
+        layers: LAYERS,
       }),
     );
 
@@ -326,6 +334,7 @@ describe("useMapModelContextTools", () => {
         onLocationSelect,
         story: undefined,
         onShowStory,
+        layers: LAYERS,
       }),
     );
 
@@ -343,6 +352,7 @@ describe("useMapModelContextTools", () => {
         onLocationSelect,
         story: undefined,
         onShowStory,
+        layers: LAYERS,
       }),
     );
 
@@ -360,6 +370,7 @@ describe("useMapModelContextTools", () => {
         onLocationSelect,
         story: undefined,
         onShowStory,
+        layers: LAYERS,
       }),
     );
 
@@ -372,7 +383,6 @@ describe("useMapModelContextTools", () => {
 
   it("sources every tool's copy from the message catalogue, not English literals", async () => {
     const registerTool = stubModelContext();
-    registryMocks.getLayers.mockReturnValue([]);
     overwriteGetLocale(() => "af");
     try {
       renderHook(() =>
@@ -380,6 +390,7 @@ describe("useMapModelContextTools", () => {
           onLocationSelect,
           story: { title: "Waarom", body: "Omdat" },
           onShowStory,
+          layers: [],
         }),
       );
 
@@ -418,6 +429,7 @@ describe("useMapModelContextTools", () => {
         onLocationSelect,
         story: undefined,
         onShowStory,
+        layers: LAYERS,
       }),
     );
 

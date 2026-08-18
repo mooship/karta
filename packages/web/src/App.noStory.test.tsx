@@ -51,7 +51,10 @@ vi.mock("./layers/registry", async (importOriginal) => {
   const actual = await importOriginal<typeof import("./layers/registry")>();
   return {
     ...actual,
-    getStory: () => undefined,
+    getLocalizedDomain: (domainId: string) => ({
+      ...actual.getLocalizedDomain(domainId),
+      story: undefined,
+    }),
   };
 });
 

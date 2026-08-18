@@ -12,6 +12,7 @@ vi.mock("../paraglide/runtime.js", async (importOriginal) => {
 });
 
 import {
+  localizeDomainLabel,
   localizeLayer,
   localizeLayerGroup,
   localizeStory,
@@ -73,6 +74,22 @@ const BRT_LAYER: Layer = {
   },
 };
 
+const HERITAGE_SITES_LAYER: Layer = {
+  id: "heritage-sites",
+  label: "Struggle heritage sites",
+  description: "English description",
+  dataSource: ["/data/heritage-sites/heritage-sites.geojson"],
+  geometryKind: "point",
+  defaultVisible: true,
+  available: true,
+  style: {
+    kind: "point",
+    color: "#000",
+    radius: 7,
+    legendLabel: "Struggle heritage sites",
+  },
+};
+
 const UNKNOWN_LAYER: Layer = {
   id: "some-future-layer",
   label: "Some Future Layer",
@@ -85,10 +102,10 @@ const UNKNOWN_LAYER: Layer = {
 };
 
 describe("localizeLayer", () => {
-  it("translates label and description for a known layer id", () => {
+  it("translates label and description for a known domain/layer id", () => {
     getLocale.mockReturnValue("st");
 
-    const localized = localizeLayer(CHOROPLETH_LAYER);
+    const localized = localizeLayer("gauteng-spatial-legacy", CHOROPLETH_LAYER);
 
     expect(localized.label).toBe("Nako ya koloi e akantsweng");
     expect(localized.description).not.toBe(CHOROPLETH_LAYER.description);
@@ -97,7 +114,7 @@ describe("localizeLayer", () => {
   it("translates choropleth bucket labels in order", () => {
     getLocale.mockReturnValue("zu");
 
-    const localized = localizeLayer(CHOROPLETH_LAYER);
+    const localized = localizeLayer("gauteng-spatial-legacy", CHOROPLETH_LAYER);
 
     expect(localized.style.kind).toBe("choropleth");
     if (localized.style.kind === "choropleth") {
@@ -113,7 +130,7 @@ describe("localizeLayer", () => {
   it("mirrors the translated label into a line layer's legendLabel", () => {
     getLocale.mockReturnValue("st");
 
-    const localized = localizeLayer(LINE_LAYER);
+    const localized = localizeLayer("gauteng-spatial-legacy", LINE_LAYER);
 
     expect(localized.label).toBe("Terene e Potlakileng");
     expect(localized.style.kind).toBe("line");
@@ -125,7 +142,7 @@ describe("localizeLayer", () => {
   it("leaves colorClassification stop labels (operator names) untranslated", () => {
     getLocale.mockReturnValue("zu");
 
-    const localized = localizeLayer(BRT_LAYER);
+    const localized = localizeLayer("gauteng-spatial-legacy", BRT_LAYER);
 
     expect(localized.style.kind).toBe("line");
     if (localized.style.kind === "line") {
@@ -135,19 +152,49 @@ describe("localizeLayer", () => {
     }
   });
 
+  it("translates a layer belonging to a different domain independently", () => {
+    getLocale.mockReturnValue("zu");
+
+    const localized = localizeLayer("heritage-sites", HERITAGE_SITES_LAYER);
+
+    expect(localized.label).toBe("Izindawo zefa lomzabalazo");
+  });
+
+  it("does not cross-match a layer id that exists in another domain's table", () => {
+    getLocale.mockReturnValue("zu");
+
+    // "heritage-sites" is a real layer id, but only under the
+    // heritage-sites domain -- looked up under gauteng-spatial-legacy it
+    // must fall back to the English original, not another domain's text.
+    const localized = localizeLayer(
+      "gauteng-spatial-legacy",
+      HERITAGE_SITES_LAYER,
+    );
+
+    expect(localized.label).toBe("Struggle heritage sites");
+  });
+
   it("falls back to the original English fields for an id with no translation entry", () => {
     getLocale.mockReturnValue("zu");
 
-    const localized = localizeLayer(UNKNOWN_LAYER);
+    const localized = localizeLayer("gauteng-spatial-legacy", UNKNOWN_LAYER);
 
     expect(localized.label).toBe("Some Future Layer");
     expect(localized.description).toBe("Not yet in the translation table");
   });
 
+  it("falls back to the original English fields for an unregistered domain id", () => {
+    getLocale.mockReturnValue("zu");
+
+    const localized = localizeLayer("not-a-real-domain", CHOROPLETH_LAYER);
+
+    expect(localized.label).toBe("Modelled car time");
+  });
+
   it("returns the original English fields when the locale is en", () => {
     getLocale.mockReturnValue("en");
 
-    const localized = localizeLayer(CHOROPLETH_LAYER);
+    const localized = localizeLayer("gauteng-spatial-legacy", CHOROPLETH_LAYER);
 
     expect(localized.label).toBe("Modelled car time");
   });
@@ -161,6 +208,13 @@ const KNOWN_GROUP: LayerGroup = {
   layerIds: ["townships", "nearest-transit"],
 };
 
+const HERITAGE_GROUP: LayerGroup = {
+  id: "heritage",
+  title: "Heritage",
+  selectionMode: "independent",
+  layerIds: ["heritage-sites"],
+};
+
 const UNKNOWN_GROUP: LayerGroup = {
   id: "some-future-group",
   title: "Some Future Group",
@@ -169,10 +223,10 @@ const UNKNOWN_GROUP: LayerGroup = {
 };
 
 describe("localizeLayerGroup", () => {
-  it("translates title and description for a known group id", () => {
+  it("translates title and description for a known domain/group id", () => {
     getLocale.mockReturnValue("zu");
 
-    const localized = localizeLayerGroup(KNOWN_GROUP);
+    const localized = localizeLayerGroup("gauteng-spatial-legacy", KNOWN_GROUP);
 
     expect(localized.title).toBe("Izingqimba zokufinyelela");
     expect(localized.description).toBe(
@@ -180,20 +234,31 @@ describe("localizeLayerGroup", () => {
     );
   });
 
+  it("translates a group belonging to a different domain independently", () => {
+    getLocale.mockReturnValue("zu");
+
+    const localized = localizeLayerGroup("heritage-sites", HERITAGE_GROUP);
+
+    expect(localized.title).toBe("Ifa");
+  });
+
   it("falls back to the original title for an id with no translation entry", () => {
     getLocale.mockReturnValue("zu");
 
-    const localized = localizeLayerGroup(UNKNOWN_GROUP);
+    const localized = localizeLayerGroup(
+      "gauteng-spatial-legacy",
+      UNKNOWN_GROUP,
+    );
 
     expect(localized.title).toBe("Some Future Group");
   });
 });
 
 describe("localizeStory", () => {
-  it("translates the domain story", () => {
+  it("translates the gauteng-spatial-legacy domain story", () => {
     getLocale.mockReturnValue("st");
 
-    const localized = localizeStory({
+    const localized = localizeStory("gauteng-spatial-legacy", {
       title: "Why this map exists",
       body: "English body",
     });
@@ -201,7 +266,41 @@ describe("localizeStory", () => {
     expect(localized?.title).toBe("Hobaneng 'mapa ona o le teng");
   });
 
+  it("translates the heritage-sites domain story independently", () => {
+    getLocale.mockReturnValue("zu");
+
+    const localized = localizeStory("heritage-sites", {
+      title: "Why these sites matter",
+      body: "English body",
+    });
+
+    expect(localized?.title).toBe("Kungani lezi zindawo zibalulekile");
+  });
+
   it("returns undefined when the domain has no story", () => {
-    expect(localizeStory(undefined)).toBeUndefined();
+    expect(localizeStory("gauteng-spatial-legacy", undefined)).toBeUndefined();
+  });
+
+  it("falls back to the original story for an unregistered domain id", () => {
+    const story = { title: "Untranslated title", body: "Untranslated body" };
+    expect(localizeStory("not-a-real-domain", story)).toBe(story);
+  });
+});
+
+describe("localizeDomainLabel", () => {
+  it("translates a known domain's switcher label", () => {
+    getLocale.mockReturnValue("zu");
+
+    expect(localizeDomainLabel("heritage-sites", "Heritage sites")).toBe(
+      "Izindawo zefa",
+    );
+  });
+
+  it("falls back to the given label for an unregistered domain id", () => {
+    getLocale.mockReturnValue("zu");
+
+    expect(localizeDomainLabel("not-a-real-domain", "Fallback label")).toBe(
+      "Fallback label",
+    );
   });
 });

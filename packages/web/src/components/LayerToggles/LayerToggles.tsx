@@ -3,9 +3,9 @@ import {
   fetchFeatureCollection,
   type Layer,
 } from "@karta/core";
+import { useDomain } from "@karta/map";
 import { Download, FileSpreadsheet } from "lucide-react";
 import { Fragment, memo, type ReactNode, useMemo, useState } from "react";
-import { getLayer, getLayerGroups } from "../../layers/registry";
 import { m } from "../../paraglide/messages.js";
 import styles from "./LayerToggles.module.css";
 
@@ -46,22 +46,25 @@ function LayerTogglesComponent({
   onToggle,
   failedLayerIds = [],
 }: LayerTogglesProps) {
+  const domain = useDomain();
   /**
-   * @remarks Memoized with no dependencies: `getLayerGroups()`/`getLayer()`
-   *   re-run `packages/web`'s translation overlay on every call, and the
-   *   active locale can't change without a full document reload (see
-   *   `LanguageToggle`'s own remarks), so re-deriving these on every
-   *   unrelated re-render of this (frequently remounted-in-place, e.g. by
-   *   mobile drag-frame updates in a parent) component would just redo the
-   *   same translation work for the same result.
+   * @remarks Memoized on `domain` alone: `domain.getLayerGroups()` re-runs
+   *   `packages/web`'s translation overlay (already applied once, when
+   *   `App` built the `DomainConfig` it passed to `DomainProvider`) on
+   *   every call, and the active locale can't change without a full
+   *   document reload (see `LanguageToggle`'s own remarks) — `domain`
+   *   itself is stable for as long as this component stays mounted, so
+   *   re-deriving these on every unrelated re-render (this component is
+   *   frequently remounted-in-place, e.g. by mobile drag-frame updates in
+   *   a parent) would just redo the same work for the same result.
    */
-  const groups = useMemo(() => getLayerGroups(), []);
+  const groups = useMemo(() => domain.getLayerGroups(), [domain]);
   const layersById = useMemo(() => {
     const map = new Map<string, Layer>();
     for (const group of groups) {
       for (const layerId of group.layerIds) {
         if (!map.has(layerId)) {
-          const layer = getLayer(layerId);
+          const layer = domain.getLayer(layerId);
           if (layer) {
             map.set(layerId, layer);
           }
@@ -69,7 +72,7 @@ function LayerTogglesComponent({
       }
     }
     return map;
-  }, [groups]);
+  }, [groups, domain]);
   const [csvExportStatus, setCsvExportStatus] = useState<
     Record<string, "loading" | "error">
   >({});
