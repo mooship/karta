@@ -14,6 +14,7 @@
 
   "panel_tab_layers": "Izingqimba",
   "panel_tab_story": "Indaba",
+  "panel_tab_browse": "Bheka",
   "panel_toggle_close": "Vala",
   "panel_toggle_explore": "Hlola",
   "panel_reduce_height": "Nciphisa ukuphakama kwephaneli",
@@ -32,6 +33,13 @@
   "township_popup_distance": "Ibanga",
   "township_popup_transit_distance": "Ibanga eliya ezokuthutha eziseduze",
   "distance_km": "{value} km",
+
+  "browse_search_placeholder": "Sesha",
+  "browse_empty_message": "Awekho imiphumela etholakele",
+  "browse_list_aria_label": "Bheka {layer}",
+
+  "heritage_popup_category": "Isigaba",
+  "heritage_popup_summary": "Isifinyezo",
 
   "commute_no_data": "Alukho ulwazi",
   "commute_minutes": "{minutes} min",

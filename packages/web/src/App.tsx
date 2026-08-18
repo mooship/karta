@@ -1,13 +1,18 @@
-import { DEFAULT_DOMAIN_ID, type TownshipProperties } from "@karta/app";
+import { DEFAULT_DOMAIN_ID, METROS } from "@karta/app";
 import type {
   DomainConfig,
   DomainStory as DomainStoryContent,
+  Layer,
 } from "@karta/core";
 import {
+  buildFeatureBrowserEntries,
   ControlButton,
   createNominatimGeocoderProvider,
   DesktopLegend,
   DomainProvider,
+  FeatureBrowser,
+  type FeatureBrowserEntry,
+  FeaturePopup,
   LocationSearchControl,
   type LocationSearchResult,
   MobileLegend,
@@ -43,12 +48,12 @@ import { DomainSwitcher } from "./components/DomainSwitcher/DomainSwitcher";
 import { LanguageToggle } from "./components/LanguageToggle/LanguageToggle";
 import { LayerToggles } from "./components/LayerToggles/LayerToggles";
 import { PrivacyLink } from "./components/PrivacyLink/PrivacyLink";
-import { TownshipPopup } from "./components/TownshipPopup/TownshipPopup";
 import { useMapModelContextTools } from "./hooks/useMapModelContextTools";
 import { useMapPermalink } from "./hooks/useMapPermalink";
 import { getLocalizedDomain } from "./layers/registry";
 import { m } from "./paraglide/messages.js";
 import { type PanelView, useMapUiStore } from "./stores/useMapUiStore";
+import { resolvePopupFields } from "./utils/featurePopupFields";
 
 const MapView = lazy(async () => {
   const { MapView } = await import("@karta/map/MapView");
@@ -144,21 +149,45 @@ interface PanelViewContentProps {
   onToggle: (id: string) => void;
   failedLayerIds: string[];
   story: DomainStoryContent | undefined;
+  browsableLayer: Layer | undefined;
+  browseEntries: FeatureBrowserEntry[];
+  selectedFeatureId: string | null;
+  onSelectFeature: (id: string) => void;
 }
 
-/** Renders the info panel's active view: layer toggles, or the domain's story copy. */
+/** Renders the info panel's active view: layer toggles, a browsable layer's feature list, or the domain's story copy. */
 function PanelViewContent({
   panelView,
   visibleLayerIds,
   onToggle,
   failedLayerIds,
   story,
+  browsableLayer,
+  browseEntries,
+  selectedFeatureId,
+  onSelectFeature,
 }: PanelViewContentProps) {
   if (panelView === "story" && story) {
     return (
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}>{story.title}</h2>
         <DomainStory story={story} />
+      </section>
+    );
+  }
+  if (panelView === "browse" && browsableLayer?.browsable) {
+    return (
+      <section className={styles.section}>
+        <h2 className={styles.sectionTitle}>{browsableLayer.label}</h2>
+        <FeatureBrowser
+          ariaLabel={m.browse_list_aria_label({ layer: browsableLayer.label })}
+          entries={browseEntries}
+          selectedId={selectedFeatureId}
+          onSelect={onSelectFeature}
+          searchable={browsableLayer.browsable.searchable}
+          searchPlaceholder={m.browse_search_placeholder()}
+          emptyMessage={m.browse_empty_message()}
+        />
       </section>
     );
   }
@@ -312,19 +341,32 @@ function AppShell({ domainId, domain }: AppShellProps) {
   );
   const themePreference = useThemePreference();
   const story = domain.story;
-  /**
-   * Memoised (not just `story`-derived inline) so this array keeps one
-   * identity across renders unless `story` itself changes -- `useCallback`
-   * dependencies below (`resolveInitialPanelFocusTarget`) key off it, and a
-   * fresh array literal every render would defeat that memoisation and
-   * re-attach `useDismissableOverlay`'s listeners on every unrelated render.
-   */
-  const panelViews = useMemo<readonly PanelView[]>(
-    () => (story ? (["layers", "story"] as const) : (["layers"] as const)),
-    [story],
+  /** The active domain's browsable layer, if it has one — drives whether a Browse tab exists at all. Only one is supported today (matching both shipped domains); a future domain with more than one would just get the first. */
+  const browsableLayer = useMemo(
+    () => domain.layers.find((layer) => layer.browsable),
+    [domain.layers],
   );
+  /**
+   * Memoised (not just `story`/`browsableLayer`-derived inline) so this
+   * array keeps one identity across renders unless those change --
+   * `useCallback` dependencies below (`resolveInitialPanelFocusTarget`) key
+   * off it, and a fresh array literal every render would defeat that
+   * memoisation and re-attach `useDismissableOverlay`'s listeners on every
+   * unrelated render.
+   */
+  const panelViews = useMemo<readonly PanelView[]>(() => {
+    const views: PanelView[] = ["layers"];
+    if (browsableLayer) {
+      views.push("browse");
+    }
+    if (story) {
+      views.push("story");
+    }
+    return views;
+  }, [story, browsableLayer]);
   const panelLabels: Record<PanelView, string> = {
     layers: m.panel_tab_layers(),
+    browse: m.panel_tab_browse(),
     story: m.panel_tab_story(),
   };
   const isDesktopViewport = useIsDesktopViewport();
@@ -382,6 +424,27 @@ function AppShell({ domainId, domain }: AppShellProps) {
   const { data, companionData, failedLayerIds, retryFailedLayers } =
     useLayerData(mapReady ? visibleLayerIds : []);
 
+  /**
+   * `resolveGroupLabel` is Gauteng-specific domain knowledge (mapping a
+   * `metroId` grouping value to its municipality's display name) — it stays
+   * here, not in `@karta/map`'s `buildFeatureBrowserEntries`, matching every
+   * other domain-specific concern (popup content, search coverage bounds)
+   * already kept local to this app rather than the SDK. A grouping value
+   * with no matching metro (or a future domain grouping by something else
+   * entirely) falls back to the raw id itself, via
+   * `buildFeatureBrowserEntries`'s own default.
+   */
+  const browseEntries = useMemo(() => {
+    if (!browsableLayer?.browsable) {
+      return [];
+    }
+    return buildFeatureBrowserEntries(
+      browsableLayer.browsable,
+      data[browsableLayer.id],
+      (groupId) => METROS.find((metro) => metro.id === groupId)?.shortName,
+    );
+  }, [browsableLayer, data]);
+
   useEffect(() => {
     if (!panelOpen) {
       setMobilePanelExpanded(false);
@@ -434,20 +497,26 @@ function AppShell({ domainId, domain }: AppShellProps) {
   const handleMapReady = useCallback(() => setMapReady(true), []);
 
   /**
-   * Renders a selected township's popup markup for `MapView`.
-   * @remarks Memoised with no dependencies because nothing render-scoped is
-   *   captured here — `TownshipPopup` resolves its own translated copy when
-   *   the element it returns is actually rendered — so there's no reason to
-   *   hand `MapView` a fresh closure every render. `MapView` itself no
-   *   longer depends on this being stable for correctness (it reads the
-   *   latest value through its own ref internally), but keeping it stable
-   *   here still avoids the odd re-render doing pointless work for free.
+   * Renders a selected feature's popup markup for `MapView`, via
+   * `resolvePopupFields` matching `properties` back to whichever of
+   * `domain`'s layers it came from (see that function's own remarks).
+   * @remarks Depends on `domain`/`data`, unlike most memoised callbacks in
+   *   this file, so it can't stay referentially stable across renders that
+   *   change either — `MapView` doesn't depend on that stability for
+   *   correctness (it reads the latest value through its own ref
+   *   internally), so this is a real, unavoidable tradeoff rather than a
+   *   regression: `resolvePopupFields` needs both to identify the clicked
+   *   feature's source layer.
    */
   const renderFeaturePopup = useCallback(
     (properties: Record<string, unknown>) => (
-      <TownshipPopup properties={properties as unknown as TownshipProperties} />
+      <FeaturePopup
+        title={typeof properties.name === "string" ? properties.name : ""}
+        properties={properties}
+        fields={resolvePopupFields(properties, domain, data)}
+      />
     ),
-    [],
+    [domain, data],
   );
 
   function handleLocationSelect(location: LocationSearchResult): string {
@@ -690,6 +759,10 @@ function AppShell({ domainId, domain }: AppShellProps) {
       onToggle={toggleLayer}
       failedLayerIds={failedLayerIds}
       story={story}
+      browsableLayer={browsableLayer}
+      browseEntries={browseEntries}
+      selectedFeatureId={selectedFeatureId}
+      onSelectFeature={setSelectedFeatureId}
     />
   );
 

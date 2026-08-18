@@ -147,6 +147,26 @@ export interface LayerInteraction {
 }
 
 /**
+ * Configures a layer's features as browsable in a caller's own list UI
+ * (e.g. `@karta/map`'s `FeatureBrowser`), independent of map interaction.
+ * @remarks Optional on `Layer` — a layer that omits `browsable` simply has
+ *   no list view; its features may still be `interaction.selectable` on the
+ *   map itself.
+ */
+export interface LayerBrowseConfig {
+  /**
+   * Feature property used to group entries in the browse list (e.g. a
+   * municipality id). Entries with no value for this property, or with a
+   * value not shared by any other entry, still render, ungrouped.
+   */
+  groupField?: string;
+  /** Feature property used as each entry's display label. Defaults to `"name"`. */
+  labelField?: string;
+  /** Whether the browse list offers a text filter over entry labels. */
+  searchable: boolean;
+}
+
+/**
  * Platform-generic layer descriptor.
  * @remarks One `Layer` maps to one GeoJSON data source and one Leaflet layer.
  */
@@ -182,6 +202,8 @@ export interface Layer {
    * `@karta/map` Legend component.
    */
   hasPointGeometry?: boolean;
+  /** Configures this layer's features as browsable in a list UI, e.g. `FeatureBrowser`. Omitted for a layer with no list view. */
+  browsable?: LayerBrowseConfig;
 }
 
 /** Whether only one layer in the group can be active at a time. */

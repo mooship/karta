@@ -190,7 +190,7 @@ describe("App map/location callback wiring", () => {
     );
   });
 
-  it("renders township popup content via renderFeaturePopup", async () => {
+  it("renders a feature popup titled with the clicked feature's name via renderFeaturePopup", async () => {
     render(<App />);
 
     await waitFor(() => expect(mapViewMocks.latestProps).toBeDefined());
@@ -205,7 +205,7 @@ describe("App map/location callback wiring", () => {
 
     render(<div>{popup}</div>);
 
-    expect(screen.getByTestId("township-popup")).toHaveTextContent("Mamelodi");
+    expect(screen.getByTestId("feature-popup")).toHaveTextContent("Mamelodi");
   });
 
   it("always provides renderFeaturePopup, regardless of panel open state", async () => {

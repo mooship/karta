@@ -14,6 +14,7 @@
 
   "panel_tab_layers": "Mera",
   "panel_tab_story": "Pale",
+  "panel_tab_browse": "Sheba",
   "panel_toggle_close": "Kwala",
   "panel_toggle_explore": "Hlahloba",
   "panel_reduce_height": "Fokotsa bophahamo ba panele",
@@ -32,6 +33,13 @@
   "township_popup_distance": "Bohole",
   "township_popup_transit_distance": "Bohole ho isa dipalangwaneng tse haufi",
   "distance_km": "{value} km",
+
+  "browse_search_placeholder": "Batla",
+  "browse_empty_message": "Ha ho diphetho tse fumanweng",
+  "browse_list_aria_label": "Sheba {layer}",
+
+  "heritage_popup_category": "Sehlopha",
+  "heritage_popup_summary": "Kakaretso",
 
   "commute_no_data": "Ha ho boitsebiso",
   "commute_minutes": "{minutes} min",

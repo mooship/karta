@@ -14,6 +14,7 @@
 
   "panel_tab_layers": "Iingqimba",
   "panel_tab_story": "Ibali",
+  "panel_tab_browse": "Jonga",
   "panel_toggle_close": "Vala",
   "panel_toggle_explore": "Hlola",
   "panel_reduce_height": "Nciphisa ubude bephaneli",
@@ -32,6 +33,13 @@
   "township_popup_distance": "Umgama",
   "township_popup_transit_distance": "Umgama oya ezokuthutha ezikufuphi",
   "distance_km": "{value} km",
+
+  "browse_search_placeholder": "Khangela",
+  "browse_empty_message": "Akukho miphumela ifunyenweyo",
+  "browse_list_aria_label": "Jonga {layer}",
+
+  "heritage_popup_category": "Udidi",
+  "heritage_popup_summary": "Isishwankathelo",
 
   "commute_no_data": "Akukho lwazi",
   "commute_minutes": "{minutes} min",

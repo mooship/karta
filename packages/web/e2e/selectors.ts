@@ -42,8 +42,11 @@ export const E2E = {
   panelTab: {
     layers: "panel-tab-layers",
     story: "panel-tab-story",
+    browse: "panel-tab-browse",
   },
-  townshipPopup: "township-popup",
+  featurePopup: "feature-popup",
+  featureBrowser: "feature-browser",
+  featureBrowserSearch: "feature-browser-search",
   locationContextMenu: "location-context-menu",
   measurement: {
     toggle: "measurement-control-toggle",

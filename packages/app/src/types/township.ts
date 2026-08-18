@@ -4,6 +4,8 @@ import type { Feature, MultiPolygon, Polygon } from "geojson";
 export interface TownshipProperties {
   id: string;
   name: string;
+  /** Id of the metro (see `@karta/app`'s `METROS`) this township belongs to. */
+  metroId: string;
   /** The area's population, if known. */
   population?: number;
   /** Modelled car drive-time (minutes) to `nearestJobCenter`, or `null` if it couldn't be computed. */

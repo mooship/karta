@@ -49,6 +49,9 @@ vi.mock("./layers/registry", async (importOriginal) => {
     getLocalizedDomain: (domainId: string) => ({
       ...actual.getLocalizedDomain(domainId),
       story: undefined,
+      layers: actual
+        .getLocalizedDomain(domainId)
+        .layers.map((layer) => ({ ...layer, browsable: undefined })),
     }),
   };
 });
@@ -56,7 +59,7 @@ vi.mock("./layers/registry", async (importOriginal) => {
 import { App } from "./App";
 import { useMapUiStore } from "./stores/useMapUiStore";
 
-describe("App with a domain that has no story", () => {
+describe("App with a domain that has no story or browsable layers", () => {
   beforeEach(() => {
     useMapUiStore.getState().reset();
     dataMocks.fetchAreas.mockReset().mockResolvedValue({

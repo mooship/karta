@@ -66,7 +66,7 @@ test.describe("shareable map links", () => {
     await page.keyboard.press("ArrowDown");
     await page.keyboard.press("Enter");
 
-    const popup = page.getByTestId(E2E.townshipPopup);
+    const popup = page.getByTestId(E2E.featurePopup);
     await expect(popup).toBeVisible();
     await expect(popup.locator("h2")).toHaveText("Botshabelo");
 
@@ -77,7 +77,7 @@ test.describe("shareable map links", () => {
     const sharedUrl = page.url();
     await page.goto(sharedUrl);
 
-    const restoredPopup = page.getByTestId(E2E.townshipPopup);
+    const restoredPopup = page.getByTestId(E2E.featurePopup);
     await expect(restoredPopup).toBeVisible({ timeout: 15_000 });
     await expect(restoredPopup.locator("h2")).toHaveText("Botshabelo");
   });

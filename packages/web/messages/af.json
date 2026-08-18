@@ -14,6 +14,7 @@
 
   "panel_tab_layers": "Lae",
   "panel_tab_story": "Verhaal",
+  "panel_tab_browse": "Blaai",
   "panel_toggle_close": "Sluit",
   "panel_toggle_explore": "Verken",
   "panel_reduce_height": "Verklein paneelhoogte",
@@ -32,6 +33,13 @@
   "township_popup_distance": "Afstand",
   "township_popup_transit_distance": "Afstand tot naaste vervoer",
   "distance_km": "{value} km",
+
+  "browse_search_placeholder": "Soek",
+  "browse_empty_message": "Geen resultate gevind nie",
+  "browse_list_aria_label": "Blaai deur {layer}",
+
+  "heritage_popup_category": "Kategorie",
+  "heritage_popup_summary": "Opsomming",
 
   "commute_no_data": "Geen data",
   "commute_minutes": "{minutes} min",

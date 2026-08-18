@@ -32,7 +32,12 @@ describe("joinTownshipData", () => {
     ];
     const nearestTransitKm = [4.2, null];
 
-    const result = joinTownshipData(townships, nearest, nearestTransitKm);
+    const result = joinTownshipData(
+      townships,
+      nearest,
+      nearestTransitKm,
+      "tshwane",
+    );
 
     expect(result).toHaveLength(2);
     const features = result as [TownshipFeature, TownshipFeature];
@@ -56,8 +61,24 @@ describe("joinTownshipData", () => {
     expect(features[0].geometry).toEqual(towns[0].geometry);
   });
 
+  it("stamps every feature with the given metroId", () => {
+    const townships = [township("A", "Alpha"), township("B", "Beta")];
+
+    const result = joinTownshipData(townships, [], [], "johannesburg");
+
+    expect(result.map((feature) => feature.properties.metroId)).toEqual([
+      "johannesburg",
+      "johannesburg",
+    ]);
+  });
+
   it("defaults to a null result when a township has no matching OSRM entry", () => {
-    const result = joinTownshipData([township("A", "Alpha")], []);
+    const result = joinTownshipData(
+      [township("A", "Alpha")],
+      [],
+      undefined,
+      "tshwane",
+    );
     const features = result as [TownshipFeature];
 
     expect(features[0].properties).toMatchObject({
@@ -76,6 +97,8 @@ describe("joinTownshipData", () => {
           jobCenterName: "Pretoria CBD",
         },
       ],
+      undefined,
+      "tshwane",
     );
     const features = result as [TownshipFeature];
     expect(features[0].properties.nearestTransitKm).toBeNull();

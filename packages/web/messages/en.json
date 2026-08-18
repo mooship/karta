@@ -14,6 +14,7 @@
 
   "panel_tab_layers": "Layers",
   "panel_tab_story": "Story",
+  "panel_tab_browse": "Browse",
   "panel_toggle_close": "Close",
   "panel_toggle_explore": "Explore",
   "panel_reduce_height": "Reduce panel height",
@@ -32,6 +33,13 @@
   "township_popup_distance": "Distance",
   "township_popup_transit_distance": "Distance to nearest transit",
   "distance_km": "{value} km",
+
+  "browse_search_placeholder": "Search",
+  "browse_empty_message": "No matches found",
+  "browse_list_aria_label": "Browse {layer}",
+
+  "heritage_popup_category": "Category",
+  "heritage_popup_summary": "Summary",
 
   "commute_no_data": "No data",
   "commute_minutes": "{minutes} min",

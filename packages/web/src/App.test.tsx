@@ -15,6 +15,7 @@ const TOWNSHIP_FEATURE_COLLECTION = {
       properties: {
         id: "A",
         name: "Mamelodi",
+        metroId: "tshwane",
         commuteMinutes: 20,
         nearestJobCenter: "Pretoria CBD",
         distanceKm: null,
@@ -250,19 +251,46 @@ describe("App", () => {
     );
   });
 
+  it("shows a Browse tab listing the visible browsable layer's features, grouped by metro", async () => {
+    render(<App />);
+
+    const browseTab = await screen.findByTestId("panel-tab-browse");
+    fireEvent.click(browseTab);
+
+    const option = await screen.findByRole("option", { name: "Mamelodi" });
+    expect(screen.getByText("Tshwane")).toBeInTheDocument();
+
+    fireEvent.click(option);
+
+    await waitFor(() => {
+      expect(window.location.search).toContain("feature=A");
+    });
+  });
+
   it("moves tab focus with arrow keys and activates the focused tab", async () => {
     render(<App />);
 
     const layersTab = await screen.findByTestId("panel-tab-layers");
+    const browseTab = screen.getByTestId("panel-tab-browse");
     const storyTab = screen.getByTestId("panel-tab-story");
     layersTab.focus();
 
     fireEvent.keyDown(layersTab, { key: "ArrowRight" });
 
+    expect(browseTab).toHaveFocus();
+    expect(browseTab).toHaveAttribute("aria-selected", "true");
+
+    fireEvent.keyDown(browseTab, { key: "ArrowRight" });
+
     expect(storyTab).toHaveFocus();
     expect(storyTab).toHaveAttribute("aria-selected", "true");
 
     fireEvent.keyDown(storyTab, { key: "ArrowLeft" });
+
+    expect(browseTab).toHaveFocus();
+    expect(browseTab).toHaveAttribute("aria-selected", "true");
+
+    fireEvent.keyDown(browseTab, { key: "Home" });
 
     expect(layersTab).toHaveFocus();
     expect(layersTab).toHaveAttribute("aria-selected", "true");

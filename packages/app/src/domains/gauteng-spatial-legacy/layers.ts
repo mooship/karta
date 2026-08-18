@@ -51,6 +51,7 @@ export const GAUTENG_SPATIAL_LEGACY_LAYERS: readonly Layer[] = [
     defaultVisible: true,
     available: true,
     interaction: { selectable: true, labelField: "name" },
+    browsable: { groupField: "metroId", labelField: "name", searchable: true },
     style: {
       kind: "choropleth",
       propertyKey: "commuteMinutes",

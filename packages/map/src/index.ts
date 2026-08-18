@@ -11,6 +11,17 @@ export type {
 } from "./components/ControlButton/ControlButton";
 export { ControlButton } from "./components/ControlButton/ControlButton";
 export { DesktopLegend } from "./components/DesktopLegend/DesktopLegend";
+export { buildFeatureBrowserEntries } from "./components/FeatureBrowser/buildFeatureBrowserEntries";
+export type {
+  FeatureBrowserEntry,
+  FeatureBrowserProps,
+} from "./components/FeatureBrowser/FeatureBrowser";
+export { FeatureBrowser } from "./components/FeatureBrowser/FeatureBrowser";
+export type {
+  FeaturePopupField,
+  FeaturePopupProps,
+} from "./components/FeaturePopup/FeaturePopup";
+export { FeaturePopup } from "./components/FeaturePopup/FeaturePopup";
 export { IconButton } from "./components/IconButton/IconButton";
 export { Legend } from "./components/Legend/Legend";
 export type { SelectableFeatureSearchEntry } from "./components/LocationSearchControl/LocationSearchControl";

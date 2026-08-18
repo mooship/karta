@@ -137,6 +137,6 @@ test.describe("measurement tool", () => {
     const mapView = page.getByTestId(E2E.mapView);
     await clickMapPoint(page, mapView, 0.8, 0.4);
 
-    await expect(page.getByTestId(E2E.townshipPopup)).toHaveCount(0);
+    await expect(page.getByTestId(E2E.featurePopup)).toHaveCount(0);
   });
 });

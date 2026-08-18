@@ -37,7 +37,7 @@ test.describe("map feature keyboard accessibility", () => {
     await page.keyboard.press("ArrowDown");
     await page.keyboard.press("Enter");
 
-    await expect(page.getByTestId(E2E.townshipPopup)).toBeVisible();
+    await expect(page.getByTestId(E2E.featurePopup)).toBeVisible();
 
     // Choosing by pointer is a separate path from the keys above. Several
     // real townships share a "Mabopane" prefix (Mabopane A, Mabopane M,
@@ -56,7 +56,7 @@ test.describe("map feature keyboard accessibility", () => {
     // `.last()` -- the most recently appended, i.e. the new popup -- avoids
     // a strict-mode violation from briefly matching both.
     await expect(
-      page.getByTestId(E2E.townshipPopup).last().locator("h2"),
+      page.getByTestId(E2E.featurePopup).last().locator("h2"),
     ).toHaveText(selectedLabel ?? "");
     await expect(page.getByTestId(E2E.mapView).getByRole("status")).toHaveText(
       new RegExp(`${selectedLabel}.*selected`, "i"),

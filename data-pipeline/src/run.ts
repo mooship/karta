@@ -136,6 +136,7 @@ async function runRegion(config: RegionPipelineConfig): Promise<void> {
         townships,
         nearestJobCenters,
         nearestTransitKm,
+        metro.id,
       );
       allTownships.push(...townshipFeatures);
       allNormalizedTownships.push(...townships);

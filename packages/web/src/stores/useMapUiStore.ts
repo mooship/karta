@@ -24,8 +24,8 @@ function groupSiblings(domainId: string | null, id: string): string[] {
   return group.layerIds.filter((sibling) => sibling !== id);
 }
 
-/** Which view the info panel shows: layer toggles, or the domain's story copy. */
-export type PanelView = "layers" | "story";
+/** Which view the info panel shows: layer toggles, the domain's story copy, or a browsable layer's feature list. */
+export type PanelView = "layers" | "story" | "browse";
 
 /** The app's UI state: active domain, layer visibility, basemap, panel state, and feature selection. */
 interface MapUiState {
