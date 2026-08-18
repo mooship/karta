@@ -44,6 +44,7 @@ import {
 } from "react";
 import styles from "./App.module.css";
 import { DomainStory } from "./components/DomainStory/DomainStory";
+import { DomainSwitcher } from "./components/DomainSwitcher/DomainSwitcher";
 import { LanguageToggle } from "./components/LanguageToggle/LanguageToggle";
 import { LayerToggles } from "./components/LayerToggles/LayerToggles";
 import { PrivacyLink } from "./components/PrivacyLink/PrivacyLink";
@@ -931,6 +932,7 @@ export function App({ domainId = DEFAULT_DOMAIN_ID }: AppProps = {}) {
             onThemePreferenceChange={setThemePreference}
             onOpenChange={setSettingsOpen}
           >
+            <DomainSwitcher activeDomainId={domainId} />
             <LanguageToggle />
             <PrivacyLink />
           </SettingsMenu>

@@ -12,6 +12,11 @@ export const E2E = {
   settingsMenuTrigger: "settings-menu-trigger",
   settingsMenuContent: "settings-menu-content",
   languageToggle: "language",
+  domainSwitcher: "domain-switcher",
+  domainSwitcherLink: {
+    gautengSpatialLegacy: "domain-switcher-link-gauteng-spatial-legacy",
+    heritageSites: "domain-switcher-link-heritage-sites",
+  },
   mapView: "map-view",
   locationSearchInput: "location-search-input",
   locationSearchResults: "location-search-results",

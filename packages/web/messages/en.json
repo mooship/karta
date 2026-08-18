@@ -43,6 +43,7 @@
   "error_boundary_generic_message": "An unexpected error occurred. Reloading the page usually fixes it.",
   "error_boundary_reload": "Reload page",
 
+  "domain_switcher_label": "Choose a map",
   "language_toggle_label": "Language",
   "settings_privacy_link_label": "Privacy policy",
 
