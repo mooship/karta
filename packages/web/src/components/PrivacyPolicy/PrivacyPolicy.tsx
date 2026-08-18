@@ -5,6 +5,9 @@ import styles from "./PrivacyPolicy.module.css";
 /** ISO date this policy's content was last reviewed for accuracy. */
 const LAST_UPDATED = "2026-08-18";
 
+/** This page's title, shared with `routes/privacy.tsx`'s `<title>` so the two can't drift apart. */
+export const PRIVACY_POLICY_TITLE = "Privacy policy";
+
 /**
  * The site's privacy policy page content.
  * @remarks Deliberately English-only, unlike the rest of this app's UI copy
@@ -20,7 +23,7 @@ const LAST_UPDATED = "2026-08-18";
 export function PrivacyPolicy() {
   return (
     <div className={styles.page}>
-      <h1 className={styles.heading}>Privacy policy</h1>
+      <h1 className={styles.heading}>{PRIVACY_POLICY_TITLE}</h1>
       <p className={styles.updated}>Last updated: {LAST_UPDATED}</p>
 
       <p className={styles.body}>
