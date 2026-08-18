@@ -44,6 +44,7 @@
   "error_boundary_reload": "Reload page",
 
   "language_toggle_label": "Language",
+  "settings_privacy_link_label": "Privacy policy",
 
   "layer_townships_label": "Modelled car time",
   "layer_townships_description": "Modelled car drive-time from each recognised township area to its nearest selected job centre.",
