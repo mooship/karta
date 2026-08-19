@@ -2,7 +2,7 @@ import type { TransitLayerFeatureCollection } from "@karta/app";
 import { sleep } from "../asyncUtils";
 import { hashKey, readJsonCache, writeJsonCache } from "../cache";
 import { getOverpassUrls } from "../constants/serviceUrls";
-import { fetchWithTimeout } from "../httpUtils";
+import { fetchWithTimeout, isAbortError } from "../httpUtils";
 import {
   normalizeRelationTransitOverpass,
   normalizeWayNodeTransitOverpass,
@@ -131,10 +131,6 @@ function isRetryableOverpassStatus(
   urls: readonly string[],
 ): boolean {
   return (status === 504 || status === 429) && attempt < urls.length * 2;
-}
-
-function isAbortError(error: unknown): error is Error {
-  return error instanceof Error && error.name === "AbortError";
 }
 
 /** Whether a thrown fetch error (as opposed to a non-ok response) is worth retrying on the next mirror. */

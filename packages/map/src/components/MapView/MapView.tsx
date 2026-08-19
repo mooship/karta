@@ -793,17 +793,17 @@ function resolveVectorStyleUrl(
   if (!isVectorBasemap || basemapDefinition.kind !== "vector") {
     return null;
   }
-  if (resolvedDark && basemapDefinition.darkStyleUrl) {
-    return basemapDefinition.darkStyleUrl;
-  }
-  return basemapDefinition.styleUrl;
+  return resolveThemedColor(
+    basemapDefinition.styleUrl,
+    basemapDefinition.darkStyleUrl,
+    resolvedDark,
+  );
 }
 
 interface RenderVisibleLayerParams {
   layer: DomainLayer;
   areaData: FeatureCollection;
   overlayData: LayerDataMap;
-  areasLength: number;
   layerConfigById: Map<string, LeafletLayerConfig>;
   layerPathOptionsById: Map<string, GeoJSONProps["pathOptions"]>;
   onEachSelectableFeatureByLayerId: Map<string, GeoJSONProps["onEachFeature"]>;
@@ -818,7 +818,6 @@ function renderVisibleLayer({
   layer,
   areaData,
   overlayData,
-  areasLength,
   layerConfigById,
   layerPathOptionsById,
   onEachSelectableFeatureByLayerId,
@@ -833,7 +832,7 @@ function renderVisibleLayer({
   const isSelectable = Boolean(layer.interaction?.selectable);
   const data = isChoropleth ? areaData : overlayData[layer.id];
 
-  if (!data || (isChoropleth && areasLength === 0)) {
+  if (!data || (isChoropleth && areaData.features.length === 0)) {
     return null;
   }
 
@@ -891,12 +890,10 @@ function RasterTileLayer({
 /** Renders area-boundary outline labels, or nothing while no visible layer wants them (or there's no boundary data yet). */
 function AreaBoundaryLabels({
   showAreaLabels,
-  areaBoundaries,
   areaBoundaryData,
   areaBoundaryStyle,
 }: {
   showAreaLabels: boolean;
-  areaBoundaries: Feature[];
   areaBoundaryData: FeatureCollection;
   areaBoundaryStyle: (feature?: Feature) => {
     color: string;
@@ -904,7 +901,7 @@ function AreaBoundaryLabels({
     weight: number;
   };
 }) {
-  if (!showAreaLabels || areaBoundaries.length === 0) {
+  if (!showAreaLabels || areaBoundaryData.features.length === 0) {
     return null;
   }
   return (
@@ -1363,7 +1360,6 @@ function MapViewComponent<
         <Pane name={TRANSIT_PANE} style={{ zIndex: 450 }} />
         <AreaBoundaryLabels
           showAreaLabels={showAreaLabels}
-          areaBoundaries={areaBoundaries}
           areaBoundaryData={areaBoundaryData}
           areaBoundaryStyle={areaBoundaryStyle}
         />
@@ -1372,7 +1368,6 @@ function MapViewComponent<
             layer,
             areaData,
             overlayData,
-            areasLength: areas.length,
             layerConfigById,
             layerPathOptionsById,
             onEachSelectableFeatureByLayerId,
