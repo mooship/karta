@@ -4,6 +4,8 @@
 
 The domain used throughout is illustrative: **public amenities** — how far each neighbourhood is from its nearest clinic, plus the bus routes serving the area. Swap in your own data and it works the same way.
 
+A real, checked-in second domain also exists — `packages/app/src/domains/heritage-sites/` (`HERITAGE_SITES_DOMAIN`), a single national-scope Point layer of publicly documented heritage sites, built with no `data-pipeline` source and deliberately not wired into `packages/web`. It's a smaller worked example than this guide's walkthrough, but a real one: see its `index.ts` for how little a second domain actually needs.
+
 ## 1. Define a `DomainConfig`
 
 A domain is just data: a `DomainConfig` — `{ layers, layerGroups, story? }` — built from the `Layer`/`LayerGroup`/`LayerStyleConfig`/`DomainStory` types in `@karta/core`. Nothing here is web- or Leaflet-specific.
