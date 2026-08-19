@@ -40,10 +40,28 @@
   background: var(--state-selected);
   color: var(--md-sys-color-on-surface);
   font-weight: 700;
+  /*
+   * Replays whenever this attribute selector starts matching -- i.e. every
+   * time a click actually changes the selected option, not on unrelated
+   * re-renders -- giving the newly-picked option a small settle-in pop
+   * rather than an instant colour swap.
+   */
+  animation: segmentedControlSelect var(--motion-duration-medium)
+    var(--motion-ease-spring);
 }
 
 .option:active {
   transform: scale(0.98);
+}
+
+@keyframes segmentedControlSelect {
+  from {
+    transform: scale(0.92);
+  }
+
+  to {
+    transform: scale(1);
+  }
 }
 
 .option:disabled {
