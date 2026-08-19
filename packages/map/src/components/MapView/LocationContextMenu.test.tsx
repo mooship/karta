@@ -87,6 +87,26 @@ function closeMenu() {
   fireEvent.click(screen.getByTestId("map-context-menu-close"));
 }
 
+/**
+ * Renders the menu, starts a lookup, then reopens it elsewhere and starts a
+ * second lookup that resolves to "Second place" -- the sequence shared by
+ * every test exercising what happens to the first (now superseded) lookup.
+ */
+async function renderAndSupersedeLookup() {
+  render(<LocationContextMenu />);
+  openMenu();
+  await chooseSearchHere();
+
+  openMenu({ lat: -26.3, lng: 28.1 });
+  await chooseSearchHere();
+
+  await waitFor(() => {
+    expect(screen.getByTestId("map-context-menu")).toHaveTextContent(
+      "Second place",
+    );
+  });
+}
+
 function dispatchDocumentClick(
   target: EventTarget,
   coordinates: { clientX: number; clientY: number } = {
@@ -271,18 +291,8 @@ describe("LocationContextMenu", () => {
       )
       .mockResolvedValueOnce({ label: "Second place" });
 
-    render(<LocationContextMenu />);
-    openMenu();
-    await chooseSearchHere();
+    await renderAndSupersedeLookup();
 
-    openMenu({ lat: -26.3, lng: 28.1 });
-    await chooseSearchHere();
-
-    await waitFor(() => {
-      expect(screen.getByTestId("map-context-menu")).toHaveTextContent(
-        "Second place",
-      );
-    });
     expect(firstAborted).toBe(true);
   });
 
@@ -297,18 +307,7 @@ describe("LocationContextMenu", () => {
       )
       .mockResolvedValueOnce({ label: "Second place" });
 
-    render(<LocationContextMenu />);
-    openMenu();
-    await chooseSearchHere();
-
-    openMenu({ lat: -26.3, lng: 28.1 });
-    await chooseSearchHere();
-
-    await waitFor(() => {
-      expect(screen.getByTestId("map-context-menu")).toHaveTextContent(
-        "Second place",
-      );
-    });
+    await renderAndSupersedeLookup();
 
     await act(async () => {
       resolveStale({ label: "Stale place" });
@@ -331,18 +330,7 @@ describe("LocationContextMenu", () => {
       )
       .mockResolvedValueOnce({ label: "Second place" });
 
-    render(<LocationContextMenu />);
-    openMenu();
-    await chooseSearchHere();
-
-    openMenu({ lat: -26.3, lng: 28.1 });
-    await chooseSearchHere();
-
-    await waitFor(() => {
-      expect(screen.getByTestId("map-context-menu")).toHaveTextContent(
-        "Second place",
-      );
-    });
+    await renderAndSupersedeLookup();
 
     await act(async () => {
       rejectStale(new Error("network"));

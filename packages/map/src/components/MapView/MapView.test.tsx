@@ -515,6 +515,8 @@ describe("MapView", () => {
       ),
     );
 
+    // Two hops: one for the mocked `await import("react-dom/server")` itself,
+    // one for its `.then()` continuation that calls `featureLayer.openPopup?.()`.
     await act(async () => {
       await Promise.resolve();
       await Promise.resolve();
