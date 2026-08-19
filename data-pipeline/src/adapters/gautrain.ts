@@ -111,6 +111,65 @@ async function waitForOverpassSlot(): Promise<void> {
   await waitTurn;
 }
 
+/** Resolves which Overpass mirror an attempt should hit, cycling through `urls`. */
+function resolveOverpassUrl(urls: readonly string[], attempt: number): string {
+  if (urls.length === 0) {
+    throw new Error("No Overpass endpoints are configured");
+  }
+  const url = urls[(attempt - 1) % urls.length];
+  /* v8 ignore next 3 -- unreachable: (attempt - 1) % urls.length is always a valid index once urls.length > 0 is confirmed above */
+  if (!url) {
+    throw new Error("No Overpass endpoint available for this attempt");
+  }
+  return url;
+}
+
+/** Whether a non-ok Overpass response is a transient failure worth retrying on the next mirror. */
+function isRetryableOverpassStatus(
+  status: number,
+  attempt: number,
+  urls: readonly string[],
+): boolean {
+  return (status === 504 || status === 429) && attempt < urls.length * 2;
+}
+
+function isAbortError(error: unknown): error is Error {
+  return error instanceof Error && error.name === "AbortError";
+}
+
+/** Whether a thrown fetch error (as opposed to a non-ok response) is worth retrying on the next mirror. */
+function isRetryableOverpassError(error: unknown): boolean {
+  return isAbortError(error) || error instanceof TypeError;
+}
+
+/**
+ * Resolves `fetchOverpass`'s catch branch: retries on the next mirror,
+ * falls back to a stale cached response, or re-throws (an abort surfaced
+ * as a clearer timeout message).
+ */
+async function handleOverpassFetchError(
+  error: unknown,
+  query: string,
+  attempt: number,
+  urls: readonly string[],
+  cached: OverpassResponse | null,
+): Promise<OverpassResponse> {
+  if (isRetryableOverpassError(error) && attempt < urls.length * 2) {
+    await sleep(backoffDelayMs(attempt));
+    return fetchOverpass(query, attempt + 1);
+  }
+
+  if (cached) {
+    return cached;
+  }
+
+  if (isAbortError(error)) {
+    throw new Error(`Overpass query timed out after ${OVERPASS_TIMEOUT_MS}ms`);
+  }
+
+  throw error;
+}
+
 /**
  * Runs an Overpass QL query against a public Overpass instance, with
  * disk caching, rate-limiting, and cross-mirror retry.
@@ -134,15 +193,7 @@ export async function fetchOverpass(
       : null;
 
   const urls = getOverpassUrls();
-  if (urls.length === 0) {
-    throw new Error("No Overpass endpoints are configured");
-  }
-
-  const url = urls[(attempt - 1) % urls.length];
-  /* v8 ignore next 3 -- unreachable: (attempt - 1) % urls.length is always a valid index once urls.length > 0 is confirmed above */
-  if (!url) {
-    throw new Error("No Overpass endpoint available for this attempt");
-  }
+  const url = resolveOverpassUrl(urls, attempt);
 
   await waitForOverpassSlot();
 
@@ -160,10 +211,7 @@ export async function fetchOverpass(
     );
 
     if (!response.ok) {
-      if (
-        (response.status === 504 || response.status === 429) &&
-        attempt < urls.length * 2
-      ) {
+      if (isRetryableOverpassStatus(response.status, attempt, urls)) {
         await sleep(backoffDelayMs(attempt));
         return fetchOverpass(query, attempt + 1);
       }
@@ -174,26 +222,7 @@ export async function fetchOverpass(
     await writeJsonCache("overpass", cacheKey, body);
     return body;
   } catch (error) {
-    const shouldRetry =
-      (error instanceof Error && error.name === "AbortError") ||
-      error instanceof TypeError;
-
-    if (shouldRetry && attempt < urls.length * 2) {
-      await sleep(backoffDelayMs(attempt));
-      return fetchOverpass(query, attempt + 1);
-    }
-
-    if (cached) {
-      return cached;
-    }
-
-    if (error instanceof Error && error.name === "AbortError") {
-      throw new Error(
-        `Overpass query timed out after ${OVERPASS_TIMEOUT_MS}ms`,
-      );
-    }
-
-    throw error;
+    return handleOverpassFetchError(error, query, attempt, urls, cached);
   }
 }
 
