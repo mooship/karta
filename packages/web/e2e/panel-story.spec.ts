@@ -34,6 +34,7 @@ test.describe("panel story tab", () => {
 
     const layersTab = page.getByTestId(E2E.panelTab.layers);
     const storyTab = page.getByTestId(E2E.panelTab.story);
+    const browserTab = page.getByTestId(E2E.panelTab.browser);
 
     await layersTab.focus();
     await page.keyboard.press("ArrowRight");
@@ -49,8 +50,8 @@ test.describe("panel story tab", () => {
 
     await page.keyboard.press("End");
 
-    await expect(storyTab).toBeFocused();
-    await expect(storyTab).toHaveAttribute("aria-selected", "true");
+    await expect(browserTab).toBeFocused();
+    await expect(browserTab).toHaveAttribute("aria-selected", "true");
 
     await page.keyboard.press("Home");
 

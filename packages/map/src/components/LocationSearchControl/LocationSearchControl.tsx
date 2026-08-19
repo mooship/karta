@@ -16,10 +16,34 @@ import { IconButton } from "../IconButton/IconButton";
 import { RetryButton } from "../RetryButton/RetryButton";
 import styles from "./LocationSearchControl.module.css";
 
-/** One selectable map feature's search-index entry: its id plus accessible label. */
+/**
+ * One selectable map feature's search-index entry: its id, accessible label,
+ * and the id of the layer it came from.
+ * @remarks `layerId` is unused by this component (it matches on `label`
+ *   alone) but is carried through so another consumer -- e.g. a feature
+ *   browser grouping results by layer -- doesn't need a second, parallel
+ *   index over the same features just to know which layer each belongs to.
+ */
 export interface SelectableFeatureSearchEntry {
   id: string;
   label: string;
+  layerId: string;
+}
+
+/**
+ * Case-insensitive substring match of `query` against `feature.label`.
+ * @remarks Shared by this component's own feature search and by
+ *   `FeatureBrowser`'s filter box -- both need the identical "does this
+ *   query match this feature's label" check, just under different
+ *   surrounding policy (this component also gates on a minimum query length
+ *   and caps the result count; `FeatureBrowser` does neither), so only the
+ *   match predicate itself is factored out here.
+ */
+export function matchesFeatureLabel(
+  feature: Pick<SelectableFeatureSearchEntry, "label">,
+  query: string,
+): boolean {
+  return feature.label.toLowerCase().includes(query.toLowerCase());
 }
 
 /** A single dropdown entry: either a map feature to select, or a place to fly to. */
@@ -109,9 +133,8 @@ export function LocationSearchControl({
     if (trimmedQuery.length < MIN_SEARCH_QUERY_LENGTH) {
       return [];
     }
-    const lowerQuery = trimmedQuery.toLowerCase();
     return selectableFeatures
-      .filter((feature) => feature.label.toLowerCase().includes(lowerQuery))
+      .filter((feature) => matchesFeatureLabel(feature, trimmedQuery))
       .slice(0, MAX_FEATURE_RESULTS);
   }, [selectableFeatures, trimmedQuery]);
 

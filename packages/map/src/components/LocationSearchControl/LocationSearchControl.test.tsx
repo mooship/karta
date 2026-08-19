@@ -541,8 +541,8 @@ describe("LocationSearchControl", () => {
         <LocationSearchControl
           onLocationSelect={vi.fn()}
           selectableFeatures={[
-            { id: "A", label: "Mamelodi" },
-            { id: "B", label: "Soshanguve" },
+            { id: "A", label: "Mamelodi", layerId: "townships" },
+            { id: "B", label: "Soshanguve", layerId: "townships" },
           ]}
           onFeatureSelect={vi.fn()}
         />,
@@ -564,7 +564,9 @@ describe("LocationSearchControl", () => {
       render(
         <LocationSearchControl
           onLocationSelect={onLocationSelect}
-          selectableFeatures={[{ id: "A", label: "Mamelodi" }]}
+          selectableFeatures={[
+            { id: "A", label: "Mamelodi", layerId: "townships" },
+          ]}
           onFeatureSelect={onFeatureSelect}
         />,
       );
@@ -590,7 +592,9 @@ describe("LocationSearchControl", () => {
       render(
         <LocationSearchControl
           onLocationSelect={vi.fn()}
-          selectableFeatures={[{ id: "f1", label: "Mamelodi" }]}
+          selectableFeatures={[
+            { id: "f1", label: "Mamelodi", layerId: "townships" },
+          ]}
           onFeatureSelect={vi.fn()}
         />,
       );
@@ -615,7 +619,9 @@ describe("LocationSearchControl", () => {
       render(
         <LocationSearchControl
           onLocationSelect={vi.fn()}
-          selectableFeatures={[{ id: "A", label: "Mamelodi" }]}
+          selectableFeatures={[
+            { id: "A", label: "Mamelodi", layerId: "townships" },
+          ]}
           onFeatureSelect={vi.fn()}
         />,
       );

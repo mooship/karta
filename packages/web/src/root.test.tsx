@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { createRoutesStub } from "react-router";
@@ -112,9 +112,14 @@ describe("root ErrorBoundary", () => {
     expect(
       screen.getByRole("heading", { name: "Something went wrong" }),
     ).toBeInTheDocument();
-    expect(
-      screen.getByRole("button", { name: "Reload page" }),
-    ).toBeInTheDocument();
+    const reloadButton = screen.getByRole("button", { name: "Reload page" });
+    expect(reloadButton).toBeInTheDocument();
+
+    const reload = vi.fn();
+    vi.stubGlobal("location", { ...window.location, reload });
+    fireEvent.click(reloadButton);
+    expect(reload).toHaveBeenCalledTimes(1);
+    vi.unstubAllGlobals();
   });
 
   it("renders a not-found message for an unmatched route", () => {

@@ -301,6 +301,28 @@ function withNonSelectableDomain(ui: ReactNode) {
   return <DomainProvider domain={NON_SELECTABLE_DOMAIN}>{ui}</DomainProvider>;
 }
 
+const SELECTABLE_OVERLAY_DOMAIN: DomainConfig = {
+  layers: [
+    {
+      id: "rail",
+      label: "Rail",
+      dataSource: ["/data/example/rail.display.v1.geojson"],
+      geometryKind: "line",
+      defaultVisible: true,
+      available: true,
+      interaction: { selectable: true, labelField: "name" },
+      style: { kind: "line", color: "#000", weight: 2 },
+    },
+  ],
+  layerGroups: [],
+};
+
+function withSelectableOverlayDomain(ui: ReactNode) {
+  return (
+    <DomainProvider domain={SELECTABLE_OVERLAY_DOMAIN}>{ui}</DomainProvider>
+  );
+}
+
 function testRenderFeaturePopup(properties: Record<string, unknown>) {
   return <div>{String(properties.name)}</div>;
 }
@@ -391,7 +413,7 @@ describe("MapView", () => {
     );
 
     expect(onSelectableFeaturesChange).toHaveBeenLastCalledWith([
-      { id: "A", label: "Mamelodi" },
+      { id: "A", label: "Mamelodi", layerId: "areas" },
     ]);
   });
 
@@ -404,6 +426,27 @@ describe("MapView", () => {
           {...DEFAULT_MAP_VIEW_PROPS}
           areas={[]}
           visibleLayerIds={[]}
+          onSelectableFeaturesChange={onSelectableFeaturesChange}
+        />,
+      ),
+    );
+
+    expect(onSelectableFeaturesChange).toHaveBeenLastCalledWith([]);
+  });
+
+  it("reports no entries yet for a selectable overlay layer whose data hasn't loaded", () => {
+    const onSelectableFeaturesChange = vi.fn();
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(() => new Promise(() => {})),
+    );
+
+    render(
+      withSelectableOverlayDomain(
+        <MapView
+          {...DEFAULT_MAP_VIEW_PROPS}
+          areas={[]}
+          visibleLayerIds={["rail"]}
           onSelectableFeaturesChange={onSelectableFeaturesChange}
         />,
       ),
@@ -438,6 +481,48 @@ describe("MapView", () => {
     );
 
     expect(screen.getByRole("status")).toHaveTextContent("Mamelodi selected");
+  });
+
+  it("does not open a stale selection's popup once its markup resolves after that selection was superseded", async () => {
+    const renderFeaturePopup = vi.fn().mockReturnValue(<div>Custom popup</div>);
+
+    const { rerender } = render(
+      withDomain(
+        <MapView
+          {...DEFAULT_MAP_VIEW_PROPS}
+          areas={areas}
+          visibleLayerIds={["areas"]}
+          selectedFeatureId="A"
+          renderFeaturePopup={renderFeaturePopup}
+        />,
+      ),
+    );
+
+    const firstLayer = mapMocks.featureLayers[0];
+    expect(firstLayer?.openPopup).not.toHaveBeenCalled();
+
+    // Deselects before bindSelectedFeaturePopup's own `await import("react-dom/server")`
+    // has resolved, so the effect's cleanup marks this selection cancelled first.
+    rerender(
+      withDomain(
+        <MapView
+          {...DEFAULT_MAP_VIEW_PROPS}
+          areas={areas}
+          visibleLayerIds={["areas"]}
+          selectedFeatureId={null}
+          renderFeaturePopup={renderFeaturePopup}
+        />,
+      ),
+    );
+
+    // Two hops: one for the mocked `await import("react-dom/server")` itself,
+    // one for its `.then()` continuation that calls `featureLayer.openPopup?.()`.
+    await act(async () => {
+      await Promise.resolve();
+      await Promise.resolve();
+    });
+
+    expect(firstLayer?.openPopup).not.toHaveBeenCalled();
   });
 
   it("calls renderFeaturePopup with feature properties when a feature is clicked", async () => {
@@ -515,6 +600,36 @@ describe("MapView", () => {
     await waitFor(() => {
       expect(onReady).toHaveBeenCalledTimes(1);
     });
+  });
+
+  it("does not call onReady if the animation frame still fires after unmount races past cancelAnimationFrame", () => {
+    const onReady = vi.fn();
+    let scheduledCallback: FrameRequestCallback | null = null;
+    vi.stubGlobal("requestAnimationFrame", (callback: FrameRequestCallback) => {
+      scheduledCallback = callback;
+      return 1;
+    });
+    // A no-op, unlike the real cancelAnimationFrame -- simulates the frame
+    // still firing despite the cleanup below having already asked to cancel
+    // it, so `cancelled` is what has to stop onReady from firing, not the
+    // cancellation call itself.
+    vi.stubGlobal("cancelAnimationFrame", vi.fn());
+
+    const { unmount } = render(
+      withDomain(
+        <MapView
+          {...DEFAULT_MAP_VIEW_PROPS}
+          areas={[]}
+          visibleLayerIds={[]}
+          onReady={onReady}
+        />,
+      ),
+    );
+
+    unmount();
+    scheduledCallback?.(0);
+
+    expect(onReady).not.toHaveBeenCalled();
   });
 
   it("renders without an onReady callback", () => {
@@ -2135,7 +2250,7 @@ describe("MapView", () => {
     );
 
     expect(onSelectableFeaturesChange).toHaveBeenLastCalledWith([
-      { id: "X", label: "Fallback Name" },
+      { id: "X", label: "Fallback Name", layerId: "no-label-field" },
     ]);
   });
 
@@ -2189,8 +2304,8 @@ describe("MapView", () => {
     // Feature "B" has neither a string commuteMinutes nor a name, so it
     // resolves to an empty label.
     expect(onSelectableFeaturesChange).toHaveBeenLastCalledWith([
-      { id: "A", label: "Mamelodi" },
-      { id: "B", label: "" },
+      { id: "A", label: "Mamelodi", layerId: "numeric-label-field" },
+      { id: "B", label: "", layerId: "numeric-label-field" },
     ]);
   });
 
