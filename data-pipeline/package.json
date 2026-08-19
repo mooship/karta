@@ -20,7 +20,7 @@
   "dependencies": {
     "@karta/app": "file:../packages/app",
     "@karta/core": "file:../packages/core",
-    "@turf/turf": "^7.1.0",
+    "@turf/turf": "^7.4.0",
     "adm-zip": "^0.6.0",
     "shapefile": "^0.6.6",
     "topojson-client": "^3.1.0",
@@ -30,13 +30,13 @@
   "devDependencies": {
     "@types/adm-zip": "^0.5.8",
     "@types/geojson": "^7946.0.14",
-    "@types/node": "^26.1.2",
+    "@types/node": "^26.2.0",
     "@types/shapefile": "^0.6.4",
     "@types/topojson-client": "^3.1.5",
     "@types/topojson-server": "^3.0.4",
     "@types/topojson-simplify": "^3.0.3",
-    "tsx": "^4.19.0",
-    "typescript": "^6.0.3",
+    "tsx": "^4.23.12",
+    "typescript": "^7.0.2",
     "vitest": "^4.1.10"
   }
 }
