@@ -20,10 +20,18 @@ function groupSiblings(id: string): string[] {
 }
 
 /**
+ * Every valid `PanelView`, the single source of truth `PanelView` derives
+ * from -- so a caller needing the runtime value set (e.g. validating a
+ * permalink's `?panel=` query param) doesn't hand-maintain a second copy of
+ * this list that could drift from the type.
+ */
+export const PANEL_VIEWS = ["layers", "story", "browser"] as const;
+
+/**
  * Which view the info panel shows: layer toggles, the domain's story copy,
  * or a browsable list of the domain's selectable features.
  */
-export type PanelView = "layers" | "story" | "browser";
+export type PanelView = (typeof PANEL_VIEWS)[number];
 
 /** The app's UI state: layer visibility, basemap, panel state, and feature selection. */
 interface MapUiState {

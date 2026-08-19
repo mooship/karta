@@ -17,6 +17,7 @@ import {
   type SelectableFeatureSearchEntry,
   SettingsMenu,
   useDismissableOverlay,
+  useRafScheduledValue,
 } from "@karta/map";
 import {
   MOBILE_BREAKPOINT_PX,
@@ -32,7 +33,9 @@ import {
   type CSSProperties,
   type KeyboardEvent,
   lazy,
+  memo,
   type PointerEvent,
+  type ReactNode,
   Suspense,
   useCallback,
   useEffect,
@@ -153,8 +156,15 @@ interface PanelViewContentProps {
   onSelectFeature: (featureId: string) => void;
 }
 
-/** Renders the info panel's active view: layer toggles, the domain's story copy, or the selectable-feature browser. */
-function PanelViewContent({
+/**
+ * Renders the info panel's active view: layer toggles, the domain's story
+ * copy, or the selectable-feature browser.
+ * @remarks Memoized like `LayerToggles`, its own child here -- `App`
+ *   re-renders on every unrelated state change (e.g. the mobile bottom-sheet
+ *   drag gesture's per-frame offset), and none of that should force this
+ *   panel back through reconciliation.
+ */
+const PanelViewContent = memo(function PanelViewContent({
   panelView,
   visibleLayerIds,
   onToggle,
@@ -164,37 +174,37 @@ function PanelViewContent({
   selectedFeatureId,
   onSelectFeature,
 }: PanelViewContentProps) {
+  let title: string;
+  let body: ReactNode;
   if (panelView === "story" && story) {
-    return (
-      <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>{story.title}</h2>
-        <DomainStory story={story} />
-      </section>
+    title = story.title;
+    body = <DomainStory story={story} />;
+  } else if (panelView === "browser") {
+    title = m.panel_tab_browse();
+    body = (
+      <FeatureBrowser
+        features={selectableFeatures}
+        selectedFeatureId={selectedFeatureId}
+        onSelect={onSelectFeature}
+      />
     );
-  }
-  if (panelView === "browser") {
-    return (
-      <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>{m.panel_tab_browse()}</h2>
-        <FeatureBrowser
-          features={selectableFeatures}
-          selectedFeatureId={selectedFeatureId}
-          onSelect={onSelectFeature}
-        />
-      </section>
-    );
-  }
-  return (
-    <section className={styles.section}>
-      <h2 className={styles.sectionTitle}>{m.panel_tab_layers()}</h2>
+  } else {
+    title = m.panel_tab_layers();
+    body = (
       <LayerToggles
         visibleLayerIds={visibleLayerIds}
         onToggle={onToggle}
         failedLayerIds={failedLayerIds}
       />
+    );
+  }
+  return (
+    <section className={styles.section}>
+      <h2 className={styles.sectionTitle}>{title}</h2>
+      {body}
     </section>
   );
-}
+});
 
 /**
  * The reference app's root shell: fetches and merges the Gauteng township
@@ -346,8 +356,10 @@ export function App() {
   const singleViewRef = useRef<HTMLDivElement>(null);
   const suppressNextHandleClickRef = useRef(false);
   const activeSheetPointerIdRef = useRef<number | null>(null);
-  const pendingSheetDragOffsetRef = useRef(0);
-  const sheetDragFrameRef = useRef<number | null>(null);
+  const {
+    schedule: scheduleSheetDragOffset,
+    cancel: cancelScheduledSheetDragOffset,
+  } = useRafScheduledValue(setMobileSheetDragOffset);
 
   /**
    * Opens the desktop sidebar synchronously, in the same commit as
@@ -426,11 +438,9 @@ export function App() {
 
   useEffect(() => {
     return () => {
-      if (sheetDragFrameRef.current !== null) {
-        cancelAnimationFrame(sheetDragFrameRef.current);
-      }
+      cancelScheduledSheetDragOffset();
     };
-  }, []);
+  }, [cancelScheduledSheetDragOffset]);
 
   const mobileSheetDragDirection =
     mobileSheetDragOffset < -4
@@ -452,17 +462,6 @@ export function App() {
   const mobilePanelDragStyle = {
     "--panel-drag-offset": `${mobileSheetDragOffset}px`,
   } as CSSProperties;
-
-  function scheduleSheetDragOffset(nextOffset: number) {
-    pendingSheetDragOffsetRef.current = nextOffset;
-    if (sheetDragFrameRef.current !== null) {
-      return;
-    }
-    sheetDragFrameRef.current = requestAnimationFrame(() => {
-      setMobileSheetDragOffset(pendingSheetDragOffsetRef.current);
-      sheetDragFrameRef.current = null;
-    });
-  }
 
   const handleMapReady = useCallback(() => setMapReady(true), []);
 

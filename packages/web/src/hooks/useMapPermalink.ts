@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef } from "react";
 import { getLayerStructure } from "../layers/registry";
 import {
   getDefaultMapUiState,
+  PANEL_VIEWS,
   type PanelView,
   useMapUiStore,
 } from "../stores/useMapUiStore";
@@ -11,7 +12,6 @@ const LAYERS_PARAM = "layers";
 const BASEMAP_PARAM = "basemap";
 const PANEL_PARAM = "panel";
 const FEATURE_PARAM = "feature";
-const PANEL_VIEW_VALUES: readonly PanelView[] = ["layers", "story", "browser"];
 
 /** The subset of `useMapUiStore`'s state a permalink can carry. */
 export interface MapPermalinkState {
@@ -58,7 +58,7 @@ export function parseMapPermalink(
   }
 
   const panelParam = params.get(PANEL_PARAM);
-  if (panelParam && PANEL_VIEW_VALUES.includes(panelParam as PanelView)) {
+  if (panelParam && PANEL_VIEWS.includes(panelParam as PanelView)) {
     result.panelView = panelParam as PanelView;
   }
 
