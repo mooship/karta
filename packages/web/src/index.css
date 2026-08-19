@@ -185,22 +185,14 @@
   --motion-duration-medium: 180ms;
 
   /* M3 easing curves (developer.android.com/develop/ui/views/animations/motion).
-   * standard suits hover/press state changes and size/position tweens that
-   * repeat rapidly (a spammed toggle, a drag) and shouldn't accumulate
-   * emphasis. decelerate/accelerate use M3's *Emphasized* curves rather than
-   * the flatter Standard set — Emphasized is M3's own more expressive scheme,
-   * reserved here for elements entering/settling or leaving the screen once
-   * (panels, sheets, popovers, error toasts), where the extra character reads
-   * as alive rather than busy. */
+   * standard suits hover/press feedback that can repeat rapidly; decelerate/
+   * accelerate use M3's Emphasized set for one-shot entrances/exits; spring
+   * is a small-overshoot curve for isolated punctuation. See
+   * docs/design-system.md's "Motion" section for the full rationale and
+   * usage rules for each. */
   --motion-ease-standard: cubic-bezier(0.2, 0, 0, 1);
   --motion-ease-decelerate: cubic-bezier(0.05, 0.7, 0.1, 1);
   --motion-ease-accelerate: cubic-bezier(0.3, 0, 0.8, 0.15);
-  /* A small-overshoot "spring" curve for isolated, one-shot punctuation
-   * moments only (a selected segmented-control option popping into place) —
-   * never for anything that repeats in quick succession or moves a large
-   * surface, where the overshoot would read as jitter rather than a
-   * flourish. Not part of the M3 spec's named easing sets, but the same
-   * spirit as Material You's own spring-based motion physics. */
   --motion-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 
   /* Focus ring magnitude only — colour stays contextual (a component on a
