@@ -1,6 +1,7 @@
 import {
   createLayerConfig,
   type Layer as DomainLayer,
+  type LeafletLayerConfig,
   resolveThemedColor,
 } from "@karta/core";
 import {
@@ -39,6 +40,7 @@ import {
 } from "react-leaflet";
 import {
   type Basemap,
+  type BasemapTileSource,
   getBasemapDefinition,
   getBasemapTileSources,
   resolveTileScaleToken,
@@ -49,7 +51,7 @@ import type {
   GeocoderProvider,
   LocationSearchResult,
 } from "../../data/locationSearch";
-import { useLayerData } from "../../hooks/useLayerData";
+import { type LayerDataMap, useLayerData } from "../../hooks/useLayerData";
 import type { SelectableFeatureSearchEntry } from "../LocationSearchControl/LocationSearchControl";
 import { formatMeasurementResult } from "../MeasurementControl/formatMeasurementResult";
 import {
@@ -291,6 +293,73 @@ function resolveFeatureLabel(
   return typeof labelValue === "string"
     ? labelValue
     : String(properties.name ?? "");
+}
+
+/** A visible layer's own selectable-feature data, or `undefined` if it isn't selectable or hasn't loaded yet. */
+function resolveSelectableLayerData(
+  layer: DomainLayer,
+  areaData: FeatureCollection,
+  overlayData: LayerDataMap,
+): FeatureCollection | undefined {
+  if (!layer.interaction?.selectable) {
+    return undefined;
+  }
+  return layer.geometryKind === "choropleth" ? areaData : overlayData[layer.id];
+}
+
+/** Converts a selectable layer's raw features into search entries, skipping any feature with no string `id`. */
+function buildFeatureSearchEntries(
+  data: FeatureCollection,
+  layerId: string,
+  labelField: string,
+): SelectableFeatureSearchEntry[] {
+  const layerEntries: SelectableFeatureSearchEntry[] = [];
+  for (const feature of data.features) {
+    const properties = feature.properties as Record<string, unknown> | null;
+    const featureId = properties?.id;
+    if (!properties || typeof featureId !== "string") {
+      continue;
+    }
+    layerEntries.push({
+      id: featureId,
+      label: resolveFeatureLabel(properties, labelField),
+      layerId,
+    });
+  }
+  return layerEntries;
+}
+
+type SelectableEntriesCache = Map<
+  string,
+  { data: FeatureCollection; entries: SelectableFeatureSearchEntry[] }
+>;
+
+/** Returns a layer's cached search entries if `data`'s identity is unchanged, otherwise rebuilds and re-caches them. */
+function collectSelectableEntriesForLayer(
+  layer: DomainLayer,
+  data: FeatureCollection,
+  cache: SelectableEntriesCache,
+): SelectableFeatureSearchEntry[] {
+  const cached = cache.get(layer.id);
+  if (cached?.data === data) {
+    return cached.entries;
+  }
+  const labelField = layer.interaction?.labelField ?? "name";
+  const layerEntries = buildFeatureSearchEntries(data, layer.id, labelField);
+  cache.set(layer.id, { data, entries: layerEntries });
+  return layerEntries;
+}
+
+/** Drops any cache entry for a layer that wasn't visited this pass (no longer visible/selectable). */
+function evictStaleSelectableEntries(
+  cache: SelectableEntriesCache,
+  seenLayerIds: Set<string>,
+): void {
+  for (const layerId of cache.keys()) {
+    if (!seenLayerIds.has(layerId)) {
+      cache.delete(layerId);
+    }
+  }
 }
 
 /**
@@ -690,6 +759,184 @@ const INITIAL_MEASUREMENT_STATE: MeasurementState = {
   points: [],
 };
 
+/** The raster tile layer's CSS class for the current theme/basemap combination, or `undefined` for an unmodified basemap. */
+function resolveTileClassName(
+  useDarkTiles: boolean,
+  useDimFilter: boolean,
+): string | undefined {
+  if (useDarkTiles) {
+    return styles.darkTile;
+  }
+  if (useDimFilter) {
+    return styles.dimmedTile;
+  }
+  return undefined;
+}
+
+/** Transit stop marker radius, coarser when zoomed out and finer once zoomed in enough to tell stops apart. */
+function resolveTransitStopRadius(
+  isOverviewZoom: boolean,
+  isDetailZoom: boolean,
+): number {
+  if (isOverviewZoom) {
+    return 2;
+  }
+  return isDetailZoom ? 4 : 3;
+}
+
+/** The current vector basemap's MapLibre style URL (theme-appropriate, falling back to the light one), or `null` while a raster basemap is active. */
+function resolveVectorStyleUrl(
+  isVectorBasemap: boolean,
+  resolvedDark: boolean,
+  basemapDefinition: ReturnType<typeof getBasemapDefinition>,
+): string | null {
+  if (!isVectorBasemap || basemapDefinition.kind !== "vector") {
+    return null;
+  }
+  return resolveThemedColor(
+    basemapDefinition.styleUrl,
+    basemapDefinition.darkStyleUrl,
+    resolvedDark,
+  );
+}
+
+interface RenderVisibleLayerParams {
+  layer: DomainLayer;
+  areaData: FeatureCollection;
+  overlayData: LayerDataMap;
+  layerConfigById: Map<string, LeafletLayerConfig>;
+  layerPathOptionsById: Map<string, GeoJSONProps["pathOptions"]>;
+  onEachSelectableFeatureByLayerId: Map<string, GeoJSONProps["onEachFeature"]>;
+  transitPointToLayerById: Map<string, GeoJSONProps["pointToLayer"]>;
+}
+
+/**
+ * Renders one visible layer's `GeoJSON`, or `null` while it has no data yet
+ * (or, for the choropleth layer, while `areas` itself hasn't loaded).
+ */
+function renderVisibleLayer({
+  layer,
+  areaData,
+  overlayData,
+  layerConfigById,
+  layerPathOptionsById,
+  onEachSelectableFeatureByLayerId,
+  transitPointToLayerById,
+}: RenderVisibleLayerParams): ReactNode {
+  const config = layerConfigById.get(layer.id);
+  /* v8 ignore next 3 -- unreachable: layerConfigById is built from this same visibleLayers list, so every layer.id here always has an entry */
+  if (!config) {
+    return null;
+  }
+  const isChoropleth = layer.geometryKind === "choropleth";
+  const isSelectable = Boolean(layer.interaction?.selectable);
+  const data = isChoropleth ? areaData : overlayData[layer.id];
+
+  if (!data || (isChoropleth && areaData.features.length === 0)) {
+    return null;
+  }
+
+  return (
+    <GeoJSON
+      key={layer.id}
+      data={data}
+      smoothFactor={isChoropleth ? 0 : 1}
+      style={config.styleFn}
+      pathOptions={layerPathOptionsById.get(layer.id)}
+      onEachFeature={
+        isSelectable
+          ? onEachSelectableFeatureByLayerId.get(layer.id)
+          : undefined
+      }
+      pointToLayer={
+        isChoropleth ? undefined : transitPointToLayerById.get(layer.id)
+      }
+    />
+  );
+}
+
+/** Renders the active raster basemap's tile layer, or nothing while a vector basemap is active (or no tile source resolved). */
+function RasterTileLayer({
+  isRasterBasemap,
+  tileSource,
+  tileSourceMode,
+  tileClassName,
+  useRetinaTiles,
+  tileEventHandlers,
+}: {
+  isRasterBasemap: boolean;
+  tileSource: BasemapTileSource | undefined;
+  tileSourceMode: string;
+  tileClassName: string | undefined;
+  useRetinaTiles: boolean;
+  tileEventHandlers: { tileerror: () => void };
+}) {
+  if (!isRasterBasemap || !tileSource) {
+    return null;
+  }
+  return (
+    <TileLayer
+      key={`${tileSourceMode}-${tileSource.url}`}
+      url={resolveTileScaleToken(tileSource.url, useRetinaTiles)}
+      attribution={tileSource.attribution}
+      className={tileClassName}
+      detectRetina={useRetinaTiles}
+      updateWhenZooming
+      eventHandlers={tileEventHandlers}
+    />
+  );
+}
+
+/** Renders area-boundary outline labels, or nothing while no visible layer wants them (or there's no boundary data yet). */
+function AreaBoundaryLabels({
+  showAreaLabels,
+  areaBoundaryData,
+  areaBoundaryStyle,
+}: {
+  showAreaLabels: boolean;
+  areaBoundaryData: FeatureCollection;
+  areaBoundaryStyle: (feature?: Feature) => {
+    color: string;
+    opacity: number;
+    weight: number;
+  };
+}) {
+  if (!showAreaLabels || areaBoundaryData.features.length === 0) {
+    return null;
+  }
+  return (
+    <GeoJSON
+      data={areaBoundaryData}
+      smoothFactor={0}
+      pathOptions={AREA_OUTLINE_PATH_OPTIONS}
+      style={areaBoundaryStyle}
+      onEachFeature={bindAreaBoundaryLabel}
+    />
+  );
+}
+
+/** Renders the measurement tool's click-to-add-point layer, or nothing while the tool is off or not currently interactive. */
+function MeasurementClickLayer({
+  measurementTool,
+  measurementInteractive,
+  mode,
+  points,
+  onAddPoint,
+}: {
+  measurementTool: boolean;
+  measurementInteractive: boolean;
+  mode: MeasurementMode;
+  points: LatLng[];
+  onAddPoint: (point: LatLng) => void;
+}) {
+  if (!measurementTool || !measurementInteractive) {
+    return null;
+  }
+  return (
+    <MeasurementLayer mode={mode} points={points} onAddPoint={onAddPoint} />
+  );
+}
+
 function MapViewComponent<
   TProperties extends Record<string, unknown> = Record<string, unknown>,
 >({
@@ -787,20 +1034,17 @@ function MapViewComponent<
     isRasterBasemap && basemapDefinition.darkUrl !== undefined && resolvedDark;
   const useDimFilter =
     isRasterBasemap && resolvedDark && basemapDefinition.dimInDarkMode === true;
-  const tileClassName = useDarkTiles
-    ? styles.darkTile
-    : useDimFilter
-      ? styles.dimmedTile
-      : undefined;
+  const tileClassName = resolveTileClassName(useDarkTiles, useDimFilter);
   const tileSourceMode = `${basemap}-${useDarkTiles ? "dark" : "light"}`;
   const tileSources = useMemo(
     () => (isRasterBasemap ? getBasemapTileSources(basemap, useDarkTiles) : []),
     [isRasterBasemap, basemap, useDarkTiles],
   );
-  const vectorStyleUrl = isVectorBasemap
-    ? (resolvedDark && basemapDefinition.darkStyleUrl) ||
-      basemapDefinition.styleUrl
-    : null;
+  const vectorStyleUrl = resolveVectorStyleUrl(
+    isVectorBasemap,
+    resolvedDark,
+    basemapDefinition,
+  );
   const [tileSourceState, setTileSourceState] = useState(() => ({
     mode: tileSourceMode,
     index: 0,
@@ -851,7 +1095,10 @@ function MapViewComponent<
   );
   const isOverviewZoom = mapZoom < OVERVIEW_ZOOM_THRESHOLD;
   const isDetailZoom = mapZoom >= DETAIL_ZOOM_THRESHOLD;
-  const transitStopRadius = isOverviewZoom ? 2 : isDetailZoom ? 4 : 3;
+  const transitStopRadius = resolveTransitStopRadius(
+    isOverviewZoom,
+    isDetailZoom,
+  );
   const areaBoundaryData = useMemo<FeatureCollection>(
     () => ({
       type: "FeatureCollection",
@@ -888,42 +1135,14 @@ function MapViewComponent<
     const cache = selectableEntriesCacheRef.current;
     const seenLayerIds = new Set<string>();
     for (const layer of visibleLayers) {
-      if (!layer.interaction?.selectable) {
-        continue;
-      }
-      const isChoropleth = layer.geometryKind === "choropleth";
-      const data = isChoropleth ? areaData : overlayData[layer.id];
+      const data = resolveSelectableLayerData(layer, areaData, overlayData);
       if (!data) {
         continue;
       }
       seenLayerIds.add(layer.id);
-      const cached = cache.get(layer.id);
-      if (cached?.data === data) {
-        entries.push(...cached.entries);
-        continue;
-      }
-      const labelField = layer.interaction.labelField ?? "name";
-      const layerEntries: SelectableFeatureSearchEntry[] = [];
-      for (const feature of data.features) {
-        const properties = feature.properties as Record<string, unknown> | null;
-        const featureId = properties?.id;
-        if (!properties || typeof featureId !== "string") {
-          continue;
-        }
-        layerEntries.push({
-          id: featureId,
-          label: resolveFeatureLabel(properties, labelField),
-          layerId: layer.id,
-        });
-      }
-      cache.set(layer.id, { data, entries: layerEntries });
-      entries.push(...layerEntries);
+      entries.push(...collectSelectableEntriesForLayer(layer, data, cache));
     }
-    for (const layerId of cache.keys()) {
-      if (!seenLayerIds.has(layerId)) {
-        cache.delete(layerId);
-      }
-    }
+    evictStaleSelectableEntries(cache, seenLayerIds);
     // Only mutually-exclusive selectable layers (see the domain's
     // `selectionMode: "exclusive"` layer group) are expected to be visible
     // at once, so entries shouldn't collide across layers in practice; a
@@ -1121,17 +1340,14 @@ function MapViewComponent<
       >
         <ZoomControl position="bottomright" />
         <ScaleControl position="bottomleft" imperial={false} />
-        {isRasterBasemap && tileSource ? (
-          <TileLayer
-            key={`${tileSourceMode}-${tileSource.url}`}
-            url={resolveTileScaleToken(tileSource.url, useRetinaTiles)}
-            attribution={tileSource.attribution}
-            className={tileClassName}
-            detectRetina={useRetinaTiles}
-            updateWhenZooming
-            eventHandlers={tileEventHandlers}
-          />
-        ) : null}
+        <RasterTileLayer
+          isRasterBasemap={isRasterBasemap}
+          tileSource={tileSource}
+          tileSourceMode={tileSourceMode}
+          tileClassName={tileClassName}
+          useRetinaTiles={useRetinaTiles}
+          tileEventHandlers={tileEventHandlers}
+        />
         {vectorStyleUrl ? (
           <VectorBasemapLayer
             key={vectorStyleUrl}
@@ -1142,47 +1358,22 @@ function MapViewComponent<
         <Pane name={AREA_PANE} style={{ zIndex: 400 }} />
         <Pane name={AREA_OUTLINE_PANE} style={{ zIndex: 425 }} />
         <Pane name={TRANSIT_PANE} style={{ zIndex: 450 }} />
-        {showAreaLabels && areaBoundaries.length > 0 ? (
-          <GeoJSON
-            data={areaBoundaryData}
-            smoothFactor={0}
-            pathOptions={AREA_OUTLINE_PATH_OPTIONS}
-            style={areaBoundaryStyle}
-            onEachFeature={bindAreaBoundaryLabel}
-          />
-        ) : null}
-        {visibleLayers.map((layer) => {
-          const config = layerConfigById.get(layer.id);
-          /* v8 ignore next 3 -- unreachable: layerConfigById is built from this same visibleLayers list, so every layer.id here always has an entry */
-          if (!config) {
-            return null;
-          }
-          const isChoropleth = layer.geometryKind === "choropleth";
-          const isSelectable = Boolean(layer.interaction?.selectable);
-          const data = isChoropleth ? areaData : overlayData[layer.id];
-
-          if (!data || (isChoropleth && areas.length === 0)) {
-            return null;
-          }
-
-          return (
-            <GeoJSON
-              key={layer.id}
-              data={data}
-              smoothFactor={isChoropleth ? 0 : 1}
-              style={config.styleFn}
-              pathOptions={layerPathOptionsById.get(layer.id)}
-              onEachFeature={
-                isSelectable
-                  ? onEachSelectableFeatureByLayerId.get(layer.id)
-                  : undefined
-              }
-              pointToLayer={
-                isChoropleth ? undefined : transitPointToLayerById.get(layer.id)
-              }
-            />
-          );
-        })}
+        <AreaBoundaryLabels
+          showAreaLabels={showAreaLabels}
+          areaBoundaryData={areaBoundaryData}
+          areaBoundaryStyle={areaBoundaryStyle}
+        />
+        {visibleLayers.map((layer) =>
+          renderVisibleLayer({
+            layer,
+            areaData,
+            overlayData,
+            layerConfigById,
+            layerPathOptionsById,
+            onEachSelectableFeatureByLayerId,
+            transitPointToLayerById,
+          }),
+        )}
         <SelectedFeatureHighlight
           selectedFeatureId={selectedFeatureId}
           layerById={selectableLayerById}
@@ -1196,13 +1387,13 @@ function MapViewComponent<
         {locationContextMenu ? (
           <LocationContextMenu provider={locationContextMenuProvider} />
         ) : null}
-        {measurementTool && measurementInteractive ? (
-          <MeasurementLayer
-            mode={measurement.mode}
-            points={measurement.points}
-            onAddPoint={handleMeasurementAddPoint}
-          />
-        ) : null}
+        <MeasurementClickLayer
+          measurementTool={measurementTool}
+          measurementInteractive={measurementInteractive}
+          mode={measurement.mode}
+          points={measurement.points}
+          onAddPoint={handleMeasurementAddPoint}
+        />
       </MapContainer>
     </section>
   );

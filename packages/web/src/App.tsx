@@ -145,6 +145,78 @@ function pruneStalePointerSamples(samples: PointerSample[], now: number) {
   }
 }
 
+/**
+ * A completed sheet drag's net vertical delta, extended by a short-horizon
+ * velocity projection so a fast-but-short swipe crosses the drag threshold
+ * the same way a slower, longer one already does.
+ */
+function projectSheetDragDelta(
+  delta: number,
+  firstSample: PointerSample,
+  lastSample: PointerSample,
+): number {
+  const elapsedMs = Math.max(1, lastSample.timestamp - firstSample.timestamp);
+  const velocityPxPerSecond =
+    ((lastSample.y - firstSample.y) / elapsedMs) * 1000;
+  return (
+    delta +
+    (velocityPxPerSecond / 1000) *
+      (SHEET_PROJECTION_DECELERATION / (1 - SHEET_PROJECTION_DECELERATION))
+  );
+}
+
+/** Whether a completed sheet drag's motion (actual or velocity-projected) cleared the minimum threshold to count as an intentional swipe rather than a stray tap or jitter. */
+function isDeliberateSheetDrag(delta: number, projectedDelta: number): boolean {
+  return (
+    Math.abs(delta) >= SHEET_DRAG_THRESHOLD_PX ||
+    Math.abs(projectedDelta) >= SHEET_DRAG_THRESHOLD_PX
+  );
+}
+
+type SheetDragOutcome = "expand" | "collapse" | "close";
+
+/** Which action a deliberate sheet drag should trigger: expand upward, collapse back to medium height downward from expanded, otherwise close the panel entirely. */
+function resolveSheetDragOutcome(
+  projectedDelta: number,
+  mobilePanelExpanded: boolean,
+): SheetDragOutcome {
+  if (projectedDelta < 0) {
+    return "expand";
+  }
+  return mobilePanelExpanded ? "collapse" : "close";
+}
+
+/** Carries out a resolved sheet drag outcome by calling the one setter/callback it needs. */
+function applySheetDragOutcome(
+  outcome: SheetDragOutcome,
+  setMobilePanelExpanded: (value: boolean) => void,
+  closePanel: () => void,
+): void {
+  switch (outcome) {
+    case "expand": {
+      setMobilePanelExpanded(true);
+      return;
+    }
+    case "collapse": {
+      setMobilePanelExpanded(false);
+      return;
+    }
+    case "close": {
+      closePanel();
+    }
+  }
+}
+
+/** Converts a boolean into the `"true"`/`"false"` string Karta's `data-*` boolean attributes (and their CSS/e2e selectors) expect. */
+function toBoolAttr(value: boolean): "true" | "false" {
+  return value ? "true" : "false";
+}
+
+/** The mobile info panel's `data-panel-size` value for its current expanded/medium height. */
+function resolvePanelSizeAttr(expanded: boolean): "full" | "medium" {
+  return expanded ? "full" : "medium";
+}
+
 interface PanelViewContentProps {
   panelView: PanelView;
   visibleLayerIds: string[];
@@ -677,32 +749,22 @@ export function App() {
         cleanup();
         return;
       }
-      const elapsedMs = Math.max(
-        1,
-        lastSample.timestamp - firstSample.timestamp,
+      const projectedDelta = projectSheetDragDelta(
+        delta,
+        firstSample,
+        lastSample,
       );
-      const velocityPxPerSecond =
-        ((lastSample.y - firstSample.y) / elapsedMs) * 1000;
-      const projectedDelta =
-        delta +
-        (velocityPxPerSecond / 1000) *
-          (SHEET_PROJECTION_DECELERATION / (1 - SHEET_PROJECTION_DECELERATION));
 
-      if (
-        Math.abs(delta) < SHEET_DRAG_THRESHOLD_PX &&
-        Math.abs(projectedDelta) < SHEET_DRAG_THRESHOLD_PX
-      ) {
+      if (!isDeliberateSheetDrag(delta, projectedDelta)) {
         cleanup();
         return;
       }
       suppressNextHandleClickRef.current = true;
-      if (projectedDelta < 0) {
-        setMobilePanelExpanded(true);
-      } else if (mobilePanelExpanded) {
-        setMobilePanelExpanded(false);
-      } else {
-        closePanel();
-      }
+      const outcome = resolveSheetDragOutcome(
+        projectedDelta,
+        mobilePanelExpanded,
+      );
+      applySheetDragOutcome(outcome, setMobilePanelExpanded, closePanel);
       cleanup();
     }
 
@@ -732,11 +794,11 @@ export function App() {
     <DomainProvider domain={domain}>
       <div
         className={styles.app}
-        data-panel-open={panelVisuallyOpen ? "true" : "false"}
-        data-panel-size={mobilePanelExpanded ? "full" : "medium"}
-        data-panel-dragging={mobileSheetDragging ? "true" : "false"}
+        data-panel-open={toBoolAttr(panelVisuallyOpen)}
+        data-panel-size={resolvePanelSizeAttr(mobilePanelExpanded)}
+        data-panel-dragging={toBoolAttr(mobileSheetDragging)}
         data-panel-drag-direction={mobileSheetDragDirection}
-        data-entrance-ready={mapReady ? "true" : "false"}
+        data-entrance-ready={toBoolAttr(mapReady)}
       >
         <a className={styles.skipLink} href="#map-information">
           {m.skip_to_map_information()}
@@ -870,10 +932,10 @@ export function App() {
           className={clsx(styles.panel, styles.surface)}
           data-testid="panel-container"
           data-e2e="panel-container"
-          data-panel-size={mobilePanelExpanded ? "full" : "medium"}
-          data-panel-dragging={mobileSheetDragging ? "true" : "false"}
+          data-panel-size={resolvePanelSizeAttr(mobilePanelExpanded)}
+          data-panel-dragging={toBoolAttr(mobileSheetDragging)}
           data-panel-drag-direction={mobileSheetDragDirection}
-          data-panel-closing={mobileSheetClosing ? "true" : "false"}
+          data-panel-closing={toBoolAttr(mobileSheetClosing)}
           style={mobilePanelDragStyle}
           hidden={!panelOpen}
           onAnimationEnd={handleSheetAnimationEnd}
@@ -883,7 +945,7 @@ export function App() {
             className={styles.sheetHandleButton}
             data-testid="panel-sheet-handle"
             data-e2e="panel-sheet-handle"
-            data-dragging={mobileSheetDragging ? "true" : "false"}
+            data-dragging={toBoolAttr(mobileSheetDragging)}
             data-drag-direction={mobileSheetDragDirection}
             aria-pressed={mobilePanelExpanded}
             aria-label={
