@@ -1,8 +1,5 @@
-import {
-  type PointerEvent as ReactPointerEvent,
-  useRef,
-  useState,
-} from "react";
+import { type PointerEvent as ReactPointerEvent, useState } from "react";
+import { useRafScheduledValue } from "./useRafScheduledValue";
 
 /** Configuration for `useSwipeToDismiss`. */
 export interface UseSwipeToDismissOptions {
@@ -33,10 +30,10 @@ const MAX_DRAG_OFFSET_PX = 120;
  * @remarks Deliberately simpler than a full velocity-projected drag (see
  *   `App.tsx`'s bottom-sheet gesture): this only ever dismisses, never
  *   resizes, so a plain distance threshold is enough. `dragOffsetPx` updates
- *   are batched to one `requestAnimationFrame` per frame (like that same
- *   `App.tsx` gesture's `scheduleSheetDragOffset`) so a burst of pointermove
- *   events doesn't force a React re-render each; `dragging` flips
- *   synchronously on pointerdown/up since it isn't a per-pixel value.
+ *   are batched to one `requestAnimationFrame` per frame (see
+ *   `useRafScheduledValue`) so a burst of pointermove events doesn't force a
+ *   React re-render each; `dragging` flips synchronously on pointerdown/up
+ *   since it isn't a per-pixel value.
  */
 export function useSwipeToDismiss({
   enabled,
@@ -44,26 +41,8 @@ export function useSwipeToDismiss({
 }: UseSwipeToDismissOptions): UseSwipeToDismissResult {
   const [dragOffsetPx, setDragOffsetPx] = useState(0);
   const [dragging, setDragging] = useState(false);
-  const pendingOffsetRef = useRef(0);
-  const frameRef = useRef<number | null>(null);
-
-  function scheduleOffset(nextOffset: number) {
-    pendingOffsetRef.current = nextOffset;
-    if (frameRef.current !== null) {
-      return;
-    }
-    frameRef.current = requestAnimationFrame(() => {
-      setDragOffsetPx(pendingOffsetRef.current);
-      frameRef.current = null;
-    });
-  }
-
-  function cancelScheduledOffset() {
-    if (frameRef.current !== null) {
-      cancelAnimationFrame(frameRef.current);
-      frameRef.current = null;
-    }
-  }
+  const { schedule: scheduleOffset, cancel: cancelScheduledOffset } =
+    useRafScheduledValue(setDragOffsetPx);
 
   function onPointerDown(event: ReactPointerEvent<HTMLElement>) {
     if (!enabled) {
