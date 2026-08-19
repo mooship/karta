@@ -28,6 +28,13 @@ function resolveTownshipEmphasis(
   );
 }
 
+/** Shared choropleth opacity/emphasis config for both township-area layers below. */
+const TOWNSHIP_EMPHASIS_STYLE = {
+  baseOpacity: 0.18,
+  emphasisOpacity: 0.78,
+  resolveEmphasis: resolveTownshipEmphasis,
+} as const;
+
 /**
  * The `gauteng-spatial-legacy` domain's layer catalogue: two choropleth
  * layers (modelled car time, distance to nearest transit) sharing the same
@@ -64,9 +71,7 @@ export const GAUTENG_SPATIAL_LEGACY_LAYERS: readonly Layer[] = [
           label: "Very long (> 60 min)",
         },
       ],
-      baseOpacity: 0.18,
-      emphasisOpacity: 0.78,
-      resolveEmphasis: resolveTownshipEmphasis,
+      ...TOWNSHIP_EMPHASIS_STYLE,
     },
   },
   {
@@ -109,9 +114,7 @@ export const GAUTENG_SPATIAL_LEGACY_LAYERS: readonly Layer[] = [
           label: "Very far (> 8 km)",
         },
       ],
-      baseOpacity: 0.18,
-      emphasisOpacity: 0.78,
-      resolveEmphasis: resolveTownshipEmphasis,
+      ...TOWNSHIP_EMPHASIS_STYLE,
     },
   },
   {
