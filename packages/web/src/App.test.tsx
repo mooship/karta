@@ -242,6 +242,25 @@ describe("App", () => {
     );
   });
 
+  it("shows a Browse tab listing every selectable feature, grouped by layer, and selects one on click", async () => {
+    render(<App />);
+
+    const browseTab = await screen.findByTestId("panel-tab-browser");
+    fireEvent.click(browseTab);
+
+    expect(browseTab).toHaveAttribute("aria-selected", "true");
+    expect(
+      await screen.findByRole("heading", { name: "Modelled car time" }),
+    ).toBeInTheDocument();
+
+    const row = await screen.findByRole("button", { name: "Mamelodi" });
+    fireEvent.click(row);
+
+    await waitFor(() => {
+      expect(window.location.search).toContain("feature=A");
+    });
+  });
+
   it("moves tab focus with arrow keys and activates the focused tab", async () => {
     render(<App />);
 
@@ -261,7 +280,7 @@ describe("App", () => {
   });
 
   it.each([
-    ["End", "panel-tab-story"],
+    ["End", "panel-tab-browser"],
     ["Home", "panel-tab-layers"],
     ["a", "panel-tab-layers"],
   ] as const)(

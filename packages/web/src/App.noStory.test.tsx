@@ -82,14 +82,17 @@ describe("App with a domain that has no story", () => {
     });
   });
 
-  it("renders layer toggles directly, with no tab UI", async () => {
+  it("shows a Layers/Browse tablist with no Story tab, since the domain still has a selectable layer", async () => {
     render(<App />);
 
     await waitFor(() =>
       expect(screen.getByTestId("geojson-layer")).toBeInTheDocument(),
     );
 
-    expect(screen.queryByTestId("panel-tablist")).not.toBeInTheDocument();
+    expect(screen.getByTestId("panel-tablist")).toBeInTheDocument();
+    expect(screen.getByTestId("panel-tab-layers")).toBeInTheDocument();
+    expect(screen.getByTestId("panel-tab-browser")).toBeInTheDocument();
+    expect(screen.queryByTestId("panel-tab-story")).not.toBeInTheDocument();
     expect(
       await screen.findByRole("checkbox", { name: "Modelled car time" }),
     ).toBeInTheDocument();

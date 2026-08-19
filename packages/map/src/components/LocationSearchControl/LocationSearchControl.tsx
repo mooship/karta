@@ -16,10 +16,18 @@ import { IconButton } from "../IconButton/IconButton";
 import { RetryButton } from "../RetryButton/RetryButton";
 import styles from "./LocationSearchControl.module.css";
 
-/** One selectable map feature's search-index entry: its id plus accessible label. */
+/**
+ * One selectable map feature's search-index entry: its id, accessible label,
+ * and the id of the layer it came from.
+ * @remarks `layerId` is unused by this component (it matches on `label`
+ *   alone) but is carried through so another consumer -- e.g. a feature
+ *   browser grouping results by layer -- doesn't need a second, parallel
+ *   index over the same features just to know which layer each belongs to.
+ */
 export interface SelectableFeatureSearchEntry {
   id: string;
   label: string;
+  layerId: string;
 }
 
 /** A single dropdown entry: either a map feature to select, or a place to fly to. */

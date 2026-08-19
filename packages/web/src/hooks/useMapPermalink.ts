@@ -11,7 +11,7 @@ const LAYERS_PARAM = "layers";
 const BASEMAP_PARAM = "basemap";
 const PANEL_PARAM = "panel";
 const FEATURE_PARAM = "feature";
-const PANEL_VIEW_VALUES: readonly PanelView[] = ["layers", "story"];
+const PANEL_VIEW_VALUES: readonly PanelView[] = ["layers", "story", "browser"];
 
 /** The subset of `useMapUiStore`'s state a permalink can carry. */
 export interface MapPermalinkState {

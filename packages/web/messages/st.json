@@ -14,11 +14,16 @@
 
   "panel_tab_layers": "Mera",
   "panel_tab_story": "Pale",
+  "panel_tab_browse": "Sheba",
   "panel_toggle_close": "Kwala",
   "panel_toggle_explore": "Hlahloba",
   "panel_reduce_height": "Fokotsa bophahamo ba panele",
   "panel_expand_height": "Atolosa bophahamo ba panele",
   "panel_tablist_aria_label": "Panele ya 'mapa",
+
+  "feature_browser_filter_label": "Sefa dintho",
+  "feature_browser_filter_placeholder": "Batla ka lebitso",
+  "feature_browser_empty": "Ha ho letho le fumanweng phuputsong ena.",
 
   "layer_unavailable_badge": "Ha e so fumaneha",
   "layer_failed_badge": "E hlotswe ho kenngwa — e time, o be o e bule hape ho leka hape",

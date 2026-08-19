@@ -391,7 +391,7 @@ describe("MapView", () => {
     );
 
     expect(onSelectableFeaturesChange).toHaveBeenLastCalledWith([
-      { id: "A", label: "Mamelodi" },
+      { id: "A", label: "Mamelodi", layerId: "areas" },
     ]);
   });
 
@@ -2135,7 +2135,7 @@ describe("MapView", () => {
     );
 
     expect(onSelectableFeaturesChange).toHaveBeenLastCalledWith([
-      { id: "X", label: "Fallback Name" },
+      { id: "X", label: "Fallback Name", layerId: "no-label-field" },
     ]);
   });
 
@@ -2189,8 +2189,8 @@ describe("MapView", () => {
     // Feature "B" has neither a string commuteMinutes nor a name, so it
     // resolves to an empty label.
     expect(onSelectableFeaturesChange).toHaveBeenLastCalledWith([
-      { id: "A", label: "Mamelodi" },
-      { id: "B", label: "" },
+      { id: "A", label: "Mamelodi", layerId: "numeric-label-field" },
+      { id: "B", label: "", layerId: "numeric-label-field" },
     ]);
   });
 
