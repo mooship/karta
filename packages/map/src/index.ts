@@ -68,3 +68,5 @@ export type { UseDismissableOverlayOptions } from "./hooks/useDismissableOverlay
 export { useDismissableOverlay } from "./hooks/useDismissableOverlay";
 export type { LayerDataMap, LayerDataResult } from "./hooks/useLayerData";
 export { useLayerData } from "./hooks/useLayerData";
+export type { RafScheduledValue } from "./hooks/useRafScheduledValue";
+export { useRafScheduledValue } from "./hooks/useRafScheduledValue";
