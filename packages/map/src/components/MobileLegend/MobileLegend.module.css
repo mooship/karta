@@ -101,24 +101,24 @@
      * of move, so the two controls climb/descend at one shared speed rather
      * than two hand-tuned durations drifting apart -- both fall back to the
      * exact same defaults declared there if a host defines neither.
-     * `--motion-ease-standard`, not the Emphasized `--motion-ease-decelerate`
-     * a host app may reserve for small flourishes -- this trigger climbs the
-     * same large distance as the host's own sheet, and Emphasized easing
-     * front-loads most of its motion into the first fraction of the
-     * duration, which reads as violent rather than smooth over a move this
-     * size (see a host's own design-system docs on this, e.g.
-     * `packages/web`'s Motion section). Matching curves, not just duration,
-     * is what keeps this trigger's climb and the sheet's rise visually
-     * arriving together rather than merely finishing at the same declared
-     * length -- a host's own equivalent trigger should use the same curve
-     * as its sheet for the same reason. A host's `data-panel-open` (or
-     * equivalent) should flip back to `false` the moment its sheet *starts*
-     * closing, not once its exit animation has already finished, so this
-     * transition carries the trigger back down in step with the sheet's
-     * slide-out instead of snapping into place only after it's already gone.
+     * `--motion-ease-large-surface` (falling back to M3's flatter Standard
+     * curve, same as its host-side default) rather than an Emphasized
+     * curve -- this trigger climbs the same large distance as the host's
+     * own sheet, and Emphasized easing's front-loaded motion reads as
+     * violent rather than smooth over a move this size (see a host's own
+     * design-system docs, e.g. `packages/web`'s Motion section, for the
+     * full rationale). Matching curves, not just duration, is what keeps
+     * this trigger's climb and the sheet's rise visually arriving together
+     * rather than merely finishing at the same declared length -- a host's
+     * own equivalent trigger should use the same curve as its sheet for the
+     * same reason. A host's `data-panel-open` (or equivalent) should flip
+     * back to `false` the moment its sheet *starts* closing, not once its
+     * exit animation has already finished, so this transition carries the
+     * trigger back down in step with the sheet's slide-out instead of
+     * snapping into place only after it's already gone.
      */
     transition: bottom var(--panel-reposition-duration, 300ms)
-      var(--motion-ease-standard, cubic-bezier(0.2, 0, 0, 1));
+      var(--motion-ease-large-surface, cubic-bezier(0.2, 0, 0, 1));
   }
 
   /*
