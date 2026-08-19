@@ -53,6 +53,11 @@
     var(--motion-ease-decelerate) backwards;
 }
 
+/*
+ * 40ms per entry, capped after four — @karta/web's LayerToggles (a
+ * consumer, not a dependency of this package) mirrors this same rhythm for
+ * its own list rows, so keep the two in step if either changes.
+ */
 .entry:nth-child(2) {
   animation-delay: 40ms;
 }
