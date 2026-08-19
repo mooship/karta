@@ -295,13 +295,18 @@ describe("useLayerData", () => {
   });
 
   it("keeps a failed layer id exactly once when a later retry (without ever toggling it off) fails again", async () => {
-    vi.mocked(global.fetch)
-      .mockRejectedValueOnce(new Error("network")) // rail, first attempt
-      .mockRejectedValueOnce(new Error("network")) // rail, retry
-      .mockResolvedValueOnce({
+    // Keyed by URL, not call order: "rail" always fails (both its first
+    // attempt and its retry), "bus" always succeeds, regardless of which
+    // fetch the hook happens to dispatch first.
+    vi.mocked(global.fetch).mockImplementation((url) => {
+      if (String(url).includes("rail")) {
+        return Promise.reject(new Error("network"));
+      }
+      return Promise.resolve({
         ok: true,
         json: async () => ({ type: "FeatureCollection", features: [] }),
-      } as Response); // bus
+      } as Response);
+    });
     const consoleError = vi
       .spyOn(console, "error")
       .mockImplementation(() => {});
