@@ -3,7 +3,7 @@ import { sleep } from "./asyncUtils";
 import { hashKey, readJsonCache, writeJsonCache } from "./cache";
 import type { JobCenter } from "./constants/jobCenters";
 import { getOsrmBaseUrl } from "./constants/serviceUrls";
-import { fetchWithTimeout } from "./httpUtils";
+import { fetchWithTimeout, isAbortError } from "./httpUtils";
 
 /** The nearest job centre to an origin point, and the modelled drive time to reach it. */
 export interface NearestJobCenterResult {
@@ -87,7 +87,7 @@ function resolveOsrmTableFallback(
     return cached;
   }
 
-  if (lastError instanceof Error && lastError.name === "AbortError") {
+  if (isAbortError(lastError)) {
     throw new Error(`OSRM table request timed out after ${OSRM_TIMEOUT_MS}ms`);
   }
 

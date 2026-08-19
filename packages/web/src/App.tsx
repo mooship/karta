@@ -173,22 +173,38 @@ function isDeliberateSheetDrag(delta: number, projectedDelta: number): boolean {
   );
 }
 
-/** Applies a deliberate sheet drag's outcome: expand upward, collapse back to medium height downward from expanded, otherwise close the panel entirely. */
-function applySheetDragOutcome(
+type SheetDragOutcome = "expand" | "collapse" | "close";
+
+/** Which action a deliberate sheet drag should trigger: expand upward, collapse back to medium height downward from expanded, otherwise close the panel entirely. */
+function resolveSheetDragOutcome(
   projectedDelta: number,
   mobilePanelExpanded: boolean,
+): SheetDragOutcome {
+  if (projectedDelta < 0) {
+    return "expand";
+  }
+  return mobilePanelExpanded ? "collapse" : "close";
+}
+
+/** Carries out a resolved sheet drag outcome by calling the one setter/callback it needs. */
+function applySheetDragOutcome(
+  outcome: SheetDragOutcome,
   setMobilePanelExpanded: (value: boolean) => void,
   closePanel: () => void,
 ): void {
-  if (projectedDelta < 0) {
-    setMobilePanelExpanded(true);
-    return;
+  switch (outcome) {
+    case "expand": {
+      setMobilePanelExpanded(true);
+      return;
+    }
+    case "collapse": {
+      setMobilePanelExpanded(false);
+      return;
+    }
+    case "close": {
+      closePanel();
+    }
   }
-  if (mobilePanelExpanded) {
-    setMobilePanelExpanded(false);
-    return;
-  }
-  closePanel();
 }
 
 /** Converts a boolean into the `"true"`/`"false"` string Karta's `data-*` boolean attributes (and their CSS/e2e selectors) expect. */
@@ -744,12 +760,11 @@ export function App() {
         return;
       }
       suppressNextHandleClickRef.current = true;
-      applySheetDragOutcome(
+      const outcome = resolveSheetDragOutcome(
         projectedDelta,
         mobilePanelExpanded,
-        setMobilePanelExpanded,
-        closePanel,
       );
+      applySheetDragOutcome(outcome, setMobilePanelExpanded, closePanel);
       cleanup();
     }
 
