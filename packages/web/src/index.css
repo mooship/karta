@@ -19,43 +19,43 @@
   --font-mono: "Martian Mono Variable", monospace;
 
   /* GENERATED M3 LIGHT TOKENS — see scripts/generateM3Theme.ts */
-  --md-sys-color-primary: #845415;
+  --md-sys-color-primary: #00696d;
   --md-sys-color-on-primary: #ffffff;
-  --md-sys-color-primary-container: #ffddbb;
-  --md-sys-color-on-primary-container: #673d00;
-  --md-sys-color-secondary: #725a41;
+  --md-sys-color-primary-container: #9cf0f5;
+  --md-sys-color-on-primary-container: #004f52;
+  --md-sys-color-secondary: #4a6364;
   --md-sys-color-on-secondary: #ffffff;
-  --md-sys-color-secondary-container: #feddbd;
-  --md-sys-color-on-secondary-container: #58432c;
-  --md-sys-color-tertiary: #56633b;
+  --md-sys-color-secondary-container: #cce8e9;
+  --md-sys-color-on-secondary-container: #324b4c;
+  --md-sys-color-tertiary: #4e5f7d;
   --md-sys-color-on-tertiary: #ffffff;
-  --md-sys-color-tertiary-container: #d9e9b6;
-  --md-sys-color-on-tertiary-container: #3f4b26;
+  --md-sys-color-tertiary-container: #d5e3ff;
+  --md-sys-color-on-tertiary-container: #364764;
   --md-sys-color-error: #ba1a1a;
   --md-sys-color-on-error: #ffffff;
   --md-sys-color-error-container: #ffdad6;
   --md-sys-color-on-error-container: #93000a;
-  --md-sys-color-background: #fff8f4;
-  --md-sys-color-on-background: #211a14;
-  --md-sys-color-surface: #fff8f4;
-  --md-sys-color-on-surface: #211a14;
-  --md-sys-color-surface-variant: #f1dfd0;
-  --md-sys-color-on-surface-variant: #50453a;
-  --md-sys-color-outline: #827568;
-  --md-sys-color-outline-variant: #d4c4b5;
+  --md-sys-color-background: #f4fbfa;
+  --md-sys-color-on-background: #161d1d;
+  --md-sys-color-surface: #f4fbfa;
+  --md-sys-color-on-surface: #161d1d;
+  --md-sys-color-surface-variant: #dae4e5;
+  --md-sys-color-on-surface-variant: #3f4949;
+  --md-sys-color-outline: #6f7979;
+  --md-sys-color-outline-variant: #bec8c9;
   --md-sys-color-surface-container-lowest: #ffffff;
-  --md-sys-color-surface-container-low: #fff1e6;
-  --md-sys-color-surface-container: #faebe0;
-  --md-sys-color-surface-container-high: #f4e6da;
-  --md-sys-color-surface-container-highest: #eee0d5;
-  --md-sys-color-surface-dim: #e5d8cc;
-  --md-sys-color-surface-bright: #fff8f4;
-  --md-sys-color-inverse-surface: #372f27;
-  --md-sys-color-inverse-on-surface: #fdeee3;
-  --md-sys-color-inverse-primary: #faba73;
+  --md-sys-color-surface-container-low: #eff5f5;
+  --md-sys-color-surface-container: #e9efef;
+  --md-sys-color-surface-container-high: #e3e9e9;
+  --md-sys-color-surface-container-highest: #dde4e4;
+  --md-sys-color-surface-dim: #d5dbdb;
+  --md-sys-color-surface-bright: #f4fbfa;
+  --md-sys-color-inverse-surface: #2b3232;
+  --md-sys-color-inverse-on-surface: #ecf2f2;
+  --md-sys-color-inverse-primary: #80d4d9;
   --md-sys-color-scrim: #000000;
   --md-sys-color-shadow: #000000;
-  --md-sys-color-surface-tint: #845415;
+  --md-sys-color-surface-tint: #00696d;
   /* END GENERATED M3 LIGHT TOKENS */
 
   /* M3 baseline shape scale. */
@@ -184,12 +184,24 @@
   --motion-duration-short: 150ms;
   --motion-duration-medium: 180ms;
 
-  /* M3 standard easing curves (developer.android.com/develop/ui/views/animations/motion).
-   * decelerate suits elements entering/settling, accelerate suits elements leaving,
-   * standard suits everything else (hover/press state changes, size/position tweens). */
+  /* M3 easing curves (developer.android.com/develop/ui/views/animations/motion).
+   * standard suits hover/press state changes and size/position tweens that
+   * repeat rapidly (a spammed toggle, a drag) and shouldn't accumulate
+   * emphasis. decelerate/accelerate use M3's *Emphasized* curves rather than
+   * the flatter Standard set — Emphasized is M3's own more expressive scheme,
+   * reserved here for elements entering/settling or leaving the screen once
+   * (panels, sheets, popovers, error toasts), where the extra character reads
+   * as alive rather than busy. */
   --motion-ease-standard: cubic-bezier(0.2, 0, 0, 1);
-  --motion-ease-decelerate: cubic-bezier(0, 0, 0, 1);
-  --motion-ease-accelerate: cubic-bezier(0.3, 0, 1, 1);
+  --motion-ease-decelerate: cubic-bezier(0.05, 0.7, 0.1, 1);
+  --motion-ease-accelerate: cubic-bezier(0.3, 0, 0.8, 0.15);
+  /* A small-overshoot "spring" curve for isolated, one-shot punctuation
+   * moments only (a selected segmented-control option popping into place) —
+   * never for anything that repeats in quick succession or moves a large
+   * surface, where the overshoot would read as jitter rather than a
+   * flourish. Not part of the M3 spec's named easing sets, but the same
+   * spirit as Material You's own spring-based motion physics. */
+  --motion-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 
   /* Focus ring magnitude only — colour stays contextual (a component on a
    * light surface needs a dark ring and vice versa) and offset stays
@@ -202,43 +214,43 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     /* GENERATED M3 DARK TOKENS — see scripts/generateM3Theme.ts */
-    --md-sys-color-primary: #faba73;
-    --md-sys-color-on-primary: #482900;
-    --md-sys-color-primary-container: #673d00;
-    --md-sys-color-on-primary-container: #ffddbb;
-    --md-sys-color-secondary: #e0c1a3;
-    --md-sys-color-on-secondary: #402d17;
-    --md-sys-color-secondary-container: #58432c;
-    --md-sys-color-on-secondary-container: #feddbd;
-    --md-sys-color-tertiary: #bdcc9c;
-    --md-sys-color-on-tertiary: #293411;
-    --md-sys-color-tertiary-container: #3f4b26;
-    --md-sys-color-on-tertiary-container: #d9e9b6;
+    --md-sys-color-primary: #80d4d9;
+    --md-sys-color-on-primary: #003739;
+    --md-sys-color-primary-container: #004f52;
+    --md-sys-color-on-primary-container: #9cf0f5;
+    --md-sys-color-secondary: #b1cccd;
+    --md-sys-color-on-secondary: #1b3436;
+    --md-sys-color-secondary-container: #324b4c;
+    --md-sys-color-on-secondary-container: #cce8e9;
+    --md-sys-color-tertiary: #b5c7e9;
+    --md-sys-color-on-tertiary: #1f314c;
+    --md-sys-color-tertiary-container: #364764;
+    --md-sys-color-on-tertiary-container: #d5e3ff;
     --md-sys-color-error: #ffb4ab;
     --md-sys-color-on-error: #690005;
     --md-sys-color-error-container: #93000a;
     --md-sys-color-on-error-container: #ffdad6;
-    --md-sys-color-background: #18120c;
-    --md-sys-color-on-background: #eee0d5;
-    --md-sys-color-surface: #18120c;
-    --md-sys-color-on-surface: #eee0d5;
-    --md-sys-color-surface-variant: #50453a;
-    --md-sys-color-on-surface-variant: #d4c4b5;
-    --md-sys-color-outline: #9d8e81;
-    --md-sys-color-outline-variant: #50453a;
-    --md-sys-color-surface-container-lowest: #130d07;
-    --md-sys-color-surface-container-low: #211a14;
-    --md-sys-color-surface-container: #251e17;
-    --md-sys-color-surface-container-high: #302921;
-    --md-sys-color-surface-container-highest: #3b332c;
-    --md-sys-color-surface-dim: #18120c;
-    --md-sys-color-surface-bright: #403830;
-    --md-sys-color-inverse-surface: #eee0d5;
-    --md-sys-color-inverse-on-surface: #372f27;
-    --md-sys-color-inverse-primary: #845415;
+    --md-sys-color-background: #0e1415;
+    --md-sys-color-on-background: #dde4e4;
+    --md-sys-color-surface: #0e1415;
+    --md-sys-color-on-surface: #dde4e4;
+    --md-sys-color-surface-variant: #3f4949;
+    --md-sys-color-on-surface-variant: #bec8c9;
+    --md-sys-color-outline: #899393;
+    --md-sys-color-outline-variant: #3f4949;
+    --md-sys-color-surface-container-lowest: #090f10;
+    --md-sys-color-surface-container-low: #161d1d;
+    --md-sys-color-surface-container: #1a2121;
+    --md-sys-color-surface-container-high: #252b2b;
+    --md-sys-color-surface-container-highest: #303636;
+    --md-sys-color-surface-dim: #0e1415;
+    --md-sys-color-surface-bright: #343a3b;
+    --md-sys-color-inverse-surface: #dde4e4;
+    --md-sys-color-inverse-on-surface: #2b3232;
+    --md-sys-color-inverse-primary: #00696d;
     --md-sys-color-scrim: #000000;
     --md-sys-color-shadow: #000000;
-    --md-sys-color-surface-tint: #faba73;
+    --md-sys-color-surface-tint: #80d4d9;
     /* END GENERATED M3 DARK TOKENS */
 
     color-scheme: dark;
@@ -247,43 +259,43 @@
 
 :root[data-theme="dark"] {
   /* GENERATED M3 DARK TOKENS — see scripts/generateM3Theme.ts */
-  --md-sys-color-primary: #faba73;
-  --md-sys-color-on-primary: #482900;
-  --md-sys-color-primary-container: #673d00;
-  --md-sys-color-on-primary-container: #ffddbb;
-  --md-sys-color-secondary: #e0c1a3;
-  --md-sys-color-on-secondary: #402d17;
-  --md-sys-color-secondary-container: #58432c;
-  --md-sys-color-on-secondary-container: #feddbd;
-  --md-sys-color-tertiary: #bdcc9c;
-  --md-sys-color-on-tertiary: #293411;
-  --md-sys-color-tertiary-container: #3f4b26;
-  --md-sys-color-on-tertiary-container: #d9e9b6;
+  --md-sys-color-primary: #80d4d9;
+  --md-sys-color-on-primary: #003739;
+  --md-sys-color-primary-container: #004f52;
+  --md-sys-color-on-primary-container: #9cf0f5;
+  --md-sys-color-secondary: #b1cccd;
+  --md-sys-color-on-secondary: #1b3436;
+  --md-sys-color-secondary-container: #324b4c;
+  --md-sys-color-on-secondary-container: #cce8e9;
+  --md-sys-color-tertiary: #b5c7e9;
+  --md-sys-color-on-tertiary: #1f314c;
+  --md-sys-color-tertiary-container: #364764;
+  --md-sys-color-on-tertiary-container: #d5e3ff;
   --md-sys-color-error: #ffb4ab;
   --md-sys-color-on-error: #690005;
   --md-sys-color-error-container: #93000a;
   --md-sys-color-on-error-container: #ffdad6;
-  --md-sys-color-background: #18120c;
-  --md-sys-color-on-background: #eee0d5;
-  --md-sys-color-surface: #18120c;
-  --md-sys-color-on-surface: #eee0d5;
-  --md-sys-color-surface-variant: #50453a;
-  --md-sys-color-on-surface-variant: #d4c4b5;
-  --md-sys-color-outline: #9d8e81;
-  --md-sys-color-outline-variant: #50453a;
-  --md-sys-color-surface-container-lowest: #130d07;
-  --md-sys-color-surface-container-low: #211a14;
-  --md-sys-color-surface-container: #251e17;
-  --md-sys-color-surface-container-high: #302921;
-  --md-sys-color-surface-container-highest: #3b332c;
-  --md-sys-color-surface-dim: #18120c;
-  --md-sys-color-surface-bright: #403830;
-  --md-sys-color-inverse-surface: #eee0d5;
-  --md-sys-color-inverse-on-surface: #372f27;
-  --md-sys-color-inverse-primary: #845415;
+  --md-sys-color-background: #0e1415;
+  --md-sys-color-on-background: #dde4e4;
+  --md-sys-color-surface: #0e1415;
+  --md-sys-color-on-surface: #dde4e4;
+  --md-sys-color-surface-variant: #3f4949;
+  --md-sys-color-on-surface-variant: #bec8c9;
+  --md-sys-color-outline: #899393;
+  --md-sys-color-outline-variant: #3f4949;
+  --md-sys-color-surface-container-lowest: #090f10;
+  --md-sys-color-surface-container-low: #161d1d;
+  --md-sys-color-surface-container: #1a2121;
+  --md-sys-color-surface-container-high: #252b2b;
+  --md-sys-color-surface-container-highest: #303636;
+  --md-sys-color-surface-dim: #0e1415;
+  --md-sys-color-surface-bright: #343a3b;
+  --md-sys-color-inverse-surface: #dde4e4;
+  --md-sys-color-inverse-on-surface: #2b3232;
+  --md-sys-color-inverse-primary: #00696d;
   --md-sys-color-scrim: #000000;
   --md-sys-color-shadow: #000000;
-  --md-sys-color-surface-tint: #faba73;
+  --md-sys-color-surface-tint: #80d4d9;
   /* END GENERATED M3 DARK TOKENS */
 
   color-scheme: dark;
