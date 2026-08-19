@@ -10,6 +10,7 @@ import {
   createNominatimGeocoderProvider,
   DesktopLegend,
   DomainProvider,
+  FeatureBrowser,
   LocationSearchControl,
   type LocationSearchResult,
   MobileLegend,
@@ -147,21 +148,39 @@ interface PanelViewContentProps {
   onToggle: (id: string) => void;
   failedLayerIds: string[];
   story: DomainStoryContent | undefined;
+  selectableFeatures: SelectableFeatureSearchEntry[];
+  selectedFeatureId: string | null;
+  onSelectFeature: (featureId: string) => void;
 }
 
-/** Renders the info panel's active view: layer toggles, or the domain's story copy. */
+/** Renders the info panel's active view: layer toggles, the domain's story copy, or the selectable-feature browser. */
 function PanelViewContent({
   panelView,
   visibleLayerIds,
   onToggle,
   failedLayerIds,
   story,
+  selectableFeatures,
+  selectedFeatureId,
+  onSelectFeature,
 }: PanelViewContentProps) {
   if (panelView === "story" && story) {
     return (
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}>{story.title}</h2>
         <DomainStory story={story} />
+      </section>
+    );
+  }
+  if (panelView === "browser") {
+    return (
+      <section className={styles.section}>
+        <h2 className={styles.sectionTitle}>{m.panel_tab_browse()}</h2>
+        <FeatureBrowser
+          features={selectableFeatures}
+          selectedFeatureId={selectedFeatureId}
+          onSelect={onSelectFeature}
+        />
       </section>
     );
   }
@@ -191,7 +210,10 @@ function PanelViewContent({
  *   (`loadAttempt`) still works unchanged, since the map stays ready.
  *   The info panel shows layer toggles, plus a Story tab reading its
  *   copy from the domain's `story` (via `getStory()`) whenever the active
- *   domain defines one — a domain that omits `story` gets no tab UI at all,
+ *   domain defines one, plus a Browse tab listing every selectable feature
+ *   (grouped by layer, via `FeatureBrowser`) whenever the active domain
+ *   declares at least one `interaction.selectable` layer — a domain that
+ *   omits `story` and defines no selectable layer gets no tab UI at all,
  *   matching today's single-view panel. `domain`/`panelViews`/`panelLabels`
  *   are computed inside the component body, not at module scope: their
  *   content is locale-dependent (`getLayers()`/`getLayerGroups()`/`getStory()`
@@ -278,19 +300,44 @@ export function App() {
   );
   const story = domain.story;
   /**
-   * Memoised (not just `story`-derived inline) so this array keeps one
-   * identity across renders unless `story` itself changes -- `useCallback`
-   * dependencies below (`resolveInitialPanelFocusTarget`) key off it, and a
-   * fresh array literal every render would defeat that memoisation and
-   * re-attach `useDismissableOverlay`'s listeners on every unrelated render.
+   * Whether the active domain declares any `interaction.selectable` layer at
+   * all -- a structural fact about the domain's own layer catalogue, checked
+   * the same way `MapView`'s own `selectableSearchEntries` does, not derived
+   * from whether any such layer's data has actually loaded yet. Gating the
+   * "Browse" tab on this (rather than on `selectableFeatures.length`, which
+   * starts empty and only fills in once `MapView` reports data) keeps the
+   * tab list itself deterministic from first render, matching how the
+   * "Story" tab is gated on `domain.story` rather than on that copy having
+   * rendered -- the tab exists as soon as the domain says it should, and the
+   * browser's own content (not the tab's presence) is what reflects data
+   * still loading.
    */
-  const panelViews = useMemo<readonly PanelView[]>(
-    () => (story ? (["layers", "story"] as const) : (["layers"] as const)),
-    [story],
+  const hasSelectableLayers = useMemo(
+    () => domain.layers.some((layer) => layer.interaction?.selectable),
+    [domain.layers],
   );
+  /**
+   * Memoised (not just `story`/`hasSelectableLayers`-derived inline) so this
+   * array keeps one identity across renders unless those inputs themselves
+   * change -- `useCallback` dependencies below (`resolveInitialPanelFocusTarget`)
+   * key off it, and a fresh array literal every render would defeat that
+   * memoisation and re-attach `useDismissableOverlay`'s listeners on every
+   * unrelated render.
+   */
+  const panelViews = useMemo<readonly PanelView[]>(() => {
+    const views: PanelView[] = ["layers"];
+    if (story) {
+      views.push("story");
+    }
+    if (hasSelectableLayers) {
+      views.push("browser");
+    }
+    return views;
+  }, [story, hasSelectableLayers]);
   const panelLabels: Record<PanelView, string> = {
     layers: m.panel_tab_layers(),
     story: m.panel_tab_story(),
+    browser: m.panel_tab_browse(),
   };
   const isDesktopViewport = useIsDesktopViewport();
   const panelTriggerRef = useRef<HTMLButtonElement>(null);
@@ -672,6 +719,9 @@ export function App() {
       onToggle={toggleLayer}
       failedLayerIds={failedLayerIds}
       story={story}
+      selectableFeatures={selectableFeatures}
+      selectedFeatureId={selectedFeatureId}
+      onSelectFeature={setSelectedFeatureId}
     />
   );
 

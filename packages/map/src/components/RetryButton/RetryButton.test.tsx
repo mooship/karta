@@ -21,6 +21,16 @@ describe("RetryButton", () => {
     ).toBeInTheDocument();
   });
 
+  it("appends a caller-supplied className to its own button class", () => {
+    render(
+      <RetryButton onClick={vi.fn()} className="caller-class" label="Retry" />,
+    );
+
+    expect(screen.getByRole("button", { name: "Retry" }).className).toMatch(
+      /\bcaller-class\b/,
+    );
+  });
+
   it("passes through data attributes and disabled state", () => {
     render(
       <RetryButton
