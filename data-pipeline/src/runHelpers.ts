@@ -5,7 +5,6 @@ import { TOWNSHIP_AREA_DEFINITIONS } from "@karta/app";
 import type { FeatureCollection, Geometry } from "geojson";
 import { getJobCentersForMetro } from "./constants/jobCenters";
 import { pathExists } from "./fsUtils";
-import { REQUIRED_TRANSIT_NETWORKS } from "./outputManifest";
 
 /** Formats a millisecond duration for a pipeline progress log line. */
 export function formatDuration(ms: number): string {
@@ -35,7 +34,7 @@ export function mergeNetworkCoverage(
  */
 export function assertCompleteNetworkCoverage(
   networkCoverage: Record<string, number>,
-  requiredNetworks: readonly string[] = REQUIRED_TRANSIT_NETWORKS,
+  requiredNetworks: readonly string[],
 ): void {
   const missing = requiredNetworks.filter(
     (network) => (networkCoverage[network] ?? 0) < 1,

@@ -1,6 +1,7 @@
 import type { TransitLayerFeatureCollection } from "@karta/app";
 import type { FeatureCollection } from "geojson";
 import { sleep } from "../asyncUtils";
+import { fetchWithTimeout } from "../httpUtils";
 import { normalizeLineStringTransitFeatureCollection } from "./lineStringTransit";
 
 const EKURHULENI_IRPTN_URL =
@@ -90,16 +91,11 @@ export async function fetchEkurhuleniIrptnRoutes(): Promise<FeatureCollection> {
       await sleep(PAGE_DELAY_MS);
     }
 
-    const controller = new AbortController();
-    const timeout = setTimeout(() => {
-      controller.abort();
-    }, REQUEST_TIMEOUT_MS);
-
-    const response = await fetch(createQueryUrl(resultOffset), {
-      signal: controller.signal,
-    }).finally(() => {
-      clearTimeout(timeout);
-    });
+    const response = await fetchWithTimeout(
+      createQueryUrl(resultOffset),
+      {},
+      REQUEST_TIMEOUT_MS,
+    );
 
     if (!response.ok) {
       throw new Error(
