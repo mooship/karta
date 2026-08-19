@@ -1,6 +1,15 @@
 import { useEffect, useLayoutEffect, useSyncExternalStore } from "react";
 
 /**
+ * Ambient, type-only: this package has no dependency on `@types/node`, but
+ * bundlers (Vite, webpack) statically replace the literal expression
+ * `process.env.NODE_ENV` and dead-code-eliminate the branch it guards in
+ * production builds, so the check below is written to match that idiom
+ * rather than importing a real Node type.
+ */
+declare const process: { env?: { NODE_ENV?: string } } | undefined;
+
+/**
  * `useLayoutEffect` on the client, `useEffect` on the server.
  * @remarks `useLayoutEffect` fires synchronously before the browser paints,
  *   which matters here: the effect it backs re-applies `data-theme` after a
@@ -43,6 +52,8 @@ const DEFAULT_CONFIG: ThemeConfig = {
 };
 
 let config: ThemeConfig = DEFAULT_CONFIG;
+let initialized = false;
+let warnedAboutMissingInit = false;
 
 /**
  * Configures the theme preference system with app-specific values.
@@ -57,6 +68,7 @@ let config: ThemeConfig = DEFAULT_CONFIG;
  * initTheme({ storageKey: "karta-theme", colors: THEME_COLOR });
  */
 export function initTheme(themeConfig: ThemeConfig): void {
+  initialized = true;
   config = themeConfig;
   if (typeof window !== "undefined") {
     currentPreference = readStoredPreference();
@@ -73,20 +85,14 @@ function isExplicitTheme(value: string | null): value is "light" | "dark" {
   return value === "light" || value === "dark";
 }
 
+/** @remarks Both call sites (`initTheme`, module init) already guard with `typeof window === "undefined"` before calling this. */
 function readStoredPreference(): ThemePreference {
-  /* v8 ignore next 3 -- unreachable: both call sites (initTheme, module init) already guard with the same `typeof window === "undefined"` check before calling this */
-  if (typeof window === "undefined") {
-    return "system";
-  }
   const stored = localStorage.getItem(config.storageKey);
   return isExplicitTheme(stored) ? stored : "system";
 }
 
+/** @remarks Only called from `applyThemeAttribute`, which already returns before calling it if `document` is undefined. */
 function syncThemeColorMeta(preference: ThemePreference) {
-  /* v8 ignore next 3 -- unreachable: syncThemeColorMeta is only called from applyThemeAttribute, which already returns before calling it if document is undefined */
-  if (typeof document === "undefined") {
-    return;
-  }
   const existingOverride = document.querySelector(
     `meta[name="theme-color"][${THEME_COLOR_OVERRIDE_ATTR}]`,
   );
@@ -172,9 +178,25 @@ export function setThemePreference(preference: ThemePreference) {
  *   not on every unrelated render, since the effect's dependency array is
  *   `[preference]`; an attribute cleared by something that leaves both the
  *   component tree and `preference` untouched would need a fresh
- *   `setThemePreference()` call to be repaired.
+ *   `setThemePreference()` call to be repaired. Called before `initTheme`,
+ *   this falls back to the built-in default `storageKey`/`colors` and logs
+ *   one development-mode warning, rather than silently persisting under a
+ *   key/branding that isn't the caller's own.
  */
 export function useThemePreference() {
+  if (
+    !initialized &&
+    !warnedAboutMissingInit &&
+    typeof process !== "undefined" &&
+    process.env?.NODE_ENV !== "production"
+  ) {
+    warnedAboutMissingInit = true;
+    console.warn(
+      "useThemePreference() was called before initTheme() -- falling back to " +
+        `the default storageKey (${JSON.stringify(DEFAULT_CONFIG.storageKey)}) and colors. ` +
+        "Call initTheme({ storageKey, colors }) once at app bootstrap, before any component mounts.",
+    );
+  }
   const preference = useSyncExternalStore(
     subscribe,
     getSnapshot,
