@@ -40,7 +40,15 @@ vi.mock("react-leaflet", () => ({
     children: ReactNode;
     eventHandlers?: { remove?: () => void };
   }) => (
-    <div data-testid="map-context-menu">
+    // biome-ignore lint/a11y/noStaticElementInteractions: test-only stand-in for react-leaflet's real Popup, which closes on Escape (via Leaflet's own closeOnEscapeKey) independently of any click -- this mirrors that non-click dismissal path
+    <div
+      data-testid="map-context-menu"
+      onKeyDown={(event) => {
+        if (event.key === "Escape") {
+          eventHandlers?.remove?.();
+        }
+      }}
+    >
       {children}
       <button
         type="button"
@@ -278,6 +286,76 @@ describe("LocationContextMenu", () => {
     expect(firstAborted).toBe(true);
   });
 
+  it("ignores a stale reverse-geocode success that resolves after the lookup was aborted by reopening elsewhere", async () => {
+    let resolveStale: (value: { label: string } | null) => void = () => {};
+    geocodeMocks.fetchReverseGeocodeResult
+      .mockImplementationOnce(
+        () =>
+          new Promise((resolve) => {
+            resolveStale = resolve;
+          }),
+      )
+      .mockResolvedValueOnce({ label: "Second place" });
+
+    render(<LocationContextMenu />);
+    openMenu();
+    await chooseSearchHere();
+
+    openMenu({ lat: -26.3, lng: 28.1 });
+    await chooseSearchHere();
+
+    await waitFor(() => {
+      expect(screen.getByTestId("map-context-menu")).toHaveTextContent(
+        "Second place",
+      );
+    });
+
+    await act(async () => {
+      resolveStale({ label: "Stale place" });
+    });
+
+    expect(screen.getByTestId("map-context-menu")).toHaveTextContent(
+      "Second place",
+    );
+    expect(screen.queryByText("Stale place")).not.toBeInTheDocument();
+  });
+
+  it("ignores a stale reverse-geocode failure that rejects after the lookup was aborted by reopening elsewhere", async () => {
+    let rejectStale: (reason: unknown) => void = () => {};
+    geocodeMocks.fetchReverseGeocodeResult
+      .mockImplementationOnce(
+        () =>
+          new Promise((_resolve, reject) => {
+            rejectStale = reject;
+          }),
+      )
+      .mockResolvedValueOnce({ label: "Second place" });
+
+    render(<LocationContextMenu />);
+    openMenu();
+    await chooseSearchHere();
+
+    openMenu({ lat: -26.3, lng: 28.1 });
+    await chooseSearchHere();
+
+    await waitFor(() => {
+      expect(screen.getByTestId("map-context-menu")).toHaveTextContent(
+        "Second place",
+      );
+    });
+
+    await act(async () => {
+      rejectStale(new Error("network"));
+    });
+
+    expect(screen.getByTestId("map-context-menu")).toHaveTextContent(
+      "Second place",
+    );
+    expect(
+      screen.queryByText(/couldn't look up this address/i),
+    ).not.toBeInTheDocument();
+  });
+
   it("aborts an in-flight lookup when the menu is dismissed without picking a new spot", async () => {
     let aborted = false;
     geocodeMocks.fetchReverseGeocodeResult.mockImplementationOnce(
@@ -345,6 +423,27 @@ describe("LocationContextMenu", () => {
     });
 
     expect(secondSpy).not.toHaveBeenCalled();
+  });
+
+  it("still guards a click against a null menu content ref once the menu has already closed some other way (e.g. Escape) while the guard is still armed", () => {
+    render(<LocationContextMenu />);
+    openMenu({ lat: -26.2, lng: 28.0 }, { clientX: 100, clientY: 200 });
+
+    // Closes the popup via Escape, not a click -- unlike closeMenu()'s click
+    // on the mock's own "Close" button, this doesn't itself run through (and
+    // disarm) the document-level click guard, so the guard is still armed
+    // for the click dispatched below, and menuContentRef.current is now null
+    // (the menu content unmounted) by the time that click is handled.
+    fireEvent.keyDown(screen.getByTestId("map-context-menu"), {
+      key: "Escape",
+    });
+
+    const stopPropagationSpy = dispatchDocumentClick(document.body, {
+      clientX: 105,
+      clientY: 195,
+    });
+
+    expect(stopPropagationSpy).toHaveBeenCalled();
   });
 
   it("does not arm a click guard when the contextmenu event has no native originalEvent", () => {

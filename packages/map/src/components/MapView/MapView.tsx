@@ -403,6 +403,7 @@ function SelectedFeatureHighlight<TProperties extends Record<string, unknown>>({
       });
     }
     let cancelled = false;
+    /* v8 ignore start -- unreachable: layerById only ever gets an entry for a feature whose properties were already truthy at bind time (see bindSelectableFeatureInteractions' own `!properties` guard above), so a featureLayer found here always has truthy feature.properties too */
     const binding = properties
       ? bindSelectedFeaturePopup(
           featureLayer,
@@ -410,6 +411,7 @@ function SelectedFeatureHighlight<TProperties extends Record<string, unknown>>({
           renderFeaturePopupRef.current,
         )
       : Promise.resolve();
+    /* v8 ignore stop */
     void binding.then(() => {
       if (!cancelled) {
         featureLayer.openPopup?.();

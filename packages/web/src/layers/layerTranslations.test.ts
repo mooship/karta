@@ -73,6 +73,22 @@ const BRT_LAYER: Layer = {
   },
 };
 
+const UNKNOWN_CHOROPLETH_LAYER: Layer = {
+  id: "some-future-choropleth",
+  label: "Some Future Choropleth",
+  description: "Not yet in the translation table",
+  dataSource: ["/data/gauteng/future.geojson"],
+  geometryKind: "choropleth",
+  defaultVisible: true,
+  available: true,
+  style: {
+    kind: "choropleth",
+    propertyKey: "value",
+    buckets: [{ max: 10, color: "#000", label: "Original bucket label" }],
+    baseOpacity: 0.18,
+  },
+};
+
 const UNKNOWN_LAYER: Layer = {
   id: "some-future-layer",
   label: "Some Future Layer",
@@ -110,6 +126,36 @@ describe("localizeLayer", () => {
     }
   });
 
+  it("falls back to a bucket's own English label when the translation table has fewer bucketLabels than the layer has buckets", () => {
+    getLocale.mockReturnValue("zu");
+    const extraBucketLayer: Layer = {
+      ...CHOROPLETH_LAYER,
+      style: {
+        kind: "choropleth",
+        propertyKey: "commuteMinutes",
+        buckets: [
+          { max: 20, color: "#000", label: "Short (≤ 20 min)" },
+          { max: 40, color: "#000", label: "Moderate (21–40 min)" },
+          { max: 60, color: "#000", label: "Long (41–60 min)" },
+          {
+            max: Number.POSITIVE_INFINITY,
+            color: "#000",
+            label: "Very long (> 60 min)",
+          },
+          { max: Number.POSITIVE_INFINITY, color: "#000", label: "Extreme" },
+        ],
+        baseOpacity: 0.18,
+      },
+    };
+
+    const localized = localizeLayer(extraBucketLayer);
+
+    expect(localized.style.kind).toBe("choropleth");
+    if (localized.style.kind === "choropleth") {
+      expect(localized.style.buckets.at(-1)?.label).toBe("Extreme");
+    }
+  });
+
   it("mirrors the translated label into a line layer's legendLabel", () => {
     getLocale.mockReturnValue("st");
 
@@ -142,6 +188,20 @@ describe("localizeLayer", () => {
 
     expect(localized.label).toBe("Some Future Layer");
     expect(localized.description).toBe("Not yet in the translation table");
+  });
+
+  it("leaves a choropleth layer's buckets untouched for an id with no translation entry", () => {
+    getLocale.mockReturnValue("zu");
+
+    const localized = localizeLayer(UNKNOWN_CHOROPLETH_LAYER);
+
+    expect(localized.label).toBe("Some Future Choropleth");
+    expect(localized.style.kind).toBe("choropleth");
+    if (localized.style.kind === "choropleth") {
+      expect(localized.style.buckets.map((b) => b.label)).toEqual([
+        "Original bucket label",
+      ]);
+    }
   });
 
   it("returns the original English fields when the locale is en", () => {

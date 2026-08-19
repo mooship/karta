@@ -260,6 +260,74 @@ describe("useLayerData", () => {
     consoleError.mockRestore();
   });
 
+  it("clears a failed layer id on a later success, even when it was never dropped from the requested ids", async () => {
+    vi.mocked(global.fetch)
+      .mockRejectedValueOnce(new Error("network"))
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ type: "FeatureCollection", features: [] }),
+      } as Response)
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ type: "FeatureCollection", features: [] }),
+      } as Response);
+
+    const { result, rerender } = renderHook(
+      ({ ids }: { ids: string[] }) => useLayerData(ids),
+      { initialProps: { ids: ["rail"] }, wrapper: withTestDomain },
+    );
+
+    await waitFor(() => {
+      expect(result.current.failedLayerIds).toEqual(["rail"]);
+    });
+
+    // Adds "bus" alongside "rail" (never removing "rail" from the requested
+    // ids, unlike the toggle-off/on tests above, which clear failedLayerIds
+    // early via a different code path) -- "rail"'s own requestKey was
+    // dropped from the internal `requested` set on its earlier failure, so
+    // this re-triggers its fetch, and this time it succeeds.
+    rerender({ ids: ["rail", "bus"] });
+
+    await waitFor(() => {
+      expect(result.current.data).toHaveProperty("rail");
+    });
+    expect(result.current.failedLayerIds).toEqual([]);
+  });
+
+  it("keeps a failed layer id exactly once when a later retry (without ever toggling it off) fails again", async () => {
+    vi.mocked(global.fetch)
+      .mockRejectedValueOnce(new Error("network")) // rail, first attempt
+      .mockRejectedValueOnce(new Error("network")) // rail, retry
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ type: "FeatureCollection", features: [] }),
+      } as Response); // bus
+    const consoleError = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
+
+    const { result, rerender } = renderHook(
+      ({ ids }: { ids: string[] }) => useLayerData(ids),
+      { initialProps: { ids: ["rail"] }, wrapper: withTestDomain },
+    );
+
+    await waitFor(() => {
+      expect(result.current.failedLayerIds).toEqual(["rail"]);
+    });
+
+    rerender({ ids: ["rail", "bus"] });
+
+    await waitFor(() => {
+      expect(global.fetch).toHaveBeenCalledTimes(3);
+    });
+    await waitFor(() => {
+      expect(result.current.data).toHaveProperty("bus");
+    });
+    expect(result.current.failedLayerIds).toEqual(["rail"]);
+
+    consoleError.mockRestore();
+  });
+
   it("merges features from every region source configured for a layer", async () => {
     vi.mocked(global.fetch)
       .mockResolvedValueOnce({

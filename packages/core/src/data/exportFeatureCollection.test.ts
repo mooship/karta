@@ -102,6 +102,25 @@ describe("featureCollectionToCsv", () => {
     expect(rows[1]).toBe('"Township, ""informal"" area\nnote",28,-26');
   });
 
+  it("treats a feature with no properties object at all as having no columns of its own", () => {
+    const collection: FeatureCollection = {
+      type: "FeatureCollection",
+      features: [
+        {
+          type: "Feature",
+          properties: null,
+          geometry: { type: "Point", coordinates: [28.0, -26.0] },
+        },
+      ],
+    };
+
+    const csv = featureCollectionToCsv(collection);
+    const rows = csv.split("\r\n");
+
+    expect(rows[0]).toBe("centroid_lon,centroid_lat");
+    expect(rows[1]).toBe("28,-26");
+  });
+
   it('treats a null or missing property value as an empty field, not the string "null"', () => {
     const collection: FeatureCollection = {
       type: "FeatureCollection",

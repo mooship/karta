@@ -51,6 +51,58 @@ describe("LayerToggles", () => {
     expect(screen.getByText("Not yet available")).toBeInTheDocument();
   });
 
+  it("looks up a layer id shared by two groups only once, though each group still renders its own row for it", () => {
+    const sharedLayer: Layer = {
+      id: "shared",
+      label: "Shared Layer",
+      dataSource: ["/data/shared.geojson"],
+      geometryKind: "line",
+      defaultVisible: false,
+      available: true,
+      style: { kind: "line", color: "#000", weight: 2 },
+    };
+    const firstGroup: LayerGroup = {
+      id: "first",
+      title: "First",
+      layerIds: ["shared"],
+    };
+    const secondGroup: LayerGroup = {
+      id: "second",
+      title: "Second",
+      layerIds: ["shared"],
+    };
+    vi.spyOn(registry, "getLayerGroups").mockReturnValue([
+      firstGroup,
+      secondGroup,
+    ]);
+    const getLayer = vi
+      .spyOn(registry, "getLayer")
+      .mockReturnValue(sharedLayer);
+
+    render(<LayerToggles visibleLayerIds={[]} onToggle={vi.fn()} />);
+
+    expect(screen.getAllByTestId("layer-toggle-shared")).toHaveLength(2);
+    expect(getLayer.mock.calls.filter(([id]) => id === "shared")).toHaveLength(
+      1,
+    );
+  });
+
+  it("skips a group's layer id the registry has no matching layer for", () => {
+    const group: LayerGroup = {
+      id: "transit",
+      title: "Transit",
+      layerIds: ["ghost-layer"],
+    };
+    vi.spyOn(registry, "getLayerGroups").mockReturnValue([group]);
+    vi.spyOn(registry, "getLayer").mockReturnValue(undefined);
+
+    render(<LayerToggles visibleLayerIds={[]} onToggle={vi.fn()} />);
+
+    expect(
+      screen.queryByTestId("layer-toggle-ghost-layer-row"),
+    ).not.toBeInTheDocument();
+  });
+
   it("reflects visibility state on each layer's checkbox", () => {
     render(<LayerToggles visibleLayerIds={["townships"]} onToggle={vi.fn()} />);
 

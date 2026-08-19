@@ -113,5 +113,21 @@ describe("resolveClassification", () => {
       expect(resolveClassification(classification, { operator: 42 })).toBe(1);
       expect(resolveClassification(classification, null)).toBe(1);
     });
+
+    it("keeps the first stop's value when two stops share the same match value", () => {
+      const duplicateMatch: CategorizedClassification<number> = {
+        kind: "categorized",
+        propertyKey: "operator",
+        stops: [
+          { match: "gautrain", value: 4, label: "Gautrain" },
+          { match: "gautrain", value: 99, label: "Gautrain (duplicate)" },
+        ],
+        fallback: 1,
+      };
+
+      expect(
+        resolveClassification(duplicateMatch, { operator: "gautrain" }),
+      ).toBe(4);
+    });
   });
 });
