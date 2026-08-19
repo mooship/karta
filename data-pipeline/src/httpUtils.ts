@@ -23,3 +23,13 @@ export async function fetchWithTimeout(
     clearTimeout(timeout);
   }
 }
+
+/**
+ * Whether `error` is the `AbortError` `fetchWithTimeout` rejects with once
+ * its timeout fires, as opposed to any other fetch failure.
+ * @remarks Shared by every adapter that surfaces `fetchWithTimeout`'s abort
+ *   as a clearer "timed out after Nms" message (Overpass, OSRM).
+ */
+export function isAbortError(error: unknown): error is Error {
+  return error instanceof Error && error.name === "AbortError";
+}
