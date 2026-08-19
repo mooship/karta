@@ -39,6 +39,9 @@ export const E2E = {
     story: "panel-tab-story",
     browser: "panel-tab-browser",
   },
+  featureBrowser: {
+    filter: "feature-browser-filter",
+  },
   townshipPopup: "township-popup",
   locationContextMenu: "location-context-menu",
   measurement: {
