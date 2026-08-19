@@ -1,4 +1,5 @@
-import * as turf from "@turf/turf";
+import { booleanPointInPolygon } from "@turf/boolean-point-in-polygon";
+import { point as turfPoint } from "@turf/helpers";
 import type { Feature, MultiPolygon, Polygon, Position } from "geojson";
 
 /**
@@ -12,5 +13,5 @@ export function isPointInPolygon(
   polygon: Polygon | MultiPolygon | Feature<Polygon | MultiPolygon>,
 ): boolean {
   const geometry = polygon.type === "Feature" ? polygon.geometry : polygon;
-  return turf.booleanPointInPolygon(turf.point(point), geometry);
+  return booleanPointInPolygon(turfPoint(point), geometry);
 }

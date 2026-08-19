@@ -1,4 +1,4 @@
-import * as turf from "@turf/turf";
+import { centroid } from "@turf/centroid";
 import type { FeatureCollection } from "geojson";
 
 const CSV_ROW_SEPARATOR = "\r\n";
@@ -46,8 +46,7 @@ export function featureCollectionToCsv(collection: FeatureCollection): string {
   const rows = [columns.join(",")];
 
   for (const feature of collection.features) {
-    const [centroidLon, centroidLat] =
-      turf.centroid(feature).geometry.coordinates;
+    const [centroidLon, centroidLat] = centroid(feature).geometry.coordinates;
     const propertyValues = propertyKeys.map((key) =>
       csvField(feature.properties?.[key]),
     );
