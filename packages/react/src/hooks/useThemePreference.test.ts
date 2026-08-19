@@ -163,6 +163,32 @@ describe("useThemePreference theme-color meta sync", () => {
     expect(document.documentElement.dataset.theme).toBe("dark");
   });
 
+  it("warns exactly once, from the first render before initTheme is called", async () => {
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const { useThemePreference } = await importFreshModule();
+    const { renderHook } = await import("@testing-library/react");
+
+    const { rerender } = renderHook(() => useThemePreference());
+    rerender();
+    rerender();
+
+    expect(warnSpy).toHaveBeenCalledTimes(1);
+    expect(warnSpy.mock.calls[0]?.[0]).toContain("initTheme()");
+    warnSpy.mockRestore();
+  });
+
+  it("does not warn when useThemePreference is called after initTheme", async () => {
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const { initTheme, useThemePreference } = await importFreshModule();
+    initTheme({ storageKey: "test-theme", colors: TEST_COLORS });
+    const { renderHook } = await import("@testing-library/react");
+
+    renderHook(() => useThemePreference());
+
+    expect(warnSpy).not.toHaveBeenCalled();
+    warnSpy.mockRestore();
+  });
+
   it("re-applies data-theme on mount, self-healing if something else already cleared it", async () => {
     const { initTheme, setThemePreference, useThemePreference } =
       await importFreshModule();

@@ -18,6 +18,24 @@ function areYengLayerUrl(layer: number): string {
   return `https://e-gis001.tshwane.gov.za/server/rest/services/Other_WS/BRT_A_Re_Yeng/MapServer/${layer}/query?where=1%3D1&outFields=*&f=geojson`;
 }
 
+/** Fetches and shape-validates one A Re Yeng service-tier layer's raw features. */
+async function fetchAReYengLayerFeatures(layer: number): Promise<Feature[]> {
+  const portalResponse = await fetch(areYengLayerUrl(layer));
+  if (!portalResponse.ok) {
+    throw new Error(`A Re Yeng layer ${layer} request failed`);
+  }
+  const collection: unknown = await portalResponse.json();
+  if (
+    collection === null ||
+    typeof collection !== "object" ||
+    (collection as { type?: unknown }).type !== "FeatureCollection" ||
+    !Array.isArray((collection as { features?: unknown }).features)
+  ) {
+    throw new Error(`A Re Yeng layer ${layer} returned an unexpected shape`);
+  }
+  return (collection as FeatureCollection).features;
+}
+
 const TSHWANE_BBOX = "-25.95,28.05,-25.55,28.40";
 // Restricted to busway/bus-route ways (not just any element tagged
 // network="A Re Yeng") so a station building isn't picked up and rendered as a
@@ -124,28 +142,11 @@ export function normalizeAReYengOverpass(
 export async function fetchAReYengRoutes(): Promise<
   FeatureCollection | OverpassResponse
 > {
-  const merged: Feature[] = [];
-
   try {
-    for (const layer of AREYENG_LAYERS) {
-      const portalResponse = await fetch(areYengLayerUrl(layer));
-      if (!portalResponse.ok) {
-        throw new Error(`A Re Yeng layer ${layer} request failed`);
-      }
-      const collection: unknown = await portalResponse.json();
-      if (
-        collection === null ||
-        typeof collection !== "object" ||
-        (collection as { type?: unknown }).type !== "FeatureCollection" ||
-        !Array.isArray((collection as { features?: unknown }).features)
-      ) {
-        throw new Error(
-          `A Re Yeng layer ${layer} returned an unexpected shape`,
-        );
-      }
-      merged.push(...(collection as FeatureCollection).features);
-    }
-    return { type: "FeatureCollection", features: merged };
+    const layerFeatures = await Promise.all(
+      AREYENG_LAYERS.map((layer) => fetchAReYengLayerFeatures(layer)),
+    );
+    return { type: "FeatureCollection", features: layerFeatures.flat() };
   } catch (error) {
     // fall through to the Overpass fallback below on any network/TLS/shape failure
     // for any of the three layers, so the layer is all-or-nothing per source.

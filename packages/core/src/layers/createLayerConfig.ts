@@ -44,6 +44,14 @@ export const DEFAULT_NO_DATA_COLOR = "#8A93A5";
 /** Shown instead of `DEFAULT_NO_DATA_COLOR` while dark theme is active. */
 export const DEFAULT_NO_DATA_COLOR_DARK = "#5b6476";
 
+/** Static Leaflet path fields shared by every line layer, classified or not. */
+const LINE_PATH_DEFAULTS = {
+  opacity: 0.95,
+  noClip: true,
+  lineCap: "round" as const,
+  lineJoin: "round" as const,
+};
+
 /**
  * Adapts a choropleth style's `buckets` into a `GraduatedClassification`, so
  * choropleth fill color resolves through the same `resolveClassification`
@@ -146,6 +154,7 @@ export function createLayerConfig(
       if (style.colorClassification || style.weightClassification) {
         return {
           styleFn: (feature) => ({
+            ...LINE_PATH_DEFAULTS,
             color: resolveStyleValue(
               style.colorClassification,
               feature?.properties,
@@ -156,21 +165,14 @@ export function createLayerConfig(
               feature?.properties,
               style.weight,
             ),
-            opacity: 0.95,
-            noClip: true,
-            lineCap: "round",
-            lineJoin: "round",
           }),
         };
       }
       return {
         pathOptions: {
+          ...LINE_PATH_DEFAULTS,
           color: style.color,
           weight: style.weight,
-          opacity: 0.95,
-          noClip: true,
-          lineCap: "round",
-          lineJoin: "round",
         },
       };
     }

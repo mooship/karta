@@ -1,4 +1,6 @@
-import * as turf from "@turf/turf";
+import { area } from "@turf/area";
+import { lineString, polygon } from "@turf/helpers";
+import { length } from "@turf/length";
 import type { Position } from "geojson";
 
 /**
@@ -16,7 +18,7 @@ export function measureLineDistance(
     return null;
   }
 
-  return turf.length(turf.lineString(positions as Position[]), {
+  return length(lineString(positions as Position[]), {
     units: "kilometers",
   });
 }
@@ -43,5 +45,5 @@ export function measurePolygonArea(
       ? (positions as Position[])
       : [...positions, first];
 
-  return turf.area(turf.polygon([ring]));
+  return area(polygon([ring]));
 }

@@ -54,7 +54,7 @@ export interface LineLayerStyle {
   color: string;
   /** Fallback weight, used when `weightClassification` is absent or unmatched. */
   weight: number;
-  /** Label shown in the transit legend. */
+  /** Label shown in the layer's legend entry. */
   legendLabel: string;
   /** Optional per-feature color classification, overriding `color`. */
   colorClassification?: Classification<string>;
@@ -69,7 +69,7 @@ export interface PointLayerStyle {
   color: string;
   /** Fallback radius, used when `radiusClassification` is absent or unmatched. */
   radius: number;
-  /** Label shown in the transit legend. */
+  /** Label shown in the layer's legend entry. */
   legendLabel: string;
   /** Optional per-feature color classification, overriding `color`. */
   colorClassification?: Classification<string>;
