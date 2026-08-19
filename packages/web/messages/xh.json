@@ -21,10 +21,6 @@
   "panel_expand_height": "Andisa ubude bephaneli",
   "panel_tablist_aria_label": "Iphaneli yemephu",
 
-  "feature_browser_filter_label": "Hluza iimpawu",
-  "feature_browser_filter_placeholder": "Khangela ngegama",
-  "feature_browser_empty": "Akukho nto ifunyenweyo kuloo khangelo.",
-
   "layer_unavailable_badge": "Ayikafumaneki",
   "layer_failed_badge": "Yehlulekile ukulayisha — vala uphinde uvule ukuze uzame kwakhona",
   "layer_download_aria_label": "Khuphela idatha ye-{label} (GeoJSON)",

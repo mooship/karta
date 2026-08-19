@@ -1,38 +1,40 @@
-import type { SelectableFeatureSearchEntry } from "@karta/map";
 import { fireEvent, render, screen } from "@testing-library/react";
-import { afterEach, describe, expect, it, vi } from "vitest";
-import * as registry from "../../layers/registry";
+import type { ReactNode } from "react";
+import { describe, expect, it, vi } from "vitest";
+import { DomainProvider } from "../../context/DomainContext";
+import { TEST_DOMAIN } from "../../testFixtures/domain";
+import type { SelectableFeatureSearchEntry } from "../LocationSearchControl/LocationSearchControl";
 import { FeatureBrowser } from "./FeatureBrowser";
 
-const TOWNSHIP_FEATURES: SelectableFeatureSearchEntry[] = [
-  { id: "A", label: "Mamelodi", layerId: "townships" },
-  { id: "B", label: "Soshanguve", layerId: "townships" },
+const AREA_FEATURES: SelectableFeatureSearchEntry[] = [
+  { id: "A", label: "Mamelodi", layerId: "areas" },
+  { id: "B", label: "Soshanguve", layerId: "areas" },
 ];
 
 const RAIL_FEATURES: SelectableFeatureSearchEntry[] = [
-  { id: "R1", label: "Hatfield Station", layerId: "rapid-rail" },
+  { id: "R1", label: "Hatfield Station", layerId: "rail" },
 ];
 
-describe("FeatureBrowser", () => {
-  afterEach(() => {
-    vi.restoreAllMocks();
-  });
+function withDomain(ui: ReactNode) {
+  return <DomainProvider domain={TEST_DOMAIN}>{ui}</DomainProvider>;
+}
 
+describe("FeatureBrowser", () => {
   it("groups features under a heading naming their layer", () => {
     render(
-      <FeatureBrowser
-        features={[...TOWNSHIP_FEATURES, ...RAIL_FEATURES]}
-        selectedFeatureId={null}
-        onSelect={vi.fn()}
-      />,
+      withDomain(
+        <FeatureBrowser
+          features={[...AREA_FEATURES, ...RAIL_FEATURES]}
+          selectedFeatureId={null}
+          onSelect={vi.fn()}
+        />,
+      ),
     );
 
     expect(
-      screen.getByRole("heading", { name: "Modelled car time" }),
+      screen.getByRole("heading", { name: "Coverage level" }),
     ).toBeInTheDocument();
-    expect(
-      screen.getByRole("heading", { name: "Rapid Rail" }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Rail" })).toBeInTheDocument();
     expect(screen.getByText("Mamelodi")).toBeInTheDocument();
     expect(screen.getByText("Soshanguve")).toBeInTheDocument();
     expect(screen.getByText("Hatfield Station")).toBeInTheDocument();
@@ -40,27 +42,31 @@ describe("FeatureBrowser", () => {
 
   it("orders layer groups to match the domain registry's own layer order", () => {
     render(
-      <FeatureBrowser
-        features={[...RAIL_FEATURES, ...TOWNSHIP_FEATURES]}
-        selectedFeatureId={null}
-        onSelect={vi.fn()}
-      />,
+      withDomain(
+        <FeatureBrowser
+          features={[...RAIL_FEATURES, ...AREA_FEATURES]}
+          selectedFeatureId={null}
+          onSelect={vi.fn()}
+        />,
+      ),
     );
 
     const headings = screen.getAllByRole("heading").map((el) => el.textContent);
-    expect(headings.indexOf("Modelled car time")).toBeLessThan(
-      headings.indexOf("Rapid Rail"),
+    expect(headings.indexOf("Coverage level")).toBeLessThan(
+      headings.indexOf("Rail"),
     );
   });
 
   it("calls onSelect with a feature's id when its row is clicked", () => {
     const onSelect = vi.fn();
     render(
-      <FeatureBrowser
-        features={TOWNSHIP_FEATURES}
-        selectedFeatureId={null}
-        onSelect={onSelect}
-      />,
+      withDomain(
+        <FeatureBrowser
+          features={AREA_FEATURES}
+          selectedFeatureId={null}
+          onSelect={onSelect}
+        />,
+      ),
     );
 
     fireEvent.click(screen.getByTestId("feature-browser-item-A"));
@@ -70,11 +76,13 @@ describe("FeatureBrowser", () => {
 
   it("marks the currently selected feature's row as current", () => {
     render(
-      <FeatureBrowser
-        features={TOWNSHIP_FEATURES}
-        selectedFeatureId="B"
-        onSelect={vi.fn()}
-      />,
+      withDomain(
+        <FeatureBrowser
+          features={AREA_FEATURES}
+          selectedFeatureId="B"
+          onSelect={vi.fn()}
+        />,
+      ),
     );
 
     expect(screen.getByTestId("feature-browser-item-A")).toHaveAttribute(
@@ -89,11 +97,13 @@ describe("FeatureBrowser", () => {
 
   it("filters rows by a case-insensitive substring match on label", () => {
     render(
-      <FeatureBrowser
-        features={TOWNSHIP_FEATURES}
-        selectedFeatureId={null}
-        onSelect={vi.fn()}
-      />,
+      withDomain(
+        <FeatureBrowser
+          features={AREA_FEATURES}
+          selectedFeatureId={null}
+          onSelect={vi.fn()}
+        />,
+      ),
     );
 
     fireEvent.change(screen.getByTestId("feature-browser-filter"), {
@@ -106,11 +116,13 @@ describe("FeatureBrowser", () => {
 
   it("shows an empty-state message when nothing matches the filter", () => {
     render(
-      <FeatureBrowser
-        features={TOWNSHIP_FEATURES}
-        selectedFeatureId={null}
-        onSelect={vi.fn()}
-      />,
+      withDomain(
+        <FeatureBrowser
+          features={AREA_FEATURES}
+          selectedFeatureId={null}
+          onSelect={vi.fn()}
+        />,
+      ),
     );
 
     fireEvent.change(screen.getByTestId("feature-browser-filter"), {
@@ -124,14 +136,14 @@ describe("FeatureBrowser", () => {
   });
 
   it("falls back to the raw layer id as a heading when the layer isn't in the registry", () => {
-    vi.spyOn(registry, "getLayer").mockReturnValue(undefined);
-
     render(
-      <FeatureBrowser
-        features={[{ id: "Z", label: "Ghost", layerId: "unknown-layer" }]}
-        selectedFeatureId={null}
-        onSelect={vi.fn()}
-      />,
+      withDomain(
+        <FeatureBrowser
+          features={[{ id: "Z", label: "Ghost", layerId: "unknown-layer" }]}
+          selectedFeatureId={null}
+          onSelect={vi.fn()}
+        />,
+      ),
     );
 
     expect(

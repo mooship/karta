@@ -21,10 +21,6 @@
   "panel_expand_height": "Vergroot paneelhoogte",
   "panel_tablist_aria_label": "Kaartpaneel",
 
-  "feature_browser_filter_label": "Filtreer kenmerke",
-  "feature_browser_filter_placeholder": "Soek volgens naam",
-  "feature_browser_empty": "Niks het by daardie soektog gepas nie.",
-
   "layer_unavailable_badge": "Nog nie beskikbaar nie",
   "layer_failed_badge": "Kon nie laai nie — skakel af en aan om weer te probeer",
   "layer_download_aria_label": "Laai {label}-data af (GeoJSON)",

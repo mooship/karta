@@ -10,6 +10,7 @@ import {
   createNominatimGeocoderProvider,
   DesktopLegend,
   DomainProvider,
+  FeatureBrowser,
   LocationSearchControl,
   type LocationSearchResult,
   MobileLegend,
@@ -41,7 +42,6 @@ import {
 } from "react";
 import styles from "./App.module.css";
 import { DomainStory } from "./components/DomainStory/DomainStory";
-import { FeatureBrowser } from "./components/FeatureBrowser/FeatureBrowser";
 import { LanguageToggle } from "./components/LanguageToggle/LanguageToggle";
 import { LayerToggles } from "./components/LayerToggles/LayerToggles";
 import { PrivacyLink } from "./components/PrivacyLink/PrivacyLink";
