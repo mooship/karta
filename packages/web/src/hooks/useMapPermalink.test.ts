@@ -78,6 +78,15 @@ describe("parseMapPermalink", () => {
   it("returns an empty object for an empty query string", () => {
     expect(parseMapPermalink("", ["townships"])).toEqual({});
   });
+
+  it("omits visibleLayerIds entirely when every id in the layers param is unknown", () => {
+    const parsed = parseMapPermalink("?layers=bogus,also-bogus", [
+      "townships",
+      "rapid-rail",
+      "bus",
+    ]);
+    expect(parsed).toEqual({});
+  });
 });
 
 describe("buildMapPermalinkSearch", () => {

@@ -92,6 +92,7 @@ export function useDismissableOverlay({
     document.addEventListener("keydown", handleKeyDown);
     return () => {
       const index = openOverlayIds.indexOf(id);
+      /* v8 ignore next 3 -- unreachable: this cleanup only ever runs after the effect above (unconditionally, before any early return) pushed this exact id, and nothing else in this module ever removes an id from openOverlayIds, so it's always still present here */
       if (index !== -1) {
         openOverlayIds.splice(index, 1);
       }
