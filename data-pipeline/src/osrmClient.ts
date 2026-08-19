@@ -18,10 +18,16 @@ const BATCH_DELAY_MS = 1000;
 const OSRM_TIMEOUT_MS = 30_000;
 const OSRM_CACHE_MAX_AGE_MS = 1000 * 60 * 60 * 24 * 3;
 
-async function fetchTable(
+interface OsrmTableRequest {
+  url: string;
+  cacheKey: string;
+}
+
+/** Builds an OSRM table request's URL (batch of origins × all destinations) and its cache key. */
+function buildOsrmTableRequest(
   origins: LatLon[],
   destinations: readonly JobCenter[],
-): Promise<(number | null)[][]> {
+): OsrmTableRequest {
   const coords = [...origins, ...destinations]
     .map((c) => `${c.lon},${c.lat}`)
     .join(";");
@@ -29,51 +35,54 @@ async function fetchTable(
   const destinationIndices = destinations
     .map((_, i) => origins.length + i)
     .join(";");
-  const url = `${getOsrmBaseUrl()}/table/v1/driving/${coords}?sources=${sourceIndices}&destinations=${destinationIndices}`;
-  const cacheKey = hashKey([
-    "osrm-table",
-    getOsrmBaseUrl(),
-    coords,
-    sourceIndices,
-    destinationIndices,
-  ]);
-  const cached = await readJsonCache<(number | null)[][]>("osrm", cacheKey, {
-    maxAgeMs: OSRM_CACHE_MAX_AGE_MS,
-  });
+  return {
+    url: `${getOsrmBaseUrl()}/table/v1/driving/${coords}?sources=${sourceIndices}&destinations=${destinationIndices}`,
+    cacheKey: hashKey([
+      "osrm-table",
+      getOsrmBaseUrl(),
+      coords,
+      sourceIndices,
+      destinationIndices,
+    ]),
+  };
+}
 
-  let lastError: unknown;
+function isRetryableOsrmStatus(status: number, attempt: number): boolean {
+  return (status === 429 || status === 504) && attempt < 3;
+}
 
-  for (let attempt = 1; attempt <= 3; attempt++) {
-    try {
-      const response = await fetchWithTimeout(url, {}, OSRM_TIMEOUT_MS);
-      if (!response.ok) {
-        if (
-          (response.status === 429 || response.status === 504) &&
-          attempt < 3
-        ) {
-          await sleep(BATCH_DELAY_MS * attempt);
-          continue;
-        }
-        throw new Error(`OSRM table request failed: ${response.status}`);
-      }
-
-      const body = (await response.json()) as {
-        code: string;
-        durations: (number | null)[][];
-      };
-      if (body.code !== "Ok") {
-        throw new Error(`OSRM table returned code ${body.code}`);
-      }
-      await writeJsonCache("osrm", cacheKey, body.durations);
-      return body.durations;
-    } catch (error) {
-      lastError = error;
-      if (attempt < 3) {
-        await sleep(BATCH_DELAY_MS * attempt);
-      }
+/**
+ * Runs a single OSRM table attempt. Returns `null` (rather than throwing)
+ * for a transient, retryable failure, so the caller's loop can sleep and
+ * try again without treating it as this attempt's terminal error.
+ */
+async function requestOsrmTable(
+  url: string,
+  attempt: number,
+): Promise<(number | null)[][] | null> {
+  const response = await fetchWithTimeout(url, {}, OSRM_TIMEOUT_MS);
+  if (!response.ok) {
+    if (isRetryableOsrmStatus(response.status, attempt)) {
+      return null;
     }
+    throw new Error(`OSRM table request failed: ${response.status}`);
   }
 
+  const body = (await response.json()) as {
+    code: string;
+    durations: (number | null)[][];
+  };
+  if (body.code !== "Ok") {
+    throw new Error(`OSRM table returned code ${body.code}`);
+  }
+  return body.durations;
+}
+
+/** Resolves `fetchTable`'s outcome once every attempt is exhausted: a stale cached response, or the last error (a clearer message for an abort). */
+function resolveOsrmTableFallback(
+  cached: (number | null)[][] | null,
+  lastError: unknown,
+): (number | null)[][] {
   if (cached) {
     return cached;
   }
@@ -83,6 +92,36 @@ async function fetchTable(
   }
 
   throw lastError;
+}
+
+async function fetchTable(
+  origins: LatLon[],
+  destinations: readonly JobCenter[],
+): Promise<(number | null)[][]> {
+  const { url, cacheKey } = buildOsrmTableRequest(origins, destinations);
+  const cached = await readJsonCache<(number | null)[][]>("osrm", cacheKey, {
+    maxAgeMs: OSRM_CACHE_MAX_AGE_MS,
+  });
+
+  let lastError: unknown;
+
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    try {
+      const durations = await requestOsrmTable(url, attempt);
+      if (durations) {
+        await writeJsonCache("osrm", cacheKey, durations);
+        return durations;
+      }
+      await sleep(BATCH_DELAY_MS * attempt);
+    } catch (error) {
+      lastError = error;
+      if (attempt < 3) {
+        await sleep(BATCH_DELAY_MS * attempt);
+      }
+    }
+  }
+
+  return resolveOsrmTableFallback(cached, lastError);
 }
 
 function pickNearest(

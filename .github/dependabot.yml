@@ -11,6 +11,17 @@ updates:
       npm:
         patterns:
           - "*"
+  - package-ecosystem: "npm"
+    directory: "/data-pipeline"
+    schedule:
+      interval: "weekly"
+      day: "saturday"
+      time: "09:00"
+      timezone: "Africa/Johannesburg"
+    groups:
+      npm:
+        patterns:
+          - "*"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:

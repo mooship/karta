@@ -208,40 +208,46 @@ export function LocationSearchControl({
     runSearch(query.trim());
   }
 
+  function moveActiveResult(direction: 1 | -1) {
+    if (combinedResults.length === 0) {
+      return;
+    }
+    setActiveResultIndex((index) =>
+      direction === 1
+        ? Math.min(index + 1, combinedResults.length - 1)
+        : Math.max(index - 1, 0),
+    );
+  }
+
+  /** @returns Whether `activeResultIndex` pointed at a real result, so the caller knows whether to suppress the key's default behaviour. */
+  function selectActiveResult(): boolean {
+    if (activeResultIndex < 0 || activeResultIndex >= combinedResults.length) {
+      return false;
+    }
+    const selected = combinedResults[activeResultIndex];
+    /* v8 ignore next 3 -- unreachable: activeResultIndex is already bounds-checked above */
+    if (selected) {
+      handleCombinedResultSelect(selected);
+    }
+    return true;
+  }
+
   function handleInputKeyDown(event: ReactKeyboardEvent<HTMLInputElement>) {
     if (event.key === "ArrowDown") {
       event.preventDefault();
-      if (combinedResults.length === 0) {
-        return;
-      }
-      setActiveResultIndex((index) =>
-        Math.min(index + 1, combinedResults.length - 1),
-      );
+      moveActiveResult(1);
       return;
     }
 
     if (event.key === "ArrowUp") {
       event.preventDefault();
-      if (combinedResults.length === 0) {
-        return;
-      }
-      setActiveResultIndex((index) => Math.max(index - 1, 0));
+      moveActiveResult(-1);
       return;
     }
 
     if (event.key === "Enter") {
-      if (
-        activeResultIndex < 0 ||
-        activeResultIndex >= combinedResults.length
-      ) {
-        return;
-      }
-
-      event.preventDefault();
-      const selected = combinedResults[activeResultIndex];
-      /* v8 ignore next 3 -- unreachable: activeResultIndex is already bounds-checked above */
-      if (selected) {
-        handleCombinedResultSelect(selected);
+      if (selectActiveResult()) {
+        event.preventDefault();
       }
       return;
     }
