@@ -855,6 +855,7 @@ function MapViewComponent<
         entries.push({
           id: featureId,
           label: resolveFeatureLabel(properties, labelField),
+          layerId: layer.id,
         });
       }
     }

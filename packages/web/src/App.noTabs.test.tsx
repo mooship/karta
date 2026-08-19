@@ -1,3 +1,4 @@
+import type { Layer } from "@karta/core";
 import { render, screen, waitFor } from "@testing-library/react";
 import { forwardRef, type ReactNode } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -47,18 +48,26 @@ vi.mock("./data/fetchTownships", () => ({
   fetchTownships: dataMocks.getTownships,
 }));
 
+/**
+ * Strips every layer's `interaction`, so none report as selectable, in
+ * addition to the usual no-`story` override -- this is the one scenario
+ * where the info panel should show no tab UI at all: neither a Story tab
+ * (no `story`) nor a Browse tab (no selectable layer).
+ */
 vi.mock("./layers/registry", async (importOriginal) => {
   const actual = await importOriginal<typeof import("./layers/registry")>();
   return {
     ...actual,
     getStory: () => undefined,
+    getLayers: (): Layer[] =>
+      actual.getLayers().map((layer) => ({ ...layer, interaction: undefined })),
   };
 });
 
 import { App } from "./App";
 import { useMapUiStore } from "./stores/useMapUiStore";
 
-describe("App with a domain that has no story", () => {
+describe("App with a domain that has neither a story nor any selectable layer", () => {
   beforeEach(() => {
     useMapUiStore.getState().reset();
     dataMocks.getTownships.mockReset().mockResolvedValue([
@@ -82,17 +91,14 @@ describe("App with a domain that has no story", () => {
     });
   });
 
-  it("shows a Layers/Browse tablist with no Story tab, since the domain still has a selectable layer", async () => {
+  it("renders layer toggles directly, with no tab UI", async () => {
     render(<App />);
 
     await waitFor(() =>
       expect(screen.getByTestId("geojson-layer")).toBeInTheDocument(),
     );
 
-    expect(screen.getByTestId("panel-tablist")).toBeInTheDocument();
-    expect(screen.getByTestId("panel-tab-layers")).toBeInTheDocument();
-    expect(screen.getByTestId("panel-tab-browser")).toBeInTheDocument();
-    expect(screen.queryByTestId("panel-tab-story")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("panel-tablist")).not.toBeInTheDocument();
     expect(
       await screen.findByRole("checkbox", { name: "Modelled car time" }),
     ).toBeInTheDocument();
