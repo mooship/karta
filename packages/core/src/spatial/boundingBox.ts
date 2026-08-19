@@ -1,4 +1,4 @@
-import * as turf from "@turf/turf";
+import { bbox } from "@turf/bbox";
 import type { BBox, FeatureCollection } from "geojson";
 
 /**
@@ -28,5 +28,5 @@ export function unionBoundingBoxes(boxes: readonly BBox[]): BBox {
  * @returns `[minLng, minLat, maxLng, maxLat]`.
  */
 export function featureCollectionBounds(collection: FeatureCollection): BBox {
-  return turf.bbox(collection);
+  return bbox(collection);
 }

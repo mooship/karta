@@ -28,16 +28,6 @@ export function buildOutputLayerRules(
   ];
 }
 
-/** Transit networks every published region output must have at least one feature for. */
-export const REQUIRED_TRANSIT_NETWORKS = [
-  "Gautrain",
-  "PRASA",
-  "Gautrain Bus",
-  "A Re Yeng",
-  "Rea Vaya",
-  "Tshwane Bus Services",
-] as const;
-
 /** Checksum/size/feature-count record for one output file, as recorded in the manifest. */
 export interface OutputFileManifestEntry {
   fileName: string;
@@ -58,6 +48,12 @@ export interface OutputManifest {
 
 function digest(content: Buffer): string {
   return createHash("sha256").update(content).digest("hex");
+}
+
+/** Parses `raw` as a `FeatureCollection` and returns its feature count (0 for a malformed `features` field). Throws on invalid JSON. */
+function countFeatures(raw: Buffer): number {
+  const parsed = JSON.parse(raw.toString("utf8")) as FeatureCollection;
+  return Array.isArray(parsed.features) ? parsed.features.length : 0;
 }
 
 /** Counts features per `network` property value across a transit `FeatureCollection`. */
@@ -86,22 +82,18 @@ export async function buildOutputManifest(
   networkCoverage: Record<string, number>,
   config: RegionPipelineConfig,
 ): Promise<OutputManifest> {
-  const files: OutputFileManifestEntry[] = [];
-
-  for (const rule of buildOutputLayerRules(config)) {
-    const fullPath = resolve(outputDir, rule.fileName);
-    const raw = await readFile(fullPath);
-    const parsed = JSON.parse(raw.toString("utf8")) as FeatureCollection;
-    const featureCount = Array.isArray(parsed.features)
-      ? parsed.features.length
-      : 0;
-    files.push({
-      fileName: rule.fileName,
-      featureCount,
-      sha256: digest(raw),
-      bytes: raw.length,
-    });
-  }
+  const files = await Promise.all(
+    buildOutputLayerRules(config).map(async (rule) => {
+      const fullPath = resolve(outputDir, rule.fileName);
+      const raw = await readFile(fullPath);
+      return {
+        fileName: rule.fileName,
+        featureCount: countFeatures(raw),
+        sha256: digest(raw),
+        bytes: raw.length,
+      };
+    }),
+  );
 
   return {
     version: 1,
@@ -112,10 +104,60 @@ export async function buildOutputManifest(
   };
 }
 
+/** Validates one output file against its `OutputLayerRule` and manifest entry, independently of every other file. */
+async function collectRuleIssues(
+  outputDir: string,
+  rule: OutputLayerRule,
+  manifest: OutputManifest,
+): Promise<string[]> {
+  const fullPath = resolve(outputDir, rule.fileName);
+  let raw: Buffer;
+  try {
+    raw = await readFile(fullPath);
+  } catch {
+    return [`Missing required output file: ${rule.fileName}`];
+  }
+
+  let featureCount: number;
+  try {
+    featureCount = countFeatures(raw);
+  } catch {
+    return [`Invalid GeoJSON JSON content: ${rule.fileName}`];
+  }
+
+  const issues: string[] = [];
+  if (featureCount < rule.minFeatures) {
+    issues.push(
+      `Feature count below threshold for ${rule.fileName}: ${featureCount} < ${rule.minFeatures}`,
+    );
+  }
+
+  const manifestEntry = manifest.files.find(
+    (entry) => entry.fileName === rule.fileName,
+  );
+  if (!manifestEntry) {
+    issues.push(`Manifest missing file entry for ${rule.fileName}`);
+    return issues;
+  }
+
+  const calculatedHash = digest(raw);
+  if (manifestEntry.sha256 !== calculatedHash) {
+    issues.push(`Checksum mismatch for ${rule.fileName}`);
+  }
+
+  if (manifestEntry.featureCount !== featureCount) {
+    issues.push(
+      `Manifest feature count mismatch for ${rule.fileName}: manifest=${manifestEntry.featureCount}, actual=${featureCount}`,
+    );
+  }
+
+  return issues;
+}
+
 /**
  * Validates a built region's output directory against its manifest: every
  * required file exists, meets its `minFeatures` threshold, matches its
- * recorded checksum/feature count, and every `REQUIRED_TRANSIT_NETWORKS`
+ * recorded checksum/feature count, and every `config.requiredNetworks`
  * entry has at least one feature.
  * @returns A list of human-readable issue descriptions; empty if valid.
  */
@@ -139,54 +181,14 @@ export async function validateOutputDirectory(
     issues.push(`Unsupported manifest version: ${manifest.version}`);
   }
 
-  for (const rule of buildOutputLayerRules(config)) {
-    const fullPath = resolve(outputDir, rule.fileName);
-    let raw: Buffer;
-    try {
-      raw = await readFile(fullPath);
-    } catch {
-      issues.push(`Missing required output file: ${rule.fileName}`);
-      continue;
-    }
+  const ruleIssues = await Promise.all(
+    buildOutputLayerRules(config).map((rule) =>
+      collectRuleIssues(outputDir, rule, manifest),
+    ),
+  );
+  issues.push(...ruleIssues.flat());
 
-    let featureCount = 0;
-    try {
-      const parsed = JSON.parse(raw.toString("utf8")) as FeatureCollection;
-      featureCount = Array.isArray(parsed.features)
-        ? parsed.features.length
-        : 0;
-    } catch {
-      issues.push(`Invalid GeoJSON JSON content: ${rule.fileName}`);
-      continue;
-    }
-
-    if (featureCount < rule.minFeatures) {
-      issues.push(
-        `Feature count below threshold for ${rule.fileName}: ${featureCount} < ${rule.minFeatures}`,
-      );
-    }
-
-    const manifestEntry = manifest.files.find(
-      (entry) => entry.fileName === rule.fileName,
-    );
-    if (!manifestEntry) {
-      issues.push(`Manifest missing file entry for ${rule.fileName}`);
-      continue;
-    }
-
-    const calculatedHash = digest(raw);
-    if (manifestEntry.sha256 !== calculatedHash) {
-      issues.push(`Checksum mismatch for ${rule.fileName}`);
-    }
-
-    if (manifestEntry.featureCount !== featureCount) {
-      issues.push(
-        `Manifest feature count mismatch for ${rule.fileName}: manifest=${manifestEntry.featureCount}, actual=${featureCount}`,
-      );
-    }
-  }
-
-  for (const network of REQUIRED_TRANSIT_NETWORKS) {
+  for (const network of config.requiredNetworks) {
     const count = manifest.networkCoverage[network] ?? 0;
     if (count < 1) {
       issues.push(`Missing required transit network coverage: ${network}`);

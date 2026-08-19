@@ -4,8 +4,9 @@ import type {
   LeafletEventHandlerFnMap,
   LeafletMouseEvent,
 } from "leaflet";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { CircleMarker, Polygon, Polyline, useMapEvents } from "react-leaflet";
+import { useRafScheduledValue } from "../../hooks/useRafScheduledValue";
 import type { MeasurementMode } from "../MeasurementControl/MeasurementControl";
 
 /** Distinct from any layer's own palette, for visibility over any basemap or overlay. */
@@ -62,11 +63,11 @@ interface MeasurementLayerProps {
  *   user can see how the line/polygon would look before committing the next
  *   vertex; touch devices skip this since they have no continuous hover.
  *   `mousemove` updates are batched to one `requestAnimationFrame` per frame
- *   (the same pattern as `useSwipeToDismiss`'s `scheduleOffset`), so a burst
- *   of native mousemove events while measuring doesn't force a React
- *   re-render — and a `Polyline`/`Polygon`/`CircleMarker` rebuild — for each
- *   one; `mouseout` and a committing click cancel any pending frame so a
- *   stale scheduled point can't overwrite the immediate clear a frame later.
+ *   (see `useRafScheduledValue`), so a burst of native mousemove events
+ *   while measuring doesn't force a React re-render — and a
+ *   `Polyline`/`Polygon`/`CircleMarker` rebuild — for each one; `mouseout`
+ *   and a committing click cancel any pending frame so a stale scheduled
+ *   point can't overwrite the immediate clear a frame later.
  *   `onAddPoint` is read through a ref (see {@link useLatestRef}) so the
  *   handlers object passed to `useMapEvents` keeps one identity across
  *   renders — react-leaflet unbinds and rebinds the real Leaflet listeners
@@ -83,26 +84,8 @@ export function MeasurementLayer({
   const [hoverPoint, setHoverPoint] = useState<LatLng | null>(null);
   const onAddPointRef = useLatestRef(onAddPoint);
   const pointsRef = useLatestRef(points);
-  const pendingHoverPointRef = useRef<LatLng | null>(null);
-  const frameRef = useRef<number | null>(null);
-
-  const cancelScheduledHoverPoint = useCallback(() => {
-    if (frameRef.current !== null) {
-      cancelAnimationFrame(frameRef.current);
-      frameRef.current = null;
-    }
-  }, []);
-
-  const scheduleHoverPoint = useCallback((point: LatLng) => {
-    pendingHoverPointRef.current = point;
-    if (frameRef.current !== null) {
-      return;
-    }
-    frameRef.current = requestAnimationFrame(() => {
-      setHoverPoint(pendingHoverPointRef.current);
-      frameRef.current = null;
-    });
-  }, []);
+  const { schedule: scheduleHoverPoint, cancel: cancelScheduledHoverPoint } =
+    useRafScheduledValue(setHoverPoint);
 
   const eventHandlers = useMemo(
     (): LeafletEventHandlerFnMap => ({

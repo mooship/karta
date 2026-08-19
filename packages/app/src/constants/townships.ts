@@ -973,45 +973,27 @@ const MERAFONG_CITY_TOWNSHIP_AREA_DEFINITIONS: readonly TownshipAreaDefinitionIn
     },
   ];
 
-/** Every recognised township area across all nine Gauteng metros, flattened from each metro's own list with `metroId` attached. */
-export const TOWNSHIP_AREA_DEFINITIONS: readonly TownshipAreaDefinition[] = [
-  ...TSHWANE_TOWNSHIP_AREA_DEFINITIONS.map((definition) => ({
-    ...definition,
-    metroId: "tshwane" as const,
-  })),
-  ...JOHANNESBURG_TOWNSHIP_AREA_DEFINITIONS.map((definition) => ({
-    ...definition,
-    metroId: "johannesburg" as const,
-  })),
-  ...EKURHULENI_TOWNSHIP_AREA_DEFINITIONS.map((definition) => ({
-    ...definition,
-    metroId: "ekurhuleni" as const,
-  })),
-  ...EMFULENI_TOWNSHIP_AREA_DEFINITIONS.map((definition) => ({
-    ...definition,
-    metroId: "emfuleni" as const,
-  })),
-  ...MIDVAAL_TOWNSHIP_AREA_DEFINITIONS.map((definition) => ({
-    ...definition,
-    metroId: "midvaal" as const,
-  })),
-  ...LESEDI_TOWNSHIP_AREA_DEFINITIONS.map((definition) => ({
-    ...definition,
-    metroId: "lesedi" as const,
-  })),
-  ...MOGALE_CITY_TOWNSHIP_AREA_DEFINITIONS.map((definition) => ({
-    ...definition,
-    metroId: "mogale-city" as const,
-  })),
-  ...RAND_WEST_CITY_TOWNSHIP_AREA_DEFINITIONS.map((definition) => ({
-    ...definition,
-    metroId: "rand-west-city" as const,
-  })),
-  ...MERAFONG_CITY_TOWNSHIP_AREA_DEFINITIONS.map((definition) => ({
-    ...definition,
-    metroId: "merafong-city" as const,
-  })),
+/** Pairs each metro's own township area list with its `metroId`, feeding `TOWNSHIP_AREA_DEFINITIONS`. */
+const TOWNSHIP_AREA_DEFINITIONS_BY_METRO: readonly (readonly [
+  MetroId,
+  readonly TownshipAreaDefinitionInput[],
+])[] = [
+  ["tshwane", TSHWANE_TOWNSHIP_AREA_DEFINITIONS],
+  ["johannesburg", JOHANNESBURG_TOWNSHIP_AREA_DEFINITIONS],
+  ["ekurhuleni", EKURHULENI_TOWNSHIP_AREA_DEFINITIONS],
+  ["emfuleni", EMFULENI_TOWNSHIP_AREA_DEFINITIONS],
+  ["midvaal", MIDVAAL_TOWNSHIP_AREA_DEFINITIONS],
+  ["lesedi", LESEDI_TOWNSHIP_AREA_DEFINITIONS],
+  ["mogale-city", MOGALE_CITY_TOWNSHIP_AREA_DEFINITIONS],
+  ["rand-west-city", RAND_WEST_CITY_TOWNSHIP_AREA_DEFINITIONS],
+  ["merafong-city", MERAFONG_CITY_TOWNSHIP_AREA_DEFINITIONS],
 ];
+
+/** Every recognised township area across all nine Gauteng metros, flattened from each metro's own list with `metroId` attached. */
+export const TOWNSHIP_AREA_DEFINITIONS: readonly TownshipAreaDefinition[] =
+  TOWNSHIP_AREA_DEFINITIONS_BY_METRO.flatMap(([metroId, definitions]) =>
+    definitions.map((definition) => ({ ...definition, metroId })),
+  );
 
 function findByCensusCode(
   areas: TownshipAreaDefinition[],
@@ -1045,7 +1027,6 @@ function resolveTownshipAreaDefinition(
   name: string,
   censusId?: string,
 ): TownshipAreaDefinition | undefined {
-  const availableAreas: TownshipAreaDefinition[] = [];
   const prefixMatches: TownshipAreaDefinition[] = [];
   const nameMatches: TownshipAreaDefinition[] = [];
 
@@ -1053,7 +1034,6 @@ function resolveTownshipAreaDefinition(
     if (area.excludedSubPlaceNames?.includes(name)) {
       continue;
     }
-    availableAreas.push(area);
     if (area.subPlaceNamePrefixes?.some((prefix) => name.startsWith(prefix))) {
       prefixMatches.push(area);
     } else if (name.startsWith(area.name)) {
@@ -1070,6 +1050,11 @@ function resolveTownshipAreaDefinition(
     return bestMatch(nameMatches, censusId);
   }
   if (censusId) {
+    // Only reached once neither match list above found anything, so the
+    // full-array filter here isn't paid on the common case above.
+    const availableAreas = TOWNSHIP_AREA_DEFINITIONS.filter(
+      (area) => !area.excludedSubPlaceNames?.includes(name),
+    );
     return findByCensusCode(availableAreas, censusId);
   }
   return undefined;

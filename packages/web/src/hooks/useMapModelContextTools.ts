@@ -14,6 +14,11 @@ import { getLayer, getLayers } from "../layers/registry";
 import { m } from "../paraglide/messages.js";
 import { useMapUiStore } from "../stores/useMapUiStore";
 
+/** Wraps `text` as a single-block WebMCP tool result. */
+function textResult(text: string) {
+  return { content: [{ type: "text" as const, text }] };
+}
+
 interface ToggleLayerInput {
   layerId: string;
 }
@@ -83,17 +88,9 @@ export function useMapModelContextTools({
             : "";
           return `${layer.id}: ${layer.label}${description} (${visibility})`;
         });
-      return {
-        content: [
-          {
-            type: "text",
-            text:
-              lines.length > 0
-                ? lines.join("\n")
-                : m.webmcp_list_layers_empty(),
-          },
-        ],
-      };
+      return textResult(
+        lines.length > 0 ? lines.join("\n") : m.webmcp_list_layers_empty(),
+      );
     },
   });
 
@@ -114,39 +111,22 @@ export function useMapModelContextTools({
     execute: ({ layerId }) => {
       const layer = getLayer(layerId);
       if (!layer) {
-        return {
-          content: [
-            {
-              type: "text",
-              text: m.webmcp_toggle_layer_unknown({ layerId }),
-            },
-          ],
-        };
+        return textResult(m.webmcp_toggle_layer_unknown({ layerId }));
       }
       if (!layer.available) {
-        return {
-          content: [
-            {
-              type: "text",
-              text: m.webmcp_toggle_layer_unavailable({ label: layer.label }),
-            },
-          ],
-        };
+        return textResult(
+          m.webmcp_toggle_layer_unavailable({ label: layer.label }),
+        );
       }
       useMapUiStore.getState().toggleLayer(layerId);
       const nowVisible = useMapUiStore
         .getState()
         .visibleLayerIds.includes(layerId);
-      return {
-        content: [
-          {
-            type: "text",
-            text: nowVisible
-              ? m.webmcp_toggle_layer_now_visible({ label: layer.label })
-              : m.webmcp_toggle_layer_now_hidden({ label: layer.label }),
-          },
-        ],
-      };
+      return textResult(
+        nowVisible
+          ? m.webmcp_toggle_layer_now_visible({ label: layer.label })
+          : m.webmcp_toggle_layer_now_hidden({ label: layer.label }),
+      );
     },
   });
 
@@ -168,16 +148,9 @@ export function useMapModelContextTools({
       const results = await fetchLocationSearchResults(query);
       const [best] = results;
       if (!best) {
-        return {
-          content: [
-            {
-              type: "text",
-              text: m.webmcp_search_location_not_found({ query }),
-            },
-          ],
-        };
+        return textResult(m.webmcp_search_location_not_found({ query }));
       }
-      return { content: [{ type: "text", text: onLocationSelect(best) }] };
+      return textResult(onLocationSelect(best));
     },
   });
 
@@ -198,18 +171,10 @@ export function useMapModelContextTools({
     },
     execute: ({ basemap }) => {
       if (!getRegisteredBasemapIds().includes(basemap)) {
-        return {
-          content: [
-            { type: "text", text: m.webmcp_set_basemap_unknown({ basemap }) },
-          ],
-        };
+        return textResult(m.webmcp_set_basemap_unknown({ basemap }));
       }
       useMapUiStore.getState().setBasemap(basemap);
-      return {
-        content: [
-          { type: "text", text: m.webmcp_set_basemap_switched({ basemap }) },
-        ],
-      };
+      return textResult(m.webmcp_set_basemap_switched({ basemap }));
     },
   });
 
@@ -229,18 +194,10 @@ export function useMapModelContextTools({
     },
     execute: ({ theme }) => {
       if (!THEME_PREFERENCES.includes(theme as ThemePreference)) {
-        return {
-          content: [
-            { type: "text", text: m.webmcp_set_theme_unknown({ theme }) },
-          ],
-        };
+        return textResult(m.webmcp_set_theme_unknown({ theme }));
       }
       setThemePreference(theme as ThemePreference);
-      return {
-        content: [
-          { type: "text", text: m.webmcp_set_theme_switched({ theme }) },
-        ],
-      };
+      return textResult(m.webmcp_set_theme_switched({ theme }));
     },
   });
 
@@ -256,11 +213,7 @@ export function useMapModelContextTools({
           },
           execute: () => {
             onShowStory();
-            return {
-              content: [
-                { type: "text", text: `${story.title}\n\n${story.body}` },
-              ],
-            };
+            return textResult(`${story.title}\n\n${story.body}`);
           },
         }
       : null,

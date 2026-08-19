@@ -29,7 +29,12 @@ import {
   runOutputValidation,
 } from "./validateOutput";
 
-const stubConfig = { regionId: "gauteng", metros: [], sources: [] };
+const stubConfig = {
+  regionId: "gauteng",
+  metros: [],
+  sources: [],
+  requiredNetworks: [],
+};
 
 describe("validateOutput", () => {
   beforeEach(() => {

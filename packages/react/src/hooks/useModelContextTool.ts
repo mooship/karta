@@ -80,11 +80,10 @@ export function useModelContextTool<TInput = unknown>(
   definition: ModelContextToolDefinition<TInput> | null,
 ): void {
   const executeRef = useLatestRef(definition?.execute);
-  const definitionRef = useLatestRef(definition);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: definition?.name is a re-registration trigger, not read directly in the effect body — the effect reads the live value via definitionRef instead
+  // biome-ignore lint/correctness/useExhaustiveDependencies: definition?.name is a re-registration trigger; description/inputSchema are intentionally captured from this closure at registration time rather than kept live, so `definition` itself isn't a live dependency here -- only `execute` is (via executeRef)
   useEffect(() => {
-    const currentDefinition = definitionRef.current;
+    const currentDefinition = definition;
     const modelContext = document.modelContext;
     if (!currentDefinition || !modelContext) {
       return;

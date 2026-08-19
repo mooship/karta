@@ -165,15 +165,17 @@ async function runRegion(config: RegionPipelineConfig): Promise<void> {
     const networkCoverage = mergeNetworkCoverage(
       ...fetchedSources.map((entry) => countTransitNetworks(entry.collection)),
     );
-    assertCompleteNetworkCoverage(networkCoverage);
+    assertCompleteNetworkCoverage(networkCoverage, config.requiredNetworks);
 
-    for (const { source, collection } of fetchedSources) {
-      await writeGeoJsonFile(
-        resolve(outputDir, source.outputFileName),
-        createDisplayTransit(collection as TransitLayerFeatureCollection),
-        { compact: true },
-      );
-    }
+    await Promise.all(
+      fetchedSources.map(({ source, collection }) =>
+        writeGeoJsonFile(
+          resolve(outputDir, source.outputFileName),
+          createDisplayTransit(collection as TransitLayerFeatureCollection),
+          { compact: true },
+        ),
+      ),
+    );
 
     const manifest = await buildOutputManifest(
       outputDir,

@@ -187,6 +187,37 @@ const MAJOR_PRIMARY_LABEL_MIN_SUBPLACES = 12;
 const OVERVIEW_ZOOM_THRESHOLD = 9;
 const DETAIL_ZOOM_THRESHOLD = 11;
 
+/** `pathOptions.opacity` for an area-outline feature, tiered by theme and label priority. */
+function getAreaBoundaryOpacity(dark: boolean, isSecondary: boolean): number {
+  if (dark) {
+    return isSecondary ? 0.42 : 0.62;
+  }
+  return isSecondary ? 0.72 : 1;
+}
+
+/** `pathOptions.weight` for an area-outline feature, tiered by theme, label priority, and zoom. */
+function getAreaBoundaryWeight(
+  dark: boolean,
+  isSecondary: boolean,
+  isOverviewZoom: boolean,
+): number {
+  if (dark) {
+    return isSecondary ? 1 : isOverviewZoom ? 1 : 2;
+  }
+  if (isSecondary) {
+    return isOverviewZoom ? 1 : 2;
+  }
+  return isOverviewZoom ? 2 : 4;
+}
+
+/** Resolves a tile-source cycling state's index, falling back to 0 once `state.mode` is stale (a basemap/theme change reset the cycle). */
+function resolveTileSourceIndex(
+  state: { mode: string; index: number },
+  mode: string,
+): number {
+  return state.mode === mode ? state.index : 0;
+}
+
 type SelectableFeatureLayer = Layer & {
   feature?: Feature;
   bindPopup?: (content: string) => SelectableFeatureLayer;
@@ -775,8 +806,10 @@ function MapViewComponent<
     index: 0,
   }));
   const [mapZoom, setMapZoom] = useState(9);
-  const currentTileSourceIndex =
-    tileSourceState.mode === tileSourceMode ? tileSourceState.index : 0;
+  const currentTileSourceIndex = resolveTileSourceIndex(
+    tileSourceState,
+    tileSourceMode,
+  );
   const safeTileSourceIndex = Math.min(
     currentTileSourceIndex,
     tileSources.length - 1,
@@ -784,8 +817,7 @@ function MapViewComponent<
   const tileSource = tileSources[safeTileSourceIndex] ?? tileSources[0];
   const handleTileError = useCallback(() => {
     setTileSourceState((currentState) => {
-      const currentIndex =
-        currentState.mode === tileSourceMode ? currentState.index : 0;
+      const currentIndex = resolveTileSourceIndex(currentState, tileSourceMode);
       if (currentIndex >= tileSources.length - 1) {
         return {
           mode: tileSourceMode,
@@ -834,10 +866,27 @@ function MapViewComponent<
     }),
     [areas],
   );
+  /**
+   * @remarks `useLayerData`'s `setData` replaces the whole `overlayData`
+   *   object on every individual layer's fetch resolving, so a plain
+   *   `useMemo` keyed on `overlayData` would re-walk every selectable
+   *   layer's full feature set (choropleth `areaData` included) each time
+   *   *any* layer's data arrives. Cached per layer id, keyed by that layer's
+   *   own data reference, so only the layer whose data actually changed gets
+   *   re-walked.
+   */
+  const selectableEntriesCacheRef = useRef(
+    new Map<
+      string,
+      { data: FeatureCollection; entries: SelectableFeatureSearchEntry[] }
+    >(),
+  );
   const selectableSearchEntries = useMemo<
     SelectableFeatureSearchEntry[]
   >(() => {
     const entries: SelectableFeatureSearchEntry[] = [];
+    const cache = selectableEntriesCacheRef.current;
+    const seenLayerIds = new Set<string>();
     for (const layer of visibleLayers) {
       if (!layer.interaction?.selectable) {
         continue;
@@ -847,18 +896,32 @@ function MapViewComponent<
       if (!data) {
         continue;
       }
+      seenLayerIds.add(layer.id);
+      const cached = cache.get(layer.id);
+      if (cached?.data === data) {
+        entries.push(...cached.entries);
+        continue;
+      }
       const labelField = layer.interaction.labelField ?? "name";
+      const layerEntries: SelectableFeatureSearchEntry[] = [];
       for (const feature of data.features) {
         const properties = feature.properties as Record<string, unknown> | null;
         const featureId = properties?.id;
         if (!properties || typeof featureId !== "string") {
           continue;
         }
-        entries.push({
+        layerEntries.push({
           id: featureId,
           label: resolveFeatureLabel(properties, labelField),
           layerId: layer.id,
         });
+      }
+      cache.set(layer.id, { data, entries: layerEntries });
+      entries.push(...layerEntries);
+    }
+    for (const layerId of cache.keys()) {
+      if (!seenLayerIds.has(layerId)) {
+        cache.delete(layerId);
       }
     }
     // Only mutually-exclusive selectable layers (see the domain's
@@ -890,6 +953,32 @@ function MapViewComponent<
         ]),
       ),
     [visibleLayers, resolvedDark],
+  );
+  /**
+   * @remarks Passed as the area-outline `GeoJSON`'s `style` prop, so it needs
+   *   the same stable-identity treatment as `layerPathOptionsById` below: an
+   *   inline function here would restyle every area-outline polygon on every
+   *   render (each zoom tick included), even though its output only actually
+   *   depends on `resolvedDark`/`isOverviewZoom`.
+   */
+  const areaBoundaryStyle = useCallback(
+    (feature?: Feature) => {
+      const isSecondary = feature?.properties?.labelPriority === "secondary";
+      return {
+        color: resolveThemedColor(
+          AREA_OUTLINE.color,
+          AREA_OUTLINE.darkColor,
+          resolvedDark,
+        ),
+        opacity: getAreaBoundaryOpacity(resolvedDark, isSecondary),
+        weight: getAreaBoundaryWeight(
+          resolvedDark,
+          isSecondary,
+          isOverviewZoom,
+        ),
+      };
+    },
+    [resolvedDark, isOverviewZoom],
   );
   /**
    * Each visible layer's `pathOptions`, with its pane folded in, memoised by
@@ -1058,33 +1147,7 @@ function MapViewComponent<
             data={areaBoundaryData}
             smoothFactor={0}
             pathOptions={AREA_OUTLINE_PATH_OPTIONS}
-            style={(feature: Feature | undefined) => ({
-              color: resolveThemedColor(
-                AREA_OUTLINE.color,
-                AREA_OUTLINE.darkColor,
-                resolvedDark,
-              ),
-              opacity: resolvedDark
-                ? feature?.properties?.labelPriority === "secondary"
-                  ? 0.42
-                  : 0.62
-                : feature?.properties?.labelPriority === "secondary"
-                  ? 0.72
-                  : 1,
-              weight: resolvedDark
-                ? feature?.properties?.labelPriority === "secondary"
-                  ? 1
-                  : isOverviewZoom
-                    ? 1
-                    : 2
-                : feature?.properties?.labelPriority === "secondary"
-                  ? isOverviewZoom
-                    ? 1
-                    : 2
-                  : isOverviewZoom
-                    ? 2
-                    : 4,
-            })}
+            style={areaBoundaryStyle}
             onEachFeature={bindAreaBoundaryLabel}
           />
         ) : null}
