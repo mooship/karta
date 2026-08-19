@@ -1,4 +1,6 @@
-import * as turf from "@turf/turf";
+import { distance } from "@turf/distance";
+import { lineString, point } from "@turf/helpers";
+import { pointToLineDistance } from "@turf/point-to-line-distance";
 import type { LineString, Point, Position } from "geojson";
 
 /**
@@ -18,24 +20,20 @@ export function nearestFeatureDistance(
     return null;
   }
 
-  const point = turf.point(origin);
+  const origin_ = point(origin);
   let nearestKm = Number.POSITIVE_INFINITY;
 
   for (const geometry of geometries) {
-    const distance =
+    const km =
       geometry.type === "Point"
-        ? turf.distance(point, turf.point(geometry.coordinates), {
+        ? distance(origin_, point(geometry.coordinates), {
             units: "kilometers",
           })
-        : turf.pointToLineDistance(
-            point,
-            turf.lineString(geometry.coordinates),
-            {
-              units: "kilometers",
-            },
-          );
-    if (distance < nearestKm) {
-      nearestKm = distance;
+        : pointToLineDistance(origin_, lineString(geometry.coordinates), {
+            units: "kilometers",
+          });
+    if (km < nearestKm) {
+      nearestKm = km;
     }
   }
 

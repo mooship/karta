@@ -1,4 +1,5 @@
-import * as turf from "@turf/turf";
+import { clone } from "@turf/clone";
+import { coordEach } from "@turf/meta";
 import type { Feature, FeatureCollection, Geometry, Position } from "geojson";
 import proj4, { type Converter } from "proj4";
 
@@ -66,8 +67,8 @@ export function reprojectGeometry(
     );
   }
   const converter = proj4(sourceCrs, WGS84);
-  const reprojected = turf.clone(geometry);
-  turf.coordEach(reprojected, (coord) => {
+  const reprojected = clone(geometry);
+  coordEach(reprojected, (coord) => {
     const [lon, lat] = applyConverter(converter, coord) as [number, number];
     coord[0] = lon;
     coord[1] = lat;

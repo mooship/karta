@@ -25,10 +25,10 @@ export interface DomainRegistry {
  * const { getLayers, getLayer, getLayerGroups, getStory } = createRegistry(GAUTENG_SPATIAL_LEGACY_DOMAIN);
  */
 export function createRegistry(domain: DomainConfig): DomainRegistry {
+  const layersById = new Map(domain.layers.map((layer) => [layer.id, layer]));
   return {
     getLayers: (): readonly Layer[] => domain.layers,
-    getLayer: (id: string): Layer | undefined =>
-      domain.layers.find((l) => l.id === id),
+    getLayer: (id: string): Layer | undefined => layersById.get(id),
     getLayerGroups: (): readonly LayerGroup[] => domain.layerGroups,
     getStory: (): DomainStory | undefined => domain.story,
   };
