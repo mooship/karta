@@ -434,6 +434,38 @@ describe("MapView", () => {
     expect(onSelectableFeaturesChange).toHaveBeenLastCalledWith([]);
   });
 
+  it("evicts a hidden selectable layer's cached entries so they don't leak into a later report", () => {
+    const onSelectableFeaturesChange = vi.fn();
+
+    const { rerender } = render(
+      withDomain(
+        <MapView
+          {...DEFAULT_MAP_VIEW_PROPS}
+          areas={areas}
+          visibleLayerIds={["areas"]}
+          onSelectableFeaturesChange={onSelectableFeaturesChange}
+        />,
+      ),
+    );
+
+    expect(onSelectableFeaturesChange).toHaveBeenLastCalledWith([
+      { id: "A", label: "Mamelodi", layerId: "areas" },
+    ]);
+
+    rerender(
+      withDomain(
+        <MapView
+          {...DEFAULT_MAP_VIEW_PROPS}
+          areas={areas}
+          visibleLayerIds={[]}
+          onSelectableFeaturesChange={onSelectableFeaturesChange}
+        />,
+      ),
+    );
+
+    expect(onSelectableFeaturesChange).toHaveBeenLastCalledWith([]);
+  });
+
   it("reports no entries yet for a selectable overlay layer whose data hasn't loaded", () => {
     const onSelectableFeaturesChange = vi.fn();
     vi.stubGlobal(
