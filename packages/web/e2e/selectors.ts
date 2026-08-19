@@ -37,6 +37,7 @@ export const E2E = {
   panelTab: {
     layers: "panel-tab-layers",
     story: "panel-tab-story",
+    browser: "panel-tab-browser",
   },
   townshipPopup: "township-popup",
   locationContextMenu: "location-context-menu",
