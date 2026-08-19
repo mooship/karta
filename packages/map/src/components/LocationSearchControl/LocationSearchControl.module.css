@@ -29,26 +29,10 @@
 }
 
 .input {
-  width: 100%;
-  min-height: var(--control-height, 44px);
+  composes: searchInput from "../../shared.module.css";
   padding: 0.5rem 3.25rem 0.5rem 0.625rem;
-  border: 1px solid var(--md-sys-color-outline);
-  border-radius: var(--md-sys-shape-corner-small);
-  background: var(--md-sys-color-surface-container);
-  color: var(--md-sys-color-on-surface);
-  font: inherit;
   letter-spacing: 0.004em;
   text-overflow: ellipsis;
-  transition: background-color var(--motion-duration-short)
-    var(--motion-ease-standard);
-}
-
-.input:focus {
-  background: var(--md-sys-color-surface-container-high);
-}
-
-.input::-webkit-search-cancel-button {
-  display: none;
 }
 
 /*

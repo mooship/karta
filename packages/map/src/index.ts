@@ -11,10 +11,14 @@ export type {
 } from "./components/ControlButton/ControlButton";
 export { ControlButton } from "./components/ControlButton/ControlButton";
 export { DesktopLegend } from "./components/DesktopLegend/DesktopLegend";
+export { FeatureBrowser } from "./components/FeatureBrowser/FeatureBrowser";
 export { IconButton } from "./components/IconButton/IconButton";
 export { Legend } from "./components/Legend/Legend";
 export type { SelectableFeatureSearchEntry } from "./components/LocationSearchControl/LocationSearchControl";
-export { LocationSearchControl } from "./components/LocationSearchControl/LocationSearchControl";
+export {
+  LocationSearchControl,
+  matchesFeatureLabel,
+} from "./components/LocationSearchControl/LocationSearchControl";
 export type {
   MeasurementControlProps,
   MeasurementMode,

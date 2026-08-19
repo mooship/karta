@@ -30,6 +30,22 @@ export interface SelectableFeatureSearchEntry {
   layerId: string;
 }
 
+/**
+ * Case-insensitive substring match of `query` against `feature.label`.
+ * @remarks Shared by this component's own feature search and by
+ *   `FeatureBrowser`'s filter box -- both need the identical "does this
+ *   query match this feature's label" check, just under different
+ *   surrounding policy (this component also gates on a minimum query length
+ *   and caps the result count; `FeatureBrowser` does neither), so only the
+ *   match predicate itself is factored out here.
+ */
+export function matchesFeatureLabel(
+  feature: Pick<SelectableFeatureSearchEntry, "label">,
+  query: string,
+): boolean {
+  return feature.label.toLowerCase().includes(query.toLowerCase());
+}
+
 /** A single dropdown entry: either a map feature to select, or a place to fly to. */
 type CombinedResult =
   | { kind: "feature"; id: string; label: string }
@@ -117,9 +133,8 @@ export function LocationSearchControl({
     if (trimmedQuery.length < MIN_SEARCH_QUERY_LENGTH) {
       return [];
     }
-    const lowerQuery = trimmedQuery.toLowerCase();
     return selectableFeatures
-      .filter((feature) => feature.label.toLowerCase().includes(lowerQuery))
+      .filter((feature) => matchesFeatureLabel(feature, trimmedQuery))
       .slice(0, MAX_FEATURE_RESULTS);
   }, [selectableFeatures, trimmedQuery]);
 

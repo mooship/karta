@@ -1,3 +1,4 @@
+import type { Layer } from "@karta/core";
 import { render, screen, waitFor } from "@testing-library/react";
 import { forwardRef, type ReactNode } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -6,6 +7,15 @@ const dataMocks = vi.hoisted(() => ({
   getTownships: vi.fn(),
   fetchAreas: vi.fn(),
 }));
+
+/**
+ * A mutable knob the `./layers/registry` mock below reads on every
+ * `getLayers()` call, so a single hoisted `vi.mock` factory (unlike the
+ * factory itself, which only runs once) can serve both scenarios this file
+ * covers -- toggled per test rather than duplicating the module mocks and
+ * fixture data in a second file.
+ */
+const registryOverrides = vi.hoisted(() => ({ stripInteraction: false }));
 
 vi.mock("react-leaflet", () => ({
   MapContainer: ({ children }: { children: ReactNode }) => (
@@ -52,6 +62,12 @@ vi.mock("./layers/registry", async (importOriginal) => {
   return {
     ...actual,
     getStory: () => undefined,
+    getLayers: (): Layer[] =>
+      registryOverrides.stripInteraction
+        ? actual
+            .getLayers()
+            .map((layer) => ({ ...layer, interaction: undefined }))
+        : actual.getLayers(),
   };
 });
 
@@ -60,6 +76,7 @@ import { useMapUiStore } from "./stores/useMapUiStore";
 
 describe("App with a domain that has no story", () => {
   beforeEach(() => {
+    registryOverrides.stripInteraction = false;
     useMapUiStore.getState().reset();
     dataMocks.getTownships.mockReset().mockResolvedValue([
       {
@@ -93,6 +110,20 @@ describe("App with a domain that has no story", () => {
     expect(screen.getByTestId("panel-tab-layers")).toBeInTheDocument();
     expect(screen.getByTestId("panel-tab-browser")).toBeInTheDocument();
     expect(screen.queryByTestId("panel-tab-story")).not.toBeInTheDocument();
+    expect(
+      await screen.findByRole("checkbox", { name: "Modelled car time" }),
+    ).toBeInTheDocument();
+  });
+
+  it("renders layer toggles directly, with no tab UI, when the domain also has no selectable layer", async () => {
+    registryOverrides.stripInteraction = true;
+    render(<App />);
+
+    await waitFor(() =>
+      expect(screen.getByTestId("geojson-layer")).toBeInTheDocument(),
+    );
+
+    expect(screen.queryByTestId("panel-tablist")).not.toBeInTheDocument();
     expect(
       await screen.findByRole("checkbox", { name: "Modelled car time" }),
     ).toBeInTheDocument();
