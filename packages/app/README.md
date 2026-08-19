@@ -9,6 +9,7 @@ Gauteng-specific domain data and constants for `gauteng-spatial-legacy`, the ref
 - **`constants/regions.ts`** — `REGIONS`, the registry driving per-region output directories and data-fetch URLs (currently one entry, `gauteng`, kind `province`).
 - **`constants/townships.ts`** — included township-area groupings per metro.
 - **`types/`** — Gauteng-specific GeoJSON/transit contracts (`TownshipFeature`, `TownshipProperties`, transit layer id lists), plus `types/genericLayer.ts`, which re-exports the `Layer`/`LayerGroup` contracts from `@karta/core` for any other domain built the same way.
+- **`domains/heritage-sites/`** — a second, national-scope domain (`HERITAGE_SITES_LAYERS`, `HERITAGE_SITES_LAYER_GROUPS`, `HERITAGE_SITES_DOMAIN`): a single hand-authored Point layer of publicly documented anti-apartheid and democracy heritage sites, with no `data-pipeline` source behind it. It exists to prove `DomainConfig`/`Layer` carry no region or metro assumption — see its own `index.ts` for a worked second example — and is deliberately not wired into `packages/web`, which still publishes only `gauteng-spatial-legacy`.
 
 ## What doesn't belong here
 
