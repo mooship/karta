@@ -180,6 +180,16 @@ async function fetchBus(): Promise<TransitLayerFeatureCollection> {
   return mergeFeatureCollections([gautrainBus, tshwaneBus]);
 }
 
+/** Transit networks every published `gauteng` build must have at least one feature for. */
+const REQUIRED_TRANSIT_NETWORKS = [
+  "Gautrain",
+  "PRASA",
+  "Gautrain Bus",
+  "A Re Yeng",
+  "Rea Vaya",
+  "Tshwane Bus Services",
+] as const;
+
 const sources: PipelineSource[] = [
   {
     layerId: "rapid-rail",
@@ -214,4 +224,5 @@ export const GAUTENG_PIPELINE_CONFIG: RegionPipelineConfig = {
   regionId: REGION_ID,
   metros: gautengMetros,
   sources,
+  requiredNetworks: REQUIRED_TRANSIT_NETWORKS,
 };

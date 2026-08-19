@@ -21,6 +21,7 @@ describe("PipelineSource/RegionPipelineConfig", () => {
       regionId: "gauteng",
       metros: [],
       sources: [],
+      requiredNetworks: [],
     };
     expect(config.regionId).toBe("gauteng");
   });

@@ -7,12 +7,12 @@ import {
   buildOutputLayerRules,
   buildOutputManifest,
   countTransitNetworks,
-  REQUIRED_TRANSIT_NETWORKS,
   validateOutputDirectory,
 } from "./outputManifest";
 import { GAUTENG_PIPELINE_CONFIG } from "./regions/gautengPipelineConfig";
 
 const OUTPUT_LAYER_RULES = buildOutputLayerRules(GAUTENG_PIPELINE_CONFIG);
+const REQUIRED_TRANSIT_NETWORKS = GAUTENG_PIPELINE_CONFIG.requiredNetworks;
 
 function collection(featureCount: number): string {
   return JSON.stringify({

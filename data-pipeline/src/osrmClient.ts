@@ -3,6 +3,7 @@ import { sleep } from "./asyncUtils";
 import { hashKey, readJsonCache, writeJsonCache } from "./cache";
 import type { JobCenter } from "./constants/jobCenters";
 import { getOsrmBaseUrl } from "./constants/serviceUrls";
+import { fetchWithTimeout } from "./httpUtils";
 
 /** The nearest job centre to an origin point, and the modelled drive time to reach it. */
 export interface NearestJobCenterResult {
@@ -43,13 +44,8 @@ async function fetchTable(
   let lastError: unknown;
 
   for (let attempt = 1; attempt <= 3; attempt++) {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => {
-      controller.abort();
-    }, OSRM_TIMEOUT_MS);
-
     try {
-      const response = await fetch(url, { signal: controller.signal });
+      const response = await fetchWithTimeout(url, {}, OSRM_TIMEOUT_MS);
       if (!response.ok) {
         if (
           (response.status === 429 || response.status === 504) &&
@@ -75,8 +71,6 @@ async function fetchTable(
       if (attempt < 3) {
         await sleep(BATCH_DELAY_MS * attempt);
       }
-    } finally {
-      clearTimeout(timeout);
     }
   }
 

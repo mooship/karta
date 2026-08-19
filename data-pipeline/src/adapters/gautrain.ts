@@ -2,6 +2,7 @@ import type { TransitLayerFeatureCollection } from "@karta/app";
 import { sleep } from "../asyncUtils";
 import { hashKey, readJsonCache, writeJsonCache } from "../cache";
 import { getOverpassUrls } from "../constants/serviceUrls";
+import { fetchWithTimeout } from "../httpUtils";
 import {
   normalizeRelationTransitOverpass,
   normalizeWayNodeTransitOverpass,
@@ -145,20 +146,18 @@ export async function fetchOverpass(
 
   await waitForOverpassSlot();
 
-  const controller = new AbortController();
-  const timeout = setTimeout(() => {
-    controller.abort();
-  }, OVERPASS_TIMEOUT_MS);
-
   try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "User-Agent": "buffer-zones-data-pipeline (github.com/buffer-zones)",
+    const response = await fetchWithTimeout(
+      url,
+      {
+        method: "POST",
+        headers: {
+          "User-Agent": "buffer-zones-data-pipeline (github.com/buffer-zones)",
+        },
+        body: `data=${encodeURIComponent(query)}`,
       },
-      body: `data=${encodeURIComponent(query)}`,
-      signal: controller.signal,
-    });
+      OVERPASS_TIMEOUT_MS,
+    );
 
     if (!response.ok) {
       if (
@@ -195,8 +194,6 @@ export async function fetchOverpass(
     }
 
     throw error;
-  } finally {
-    clearTimeout(timeout);
   }
 }
 

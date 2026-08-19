@@ -24,4 +24,10 @@ export interface RegionPipelineConfig {
   metros: MetroDefinition[];
   /** One `PipelineSource` per transit layer this region produces. */
   sources: PipelineSource[];
+  /**
+   * Transit network names (as they appear in a feature's `network`
+   * property) every published build of this region must have at least one
+   * feature for -- see `countTransitNetworks`/`assertCompleteNetworkCoverage`.
+   */
+  requiredNetworks: readonly string[];
 }
