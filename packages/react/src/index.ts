@@ -1,4 +1,6 @@
 export { useCanHover } from "./hooks/useCanHover";
+export type { DeferredReadyAttribute } from "./hooks/useDeferredReadyAttribute";
+export { useDeferredReadyAttribute } from "./hooks/useDeferredReadyAttribute";
 export {
   getViewportWidth,
   MOBILE_BREAKPOINT_PX,

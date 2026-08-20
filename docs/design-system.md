@@ -88,20 +88,36 @@ M3 roles rather than raw hex values, so they stay theme-adaptive:
 	`--state-selected` (12%, tinted with `--md-sys-color-primary` instead of
 	`--md-sys-color-on-surface`) match M3's own ripple/state-layer opacities.
 - **Motion**: `--motion-ease-decelerate`/`--motion-ease-accelerate` use M3's
-	*Emphasized* easing set (not the flatter Standard curves) for anything
-	entering/settling or leaving the screen once — panels, sheets, popovers,
-	legend/layer-list entrance stagger, error toasts — so chrome feels more
-	alive without adding a second, app-invented motion vocabulary.
-	`--motion-ease-standard` stays the flatter M3 Standard curve for
-	hover/press feedback and anything that can repeat in quick succession,
-	where the extra emphasis would read as jitter rather than character.
-	`--motion-ease-spring` is a small-overshoot curve reserved for isolated,
-	one-shot punctuation (a `SegmentedControl` option popping into place on
-	selection) — not part of the M3 spec's named easing sets, but in the
-	spirit of Material You's own spring-based motion physics, and never used
-	on anything that repeats rapidly or moves a large surface. All of it
-	still collapses under `prefers-reduced-motion` via the existing global
-	rule (see "Accessibility policy" below).
+	*Emphasized* easing set (not the flatter Standard curves) for elements
+	entering/settling or leaving the screen once over a **short** distance —
+	popovers, error toasts, the desktop info panel's own few-pixel fade,
+	legend/layer-list entrance stagger — so chrome feels more alive without
+	adding a second, app-invented motion vocabulary. `--motion-ease-accelerate`
+	is currently reserved rather than wired up anywhere (no exit in this app
+	is both one-shot and short-distance yet), kept alongside decelerate as
+	the named pair M3's Emphasized set actually defines. Emphasized's curve
+	front-loads most of its travel into roughly the first 15% of the
+	duration; over a few pixels that reads as a snappy, smooth settle, but
+	over a long travel it reads as a violent whip followed by a long,
+	barely-visible crawl. So anything that moves a large surface a long
+	distance in one motion — the mobile Explore sheet's own full-height
+	slide, and the panel-toggle/legend triggers that climb the same distance
+	in lockstep with it — reaches for `--motion-ease-large-surface` instead,
+	even though it's also entering/leaving the screen once. That's a named
+	alias for `--motion-ease-standard`, not a third curve, so a future
+	large-surface mover states that fact directly rather than re-deriving
+	"Emphasized is wrong here because the distance is large" from scratch at
+	its own call site. `--motion-ease-standard` is the default otherwise
+	too: hover/press feedback and anything that can repeat in quick
+	succession, where Emphasized's extra emphasis
+	would read as jitter rather than character. `--motion-ease-spring` is a
+	small-overshoot curve reserved for isolated, one-shot punctuation (a
+	`SegmentedControl` option popping into place on selection) — not part of
+	the M3 spec's named easing sets, but in the spirit of Material You's own
+	spring-based motion physics, and never used on anything that repeats
+	rapidly or moves a large surface. All of it still collapses under
+	`prefers-reduced-motion` via the existing global rule (see "Accessibility
+	policy" below).
 
 ## Typography
 
