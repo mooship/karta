@@ -53,6 +53,12 @@ export declare const urlPatterns: Array<{
     pattern: string;
     localized: Array<[Locale, string]>;
 }>;
+/**
+ * Controls trailing slash canonicalization for localized URLs.
+ *
+ * @type {"always" | "never" | undefined}
+ */
+export declare const trailingSlash: "always" | "never" | undefined;
 export type ParaglideAsyncLocalStorage = {
     getStore(): {
         locale?: Locale;
@@ -477,6 +483,20 @@ export declare function deLocalizeUrl(url: string | URL): URL;
  * @returns {Record<string, string | null | undefined>} An object containing all named groups from the match.
  */
 export declare function aggregateGroups(match: any): Record<string, string | null | undefined>;
+export type FastPathPattern = {
+    protocol: string | undefined;
+    hostname: string | undefined;
+    port: string | undefined;
+    pathnamePrefix: string;
+    pathMode: "segments" | "catch-all-optional" | "catch-all-required";
+};
+export type FastPathRoute = {
+    base: FastPathPattern;
+    localized: Array<{
+        locale: string;
+        pattern: FastPathPattern;
+    }>;
+};
 /**
  * Match route policy against both the public URL and its canonical URL.
  *
