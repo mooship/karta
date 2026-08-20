@@ -418,20 +418,14 @@
      * sheet's own `panelSheetIn` slide-up below -- so the trigger teleported
      * to its final resting spot above a sheet that hadn't risen into view
      * yet, then just sat there until the sheet caught up. Sharing the
-     * sheet's own duration *and* easing here (not just a roughly-matched
-     * duration) is what actually makes the two move as one: two transitions
-     * of equal length but different curves still visually settle at
-     * different times, since an ease-*decelerate* curve (this one) reaches
-     * "visually still" well before an ease-*standard* curve of the same
-     * length does. `data-panel-open` (see App.tsx's `panelVisuallyOpen`)
-     * flips back to `false` the moment the sheet *starts* closing too, not
-     * once its own exit animation has already finished, so this transition
-     * also carries the trigger back down in step with the sheet's
-     * slide-out instead of snapping into place a beat after it's already
-     * gone -- the sheet's own closing curve is ease-*accelerate*, not this
-     * rule's ease-decelerate, so that direction stays a close-but-not-exact
-     * match, a small asymmetry accepted over hand-rolling a second,
-     * `data-panel-closing`-scoped transition just for this one control.
+     * sheet's own duration *and* easing (`--motion-ease-large-surface`, same
+     * reasoning as `.panel`'s own `panelSheetIn` comment below -- this
+     * trigger climbs the same distance) is what actually makes the two move
+     * as one. `data-panel-open` (see App.tsx's `panelVisuallyOpen`) flips
+     * back to `false` the moment the sheet *starts* closing too, not once
+     * its own exit animation has already finished, so this transition also
+     * carries the trigger back down in step with the sheet's slide-out
+     * instead of snapping into place a beat after it's already gone.
      *
      * This button is a `ControlButton`, whose own stylesheet
      * (ControlButton.module.css's `.button`) declares its own `transition`
@@ -453,7 +447,7 @@
   button.panelTrigger {
     transition:
       var(--control-button-transition),
-      bottom var(--panel-reposition-duration) var(--motion-ease-decelerate);
+      bottom var(--panel-reposition-duration) var(--motion-ease-large-surface);
   }
 
   .panel {
@@ -481,15 +475,27 @@
      * `button.panelTrigger`'s own comment above. The two used to drift (this
      * was 340ms against the trigger's 300ms, "roughly" matching by the
      * previous comment's own admission); sharing the identical token is what
-     * actually makes them move as one rather than a near-miss. The M3
-     * decelerate/accelerate curves (index.css) replace the bespoke
-     * cubic-beziers this used to hand-roll, matching the desktop `.panel`'s
-     * own `panelIn` entrance and this file's stated convention (decelerate
-     * in, accelerate out) instead of a third, unrelated feel for the same
-     * sheet appearing/leaving.
+     * actually makes them move as one rather than a near-miss.
+     * `--motion-ease-large-surface`, not the Emphasized decelerate curve the
+     * desktop `.panel`'s own (8px, small) `panelIn` entrance uses below --
+     * see `docs/design-system.md`'s Motion section for why Emphasized reads
+     * as violent rather than smooth over this sheet's full hundreds-of-
+     * pixels travel.
      */
     animation: panelSheetIn var(--panel-reposition-duration)
-      var(--motion-ease-decelerate);
+      var(--motion-ease-large-surface);
+    /*
+     * Paused at its first frame until `data-sheet-entrance-ready` -- set via
+     * `@karta/react`'s `useDeferredReadyAttribute` (see its own doc comment
+     * for why), called from `handlePanelToggle` in App.tsx. Same reasoning
+     * as the desktop entrance's own `data-entrance-ready` gate above, for a
+     * different trigger.
+     */
+    animation-play-state: paused;
+  }
+
+  .app[data-sheet-entrance-ready="true"] .panel {
+    animation-play-state: running;
   }
 
   .panel[data-panel-dragging="true"] {
@@ -499,7 +505,7 @@
 
   .panel[data-panel-closing="true"] {
     animation: panelSheetOut var(--panel-reposition-duration)
-      var(--motion-ease-accelerate) forwards;
+      var(--motion-ease-large-surface) forwards;
     pointer-events: none;
   }
 

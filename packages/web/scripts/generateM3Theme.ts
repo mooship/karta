@@ -21,8 +21,8 @@ import {
   SchemeTonalSpot,
 } from "@material/material-color-utilities";
 
-/** Karta's brand accent (the historical `--color-ochre` value) — the single seed every M3 tonal palette is derived from. */
-const SEED_COLOR_HEX = "#8a5a1e";
+/** Karta's brand seed — a deep teal chosen for a bolder, more distinctive identity than the app's original ochre — the single colour every M3 tonal palette is derived from. */
+const SEED_COLOR_HEX = "#0E8388";
 
 /** Every M3 colour role consumed by `@material/web` components or by Karta's own hand-rolled chrome (Leaflet controls, popups). */
 const COLOR_ROLES = [
