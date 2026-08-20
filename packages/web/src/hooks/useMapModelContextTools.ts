@@ -6,7 +6,7 @@ import {
   type LocationSearchResult,
   type MeasurementMode,
 } from "@karta/map";
-import type { ThemePreference } from "@karta/react";
+import type { ModelContextToolResult, ThemePreference } from "@karta/react";
 import {
   setThemePreference,
   THEME_PREFERENCES,
@@ -49,31 +49,80 @@ interface ResolvedMeasurementLocation {
 }
 
 /**
- * Geocodes each of `locations`, in order, via `fetchLocationSearchResults`,
- * taking the best match for each.
- * @returns Every resolved point (in the same order as `locations`), or the
- *   first query that had no match — `measure-distance`/`measure-area` stop
- *   there rather than silently measuring across whichever locations did
- *   resolve.
+ * Geocodes every one of `locations` concurrently via
+ * `fetchLocationSearchResults`, taking the best match for each.
+ * @returns Every resolved point, in the same order as `locations`, or the
+ *   first (in `locations`' own order, not resolution order) query that had
+ *   no match — `measure-distance`/`measure-area` stop there rather than
+ *   silently measuring across whichever locations did resolve.
+ * @remarks Firing the lookups concurrently, rather than one at a time,
+ *   avoids paying each geocode's latency serially in the common case where
+ *   every location resolves; a location that has no match still costs one
+ *   wasted lookup per location after it, but that only happens on the rarer
+ *   failure path.
  */
 async function resolveMeasurementLocations(
   locations: string[],
 ): Promise<
   { locations: ResolvedMeasurementLocation[] } | { notFoundQuery: string }
 > {
-  const resolved: ResolvedMeasurementLocation[] = [];
-  for (const query of locations) {
-    const [best] = await fetchLocationSearchResults(query);
-    if (!best) {
-      return { notFoundQuery: query };
-    }
-    resolved.push({
-      label: best.label,
-      lat: best.latitude,
-      lng: best.longitude,
-    });
+  const resolutions = await Promise.all(
+    locations.map(async (query) => ({
+      query,
+      best: (await fetchLocationSearchResults(query))[0],
+    })),
+  );
+  const notFound = resolutions.find((resolution) => !resolution.best);
+  if (notFound) {
+    return { notFoundQuery: notFound.query };
   }
-  return { locations: resolved };
+  return {
+    locations: resolutions.map(({ best }) => {
+      const match = best as LocationSearchResult;
+      return { label: match.label, lat: match.latitude, lng: match.longitude };
+    }),
+  };
+}
+
+/** Config distinguishing `measure-distance` from `measure-area`'s otherwise-identical `execute` logic. */
+interface MeasurementToolConfig {
+  mode: MeasurementMode;
+  minLocations: number;
+  tooFewLocationsMessage: string;
+  /** Separator joining resolved location labels into the result message's `{locations}` param, e.g. `" → "` for a path, `", "` for an outline. */
+  joinSeparator: string;
+  buildResultMessage: (params: { locations: string; result: string }) => string;
+}
+
+/**
+ * Shared `execute` body for `measure-distance`/`measure-area`: validates the
+ * minimum location count, geocodes `locations`, plots the resolved points
+ * via `onRequestMeasurement`, and formats a result message.
+ */
+async function executeMeasurementTool(
+  locations: string[],
+  config: MeasurementToolConfig,
+  onRequestMeasurement: UseMapModelContextToolsOptions["onRequestMeasurement"],
+): Promise<ModelContextToolResult> {
+  if (locations.length < config.minLocations) {
+    return textResult(config.tooFewLocationsMessage);
+  }
+  const resolved = await resolveMeasurementLocations(locations);
+  if ("notFoundQuery" in resolved) {
+    return textResult(
+      m.webmcp_search_location_not_found({ query: resolved.notFoundQuery }),
+    );
+  }
+  const points = resolved.locations.map(({ lat, lng }) => ({ lat, lng }));
+  onRequestMeasurement(config.mode, points);
+  return textResult(
+    config.buildResultMessage({
+      locations: resolved.locations
+        .map((location) => location.label)
+        .join(config.joinSeparator),
+      result: formatMeasurementResult(config.mode, points) ?? "",
+    }),
+  );
 }
 
 /** Options for `useMapModelContextTools`, covering the state that stays local to `App`. */
@@ -295,27 +344,18 @@ export function useMapModelContextTools({
       required: ["locations"],
       additionalProperties: false,
     },
-    execute: async ({ locations }) => {
-      if (locations.length < 2) {
-        return textResult(m.webmcp_measure_distance_too_few());
-      }
-      const resolved = await resolveMeasurementLocations(locations);
-      if ("notFoundQuery" in resolved) {
-        return textResult(
-          m.webmcp_search_location_not_found({ query: resolved.notFoundQuery }),
-        );
-      }
-      const points = resolved.locations.map(({ lat, lng }) => ({ lat, lng }));
-      onRequestMeasurement("distance", points);
-      return textResult(
-        m.webmcp_measure_distance_result({
-          locations: resolved.locations
-            .map((location) => location.label)
-            .join(" → "),
-          result: formatMeasurementResult("distance", points) ?? "",
-        }),
-      );
-    },
+    execute: ({ locations }) =>
+      executeMeasurementTool(
+        locations,
+        {
+          mode: "distance",
+          minLocations: 2,
+          tooFewLocationsMessage: m.webmcp_measure_distance_too_few(),
+          joinSeparator: " → ",
+          buildResultMessage: m.webmcp_measure_distance_result,
+        },
+        onRequestMeasurement,
+      ),
   });
 
   useModelContextTool<MeasureLocationsInput>({
@@ -334,26 +374,17 @@ export function useMapModelContextTools({
       required: ["locations"],
       additionalProperties: false,
     },
-    execute: async ({ locations }) => {
-      if (locations.length < 3) {
-        return textResult(m.webmcp_measure_area_too_few());
-      }
-      const resolved = await resolveMeasurementLocations(locations);
-      if ("notFoundQuery" in resolved) {
-        return textResult(
-          m.webmcp_search_location_not_found({ query: resolved.notFoundQuery }),
-        );
-      }
-      const points = resolved.locations.map(({ lat, lng }) => ({ lat, lng }));
-      onRequestMeasurement("area", points);
-      return textResult(
-        m.webmcp_measure_area_result({
-          locations: resolved.locations
-            .map((location) => location.label)
-            .join(", "),
-          result: formatMeasurementResult("area", points) ?? "",
-        }),
-      );
-    },
+    execute: ({ locations }) =>
+      executeMeasurementTool(
+        locations,
+        {
+          mode: "area",
+          minLocations: 3,
+          tooFewLocationsMessage: m.webmcp_measure_area_too_few(),
+          joinSeparator: ", ",
+          buildResultMessage: m.webmcp_measure_area_result,
+        },
+        onRequestMeasurement,
+      ),
   });
 }
