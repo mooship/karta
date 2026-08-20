@@ -22,6 +22,7 @@ import {
 import {
   MOBILE_BREAKPOINT_PX,
   setThemePreference,
+  useDeferredReadyAttribute,
   useIsDesktopViewport,
   useThemePreference,
 } from "@karta/react";
@@ -341,7 +342,6 @@ const PanelViewContent = memo(function PanelViewContent({
 export function App() {
   const [hydrated, setHydrated] = useState(false);
   const [mapReady, setMapReady] = useState(false);
-  const [sheetEntranceReady, setSheetEntranceReady] = useState(false);
   const [townships, setTownships] = useState<TownshipFeature[]>([]);
   const [townshipAreas, setTownshipAreas] = useState<Feature[]>([]);
   const [dataError, setDataError] = useState(false);
@@ -433,6 +433,11 @@ export function App() {
     schedule: scheduleSheetDragOffset,
     cancel: cancelScheduledSheetDragOffset,
   } = useRafScheduledValue(setMobileSheetDragOffset);
+  const {
+    ref: appRef,
+    markNotReady: markSheetEntranceNotReady,
+    markReadyAfterPaint: markSheetEntranceReadyAfterPaint,
+  } = useDeferredReadyAttribute<HTMLDivElement>("data-sheet-entrance-ready");
 
   /**
    * Opens the desktop sidebar synchronously, in the same commit as
@@ -636,21 +641,11 @@ export function App() {
    * causes, so by the next animation frame the target is focusable, the
    * same assumption `finishClose`'s own `requestAnimationFrame` call makes.
    *
-   * `sheetEntranceReady` resets to `false` in that same commit, which pauses
-   * the mobile sheet's `panelSheetIn` animation (see its own CSS comment) at
-   * its very first frame -- opening reveals the panel's full content tree
-   * (tabs, the layer list, their own stagger-entrance animations) for the
-   * first time, since it stays mounted-but-`display:none` while closed, and
-   * laying that out is real synchronous work. A CSS animation's clock is
-   * wall-clock-anchored from the moment it's associated, not from when it's
-   * first painted, so if that layout work delays the first paint past when
-   * the animation conceptually started, the sheet's very first visible frame
-   * already shows most of the slide done -- it reads as a violent snap open,
-   * not a slide. Deferring the un-pause across two animation frames (not
-   * one -- a single `requestAnimationFrame` can still land before the
-   * browser has committed this render's layout) waits until that layout
-   * work is behind us before the animation starts ticking, so it plays out
-   * its full declared duration smoothly instead of racing it.
+   * `markSheetEntranceNotReady`/`markSheetEntranceReadyAfterPaint` reset and
+   * re-arm `data-sheet-entrance-ready` in that same commit -- see
+   * `useDeferredReadyAttribute`'s own doc comment (`@karta/react`) for why
+   * the mobile sheet's `panelSheetIn` animation (its CSS pauses on that
+   * attribute) needs this rather than just starting immediately.
    */
   function handlePanelToggle() {
     if (panelOpen) {
@@ -658,13 +653,9 @@ export function App() {
       return;
     }
     setMobilePanelExpanded(false);
-    setSheetEntranceReady(false);
+    markSheetEntranceNotReady();
     setPanelOpen(true);
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        setSheetEntranceReady(true);
-      });
-    });
+    markSheetEntranceReadyAfterPaint();
     requestAnimationFrame(() => {
       const activeTabIndex = panelViews.indexOf(panelView);
       (tabRefs.current[activeTabIndex] ?? singleViewRef.current)?.focus();
@@ -816,13 +807,13 @@ export function App() {
   return (
     <DomainProvider domain={domain}>
       <div
+        ref={appRef}
         className={styles.app}
         data-panel-open={toBoolAttr(panelVisuallyOpen)}
         data-panel-size={resolvePanelSizeAttr(mobilePanelExpanded)}
         data-panel-dragging={toBoolAttr(mobileSheetDragging)}
         data-panel-drag-direction={mobileSheetDragDirection}
         data-entrance-ready={toBoolAttr(mapReady)}
-        data-sheet-entrance-ready={toBoolAttr(sheetEntranceReady)}
       >
         <a className={styles.skipLink} href="#map-information">
           {m.skip_to_map_information()}
