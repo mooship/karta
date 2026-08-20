@@ -341,6 +341,7 @@ const PanelViewContent = memo(function PanelViewContent({
 export function App() {
   const [hydrated, setHydrated] = useState(false);
   const [mapReady, setMapReady] = useState(false);
+  const [sheetEntranceReady, setSheetEntranceReady] = useState(false);
   const [townships, setTownships] = useState<TownshipFeature[]>([]);
   const [townshipAreas, setTownshipAreas] = useState<Feature[]>([]);
   const [dataError, setDataError] = useState(false);
@@ -634,6 +635,22 @@ export function App() {
    * `hidden` comes off the `<aside>` in the same commit `setPanelOpen(true)`
    * causes, so by the next animation frame the target is focusable, the
    * same assumption `finishClose`'s own `requestAnimationFrame` call makes.
+   *
+   * `sheetEntranceReady` resets to `false` in that same commit, which pauses
+   * the mobile sheet's `panelSheetIn` animation (see its own CSS comment) at
+   * its very first frame -- opening reveals the panel's full content tree
+   * (tabs, the layer list, their own stagger-entrance animations) for the
+   * first time, since it stays mounted-but-`display:none` while closed, and
+   * laying that out is real synchronous work. A CSS animation's clock is
+   * wall-clock-anchored from the moment it's associated, not from when it's
+   * first painted, so if that layout work delays the first paint past when
+   * the animation conceptually started, the sheet's very first visible frame
+   * already shows most of the slide done -- it reads as a violent snap open,
+   * not a slide. Deferring the un-pause across two animation frames (not
+   * one -- a single `requestAnimationFrame` can still land before the
+   * browser has committed this render's layout) waits until that layout
+   * work is behind us before the animation starts ticking, so it plays out
+   * its full declared duration smoothly instead of racing it.
    */
   function handlePanelToggle() {
     if (panelOpen) {
@@ -641,7 +658,13 @@ export function App() {
       return;
     }
     setMobilePanelExpanded(false);
+    setSheetEntranceReady(false);
     setPanelOpen(true);
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        setSheetEntranceReady(true);
+      });
+    });
     requestAnimationFrame(() => {
       const activeTabIndex = panelViews.indexOf(panelView);
       (tabRefs.current[activeTabIndex] ?? singleViewRef.current)?.focus();
@@ -799,6 +822,7 @@ export function App() {
         data-panel-dragging={toBoolAttr(mobileSheetDragging)}
         data-panel-drag-direction={mobileSheetDragDirection}
         data-entrance-ready={toBoolAttr(mapReady)}
+        data-sheet-entrance-ready={toBoolAttr(sheetEntranceReady)}
       >
         <a className={styles.skipLink} href="#map-information">
           {m.skip_to_map_information()}

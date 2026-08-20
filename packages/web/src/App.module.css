@@ -484,6 +484,22 @@
      */
     animation: panelSheetIn var(--panel-reposition-duration)
       var(--motion-ease-large-surface);
+    /*
+     * Paused at its first frame until `data-sheet-entrance-ready` -- see
+     * `handlePanelToggle`'s own comment in App.tsx for why: opening lays out
+     * this panel's full content tree for the first time, and that work can
+     * delay this animation's first paint past when its wall-clock-anchored
+     * timeline conceptually started, making it appear to have already
+     * mostly finished the moment it's first visible. Nothing to visibly
+     * stutter while paused, since a paused animation has no frame-to-frame
+     * changes to repaint -- the same reasoning the desktop entrance's own
+     * `data-entrance-ready` gate above relies on, for a different trigger.
+     */
+    animation-play-state: paused;
+  }
+
+  .app[data-sheet-entrance-ready="true"] .panel {
+    animation-play-state: running;
   }
 
   .panel[data-panel-dragging="true"] {
