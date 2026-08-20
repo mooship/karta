@@ -93,5 +93,13 @@
   "webmcp_set_theme_description": "Switch the app's colour theme. \"system\" follows the OS preference.",
   "webmcp_set_theme_unknown": "Unknown theme \"{theme}\".",
   "webmcp_set_theme_switched": "Theme switched to \"{theme}\".",
-  "webmcp_read_story_description": "Read this map's background story explaining why it exists, and open the Story panel."
+  "webmcp_read_story_description": "Read this map's background story explaining why it exists, and open the Story panel.",
+  "webmcp_measure_distance_description": "Measure the straight-line distance across two or more named locations, and show it on the map's measuring tool.",
+  "webmcp_measure_distance_input_locations": "Place names to measure between, in order, e.g. [\"Sandton\", \"Soweto\"].",
+  "webmcp_measure_distance_too_few": "Provide at least two locations to measure a distance.",
+  "webmcp_measure_distance_result": "Distance along {locations}: {result}.",
+  "webmcp_measure_area_description": "Measure the area enclosed by three or more named locations, and show it on the map's measuring tool.",
+  "webmcp_measure_area_input_locations": "Place names forming the area's outline, in order, e.g. [\"Sandton\", \"Soweto\", \"Midrand\"].",
+  "webmcp_measure_area_too_few": "Provide at least three locations to measure an area.",
+  "webmcp_measure_area_result": "Area enclosed by {locations}: {result}."
 }
