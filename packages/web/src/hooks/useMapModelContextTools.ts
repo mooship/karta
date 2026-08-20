@@ -41,6 +41,11 @@ interface MeasureLocationsInput {
   locations: string[];
 }
 
+/** Single source of truth for `measure-distance`'s minimum location count, shared by its JSON Schema `minItems` and its `MeasurementToolConfig.minLocations`. */
+const MEASURE_DISTANCE_MIN_LOCATIONS = 2;
+/** Single source of truth for `measure-area`'s minimum location count, shared by its JSON Schema `minItems` and its `MeasurementToolConfig.minLocations`. */
+const MEASURE_AREA_MIN_LOCATIONS = 3;
+
 /** One `locations` entry from `measure-distance`/`measure-area`, geocoded to a point. */
 interface ResolvedMeasurementLocation {
   label: string;
@@ -66,22 +71,26 @@ async function resolveMeasurementLocations(
 ): Promise<
   { locations: ResolvedMeasurementLocation[] } | { notFoundQuery: string }
 > {
-  const resolutions = await Promise.all(
-    locations.map(async (query) => ({
-      query,
-      best: (await fetchLocationSearchResults(query))[0],
-    })),
+  const bestMatchesByQuery = await Promise.all(
+    locations.map(
+      async (query): Promise<[string, LocationSearchResult | undefined]> => [
+        query,
+        (await fetchLocationSearchResults(query))[0],
+      ],
+    ),
   );
-  const notFound = resolutions.find((resolution) => !resolution.best);
-  if (notFound) {
-    return { notFoundQuery: notFound.query };
+  const resolved: ResolvedMeasurementLocation[] = [];
+  for (const [query, best] of bestMatchesByQuery) {
+    if (!best) {
+      return { notFoundQuery: query };
+    }
+    resolved.push({
+      label: best.label,
+      lat: best.latitude,
+      lng: best.longitude,
+    });
   }
-  return {
-    locations: resolutions.map(({ best }) => {
-      const match = best as LocationSearchResult;
-      return { label: match.label, lat: match.latitude, lng: match.longitude };
-    }),
-  };
+  return { locations: resolved };
 }
 
 /** Config distinguishing `measure-distance` from `measure-area`'s otherwise-identical `execute` logic. */
@@ -337,7 +346,7 @@ export function useMapModelContextTools({
         locations: {
           type: "array",
           items: { type: "string" },
-          minItems: 2,
+          minItems: MEASURE_DISTANCE_MIN_LOCATIONS,
           description: m.webmcp_measure_distance_input_locations(),
         },
       },
@@ -349,7 +358,7 @@ export function useMapModelContextTools({
         locations,
         {
           mode: "distance",
-          minLocations: 2,
+          minLocations: MEASURE_DISTANCE_MIN_LOCATIONS,
           tooFewLocationsMessage: m.webmcp_measure_distance_too_few(),
           joinSeparator: " → ",
           buildResultMessage: m.webmcp_measure_distance_result,
@@ -367,7 +376,7 @@ export function useMapModelContextTools({
         locations: {
           type: "array",
           items: { type: "string" },
-          minItems: 3,
+          minItems: MEASURE_AREA_MIN_LOCATIONS,
           description: m.webmcp_measure_area_input_locations(),
         },
       },
@@ -379,7 +388,7 @@ export function useMapModelContextTools({
         locations,
         {
           mode: "area",
-          minLocations: 3,
+          minLocations: MEASURE_AREA_MIN_LOCATIONS,
           tooFewLocationsMessage: m.webmcp_measure_area_too_few(),
           joinSeparator: ", ",
           buildResultMessage: m.webmcp_measure_area_result,
