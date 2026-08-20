@@ -13,7 +13,7 @@ import {
 import type { Feature, FeatureCollection } from "geojson";
 import {
   circleMarker,
-  type LatLng,
+  LatLng,
   type LatLngBounds,
   type Layer,
   type LeafletMouseEvent,
@@ -159,6 +159,25 @@ export interface MapViewProps<
    * Omit for a caller with no such panel, or no way to close it.
    */
   onMeasurementPanelClose?: () => void;
+  /**
+   * Externally requests the measurement tool show a specific line/polygon,
+   * replacing any points already drawn and opening the tool if it's
+   * currently closed. Has no effect while `measurementTool` is `false`,
+   * since there's no control to show the result in -- but isn't discarded
+   * either, so a request received just before `measurementTool` turns `true`
+   * still applies once it does. `token` must change (e.g. via `Date.now()`)
+   * each time a new request should apply -- mirroring `focusLocationTarget`
+   * -- since two requests with identical `mode`/`points` would otherwise be
+   * indistinguishable from a no-op re-render.
+   * @remarks Exists so a caller can drive the same on-screen tool a human's
+   *   clicks would (e.g. from a WebMCP tool geocoding named locations),
+   *   rather than reporting a measurement result invisibly.
+   */
+  measurementRequest?: {
+    token: number;
+    mode: MeasurementMode;
+    points: { lat: number; lng: number }[];
+  } | null;
   /**
    * Called once, after Leaflet has initialised the map and the browser has
    * painted it.
@@ -958,12 +977,26 @@ function MapViewComponent<
   measurementTool = false,
   measurementPanelOpen = false,
   onMeasurementPanelClose,
+  measurementRequest = null,
   onReady,
 }: MapViewProps<TProperties>) {
   const { getLayers } = useDomain();
   const [measurement, setMeasurement] = useState<MeasurementState>(
     INITIAL_MEASUREMENT_STATE,
   );
+
+  useEffect(() => {
+    if (!measurementTool || !measurementRequest) {
+      return;
+    }
+    setMeasurement({
+      active: true,
+      mode: measurementRequest.mode,
+      points: measurementRequest.points.map(
+        (point) => new LatLng(point.lat, point.lng),
+      ),
+    });
+  }, [measurementRequest, measurementTool]);
   const measurementResultLabel = useMemo(
     () => formatMeasurementResult(measurement.mode, measurement.points),
     [measurement.mode, measurement.points],

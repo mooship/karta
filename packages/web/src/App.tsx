@@ -13,6 +13,7 @@ import {
   FeatureBrowser,
   LocationSearchControl,
   type LocationSearchResult,
+  type MeasurementMode,
   MobileLegend,
   type SelectableFeatureSearchEntry,
   SettingsMenu,
@@ -125,6 +126,13 @@ const SHEET_VELOCITY_SAMPLE_WINDOW_MS = 140;
 interface FocusLocationTarget {
   token: number;
   location: LocationSearchResult;
+}
+
+/** A WebMCP-driven request to plot a measurement, mirroring `MapView`'s own `measurementRequest` prop. */
+interface MeasurementRequest {
+  token: number;
+  mode: MeasurementMode;
+  points: { lat: number; lng: number }[];
 }
 
 interface PointerSample {
@@ -316,10 +324,16 @@ const PanelViewContent = memo(function PanelViewContent({
  *   source of truth — except under `prefers-reduced-motion`/desktop, where
  *   no animation plays and `closePanel` calls `finishClose` immediately.
  *   `useMapModelContextTools` registers this app's layer/search/basemap/theme/
- *   story capabilities as WebMCP tools; `handleLocationSelect` is shared
- *   between `LocationSearchControl`'s `onLocationSelect` and that hook's
- *   `search-map-location` tool, so a human picking a result and an agent
- *   calling the tool fly the map the same way. `useMapPermalink` restores
+ *   story/measurement capabilities as WebMCP tools; `handleLocationSelect` is
+ *   shared between `LocationSearchControl`'s `onLocationSelect` and that
+ *   hook's `search-map-location` tool, so a human picking a result and an
+ *   agent calling the tool fly the map the same way.
+ *   `handleRequestMeasurement` plays the same role for `measure-distance`/
+ *   `measure-area`: it stamps a fresh `token` into `measurementRequest` state
+ *   (mirroring `focusLocationTarget`) and passes it straight through to
+ *   `MapView`'s own `measurementRequest` prop, so a geocoded measurement
+ *   plots on the same on-screen tool a human's clicks would drive.
+ *   `useMapPermalink` restores
  *   layer/basemap/panel/feature state from the URL on load and keeps the
  *   URL in sync afterwards, so the address bar is always a shareable link
  *   to the current view; it defers applying a shared `selectedFeatureId`
@@ -357,6 +371,8 @@ export function App() {
   const [mobileSheetClosing, setMobileSheetClosing] = useState(false);
   const [focusLocationTarget, setFocusLocationTarget] =
     useState<FocusLocationTarget | null>(null);
+  const [measurementRequest, setMeasurementRequest] =
+    useState<MeasurementRequest | null>(null);
   const [outOfCoverageLocationLabel, setOutOfCoverageLocationLabel] = useState<
     string | null
   >(null);
@@ -571,6 +587,13 @@ export function App() {
     return m.webmcp_search_location_flew_to({ location: location.label });
   }
 
+  function handleRequestMeasurement(
+    mode: MeasurementMode,
+    points: { lat: number; lng: number }[],
+  ) {
+    setMeasurementRequest({ token: Date.now(), mode, points });
+  }
+
   useMapModelContextTools({
     onLocationSelect: handleLocationSelect,
     story,
@@ -578,6 +601,7 @@ export function App() {
       setPanelView("story");
       setPanelOpen(true);
     },
+    onRequestMeasurement: handleRequestMeasurement,
   });
 
   useMapPermalink({ dataReady: townships.length > 0 });
@@ -861,6 +885,7 @@ export function App() {
                 measurementTool
                 measurementPanelOpen={!isDesktopViewport && panelOpen}
                 onMeasurementPanelClose={closePanel}
+                measurementRequest={measurementRequest}
                 renderFeaturePopup={renderFeaturePopup}
               />
             </Suspense>

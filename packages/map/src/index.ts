@@ -19,6 +19,7 @@ export {
   LocationSearchControl,
   matchesFeatureLabel,
 } from "./components/LocationSearchControl/LocationSearchControl";
+export { formatMeasurementResult } from "./components/MeasurementControl/formatMeasurementResult";
 export type {
   MeasurementControlProps,
   MeasurementMode,
