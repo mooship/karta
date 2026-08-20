@@ -103,6 +103,7 @@ const LAYERS = [
 describe("useMapModelContextTools", () => {
   const onLocationSelect = vi.fn().mockReturnValue("Flew to Mamelodi.");
   const onShowStory = vi.fn();
+  const onRequestMeasurement = vi.fn();
 
   beforeEach(() => {
     useMapUiStore.getState().reset();
@@ -116,6 +117,7 @@ describe("useMapModelContextTools", () => {
     themeMocks.setThemePreference.mockReset();
     onLocationSelect.mockClear();
     onShowStory.mockClear();
+    onRequestMeasurement.mockClear();
   });
 
   it("does nothing when WebMCP is unsupported", () => {
@@ -138,6 +140,7 @@ describe("useMapModelContextTools", () => {
         onLocationSelect,
         story: undefined,
         onShowStory,
+        onRequestMeasurement,
       }),
     );
 
@@ -153,6 +156,7 @@ describe("useMapModelContextTools", () => {
         onLocationSelect,
         story: { title: "Why this map exists", body: "Some background." },
         onShowStory,
+        onRequestMeasurement,
       }),
     );
 
@@ -171,6 +175,7 @@ describe("useMapModelContextTools", () => {
         onLocationSelect,
         story: undefined,
         onShowStory,
+        onRequestMeasurement,
       }),
     );
 
@@ -192,6 +197,7 @@ describe("useMapModelContextTools", () => {
         onLocationSelect,
         story: undefined,
         onShowStory,
+        onRequestMeasurement,
       }),
     );
 
@@ -208,6 +214,7 @@ describe("useMapModelContextTools", () => {
         onLocationSelect,
         story: undefined,
         onShowStory,
+        onRequestMeasurement,
       }),
     );
 
@@ -226,6 +233,7 @@ describe("useMapModelContextTools", () => {
         onLocationSelect,
         story: undefined,
         onShowStory,
+        onRequestMeasurement,
       }),
     );
 
@@ -243,6 +251,7 @@ describe("useMapModelContextTools", () => {
         onLocationSelect,
         story: undefined,
         onShowStory,
+        onRequestMeasurement,
       }),
     );
 
@@ -262,6 +271,7 @@ describe("useMapModelContextTools", () => {
         onLocationSelect,
         story: undefined,
         onShowStory,
+        onRequestMeasurement,
       }),
     );
 
@@ -286,6 +296,7 @@ describe("useMapModelContextTools", () => {
         onLocationSelect,
         story: undefined,
         onShowStory,
+        onRequestMeasurement,
       }),
     );
 
@@ -309,6 +320,7 @@ describe("useMapModelContextTools", () => {
         onLocationSelect,
         story: undefined,
         onShowStory,
+        onRequestMeasurement,
       }),
     );
 
@@ -326,6 +338,7 @@ describe("useMapModelContextTools", () => {
         onLocationSelect,
         story: undefined,
         onShowStory,
+        onRequestMeasurement,
       }),
     );
 
@@ -343,6 +356,7 @@ describe("useMapModelContextTools", () => {
         onLocationSelect,
         story: undefined,
         onShowStory,
+        onRequestMeasurement,
       }),
     );
 
@@ -360,6 +374,7 @@ describe("useMapModelContextTools", () => {
         onLocationSelect,
         story: undefined,
         onShowStory,
+        onRequestMeasurement,
       }),
     );
 
@@ -401,6 +416,12 @@ describe("useMapModelContextTools", () => {
       expect(toolNamed(registerTool, "read-map-story").description).toBe(
         m.webmcp_read_story_description({}, { locale: "af" }),
       );
+      expect(toolNamed(registerTool, "measure-distance").description).toBe(
+        m.webmcp_measure_distance_description({}, { locale: "af" }),
+      );
+      expect(toolNamed(registerTool, "measure-area").description).toBe(
+        m.webmcp_measure_area_description({}, { locale: "af" }),
+      );
 
       const listed = await textOf(
         toolNamed(registerTool, "list-map-layers").execute({}),
@@ -418,6 +439,7 @@ describe("useMapModelContextTools", () => {
         onLocationSelect,
         story: undefined,
         onShowStory,
+        onRequestMeasurement,
       }),
     );
 
@@ -426,5 +448,150 @@ describe("useMapModelContextTools", () => {
 
     expect(text).toBe('Unknown theme "rainbow".');
     expect(themeMocks.setThemePreference).not.toHaveBeenCalled();
+  });
+
+  describe("measure-distance", () => {
+    it("plots and reports a distance across two or more geocoded locations", async () => {
+      const registerTool = stubModelContext();
+      mapMocks.fetchLocationSearchResults
+        .mockResolvedValueOnce([
+          { id: "1", label: "Sandton", latitude: -26.11, longitude: 28.06 },
+        ])
+        .mockResolvedValueOnce([
+          { id: "2", label: "Soweto", latitude: -26.27, longitude: 27.86 },
+        ]);
+      renderHook(() =>
+        useMapModelContextTools({
+          onLocationSelect,
+          story: undefined,
+          onShowStory,
+          onRequestMeasurement,
+        }),
+      );
+
+      const tool = toolNamed(registerTool, "measure-distance");
+      const text = await textOf(
+        tool.execute({ locations: ["Sandton", "Soweto"] }),
+      );
+
+      expect(mapMocks.fetchLocationSearchResults).toHaveBeenNthCalledWith(
+        1,
+        "Sandton",
+      );
+      expect(mapMocks.fetchLocationSearchResults).toHaveBeenNthCalledWith(
+        2,
+        "Soweto",
+      );
+      expect(onRequestMeasurement).toHaveBeenCalledWith("distance", [
+        { lat: -26.11, lng: 28.06 },
+        { lat: -26.27, lng: 27.86 },
+      ]);
+      expect(text).toContain("Sandton");
+      expect(text).toContain("Soweto");
+      expect(text).toMatch(/km|m/);
+    });
+
+    it("reports which location couldn't be found, without requesting a measurement", async () => {
+      const registerTool = stubModelContext();
+      mapMocks.fetchLocationSearchResults
+        .mockResolvedValueOnce([
+          { id: "1", label: "Sandton", latitude: -26.11, longitude: 28.06 },
+        ])
+        .mockResolvedValueOnce([]);
+      renderHook(() =>
+        useMapModelContextTools({
+          onLocationSelect,
+          story: undefined,
+          onShowStory,
+          onRequestMeasurement,
+        }),
+      );
+
+      const tool = toolNamed(registerTool, "measure-distance");
+      const text = await textOf(
+        tool.execute({ locations: ["Sandton", "Nowhereville"] }),
+      );
+
+      expect(text).toBe('No location found matching "Nowhereville".');
+      expect(onRequestMeasurement).not.toHaveBeenCalled();
+    });
+
+    it("refuses to measure a distance across fewer than two locations", async () => {
+      const registerTool = stubModelContext();
+      renderHook(() =>
+        useMapModelContextTools({
+          onLocationSelect,
+          story: undefined,
+          onShowStory,
+          onRequestMeasurement,
+        }),
+      );
+
+      const tool = toolNamed(registerTool, "measure-distance");
+      const text = await textOf(tool.execute({ locations: ["Sandton"] }));
+
+      expect(text).toBe(
+        "Provide at least two locations to measure a distance.",
+      );
+      expect(mapMocks.fetchLocationSearchResults).not.toHaveBeenCalled();
+      expect(onRequestMeasurement).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("measure-area", () => {
+    it("plots and reports an area enclosed by three or more geocoded locations", async () => {
+      const registerTool = stubModelContext();
+      mapMocks.fetchLocationSearchResults
+        .mockResolvedValueOnce([
+          { id: "1", label: "Sandton", latitude: -26.11, longitude: 28.06 },
+        ])
+        .mockResolvedValueOnce([
+          { id: "2", label: "Soweto", latitude: -26.27, longitude: 27.86 },
+        ])
+        .mockResolvedValueOnce([
+          { id: "3", label: "Midrand", latitude: -25.99, longitude: 28.13 },
+        ]);
+      renderHook(() =>
+        useMapModelContextTools({
+          onLocationSelect,
+          story: undefined,
+          onShowStory,
+          onRequestMeasurement,
+        }),
+      );
+
+      const tool = toolNamed(registerTool, "measure-area");
+      const text = await textOf(
+        tool.execute({ locations: ["Sandton", "Soweto", "Midrand"] }),
+      );
+
+      expect(onRequestMeasurement).toHaveBeenCalledWith("area", [
+        { lat: -26.11, lng: 28.06 },
+        { lat: -26.27, lng: 27.86 },
+        { lat: -25.99, lng: 28.13 },
+      ]);
+      expect(text).toContain("Sandton");
+      expect(text).toMatch(/ha|km²|m²/);
+    });
+
+    it("refuses to measure an area across fewer than three locations", async () => {
+      const registerTool = stubModelContext();
+      renderHook(() =>
+        useMapModelContextTools({
+          onLocationSelect,
+          story: undefined,
+          onShowStory,
+          onRequestMeasurement,
+        }),
+      );
+
+      const tool = toolNamed(registerTool, "measure-area");
+      const text = await textOf(
+        tool.execute({ locations: ["Sandton", "Soweto"] }),
+      );
+
+      expect(text).toBe("Provide at least three locations to measure an area.");
+      expect(onRequestMeasurement).not.toHaveBeenCalled();
+    });
   });
 });

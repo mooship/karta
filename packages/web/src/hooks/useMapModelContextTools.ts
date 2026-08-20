@@ -1,8 +1,10 @@
 import type { DomainStory as DomainStoryContent } from "@karta/core";
 import {
   fetchLocationSearchResults,
+  formatMeasurementResult,
   getRegisteredBasemapIds,
   type LocationSearchResult,
+  type MeasurementMode,
 } from "@karta/map";
 import type { ThemePreference } from "@karta/react";
 import {
@@ -35,6 +37,45 @@ interface SetThemeInput {
   theme: string;
 }
 
+interface MeasureLocationsInput {
+  locations: string[];
+}
+
+/** One `locations` entry from `measure-distance`/`measure-area`, geocoded to a point. */
+interface ResolvedMeasurementLocation {
+  label: string;
+  lat: number;
+  lng: number;
+}
+
+/**
+ * Geocodes each of `locations`, in order, via `fetchLocationSearchResults`,
+ * taking the best match for each.
+ * @returns Every resolved point (in the same order as `locations`), or the
+ *   first query that had no match — `measure-distance`/`measure-area` stop
+ *   there rather than silently measuring across whichever locations did
+ *   resolve.
+ */
+async function resolveMeasurementLocations(
+  locations: string[],
+): Promise<
+  { locations: ResolvedMeasurementLocation[] } | { notFoundQuery: string }
+> {
+  const resolved: ResolvedMeasurementLocation[] = [];
+  for (const query of locations) {
+    const [best] = await fetchLocationSearchResults(query);
+    if (!best) {
+      return { notFoundQuery: query };
+    }
+    resolved.push({
+      label: best.label,
+      lat: best.latitude,
+      lng: best.longitude,
+    });
+  }
+  return { locations: resolved };
+}
+
 /** Options for `useMapModelContextTools`, covering the state that stays local to `App`. */
 export interface UseMapModelContextToolsOptions {
   /**
@@ -47,25 +88,44 @@ export interface UseMapModelContextToolsOptions {
   story: DomainStoryContent | undefined;
   /** Switches the info panel to the story view and opens it, so a sighted user watching the screen sees what the agent just read. */
   onShowStory: () => void;
+  /**
+   * Plots a measurement (a line for `"distance"`, a polygon for `"area"`)
+   * through `points`, in order, on the map's own measuring tool, mirroring
+   * `MapView`'s `measurementRequest` prop — so a sighted user watching the
+   * screen sees what the agent just measured, the same way `onShowStory`
+   * opens the Story panel for a read-map-story call.
+   */
+  onRequestMeasurement: (
+    mode: MeasurementMode,
+    points: { lat: number; lng: number }[],
+  ) => void;
 }
 
 /**
  * Registers this app's capabilities as WebMCP tools via `document.modelContext`
  * (see `useModelContextTool`), so an in-browser AI agent can list and toggle
- * map layers, search for a place, switch the basemap or theme, and read the
- * domain's story — without reverse-engineering the UI.
+ * map layers, search for a place, switch the basemap or theme, read the
+ * domain's story, and measure the distance or area across named locations —
+ * without reverse-engineering the UI.
  * @remarks A no-op wherever WebMCP is unsupported; `useModelContextTool`
  *   handles that feature detection. Layer, basemap, and theme tools read and
  *   write `useMapUiStore`/the layer registry/`setThemePreference` directly
  *   rather than through props, since all three are already stable, globally
- *   reachable APIs; `onLocationSelect`/`onShowStory` stay props because they
- *   close over `App`'s own local component state (the search focus target,
- *   the panel's open/view state) that isn't in the shared store.
+ *   reachable APIs; `onLocationSelect`/`onShowStory`/`onRequestMeasurement`
+ *   stay props because they close over `App`'s own local component state
+ *   (the search focus target, the panel's open/view state, the measurement
+ *   request token) that isn't in the shared store. `measure-distance`/
+ *   `measure-area` geocode each given location the same way
+ *   `search-map-location` does (`fetchLocationSearchResults`, best match
+ *   only) before handing the resolved points to `onRequestMeasurement`, so
+ *   the agent's measurement shows up on the same on-screen tool a human's
+ *   clicks would drive, rather than being reported as an invisible number.
  */
 export function useMapModelContextTools({
   onLocationSelect,
   story,
   onShowStory,
+  onRequestMeasurement,
 }: UseMapModelContextToolsOptions): void {
   useModelContextTool<Record<string, never>>({
     name: "list-map-layers",
@@ -218,4 +278,82 @@ export function useMapModelContextTools({
         }
       : null,
   );
+
+  useModelContextTool<MeasureLocationsInput>({
+    name: "measure-distance",
+    description: m.webmcp_measure_distance_description(),
+    inputSchema: {
+      type: "object",
+      properties: {
+        locations: {
+          type: "array",
+          items: { type: "string" },
+          minItems: 2,
+          description: m.webmcp_measure_distance_input_locations(),
+        },
+      },
+      required: ["locations"],
+      additionalProperties: false,
+    },
+    execute: async ({ locations }) => {
+      if (locations.length < 2) {
+        return textResult(m.webmcp_measure_distance_too_few());
+      }
+      const resolved = await resolveMeasurementLocations(locations);
+      if ("notFoundQuery" in resolved) {
+        return textResult(
+          m.webmcp_search_location_not_found({ query: resolved.notFoundQuery }),
+        );
+      }
+      const points = resolved.locations.map(({ lat, lng }) => ({ lat, lng }));
+      onRequestMeasurement("distance", points);
+      return textResult(
+        m.webmcp_measure_distance_result({
+          locations: resolved.locations
+            .map((location) => location.label)
+            .join(" → "),
+          result: formatMeasurementResult("distance", points) ?? "",
+        }),
+      );
+    },
+  });
+
+  useModelContextTool<MeasureLocationsInput>({
+    name: "measure-area",
+    description: m.webmcp_measure_area_description(),
+    inputSchema: {
+      type: "object",
+      properties: {
+        locations: {
+          type: "array",
+          items: { type: "string" },
+          minItems: 3,
+          description: m.webmcp_measure_area_input_locations(),
+        },
+      },
+      required: ["locations"],
+      additionalProperties: false,
+    },
+    execute: async ({ locations }) => {
+      if (locations.length < 3) {
+        return textResult(m.webmcp_measure_area_too_few());
+      }
+      const resolved = await resolveMeasurementLocations(locations);
+      if ("notFoundQuery" in resolved) {
+        return textResult(
+          m.webmcp_search_location_not_found({ query: resolved.notFoundQuery }),
+        );
+      }
+      const points = resolved.locations.map(({ lat, lng }) => ({ lat, lng }));
+      onRequestMeasurement("area", points);
+      return textResult(
+        m.webmcp_measure_area_result({
+          locations: resolved.locations
+            .map((location) => location.label)
+            .join(", "),
+          result: formatMeasurementResult("area", points) ?? "",
+        }),
+      );
+    },
+  });
 }

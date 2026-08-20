@@ -93,5 +93,13 @@
   "webmcp_set_theme_description": "Verander die app se kleurtema. \"system\" volg die bedryfstelsel se voorkeur.",
   "webmcp_set_theme_unknown": "Onbekende tema \"{theme}\".",
   "webmcp_set_theme_switched": "Tema verander na \"{theme}\".",
-  "webmcp_read_story_description": "Lees hierdie kaart se agtergrondverhaal wat verduidelik waarom dit bestaan, en open die Verhaal-paneel."
+  "webmcp_read_story_description": "Lees hierdie kaart se agtergrondverhaal wat verduidelik waarom dit bestaan, en open die Verhaal-paneel.",
+  "webmcp_measure_distance_description": "Meet die reguitlyn-afstand oor twee of meer benoemde plekke, en wys dit op die kaart se meetnutsding.",
+  "webmcp_measure_distance_input_locations": "Pleknname om tussen te meet, in volgorde, bv. [\"Sandton\", \"Soweto\"].",
+  "webmcp_measure_distance_too_few": "Verskaf ten minste twee plekke om 'n afstand te meet.",
+  "webmcp_measure_distance_result": "Afstand langs {locations}: {result}.",
+  "webmcp_measure_area_description": "Meet die area wat deur drie of meer benoemde plekke omsluit word, en wys dit op die kaart se meetnutsding.",
+  "webmcp_measure_area_input_locations": "Pleknname wat die area se buitelyn vorm, in volgorde, bv. [\"Sandton\", \"Soweto\", \"Midrand\"].",
+  "webmcp_measure_area_too_few": "Verskaf ten minste drie plekke om 'n area te meet.",
+  "webmcp_measure_area_result": "Area omsluit deur {locations}: {result}."
 }

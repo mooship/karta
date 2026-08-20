@@ -93,5 +93,13 @@
   "webmcp_set_theme_description": "Fetola sehlooho sa mebala sa sesebedisoa. \"system\" e latela khetho ea OS.",
   "webmcp_set_theme_unknown": "Sehlooho se sa tsejoeng \"{theme}\".",
   "webmcp_set_theme_switched": "Sehlooho se fetoletsoe ho \"{theme}\".",
-  "webmcp_read_story_description": "Bala pale ea semelo ea 'mapa ona e hlalosang hore na o teng hobaneng, mme u bule phanele ea Pale."
+  "webmcp_read_story_description": "Bala pale ea semelo ea 'mapa ona e hlalosang hore na o teng hobaneng, mme u bule phanele ea Pale.",
+  "webmcp_measure_distance_description": "Lekanya sebaka se otlolohileng pakeng tsa libaka tse peli kapa ho feta tse rehilweng ka mabitso, mme u se bontshe seselisong sa ho lekanya sa 'mapa.",
+  "webmcp_measure_distance_input_locations": "Mabitso a libaka tseo u lekanyang pakeng tsa tsona, ka tatellano, mohlala [\"Sandton\", \"Soweto\"].",
+  "webmcp_measure_distance_too_few": "Fana ka bonyane libaka tse peli ho lekanya sebaka.",
+  "webmcp_measure_distance_result": "Sebaka ho ya ho {locations}: {result}.",
+  "webmcp_measure_area_description": "Lekanya sebaka se kwahetsweng ke libaka tse tharo kapa ho feta tse rehilweng ka mabitso, mme u se bontshe seselisong sa ho lekanya sa 'mapa.",
+  "webmcp_measure_area_input_locations": "Mabitso a libaka a etsang moeli wa sebaka, ka tatellano, mohlala [\"Sandton\", \"Soweto\", \"Midrand\"].",
+  "webmcp_measure_area_too_few": "Fana ka bonyane libaka tse tharo ho lekanya sebaka.",
+  "webmcp_measure_area_result": "Sebaka se kwahetsweng ke {locations}: {result}."
 }
