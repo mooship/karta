@@ -10,7 +10,7 @@ import { useRafScheduledValue } from "../../hooks/useRafScheduledValue";
 import type { MeasurementMode } from "../MeasurementControl/MeasurementControl";
 
 /** Distinct from any layer's own palette, for visibility over any basemap or overlay. */
-const MEASUREMENT_COLOR = "#e8710a";
+const MEASUREMENT_COLOR = "#00897b";
 const MEASUREMENT_PATH_OPTIONS = {
   color: MEASUREMENT_COLOR,
   weight: 3,
