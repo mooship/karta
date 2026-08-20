@@ -22,6 +22,7 @@ import {
 import {
   MOBILE_BREAKPOINT_PX,
   setThemePreference,
+  useDeferredReadyAttribute,
   useIsDesktopViewport,
   useThemePreference,
 } from "@karta/react";
@@ -432,6 +433,11 @@ export function App() {
     schedule: scheduleSheetDragOffset,
     cancel: cancelScheduledSheetDragOffset,
   } = useRafScheduledValue(setMobileSheetDragOffset);
+  const {
+    ref: appRef,
+    markNotReady: markSheetEntranceNotReady,
+    markReadyAfterPaint: markSheetEntranceReadyAfterPaint,
+  } = useDeferredReadyAttribute<HTMLDivElement>("data-sheet-entrance-ready");
 
   /**
    * Opens the desktop sidebar synchronously, in the same commit as
@@ -634,6 +640,12 @@ export function App() {
    * `hidden` comes off the `<aside>` in the same commit `setPanelOpen(true)`
    * causes, so by the next animation frame the target is focusable, the
    * same assumption `finishClose`'s own `requestAnimationFrame` call makes.
+   *
+   * `markSheetEntranceNotReady`/`markSheetEntranceReadyAfterPaint` reset and
+   * re-arm `data-sheet-entrance-ready` in that same commit -- see
+   * `useDeferredReadyAttribute`'s own doc comment (`@karta/react`) for why
+   * the mobile sheet's `panelSheetIn` animation (its CSS pauses on that
+   * attribute) needs this rather than just starting immediately.
    */
   function handlePanelToggle() {
     if (panelOpen) {
@@ -641,7 +653,9 @@ export function App() {
       return;
     }
     setMobilePanelExpanded(false);
+    markSheetEntranceNotReady();
     setPanelOpen(true);
+    markSheetEntranceReadyAfterPaint();
     requestAnimationFrame(() => {
       const activeTabIndex = panelViews.indexOf(panelView);
       (tabRefs.current[activeTabIndex] ?? singleViewRef.current)?.focus();
@@ -793,6 +807,7 @@ export function App() {
   return (
     <DomainProvider domain={domain}>
       <div
+        ref={appRef}
         className={styles.app}
         data-panel-open={toBoolAttr(panelVisuallyOpen)}
         data-panel-size={resolvePanelSizeAttr(mobilePanelExpanded)}

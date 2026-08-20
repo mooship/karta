@@ -51,6 +51,47 @@
   font-size: var(--font-size-base);
   transition: background-color var(--motion-duration-short)
     var(--motion-ease-standard);
+  /*
+   * Runs once as each row mounts (each group's own list, on first render) --
+   * a checkbox toggle re-renders the same DOM node rather than remounting
+   * it, so this doesn't replay on every click, only on genuine entrance.
+   */
+  animation: layerRowIn var(--motion-duration-medium)
+    var(--motion-ease-decelerate) backwards;
+}
+
+/*
+ * 40ms per row, capped after four — the same stagger rhythm as @karta/map's
+ * Legend (Legend.module.css's `.entry` rules), so cascading lists read as
+ * one motion language across the app rather than two independently
+ * hand-tuned timings.
+ */
+.list .row:nth-child(2) {
+  animation-delay: 40ms;
+}
+
+.list .row:nth-child(3) {
+  animation-delay: 80ms;
+}
+
+.list .row:nth-child(4) {
+  animation-delay: 120ms;
+}
+
+.list .row:nth-child(n + 5) {
+  animation-delay: 160ms;
+}
+
+@keyframes layerRowIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .row:hover {
