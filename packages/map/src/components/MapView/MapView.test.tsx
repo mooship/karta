@@ -1699,6 +1699,110 @@ describe("MapView", () => {
     expect(screen.getByTestId("measurement-polyline")).toHaveTextContent("2");
   });
 
+  it("plots an externally requested measurement and opens the tool", () => {
+    render(
+      withDomain(
+        <MapView
+          {...DEFAULT_MAP_VIEW_PROPS}
+          areas={[]}
+          visibleLayerIds={[]}
+          measurementTool
+          measurementRequest={{
+            token: 1,
+            mode: "distance",
+            points: [
+              { lat: -26.0, lng: 28.0 },
+              { lat: -25.99, lng: 28.0 },
+            ],
+          }}
+        />,
+      ),
+    );
+
+    expect(screen.getByTestId("measurement-control-panel")).toBeInTheDocument();
+    expect(screen.getByTestId("measurement-polyline")).toHaveTextContent("2");
+    expect(screen.getByTestId("measurement-control-result")).toHaveTextContent(
+      /km|m/,
+    );
+  });
+
+  it("replaces the current measurement when a new measurementRequest token arrives", () => {
+    const { rerender } = render(
+      withDomain(
+        <MapView
+          {...DEFAULT_MAP_VIEW_PROPS}
+          areas={[]}
+          visibleLayerIds={[]}
+          measurementTool
+          measurementRequest={{
+            token: 1,
+            mode: "distance",
+            points: [
+              { lat: -26.0, lng: 28.0 },
+              { lat: -25.99, lng: 28.0 },
+            ],
+          }}
+        />,
+      ),
+    );
+
+    expect(screen.getByTestId("measurement-polyline")).toHaveTextContent("2");
+
+    rerender(
+      withDomain(
+        <MapView
+          {...DEFAULT_MAP_VIEW_PROPS}
+          areas={[]}
+          visibleLayerIds={[]}
+          measurementTool
+          measurementRequest={{
+            token: 2,
+            mode: "area",
+            points: [
+              { lat: -26.0, lng: 28.0 },
+              { lat: -25.99, lng: 28.0 },
+              { lat: -25.99, lng: 28.01 },
+            ],
+          }}
+        />,
+      ),
+    );
+
+    expect(
+      screen.getByTestId("measurement-control-mode-option-area"),
+    ).toHaveAttribute("aria-pressed", "true");
+    expect(
+      screen.queryByTestId("measurement-polyline"),
+    ).not.toBeInTheDocument();
+  });
+
+  it("ignores a measurementRequest while the measurement tool isn't enabled", () => {
+    render(
+      withDomain(
+        <MapView
+          {...DEFAULT_MAP_VIEW_PROPS}
+          areas={[]}
+          visibleLayerIds={[]}
+          measurementRequest={{
+            token: 1,
+            mode: "distance",
+            points: [
+              { lat: -26.0, lng: 28.0 },
+              { lat: -25.99, lng: 28.0 },
+            ],
+          }}
+        />,
+      ),
+    );
+
+    expect(
+      screen.queryByTestId("measurement-control-toggle"),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId("measurement-control-panel"),
+    ).not.toBeInTheDocument();
+  });
+
   it("draws a preview line and shows a distance readout as the map is clicked in distance mode", () => {
     render(
       withDomain(

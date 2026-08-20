@@ -23,7 +23,16 @@ const mapViewMocks = vi.hoisted(() => ({
         selectedFeatureId?: string | null;
         measurementTool?: boolean;
         measurementPanelOpen?: boolean;
+        measurementRequest?: {
+          token: number;
+          mode: string;
+          points: { lat: number; lng: number }[];
+        } | null;
       },
+}));
+
+const geocodeMocks = vi.hoisted(() => ({
+  fetchLocationSearchResults: vi.fn(),
 }));
 
 vi.mock("@karta/map/MapView", () => ({
@@ -37,6 +46,7 @@ vi.mock("@karta/map", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@karta/map")>();
   return {
     ...actual,
+    fetchLocationSearchResults: geocodeMocks.fetchLocationSearchResults,
     LocationSearchControl: ({
       onLocationSelect,
     }: {
@@ -119,6 +129,7 @@ describe("App map/location callback wiring", () => {
       type: "FeatureCollection",
       features: [],
     });
+    geocodeMocks.fetchLocationSearchResults.mockReset();
   });
 
   it("falls back to the street basemap when the map reports a basemap load error", async () => {
@@ -194,6 +205,58 @@ describe("App map/location callback wiring", () => {
     await waitFor(() =>
       expect(mapViewMocks.latestProps?.measurementPanelOpen).toBe(false),
     );
+  });
+
+  it("plots a WebMCP measure-distance call on MapView's own measurement tool", async () => {
+    const registerTool = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(document, "modelContext", {
+      configurable: true,
+      value: { registerTool },
+    });
+
+    try {
+      geocodeMocks.fetchLocationSearchResults
+        .mockResolvedValueOnce([
+          { id: "1", label: "Sandton", latitude: -26.11, longitude: 28.06 },
+        ])
+        .mockResolvedValueOnce([
+          { id: "2", label: "Soweto", latitude: -26.27, longitude: 27.86 },
+        ]);
+
+      render(<App />);
+
+      await waitFor(() => expect(mapViewMocks.latestProps).toBeDefined());
+      expect(mapViewMocks.latestProps?.measurementRequest).toBeFalsy();
+
+      const measureDistanceCall = registerTool.mock.calls.find(
+        ([tool]) => tool.name === "measure-distance",
+      );
+      expect(measureDistanceCall).toBeDefined();
+      const tool = measureDistanceCall?.[0] as {
+        execute: (input: unknown) => Promise<unknown>;
+      };
+
+      await act(async () => {
+        await tool.execute({ locations: ["Sandton", "Soweto"] });
+      });
+
+      await waitFor(() =>
+        expect(mapViewMocks.latestProps?.measurementRequest).toEqual(
+          expect.objectContaining({
+            mode: "distance",
+            points: [
+              { lat: -26.11, lng: 28.06 },
+              { lat: -26.27, lng: 27.86 },
+            ],
+          }),
+        ),
+      );
+    } finally {
+      Object.defineProperty(document, "modelContext", {
+        configurable: true,
+        value: undefined,
+      });
+    }
   });
 
   it("renders township popup content via renderFeaturePopup", async () => {

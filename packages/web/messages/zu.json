@@ -93,5 +93,13 @@
   "webmcp_set_theme_description": "Shintsha itimu yemibala yohlelo. \"system\" ilandela okuncanyelwayo kwe-OS.",
   "webmcp_set_theme_unknown": "Itimu engaziwa \"{theme}\".",
   "webmcp_set_theme_switched": "Itimu ishintshelwe ku-\"{theme}\".",
-  "webmcp_read_story_description": "Funda indaba engemuva yaleli balazwe echaza ukuthi likhona ngani, bese uvula iphaneli Yendaba."
+  "webmcp_read_story_description": "Funda indaba engemuva yaleli balazwe echaza ukuthi likhona ngani, bese uvula iphaneli Yendaba.",
+  "webmcp_measure_distance_description": "Kala ibanga eliqondile phakathi kwezindawo ezimbili noma ngaphezulu eziqanjiwe, bese ulibonisa ethuluzini lokukala lebalazwe.",
+  "webmcp_measure_distance_input_locations": "Amagama ezindawo okumele ukale phakathi kwazo, ngokulandelana, isb. [\"Sandton\", \"Soweto\"].",
+  "webmcp_measure_distance_too_few": "Nikeza okungenani izindawo ezimbili ukuze ukale ibanga.",
+  "webmcp_measure_distance_result": "Ibanga elilandela {locations}: {result}.",
+  "webmcp_measure_area_description": "Kala indawo ezungezwe izindawo ezintathu noma ngaphezulu eziqanjiwe, bese uyibonisa ethuluzini lokukala lebalazwe.",
+  "webmcp_measure_area_input_locations": "Amagama ezindawo akha umugqa wangaphandle wendawo, ngokulandelana, isb. [\"Sandton\", \"Soweto\", \"Midrand\"].",
+  "webmcp_measure_area_too_few": "Nikeza okungenani izindawo ezintathu ukuze ukale indawo.",
+  "webmcp_measure_area_result": "Indawo ezungezwe {locations}: {result}."
 }

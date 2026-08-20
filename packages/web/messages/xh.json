@@ -93,5 +93,13 @@
   "webmcp_set_theme_description": "Tshintsha umxholo wemibala wosetyenziso. \"system\" ilandela okhethwayo kwi-OS.",
   "webmcp_set_theme_unknown": "Umxholo ongaziwayo \"{theme}\".",
   "webmcp_set_theme_switched": "Umxholo utshintshelwe ku-\"{theme}\".",
-  "webmcp_read_story_description": "Funda ibali elingasemva lale mephu elicacisa ukuba ikhoyo ngenxa yantoni, uze uvule iphaneli yeBali."
+  "webmcp_read_story_description": "Funda ibali elingasemva lale mephu elicacisa ukuba ikhoyo ngenxa yantoni, uze uvule iphaneli yeBali.",
+  "webmcp_measure_distance_description": "Linganisa umgama othe ngqo phakathi kweendawo ezimbini okanye ngaphezulu ezichaziweyo ngamagama, uze uwubonise kwisixhobo sokulinganisa semephu.",
+  "webmcp_measure_distance_input_locations": "Amagama eendawo ozakulinganisa phakathi kwazo, ngokulandelelana, umz. [\"Sandton\", \"Soweto\"].",
+  "webmcp_measure_distance_too_few": "Nikela ubuncinane iindawo ezimbini ukulinganisa umgama.",
+  "webmcp_measure_distance_result": "Umgama olandela {locations}: {result}.",
+  "webmcp_measure_area_description": "Linganisa indawo ezungezwe ziindawo ezintathu okanye ngaphezulu ezichaziweyo ngamagama, uze uyibonise kwisixhobo sokulinganisa semephu.",
+  "webmcp_measure_area_input_locations": "Amagama eendawo akha umda wendawo, ngokulandelelana, umz. [\"Sandton\", \"Soweto\", \"Midrand\"].",
+  "webmcp_measure_area_too_few": "Nikela ubuncinane iindawo ezintathu ukulinganisa indawo.",
+  "webmcp_measure_area_result": "Indawo ezungezwe {locations}: {result}."
 }
