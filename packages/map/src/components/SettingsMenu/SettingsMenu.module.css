@@ -24,6 +24,26 @@
   border-radius: var(--md-sys-shape-corner-large);
   background: var(--md-sys-color-surface-container-high);
   box-shadow: var(--md-sys-elevation-shadow-3);
+  /*
+   * Same fade+settle recipe as `MobileLegend.module.css`'s `.sheet`/
+   * `mobileLegendIn` -- both are a small card popping up from a trigger
+   * button, so they should read as the same motion rather than one
+   * animating in and the other snapping into place instantly.
+   */
+  animation: settingsMenuIn var(--motion-duration-medium)
+    var(--motion-ease-decelerate);
+}
+
+@keyframes settingsMenuIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .title {
