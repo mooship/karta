@@ -668,8 +668,8 @@ export function App() {
    * `markSheetEntranceNotReady`/`markSheetEntranceReadyAfterPaint` reset and
    * re-arm `data-sheet-entrance-ready` in that same commit -- see
    * `useDeferredReadyAttribute`'s own doc comment (`@karta/react`) for why
-   * the mobile sheet's `panelSheetIn` animation (its CSS pauses on that
-   * attribute) needs this rather than just starting immediately.
+   * the mobile sheet's own entrance fade (its CSS pauses on that attribute)
+   * needs this rather than just starting immediately.
    */
   function handlePanelToggle() {
     if (panelOpen) {
