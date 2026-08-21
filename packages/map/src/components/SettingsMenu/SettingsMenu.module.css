@@ -3,6 +3,7 @@
 }
 
 .menu {
+  composes: popoverIn from "../../shared.module.css";
   position: absolute;
   bottom: calc(100% + 0.5rem);
   left: 0;

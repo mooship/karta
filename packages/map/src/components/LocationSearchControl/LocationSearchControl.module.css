@@ -95,8 +95,9 @@
   font: inherit;
   text-align: left;
   cursor: pointer;
-  transition: background-color var(--motion-duration-short)
-    var(--motion-ease-standard);
+  transition:
+    background-color var(--motion-duration-short) var(--motion-ease-standard),
+    transform var(--motion-duration-short) var(--motion-ease-standard);
 }
 
 /*

@@ -15,10 +15,12 @@
    * were drawn from), but are declared explicitly rather than left to fall
    * through, so this file stays the single place that describes this app's
    * own mobile chrome geometry, and a future change here doesn't silently
-   * rely on the SDK's defaults matching by coincidence. `--panel-motion-
-   * duration` further below is *not* part of either shared contract -- it's
-   * this app's own Explore-panel-only fade timing, with no `@karta/map`
-   * consumer.
+   * rely on the SDK's defaults matching by coincidence. `--panel-reposition-
+   * duration` further below *is* part of that shared contract (see its own
+   * comment); the Explore panel's entrance fade, by contrast, reuses
+   * `index.css`'s app-wide `--motion-duration-medium` rather than a
+   * bespoke duration of its own, since it's the same short-distance settle
+   * every other popover/list-entrance in this app already uses.
    */
   --mobile-safe-top: env(safe-area-inset-top);
   --mobile-control-edge: 0.75rem;
@@ -57,13 +59,6 @@
    */
   --mobile-search-clearance: 8.25rem;
   /*
-   * How long the Explore panel's own entrance fade (`panelIn`, shared by
-   * both `.panel` and `.panelViewport`) takes, named once so the two can't
-   * drift out of sync with each other by hand-typing the same duration
-   * twice.
-   */
-  --panel-motion-duration: 260ms;
-  /*
    * How long any control that repositions itself around the mobile Explore
    * sheet (the panel toggle, `MobileLegend`'s trigger) takes to slide back
    * to its base position, shared across `packages/web` and `@karta/map` so
@@ -97,7 +92,7 @@
   font-family: var(--font-mono);
   font-size: var(--font-size-sm);
   text-transform: uppercase;
-  animation: mapLoadingPulse 1.6s ease-in-out infinite;
+  animation: mapLoadingPulse 1.6s var(--motion-ease-standard) infinite;
 }
 
 /*
@@ -213,18 +208,23 @@
   transition: box-shadow var(--motion-duration-medium)
     var(--motion-ease-standard);
   /*
-   * Desktop only -- the mobile media query below overrides this with
-   * panelSheetIn's own slide-up. Without an entrance animation here the
-   * sidebar simply appeared the instant `hidden` came off, which read as
-   * an abrupt pop next to `.panelViewport`'s own much subtler content fade.
-   * `--panel-in-distance`/`--panel-in-scale` give this element's fade a bit
-   * more travel and a scale-in `.panelViewport` doesn't get, via the same
-   * shared `panelIn` keyframes (see their fallback defaults there) rather
-   * than a second, near-identical keyframes block.
+   * Shared by both breakpoints (the mobile media query below only changes
+   * which attribute gates `animation-play-state`, not the animation
+   * itself). Without an entrance animation here the panel simply appeared
+   * the instant `hidden` came off, which read as an abrupt pop.
+   * `.panelViewport` (this element's own child) deliberately has no
+   * animation of its own -- an earlier version gave it a second,
+   * shorter-travel `panelIn` run in parallel, meant to read as a subtler
+   * companion fade. Measured against a live trace of both elements'
+   * computed `opacity` frame by frame, that instead compounded
+   * multiplicatively (a child at 51% opacity inside a parent also at 51%
+   * renders at 26%), badly front-loading an already front-loaded
+   * Emphasized-decelerate curve into a near-instant flash followed by a
+   * long, barely-visible crawl to full opacity -- the "violent" pop this
+   * animation exists to avoid, not fix. A single fade on this element alone
+   * is what the child was always going to inherit anyway.
    */
-  --panel-in-distance: 8px;
-  --panel-in-scale: 0.98;
-  animation: panelIn var(--panel-motion-duration) var(--motion-ease-decelerate);
+  animation: panelIn var(--motion-duration-medium) var(--motion-ease-decelerate);
 }
 
 .sheetHandleButton {
@@ -244,9 +244,6 @@
   -webkit-overflow-scrolling: touch;
   scrollbar-color: var(--md-sys-color-outline-variant) transparent;
   scrollbar-width: thin;
-  /* Shorter travel, no scale -- see `.panel`'s own `panelIn` for why the two share one keyframes block. */
-  --panel-in-distance: 6px;
-  animation: panelIn var(--panel-motion-duration) var(--motion-ease-decelerate);
 }
 
 /*
@@ -263,13 +260,11 @@
  * since a paused animation has no frame-to-frame changes to repaint.
  */
 @media (min-width: 769px) {
-  .panel,
-  .panelViewport {
+  .panel {
     animation-play-state: paused;
   }
 
-  .app[data-entrance-ready="true"] .panel,
-  .app[data-entrance-ready="true"] .panelViewport {
+  .app[data-entrance-ready="true"] .panel {
     animation-play-state: running;
   }
 }
@@ -414,18 +409,20 @@
     bottom: calc(var(--mobile-control-bottom) + 2rem);
     /*
      * Without this, `bottom` jumps instantly to its post-open value the
-     * moment `data-panel-open` flips -- the same render that starts the
-     * sheet's own `panelSheetIn` slide-up below -- so the trigger teleported
-     * to its final resting spot above a sheet that hadn't risen into view
-     * yet, then just sat there until the sheet caught up. Sharing the
-     * sheet's own duration *and* easing (`--motion-ease-large-surface`, same
-     * reasoning as `.panel`'s own `panelSheetIn` comment below -- this
-     * trigger climbs the same distance) is what actually makes the two move
-     * as one. `data-panel-open` (see App.tsx's `panelVisuallyOpen`) flips
-     * back to `false` the moment the sheet *starts* closing too, not once
-     * its own exit animation has already finished, so this transition also
-     * carries the trigger back down in step with the sheet's slide-out
-     * instead of snapping into place a beat after it's already gone.
+     * moment `data-panel-open` flips, teleporting to its final resting spot
+     * above the sheet rather than climbing there. The sheet's own entrance
+     * below is a quick in-place fade with no equivalent physical climb to
+     * stay in lockstep with, but its *exit* still slides the full sheet
+     * height off-screen (`panelSheetOut`) -- sharing that slide's own
+     * duration and easing (`--motion-ease-large-surface`, same reasoning as
+     * `.panel`'s own `panelSheetOut` comment below -- this trigger climbs
+     * the same distance) is what keeps the trigger's climb and the sheet's
+     * slide-out moving as one. `data-panel-open` (see App.tsx's
+     * `panelVisuallyOpen`) flips back to `false` the moment the sheet
+     * *starts* closing too, not once its own exit animation has already
+     * finished, so this transition also carries the trigger back down in
+     * step with the sheet's slide-out instead of snapping into place a beat
+     * after it's already gone.
      *
      * This button is a `ControlButton`, whose own stylesheet
      * (ControlButton.module.css's `.button`) declares its own `transition`
@@ -466,25 +463,30 @@
     border-radius: var(--md-sys-shape-corner-large)
       var(--md-sys-shape-corner-large) 0 0;
     transform: translateY(calc(var(--panel-drag-offset, 0px) * 0.14));
+    transform-origin: bottom;
     transition:
       height 320ms var(--motion-ease-standard),
       transform var(--motion-duration-medium) var(--motion-ease-decelerate),
       box-shadow var(--motion-duration-medium) var(--motion-ease-standard);
     /*
-     * `--panel-reposition-duration`, not a hand-tuned literal here -- see
-     * `button.panelTrigger`'s own comment above. The two used to drift (this
-     * was 340ms against the trigger's 300ms, "roughly" matching by the
-     * previous comment's own admission); sharing the identical token is what
-     * actually makes them move as one rather than a near-miss.
-     * `--motion-ease-large-surface`, not the Emphasized decelerate curve the
-     * desktop `.panel`'s own (8px, small) `panelIn` entrance uses below --
-     * see `docs/design-system.md`'s Motion section for why Emphasized reads
-     * as violent rather than smooth over this sheet's full hundreds-of-
-     * pixels travel.
-     */
-    animation: panelSheetIn var(--panel-reposition-duration)
-      var(--motion-ease-large-surface);
-    /*
+     * The entrance itself (`animation: panelIn ...`) is declared once,
+     * unconditionally, on `.panel` above -- this breakpoint only needs its
+     * own `animation-play-state` gate (a different readiness attribute, set
+     * from a user tap rather than `mapReady`). An earlier version instead
+     * gave this breakpoint its own `panelSheetIn` keyframes, sliding the
+     * sheet up from translateY(100%) over its full height (up to the
+     * ~45rem `--mobile-sheet-height-full`) on every open; over that much
+     * travel it read as the sheet flying in from off-screen rather than
+     * settling into place, and Emphasized-decelerate over a long distance
+     * reads as a violent whip regardless (see `docs/design-system.md`'s
+     * Motion section). Reusing the same fade+scale as the desktop sidebar
+     * keeps both entrances feeling like the same motion; `transform-origin:
+     * bottom` above keeps the scale settling from the sheet's own anchored
+     * edge rather than its center. The *exit* keeps its own full-height
+     * slide (`panelSheetOut` below) -- a completed downward drag needs to
+     * continue in the same direction the user's finger was already moving
+     * it, not evaporate in place.
+     *
      * Paused at its first frame until `data-sheet-entrance-ready` -- set via
      * `@karta/react`'s `useDeferredReadyAttribute` (see its own doc comment
      * for why), called from `handlePanelToggle` in App.tsx. Same reasoning
@@ -627,16 +629,6 @@
   }
 }
 
-@keyframes panelSheetIn {
-  from {
-    transform: translateY(100%);
-  }
-
-  to {
-    transform: translateY(0);
-  }
-}
-
 @keyframes panelSheetOut {
   from {
     transform: translateY(0);
@@ -648,16 +640,14 @@
 }
 
 /*
- * Shared by `.panel` (desktop entrance) and `.panelViewport` (its content,
- * both breakpoints) -- each sets its own `--panel-in-distance`/
- * `--panel-in-scale` above rather than this duplicating as two near-
- * identical keyframes blocks that only differed by a few pixels.
+ * `.panel`'s own entrance fade, both breakpoints -- see its rule above for
+ * why its child `.panelViewport` deliberately doesn't run a second copy of
+ * this.
  */
 @keyframes panelIn {
   from {
     opacity: 0;
-    transform: translateY(var(--panel-in-distance, 8px))
-      scale(var(--panel-in-scale, 1));
+    transform: translateY(8px) scale(0.98);
   }
 
   to {
@@ -675,19 +665,5 @@
   to {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .panel,
-  .panel[data-panel-dragging="true"],
-  .panel[data-panel-closing="true"],
-  .panelViewport {
-    animation: none;
-    transform: none;
-  }
-
-  .mapLoading {
-    animation: none;
   }
 }
