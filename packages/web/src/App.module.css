@@ -15,10 +15,12 @@
    * were drawn from), but are declared explicitly rather than left to fall
    * through, so this file stays the single place that describes this app's
    * own mobile chrome geometry, and a future change here doesn't silently
-   * rely on the SDK's defaults matching by coincidence. `--panel-motion-
-   * duration` further below is *not* part of either shared contract -- it's
-   * this app's own Explore-panel-only fade timing, with no `@karta/map`
-   * consumer.
+   * rely on the SDK's defaults matching by coincidence. `--panel-reposition-
+   * duration` further below *is* part of that shared contract (see its own
+   * comment); the Explore panel's entrance fade, by contrast, reuses
+   * `index.css`'s app-wide `--motion-duration-medium` rather than a
+   * bespoke duration of its own, since it's the same short-distance settle
+   * every other popover/list-entrance in this app already uses.
    */
   --mobile-safe-top: env(safe-area-inset-top);
   --mobile-control-edge: 0.75rem;
@@ -57,12 +59,6 @@
    */
   --mobile-search-clearance: 8.25rem;
   /*
-   * How long the Explore panel's own entrance fade (`panelIn`, `.panel`
-   * only, both breakpoints -- see its rule for why `.panelViewport` doesn't
-   * run a second copy) takes.
-   */
-  --panel-motion-duration: 260ms;
-  /*
    * How long any control that repositions itself around the mobile Explore
    * sheet (the panel toggle, `MobileLegend`'s trigger) takes to slide back
    * to its base position, shared across `packages/web` and `@karta/map` so
@@ -96,7 +92,7 @@
   font-family: var(--font-mono);
   font-size: var(--font-size-sm);
   text-transform: uppercase;
-  animation: mapLoadingPulse 1.6s ease-in-out infinite;
+  animation: mapLoadingPulse 1.6s var(--motion-ease-standard) infinite;
 }
 
 /*
@@ -228,7 +224,7 @@
    * animation exists to avoid, not fix. A single fade on this element alone
    * is what the child was always going to inherit anyway.
    */
-  animation: panelIn var(--panel-motion-duration) var(--motion-ease-decelerate);
+  animation: panelIn var(--motion-duration-medium) var(--motion-ease-decelerate);
 }
 
 .sheetHandleButton {
@@ -669,18 +665,5 @@
   to {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .panel,
-  .panel[data-panel-dragging="true"],
-  .panel[data-panel-closing="true"] {
-    animation: none;
-    transform: none;
-  }
-
-  .mapLoading {
-    animation: none;
   }
 }

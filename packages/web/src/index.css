@@ -197,9 +197,11 @@
   /* Named alias, not a distinct curve -- an Emphasized curve's front-loaded
    * motion reads as violent over a long travel (see the Motion section), so
    * anything moving a large surface a long distance in one motion (the
-   * mobile Explore sheet's own slide, and the triggers that climb in
-   * lockstep with it) reaches for this name instead of reasoning about
-   * `--motion-ease-standard` fresh at each call site. */
+   * mobile Explore sheet's own full-height close slide -- its open entrance
+   * is instead a short in-place fade, at Emphasized-decelerate -- and the
+   * triggers that climb in lockstep with that close slide) reaches for this
+   * name instead of reasoning about `--motion-ease-standard` fresh at each
+   * call site. */
   --motion-ease-large-surface: var(--motion-ease-standard);
 
   /* Focus ring magnitude only — colour stays contextual (a component on a
@@ -389,7 +391,8 @@ body {
   color: var(--md-sys-color-on-surface);
   font-size: 1.5rem;
   line-height: 1;
-  transition: background-color var(--motion-duration-short) ease;
+  transition: background-color var(--motion-duration-short)
+    var(--motion-ease-standard);
 }
 
 .leaflet-container .leaflet-control-zoom a:hover {
