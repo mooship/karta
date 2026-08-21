@@ -1,0 +1,10 @@
+[install]
+# "hoisted" (npm-style, single root node_modules) rather than Bun's default
+# "isolated" (pnpm-style, strict per-package node_modules): @inlang/paraglide-js's
+# compile step resolves its plugin ("@inlang/plugin-message-format") via a
+# relative path built on the assumption that everything sits under the repo
+# root's node_modules — under "isolated" that plugin only exists in
+# packages/web/node_modules, the resolve fails, and the compiler silently
+# falls back to a different (and wrong) output layout for the checked-in
+# packages/web/src/paraglide messages.
+linker = "hoisted"

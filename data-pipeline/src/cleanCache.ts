@@ -3,7 +3,7 @@ import { isDirectExecution } from "./cliEntry";
 
 const DEFAULT_MAX_AGE_DAYS = 7;
 
-/** Parses `npm run cache:clean`'s mode: `"all"` for `--all`, `"stale"` otherwise. */
+/** Parses `bun run cache:clean`'s mode: `"all"` for `--all`, `"stale"` otherwise. */
 export function parseMode(argv: readonly string[]): "all" | "stale" {
   return argv.includes("--all") ? "all" : "stale";
 }
@@ -28,7 +28,7 @@ export function parseMaxAgeDays(argv: readonly string[]): number {
 }
 
 /**
- * `npm run cache:clean` entry point: deletes the whole cache directory in
+ * `bun run cache:clean` entry point: deletes the whole cache directory in
  * `"all"` mode, or prunes files older than `--max-age-days` otherwise.
  */
 export async function runCleanCache(argv: readonly string[]): Promise<void> {
@@ -49,7 +49,7 @@ export async function runCleanCache(argv: readonly string[]): Promise<void> {
   );
 }
 
-/* v8 ignore start -- exercised via `npm run cache:*`, not unit tests */
+/* v8 ignore start -- exercised via `bun run cache:*`, not unit tests */
 if (isDirectExecution(process.argv, import.meta.url)) {
   runCleanCache(process.argv).catch((error) => {
     console.error(error);

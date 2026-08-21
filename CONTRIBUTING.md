@@ -16,25 +16,25 @@ participating, you agree to uphold those standards.
 ## Getting set up
 
 ```bash
-npm install
-npm run test        # Vitest across all workspaces
-npm run test:coverage # same scope, with a coverage report
-npm run typecheck   # tsc --noEmit for @karta/core, @karta/app, @karta/map, @karta/react + web build + data-pipeline typecheck
-npm run lint        # biome check .
-npm run format      # biome format --write .
-npm run dev --workspace @karta/web
+bun install
+bun run test        # Vitest across all workspaces
+bun run test:coverage # same scope, with a coverage report
+bun run typecheck   # tsc --noEmit for @karta/core, @karta/app, @karta/map, @karta/react + web build + data-pipeline typecheck
+bun run lint        # biome check .
+bun run format      # biome format --write .
+bun run --filter @karta/web dev
 ```
 
-Run a single test file with `npx vitest run path/to/file.test.ts`.
+Run a single test file with `bunx vitest run path/to/file.test.ts`.
 
-`data-pipeline/` is a standalone project rather than an npm workspace, so it has
+`data-pipeline/` is a standalone project rather than a Bun workspace, so it has
 its own install step:
 
 ```bash
 cd data-pipeline
-npm install
-npm run run       # full pipeline: boundaries, transit, OSRM routing, join, write output
-npm run display   # legacy helper: rebuilds compact display files for per-metro source directories when present
+bun install
+bun run run       # full pipeline: boundaries, transit, OSRM routing, join, write output
+bun run display   # legacy helper: rebuilds compact display files for per-metro source directories when present
 ```
 
 See [`data-pipeline/README.md`](data-pipeline/README.md) before running the full
@@ -119,8 +119,8 @@ meaning rather than its code:
 - Keep each pull request to one logical change.
 - Describe what changed and why. If it's a visual change, include a screenshot in
   both light and dark themes.
-- Make sure `npm run lint`, `npm run typecheck`, `npm run test`, and
-  `npm run build` all pass locally.
+- Make sure `bun run lint`, `bun run typecheck`, `bun run test`, and
+  `bun run build` all pass locally.
 - If you regenerated pipeline output, say which command you ran and why the data
   diff is what it is.
 

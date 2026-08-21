@@ -1,7 +1,7 @@
 /**
  * Basenames of the per-metro `<name>.display.v1.geojson` transit files that
  * `data-pipeline/src/buildDisplayData.ts` (the legacy per-metro display
- * rebuild helper, see `npm run display` in `data-pipeline/README.md`) knows
+ * rebuild helper, see `bun run display` in `data-pipeline/README.md`) knows
  * how to look up and rebuild.
  * @remarks Legacy, and scoped to that one helper only — a second, disconnected
  *   transit-operator naming scheme (per-operator basenames like `"gautrain"`,

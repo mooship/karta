@@ -1,19 +1,19 @@
 # Data Pipeline
 
-Offline scripts that produce the static GeoJSON files served by the web app. Not an npm workspace — run manually.
+Offline scripts that produce the static GeoJSON files served by the web app. Not a Bun workspace — run manually.
 
 ## Run
 
 ```bash
 cd data-pipeline
-npm install
-npm run run
+bun install
+bun run run
 ```
 
 Runs a build for every `province`-kind region in `@karta/app`'s `REGIONS` registry (currently just `gauteng`) via `runAllProvinceRegions()`. To build a single region instead, pass `--region <id>`:
 
 ```bash
-npm run run -- --region gauteng
+bun run run -- --region gauteng
 ```
 
 Each region build (`runRegion(regionId)`) loops over the `METROS` tagged with that `regionId` (currently all Gauteng municipalities: Tshwane, Johannesburg, Ekurhuleni, Emfuleni, Midvaal, Lesedi, Mogale City, Rand West City, and Merafong City) to fetch and process each metro's boundaries and job-center routing, then writes a combined output to `packages/web/public/data/<regionId>/`.
@@ -31,15 +31,15 @@ written to a staging directory first and only atomically promoted to
 Validate every region directory that's currently published (`runAllRegionsOutputValidation()`, skipping any region in `REGIONS` that hasn't been built yet):
 
 ```bash
-npm run validate
+bun run validate
 ```
 
 Cache management:
 
 ```bash
-npm run cache:prune               # remove stale cache files older than 7 days
-npm run cache:clean               # remove the whole cache directory
-tsx src/cleanCache.ts --max-age-days 2
+bun run cache:prune               # remove stale cache files older than 7 days
+bun run cache:clean               # remove the whole cache directory
+bun src/cleanCache.ts --max-age-days 2
 ```
 
 All published files are display-optimized `.display.v1.geojson` artifacts used
@@ -99,7 +99,7 @@ For heavy iteration (e.g. re-running the whole pipeline repeatedly while develop
 3. Start both services: `docker compose up` (see `docker-compose.yml`; the Overpass container needs a few minutes on first start to import the extract).
 4. Point the pipeline at them and run as usual:
    ```bash
-   OSRM_BASE_URL=http://localhost:5000 OVERPASS_URL=http://localhost:12345/api/interpreter npm run run
+   OSRM_BASE_URL=http://localhost:5000 OVERPASS_URL=http://localhost:12345/api/interpreter bun run run
    ```
 
 Only `src/constants/serviceUrls.ts` reads these environment variables — no other pipeline code needs to change to use local infrastructure instead of the public defaults. You can also set `OVERPASS_URLS` (comma-separated) to control mirror priority explicitly.

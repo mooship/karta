@@ -4,7 +4,7 @@
  * dependency-free foundations, `packages/map` builds on `core`/`react` only,
  * and `packages/app` builds on `core` only -- none of the four may reach
  * into `packages/web` (the reference app) or "downstream" of themselves.
- * Run via `npm run depcruise`; wired into CI as part of `npm run lint`.
+ * Run via `bun run depcruise`; wired into CI as part of `bun run lint`.
  */
 module.exports = {
   forbidden: [

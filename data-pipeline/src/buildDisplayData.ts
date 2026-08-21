@@ -128,7 +128,7 @@ async function main() {
   }
 }
 
-/* v8 ignore start -- exercised via `npm run display`, not unit tests */
+/* v8 ignore start -- exercised via `bun run display`, not unit tests */
 if (isDirectExecution(process.argv, import.meta.url)) {
   main().catch((error) => {
     console.error(error);

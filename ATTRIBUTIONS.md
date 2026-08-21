@@ -12,4 +12,4 @@
 
 Karta is licensed under the AGPL-3.0 (see `LICENSE`). Runtime and build
 dependencies are MIT, BSD, ISC, Apache-2.0 or OFL licensed; run
-`npx license-checker --summary` to regenerate the current list.
+`bunx license-checker --summary` to regenerate the current list.

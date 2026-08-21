@@ -36,7 +36,7 @@ owns this: it builds a `SchemeTonalSpot` (light and dark) from the seed via
 generated token block in `packages/web/src/index.css`.
 
 To change Karta's brand colour, edit `SEED_COLOR_HEX` in that script and
-re-run `npm run generate:theme --workspace @karta/web` — never hand-edit
+re-run `bun run --filter @karta/web generate:theme` — never hand-edit
 the hex values inside the `/* GENERATED M3 ... TOKENS */` markers directly,
 since the next run overwrites them.
 

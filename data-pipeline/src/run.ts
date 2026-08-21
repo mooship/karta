@@ -222,7 +222,7 @@ async function runAllProvinceRegions(): Promise<void> {
   }
 }
 
-/* v8 ignore start -- exercised via `npm run run`, not unit tests: runs the real pipeline against live external services */
+/* v8 ignore start -- exercised via `bun run run`, not unit tests: runs the real pipeline against live external services */
 if (isDirectExecution(process.argv, import.meta.url)) {
   const regionArgIndex = process.argv.indexOf("--region");
   const requestedRegionId =

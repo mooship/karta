@@ -31,7 +31,7 @@ export async function runOutputValidation(
 }
 
 /**
- * `npm run validate` entry point: validates every configured region whose
+ * `bun run validate` entry point: validates every configured region whose
  * output directory exists under `outputRoot`, skipping regions that haven't
  * been built yet.
  * @throws If no region output directories exist at all, if a region with an
@@ -77,7 +77,7 @@ export async function runAllRegionsOutputValidation(
   }
 }
 
-/* v8 ignore start -- exercised via `npm run validate`, not unit tests */
+/* v8 ignore start -- exercised via `bun run validate`, not unit tests */
 if (isDirectExecution(process.argv, import.meta.url)) {
   runAllRegionsOutputValidation().catch((error) => {
     console.error(error);

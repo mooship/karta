@@ -6,14 +6,14 @@
   "private": true,
   "type": "module",
   "engines": {
-    "node": ">=22"
+    "bun": ">=1.3.0"
   },
   "scripts": {
-    "cache:clean": "tsx src/cleanCache.ts --all",
-    "cache:prune": "tsx src/cleanCache.ts",
-    "display": "tsx src/buildDisplayData.ts",
-    "run": "tsx src/run.ts",
-    "validate": "tsx src/validateOutput.ts",
+    "cache:clean": "bun src/cleanCache.ts --all",
+    "cache:prune": "bun src/cleanCache.ts",
+    "display": "bun src/buildDisplayData.ts",
+    "run": "bun src/run.ts",
+    "validate": "bun src/validateOutput.ts",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },
@@ -35,7 +35,6 @@
     "@types/topojson-client": "^3.1.5",
     "@types/topojson-server": "^3.0.4",
     "@types/topojson-simplify": "^3.0.3",
-    "tsx": "^4.23.12",
     "typescript": "^7.0.2",
     "vitest": "^4.1.10"
   }
