@@ -75,3 +75,26 @@
 .searchInput::-webkit-search-cancel-button {
   display: none;
 }
+
+/*
+ * A small card's fade+settle entrance, composed by any trigger-anchored
+ * popover (`SettingsMenu`'s dropdown, `MobileLegend`'s sheet) so they read
+ * as the same motion rather than two independently hand-tuned copies of
+ * the identical recipe.
+ */
+.popoverIn {
+  animation: popoverIn var(--motion-duration-medium)
+    var(--motion-ease-decelerate);
+}
+
+@keyframes popoverIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

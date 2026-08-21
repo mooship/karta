@@ -9,7 +9,7 @@
 }
 
 .sheet {
-  composes: customScrollbar from "../../shared.module.css";
+  composes: customScrollbar popoverIn from "../../shared.module.css";
   position: absolute;
   left: 0;
   bottom: calc(100% + 0.5rem);
@@ -26,12 +26,6 @@
   -webkit-overflow-scrolling: touch;
   transform: translateY(var(--sheet-drag-offset, 0px));
   transition: transform var(--motion-duration-medium)
-    var(--motion-ease-decelerate);
-  /*
-   * Same recipe as `SettingsMenu.module.css`'s `.menu`/`settingsMenuIn` --
-   * both are a small card popping up from a trigger button.
-   */
-  animation: mobileLegendIn var(--motion-duration-medium)
     var(--motion-ease-decelerate);
 }
 
@@ -163,17 +157,5 @@
   .container[data-panel-open="true"] .sheet {
     top: calc(100% + 0.5rem);
     bottom: auto;
-  }
-}
-
-@keyframes mobileLegendIn {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
   }
 }
