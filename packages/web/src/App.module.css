@@ -57,10 +57,9 @@
    */
   --mobile-search-clearance: 8.25rem;
   /*
-   * How long the Explore panel's own entrance fade (`panelIn`, shared by
-   * both `.panel` and `.panelViewport`) takes, named once so the two can't
-   * drift out of sync with each other by hand-typing the same duration
-   * twice.
+   * How long the desktop Explore panel's own entrance fade (`panelIn`,
+   * `.panel` only -- see its rule for why `.panelViewport` doesn't run a
+   * second copy) takes.
    */
   --panel-motion-duration: 260ms;
   /*
@@ -215,12 +214,18 @@
   /*
    * Desktop only -- the mobile media query below overrides this with
    * panelSheetIn's own slide-up. Without an entrance animation here the
-   * sidebar simply appeared the instant `hidden` came off, which read as
-   * an abrupt pop next to `.panelViewport`'s own much subtler content fade.
-   * `--panel-in-distance`/`--panel-in-scale` give this element's fade a bit
-   * more travel and a scale-in `.panelViewport` doesn't get, via the same
-   * shared `panelIn` keyframes (see their fallback defaults there) rather
-   * than a second, near-identical keyframes block.
+   * sidebar simply appeared the instant `hidden` came off, which read as an
+   * abrupt pop. `.panelViewport` (this element's own child) deliberately has
+   * no animation of its own -- an earlier version gave it a second,
+   * shorter-travel `panelIn` run in parallel, meant to read as a subtler
+   * companion fade. Measured against a live trace of both elements'
+   * computed `opacity` frame by frame, that instead compounded
+   * multiplicatively (a child at 51% opacity inside a parent also at 51%
+   * renders at 26%), badly front-loading an already front-loaded
+   * Emphasized-decelerate curve into a near-instant flash followed by a
+   * long, barely-visible crawl to full opacity -- the "violent" pop this
+   * animation exists to avoid, not fix. A single fade on this element alone
+   * is what the child was always going to inherit anyway.
    */
   --panel-in-distance: 8px;
   --panel-in-scale: 0.98;
@@ -244,9 +249,6 @@
   -webkit-overflow-scrolling: touch;
   scrollbar-color: var(--md-sys-color-outline-variant) transparent;
   scrollbar-width: thin;
-  /* Shorter travel, no scale -- see `.panel`'s own `panelIn` for why the two share one keyframes block. */
-  --panel-in-distance: 6px;
-  animation: panelIn var(--panel-motion-duration) var(--motion-ease-decelerate);
 }
 
 /*
@@ -263,13 +265,11 @@
  * since a paused animation has no frame-to-frame changes to repaint.
  */
 @media (min-width: 769px) {
-  .panel,
-  .panelViewport {
+  .panel {
     animation-play-state: paused;
   }
 
-  .app[data-entrance-ready="true"] .panel,
-  .app[data-entrance-ready="true"] .panelViewport {
+  .app[data-entrance-ready="true"] .panel {
     animation-play-state: running;
   }
 }
@@ -648,10 +648,8 @@
 }
 
 /*
- * Shared by `.panel` (desktop entrance) and `.panelViewport` (its content,
- * both breakpoints) -- each sets its own `--panel-in-distance`/
- * `--panel-in-scale` above rather than this duplicating as two near-
- * identical keyframes blocks that only differed by a few pixels.
+ * The desktop `.panel`'s own entrance fade -- see its rule above for why its
+ * child `.panelViewport` deliberately doesn't run a second copy of this.
  */
 @keyframes panelIn {
   from {
@@ -681,8 +679,7 @@
 @media (prefers-reduced-motion: reduce) {
   .panel,
   .panel[data-panel-dragging="true"],
-  .panel[data-panel-closing="true"],
-  .panelViewport {
+  .panel[data-panel-closing="true"] {
     animation: none;
     transform: none;
   }
