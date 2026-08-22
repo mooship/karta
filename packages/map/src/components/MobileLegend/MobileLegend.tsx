@@ -4,7 +4,7 @@ import { memo, useCallback, useEffect, useRef, useState } from "react";
 import { useDismissableOverlay } from "../../hooks/useDismissableOverlay";
 import { useSwipeToDismiss } from "../../hooks/useSwipeToDismiss";
 import { IconButton } from "../IconButton/IconButton";
-import { Legend } from "../Legend/Legend";
+import { Legend, type LegendLabels } from "../Legend/Legend";
 import styles from "./MobileLegend.module.css";
 
 interface MobileLegendProps {
@@ -12,13 +12,29 @@ interface MobileLegendProps {
   suppressed: boolean;
   panelOpen: boolean;
   panelExpanded: boolean;
+  /** Visible heading text and open sheet's `aria-label`. Defaults to `"Map legend"`. */
+  title?: string;
+  /** Accessible label of the trigger button while the sheet is closed. Defaults to `"Open map legend"`. */
+  openLabel?: string;
+  /** Accessible label of the trigger button (and drag handle) while the sheet is open. Defaults to `"Close map legend"`. */
+  closeLabel?: string;
+  /** Overridable copy passed straight through to the internal `Legend`. */
+  legendLabels?: LegendLabels;
 }
+
+const DEFAULT_TITLE = "Map legend";
+const DEFAULT_OPEN_LABEL = "Open map legend";
+const DEFAULT_CLOSE_LABEL = "Close map legend";
 
 function MobileLegendComponent({
   visibleLayerIds,
   suppressed,
   panelOpen,
   panelExpanded,
+  title = DEFAULT_TITLE,
+  openLabel = DEFAULT_OPEN_LABEL,
+  closeLabel = DEFAULT_CLOSE_LABEL,
+  legendLabels,
 }: MobileLegendProps) {
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -69,7 +85,7 @@ function MobileLegendComponent({
         data-e2e="mobile-legend-trigger"
         aria-expanded={open}
         aria-controls="mobile-legend-content"
-        label={open ? "Close map legend" : "Open map legend"}
+        label={open ? closeLabel : openLabel}
         onClick={() => setOpen((value) => !value)}
       >
         {open ? <X aria-hidden="true" /> : <BookOpen aria-hidden="true" />}
@@ -78,7 +94,7 @@ function MobileLegendComponent({
         <section
           id="mobile-legend-content"
           className={styles.sheet}
-          aria-label="Map legend"
+          aria-label={title}
           data-testid="mobile-legend-content"
           data-e2e="mobile-legend-content"
           data-dragging={dragging ? "true" : "false"}
@@ -88,16 +104,21 @@ function MobileLegendComponent({
             type="button"
             className={styles.dragHandleButton}
             data-testid="mobile-legend-drag-handle"
-            aria-label="Close map legend"
+            aria-label={closeLabel}
             onPointerDown={onPointerDown}
             onClick={close}
           >
             <span className={styles.dragHandle} aria-hidden="true" />
           </button>
           <h2 className={styles.title} ref={titleRef} tabIndex={-1}>
-            Map legend
+            {title}
           </h2>
-          <Legend mode="active" visibleLayerIds={visibleLayerIds} compact />
+          <Legend
+            mode="active"
+            visibleLayerIds={visibleLayerIds}
+            compact
+            {...legendLabels}
+          />
         </section>
       ) : null}
     </div>

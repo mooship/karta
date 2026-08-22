@@ -311,6 +311,35 @@ describe("MobileLegend", () => {
     expect(content).toHaveAttribute("data-dragging", "false");
   });
 
+  it("uses custom title/open/close copy and forwards legend labels when given", () => {
+    render(
+      withDomain(
+        <MobileLegend
+          visibleLayerIds={["areas"]}
+          suppressed={false}
+          panelOpen={false}
+          panelExpanded={false}
+          title="Kaartlegende"
+          openLabel="Maak kaartlegende oop"
+          closeLabel="Maak kaartlegende toe"
+          legendLabels={{ emptyMessage: "Skakel lae aan." }}
+        />,
+      ),
+    );
+
+    const trigger = screen.getByTestId("mobile-legend-trigger");
+    expect(trigger).toHaveAccessibleName("Maak kaartlegende oop");
+
+    fireEvent.click(trigger);
+
+    expect(trigger).toHaveAccessibleName("Maak kaartlegende toe");
+    expect(screen.getByTestId("mobile-legend-content")).toHaveAttribute(
+      "aria-label",
+      "Kaartlegende",
+    );
+    expect(screen.getByText("Kaartlegende")).toBeInTheDocument();
+  });
+
   it("reflects panelOpen and panelExpanded via data attributes", () => {
     const { container } = render(
       withDomain(

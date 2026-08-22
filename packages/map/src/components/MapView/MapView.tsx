@@ -56,9 +56,13 @@ import type { SelectableFeatureSearchEntry } from "../LocationSearchControl/Loca
 import { formatMeasurementResult } from "../MeasurementControl/formatMeasurementResult";
 import {
   MeasurementControl,
+  type MeasurementControlLabels,
   type MeasurementMode,
 } from "../MeasurementControl/MeasurementControl";
-import { LocationContextMenu } from "./LocationContextMenu";
+import {
+  LocationContextMenu,
+  type LocationContextMenuLabels,
+} from "./LocationContextMenu";
 import styles from "./MapView.module.css";
 import { MeasurementLayer } from "./MeasurementLayer";
 import { VectorBasemapLayer } from "./VectorBasemapLayer";
@@ -134,12 +138,16 @@ export interface MapViewProps<
    * backend.
    */
   locationContextMenuProvider?: GeocoderProvider;
+  /** Overridable copy for that context menu, forwarded straight through to `LocationContextMenu`. Every field defaults to English. */
+  locationContextMenuLabels?: LocationContextMenuLabels;
   /**
    * When `true`, shows a toggleable control for measuring straight-line
    * distance or enclosed area by clicking points on the map. Defaults to
    * `false`.
    */
   measurementTool?: boolean;
+  /** Overridable copy for that control, forwarded straight through to `MeasurementControl`. Every field defaults to English. */
+  measurementLabels?: MeasurementControlLabels;
   /**
    * Whether the caller's own overlapping panel (if it has one — e.g. an
    * info/layers panel rendered alongside `MapView`) is currently open.
@@ -190,7 +198,17 @@ export interface MapViewProps<
    *   anyway.
    */
   onReady?: () => void;
+  /**
+   * Builds the `aria-live` announcement read out when a feature becomes
+   * selected (by click/tap, or a caller driving `selectedFeatureId`
+   * externally), from that feature's own accessible label. Defaults to
+   * `` (label) => `${label} selected` ``.
+   */
+  formatSelectionAnnouncement?: (label: string) => string;
 }
+
+const DEFAULT_FORMAT_SELECTION_ANNOUNCEMENT = (label: string) =>
+  `${label} selected`;
 
 const AREA_PANE = "areas";
 const AREA_OUTLINE_PANE = "area-outlines";
@@ -974,11 +992,14 @@ function MapViewComponent<
   onBasemapError,
   locationContextMenu = false,
   locationContextMenuProvider,
+  locationContextMenuLabels,
   measurementTool = false,
+  measurementLabels,
   measurementPanelOpen = false,
   onMeasurementPanelClose,
   measurementRequest = null,
   onReady,
+  formatSelectionAnnouncement = DEFAULT_FORMAT_SELECTION_ANNOUNCEMENT,
 }: MapViewProps<TProperties>) {
   const { getLayers } = useDomain();
   const [measurement, setMeasurement] = useState<MeasurementState>(
@@ -1351,6 +1372,7 @@ function MapViewComponent<
           onClear={handleMeasurementClear}
           panelOpen={measurementPanelOpen}
           onRequestPanelClose={onMeasurementPanelClose}
+          {...measurementLabels}
         />
       ) : null}
       {/*
@@ -1361,7 +1383,9 @@ function MapViewComponent<
         that a selection changed.
       */}
       <output aria-live="polite" className={styles.visuallyHidden}>
-        {selectedFeatureLabel ? `${selectedFeatureLabel} selected` : ""}
+        {selectedFeatureLabel
+          ? formatSelectionAnnouncement(selectedFeatureLabel)
+          : ""}
       </output>
       <MapContainer
         bounds={bounds}
@@ -1418,7 +1442,10 @@ function MapViewComponent<
         <ResponsiveMapBounds bounds={bounds} />
         <ZoomStateWatcher onZoomChange={setMapZoom} />
         {locationContextMenu ? (
-          <LocationContextMenu provider={locationContextMenuProvider} />
+          <LocationContextMenu
+            provider={locationContextMenuProvider}
+            {...locationContextMenuLabels}
+          />
         ) : null}
         <MeasurementClickLayer
           measurementTool={measurementTool}
