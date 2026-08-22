@@ -89,6 +89,8 @@ interface LocationSearchControlProps {
   noResultsLabel?: string;
   /** Status text shown when a search fails, alongside the retry button. Defaults to `"Search is unavailable right now. Please try again."`. */
   unavailableMessage?: string;
+  /** Visible text of the retry button shown alongside `unavailableMessage`. Defaults to `"Retry"`. */
+  retryLabel?: string;
 }
 
 const MIN_SEARCH_QUERY_LENGTH = 2;
@@ -128,8 +130,9 @@ function resultOptionId(combined: CombinedResult): string {
  *   near-identical-looking search boxes was worse for every visitor than
  *   one box that does both jobs, so that control was folded into this one.
  *   Every piece of its own copy (`label`, `ariaLabel`, `clearButtonLabel`,
- *   `searchingLabel`, `noResultsLabel`, `unavailableMessage`, plus the
- *   existing `placeholder`) is an overridable prop defaulting to English,
+ *   `searchingLabel`, `noResultsLabel`, `unavailableMessage`, `retryLabel`,
+ *   plus the existing `placeholder`) is an overridable prop defaulting to
+ *   English,
  *   the same pattern `placeholder` already used -- this package can't
  *   depend on an app-specific message catalogue, but a caller with one
  *   (like the reference app's paraglide messages) can still localise every
@@ -148,6 +151,7 @@ export function LocationSearchControl({
   searchingLabel = DEFAULT_SEARCHING_LABEL,
   noResultsLabel = DEFAULT_NO_RESULTS_LABEL,
   unavailableMessage = DEFAULT_SEARCH_UNAVAILABLE_MESSAGE,
+  retryLabel,
 }: LocationSearchControlProps) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<LocationSearchResult[]>([]);
@@ -386,6 +390,7 @@ export function LocationSearchControl({
         <output className={styles.status}>
           {unavailableMessage}
           <RetryButton
+            label={retryLabel}
             data-testid="location-search-retry"
             data-e2e="location-search-retry"
             onClick={handleRetry}

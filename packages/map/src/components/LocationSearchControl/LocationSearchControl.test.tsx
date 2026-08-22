@@ -292,6 +292,29 @@ describe("LocationSearchControl", () => {
     });
   });
 
+  it("uses a custom retry label when given", async () => {
+    searchMocks.fetchLocationSearchResults.mockRejectedValue(
+      new Error("network"),
+    );
+
+    render(
+      <LocationSearchControl
+        onLocationSelect={vi.fn()}
+        retryLabel="Probeer weer"
+      />,
+    );
+
+    fireEvent.change(screen.getByTestId("location-search-input"), {
+      target: { value: "Soweto" },
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole("button", { name: "Probeer weer" }),
+      ).toBeInTheDocument();
+    });
+  });
+
   it("uses a custom unavailable message when given", async () => {
     searchMocks.fetchLocationSearchResults.mockRejectedValue(
       new Error("network"),

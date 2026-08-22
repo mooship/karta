@@ -223,6 +223,69 @@ describe("LocationContextMenu", () => {
     expect(geocodeMocks.fetchReverseGeocodeResult).toHaveBeenCalledTimes(2);
   });
 
+  it("uses custom copy for the menu, loading, failure, no-match and retry labels when given", async () => {
+    let rejectResult: (error: Error) => void = () => {};
+    geocodeMocks.fetchReverseGeocodeResult.mockReturnValue(
+      new Promise((_resolve, reject) => {
+        rejectResult = reject;
+      }),
+    );
+
+    render(
+      <LocationContextMenu
+        ariaLabel="Kaartligging-aksies"
+        searchHereLabel="Soek hierdie ligging"
+        loadingLabel="Soek adres..."
+        failedLabel="Kon nie adres opsoek nie."
+        retryLabel="Probeer weer"
+      />,
+    );
+    openMenu();
+
+    expect(
+      screen.getByRole("menu", { name: "Kaartligging-aksies" }),
+    ).toBeInTheDocument();
+    fireEvent.click(
+      screen.getByRole("menuitem", { name: "Soek hierdie ligging" }),
+    );
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+
+    expect(screen.getByTestId("map-context-menu")).toHaveTextContent(
+      "Soek adres...",
+    );
+
+    await act(async () => {
+      rejectResult(new Error("network"));
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId("map-context-menu")).toHaveTextContent(
+        "Kon nie adres opsoek nie.",
+      );
+    });
+    expect(
+      screen.getByRole("button", { name: "Probeer weer" }),
+    ).toBeInTheDocument();
+  });
+
+  it("uses a custom no-address message when given", async () => {
+    geocodeMocks.fetchReverseGeocodeResult.mockResolvedValue(null);
+
+    render(
+      <LocationContextMenu noAddressLabel="Geen adres hier gevind nie." />,
+    );
+    openMenu();
+    await chooseSearchHere();
+
+    await waitFor(() => {
+      expect(screen.getByTestId("map-context-menu")).toHaveTextContent(
+        "Geen adres hier gevind nie.",
+      );
+    });
+  });
+
   it("uses a custom provider instead of the default Nominatim one when given", async () => {
     const customProvider = {
       search: vi.fn(),
