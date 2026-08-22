@@ -10,7 +10,16 @@
   "data_load_error": "Map data could not be loaded.",
   "retry": "Retry",
   "search_placeholder": "Search town, suburb or station",
+  "search_label": "Search place",
+  "search_aria_label": "Location search",
+  "search_clear": "Clear search",
+  "search_searching": "Searching places...",
+  "search_no_results": "Nothing matched that search.",
+  "search_unavailable": "Search is unavailable right now. Please try again.",
   "location_out_of_coverage": "{location} is outside South Africa.",
+
+  "feature_browser_filter_label": "Filter features",
+  "feature_browser_filter_placeholder": "Search by name",
 
   "panel_tab_layers": "Layers",
   "panel_tab_story": "Story",

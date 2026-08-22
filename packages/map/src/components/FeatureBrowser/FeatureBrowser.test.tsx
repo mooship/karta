@@ -135,6 +135,34 @@ describe("FeatureBrowser", () => {
     expect(screen.queryByRole("heading")).not.toBeInTheDocument();
   });
 
+  it("uses custom copy for the filter label, placeholder and empty message when given", () => {
+    render(
+      withDomain(
+        <FeatureBrowser
+          features={AREA_FEATURES}
+          selectedFeatureId={null}
+          onSelect={vi.fn()}
+          filterLabel="Filtreer kenmerke"
+          filterPlaceholder="Soek volgens naam"
+          emptyMessage="Niks het by daardie soektog gepas nie."
+        />,
+      ),
+    );
+
+    expect(screen.getByText("Filtreer kenmerke")).toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText("Soek volgens naam"),
+    ).toBeInTheDocument();
+
+    fireEvent.change(screen.getByTestId("feature-browser-filter"), {
+      target: { value: "nothing matches this" },
+    });
+
+    expect(
+      screen.getByText("Niks het by daardie soektog gepas nie."),
+    ).toBeInTheDocument();
+  });
+
   it("falls back to the raw layer id as a heading when the layer isn't in the registry", () => {
     render(
       withDomain(

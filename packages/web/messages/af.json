@@ -10,7 +10,16 @@
   "data_load_error": "Kaartdata kon nie gelaai word nie.",
   "retry": "Probeer weer",
   "search_placeholder": "Soek dorp, voorstad of stasie",
+  "search_label": "Soek plek",
+  "search_aria_label": "Pleksoektog",
+  "search_clear": "Maak soektog skoon",
+  "search_searching": "Deursoek plekke...",
+  "search_no_results": "Niks het by daardie soektog gepas nie.",
+  "search_unavailable": "Soek is tans nie beskikbaar nie. Probeer asseblief weer.",
   "location_out_of_coverage": "{location} is buite Suid-Afrika.",
+
+  "feature_browser_filter_label": "Filtreer kenmerke",
+  "feature_browser_filter_placeholder": "Soek volgens naam",
 
   "panel_tab_layers": "Lae",
   "panel_tab_story": "Verhaal",

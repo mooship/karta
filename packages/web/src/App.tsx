@@ -267,6 +267,9 @@ const PanelViewContent = memo(function PanelViewContent({
         features={selectableFeatures}
         selectedFeatureId={selectedFeatureId}
         onSelect={onSelectFeature}
+        filterLabel={m.feature_browser_filter_label()}
+        filterPlaceholder={m.feature_browser_filter_placeholder()}
+        emptyMessage={m.search_no_results()}
       />
     );
   } else {
@@ -916,6 +919,12 @@ export function App() {
           </p>
           <LocationSearchControl
             placeholder={m.search_placeholder()}
+            label={m.search_label()}
+            ariaLabel={m.search_aria_label()}
+            clearButtonLabel={m.search_clear()}
+            searchingLabel={m.search_searching()}
+            noResultsLabel={m.search_no_results()}
+            unavailableMessage={m.search_unavailable()}
             provider={locationSearchProvider}
             onLocationSelect={handleLocationSelect}
             onQueryChange={() => setOutOfCoverageLocationLabel(null)}
