@@ -8,11 +8,11 @@ export type Webmcp_Set_Theme_UnknownInputs = {
 * | "Unknown theme \"{theme}\"." |
 *
 * @param {Webmcp_Set_Theme_UnknownInputs} inputs
-* @param {{ locale?: "en" | "st" | "zu" | "xh" | "af" }} options
+* @param {{ locale?: "en" | "af" }} options
 * @returns {LocalizedString}
 */
 export declare const webmcp_set_theme_unknown: ((inputs: Webmcp_Set_Theme_UnknownInputs, options?: {
-    locale?: "en" | "st" | "zu" | "xh" | "af";
+    locale?: "en" | "af";
 }) => LocalizedString) & import('../runtime.js').MessageMetadata<Webmcp_Set_Theme_UnknownInputs, {
-    locale?: "en" | "st" | "zu" | "xh" | "af";
+    locale?: "en" | "af";
 }, {}>;

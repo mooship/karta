@@ -8,11 +8,11 @@ export type Webmcp_Set_Basemap_SwitchedInputs = {
 * | "Basemap switched to \"{basemap}\"." |
 *
 * @param {Webmcp_Set_Basemap_SwitchedInputs} inputs
-* @param {{ locale?: "en" | "st" | "zu" | "xh" | "af" }} options
+* @param {{ locale?: "en" | "af" }} options
 * @returns {LocalizedString}
 */
 export declare const webmcp_set_basemap_switched: ((inputs: Webmcp_Set_Basemap_SwitchedInputs, options?: {
-    locale?: "en" | "st" | "zu" | "xh" | "af";
+    locale?: "en" | "af";
 }) => LocalizedString) & import('../runtime.js').MessageMetadata<Webmcp_Set_Basemap_SwitchedInputs, {
-    locale?: "en" | "st" | "zu" | "xh" | "af";
+    locale?: "en" | "af";
 }, {}>;

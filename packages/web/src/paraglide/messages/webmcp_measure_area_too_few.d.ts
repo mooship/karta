@@ -6,11 +6,11 @@ export type Webmcp_Measure_Area_Too_FewInputs = {};
 * | "Provide at least three locations to measure an area." |
 *
 * @param {Webmcp_Measure_Area_Too_FewInputs} inputs
-* @param {{ locale?: "en" | "st" | "zu" | "xh" | "af" }} options
+* @param {{ locale?: "en" | "af" }} options
 * @returns {LocalizedString}
 */
 export declare const webmcp_measure_area_too_few: ((inputs?: Webmcp_Measure_Area_Too_FewInputs, options?: {
-    locale?: "en" | "st" | "zu" | "xh" | "af";
+    locale?: "en" | "af";
 }) => LocalizedString) & import('../runtime.js').MessageMetadata<Webmcp_Measure_Area_Too_FewInputs, {
-    locale?: "en" | "st" | "zu" | "xh" | "af";
+    locale?: "en" | "af";
 }, {}>;

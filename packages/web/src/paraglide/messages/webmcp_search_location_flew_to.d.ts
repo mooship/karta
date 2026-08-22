@@ -8,11 +8,11 @@ export type Webmcp_Search_Location_Flew_ToInputs = {
 * | "Flew to {location}." |
 *
 * @param {Webmcp_Search_Location_Flew_ToInputs} inputs
-* @param {{ locale?: "en" | "st" | "zu" | "xh" | "af" }} options
+* @param {{ locale?: "en" | "af" }} options
 * @returns {LocalizedString}
 */
 export declare const webmcp_search_location_flew_to: ((inputs: Webmcp_Search_Location_Flew_ToInputs, options?: {
-    locale?: "en" | "st" | "zu" | "xh" | "af";
+    locale?: "en" | "af";
 }) => LocalizedString) & import('../runtime.js').MessageMetadata<Webmcp_Search_Location_Flew_ToInputs, {
-    locale?: "en" | "st" | "zu" | "xh" | "af";
+    locale?: "en" | "af";
 }, {}>;

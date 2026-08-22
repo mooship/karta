@@ -8,11 +8,11 @@ export type Webmcp_Toggle_Layer_UnknownInputs = {
 * | "No layer with id \"{layerId}\". Call list-map-layers to see valid ids." |
 *
 * @param {Webmcp_Toggle_Layer_UnknownInputs} inputs
-* @param {{ locale?: "en" | "st" | "zu" | "xh" | "af" }} options
+* @param {{ locale?: "en" | "af" }} options
 * @returns {LocalizedString}
 */
 export declare const webmcp_toggle_layer_unknown: ((inputs: Webmcp_Toggle_Layer_UnknownInputs, options?: {
-    locale?: "en" | "st" | "zu" | "xh" | "af";
+    locale?: "en" | "af";
 }) => LocalizedString) & import('../runtime.js').MessageMetadata<Webmcp_Toggle_Layer_UnknownInputs, {
-    locale?: "en" | "st" | "zu" | "xh" | "af";
+    locale?: "en" | "af";
 }, {}>;
