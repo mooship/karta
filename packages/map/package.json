@@ -20,8 +20,8 @@
     "@karta/core": "file:../core",
     "@karta/react": "file:../react",
     "leaflet": "^1.9.4",
-    "lucide-react": "^1.31.0",
-    "maplibre-gl": "^6.4.0",
+    "lucide-react": "^1.32.0",
+    "maplibre-gl": "^6.4.1",
     "react-leaflet": "^5.0.0"
   },
   "peerDependencies": {
