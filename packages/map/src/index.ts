@@ -13,14 +13,17 @@ export { ControlButton } from "./components/ControlButton/ControlButton";
 export { DesktopLegend } from "./components/DesktopLegend/DesktopLegend";
 export { FeatureBrowser } from "./components/FeatureBrowser/FeatureBrowser";
 export { IconButton } from "./components/IconButton/IconButton";
+export type { LegendLabels } from "./components/Legend/Legend";
 export { Legend } from "./components/Legend/Legend";
 export type { SelectableFeatureSearchEntry } from "./components/LocationSearchControl/LocationSearchControl";
 export {
   LocationSearchControl,
   matchesFeatureLabel,
 } from "./components/LocationSearchControl/LocationSearchControl";
+export type { LocationContextMenuLabels } from "./components/MapView/LocationContextMenu";
 export { formatMeasurementResult } from "./components/MeasurementControl/formatMeasurementResult";
 export type {
+  MeasurementControlLabels,
   MeasurementControlProps,
   MeasurementMode,
 } from "./components/MeasurementControl/MeasurementControl";

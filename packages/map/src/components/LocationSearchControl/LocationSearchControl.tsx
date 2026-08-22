@@ -77,12 +77,31 @@ interface LocationSearchControlProps {
    * is chosen. Expected whenever `selectableFeatures` is non-empty.
    */
   onFeatureSelect?: (featureId: string) => void;
+  /** Visible text of the input's own `<label>`. Defaults to `"Search place"`. */
+  label?: string;
+  /** `aria-label` on the control's wrapping `<section>`. Defaults to `"Location search"`. */
+  ariaLabel?: string;
+  /** Accessible label of the clear (×) button, shown once the input has a value. Defaults to `"Clear search"`. */
+  clearButtonLabel?: string;
+  /** Status text shown while a place search is in flight. Defaults to `"Searching places..."`. */
+  searchingLabel?: string;
+  /** Status text shown when a search returns no results. Defaults to `"Nothing matched that search."`. */
+  noResultsLabel?: string;
+  /** Status text shown when a search fails, alongside the retry button. Defaults to `"Search is unavailable right now. Please try again."`. */
+  unavailableMessage?: string;
+  /** Visible text of the retry button shown alongside `unavailableMessage`. Defaults to `"Retry"`. */
+  retryLabel?: string;
 }
 
 const MIN_SEARCH_QUERY_LENGTH = 2;
 const SEARCH_DEBOUNCE_MS = 260;
 const DEFAULT_PLACEHOLDER = "Search town, suburb or station";
-const SEARCH_UNAVAILABLE_MESSAGE =
+const DEFAULT_LABEL = "Search place";
+const DEFAULT_ARIA_LABEL = "Location search";
+const DEFAULT_CLEAR_BUTTON_LABEL = "Clear search";
+const DEFAULT_SEARCHING_LABEL = "Searching places...";
+const DEFAULT_NO_RESULTS_LABEL = "Nothing matched that search.";
+const DEFAULT_SEARCH_UNAVAILABLE_MESSAGE =
   "Search is unavailable right now. Please try again.";
 const MAX_FEATURE_RESULTS = 5;
 
@@ -110,6 +129,14 @@ function resultOptionId(combined: CombinedResult): string {
  *   be a second, separate search box hidden until keyboard-focused, but two
  *   near-identical-looking search boxes was worse for every visitor than
  *   one box that does both jobs, so that control was folded into this one.
+ *   Every piece of its own copy (`label`, `ariaLabel`, `clearButtonLabel`,
+ *   `searchingLabel`, `noResultsLabel`, `unavailableMessage`, `retryLabel`,
+ *   plus the existing `placeholder`) is an overridable prop defaulting to
+ *   English,
+ *   the same pattern `placeholder` already used -- this package can't
+ *   depend on an app-specific message catalogue, but a caller with one
+ *   (like the reference app's paraglide messages) can still localise every
+ *   string this control renders.
  */
 export function LocationSearchControl({
   onLocationSelect,
@@ -118,6 +145,13 @@ export function LocationSearchControl({
   onQueryChange,
   selectableFeatures = [],
   onFeatureSelect,
+  label = DEFAULT_LABEL,
+  ariaLabel = DEFAULT_ARIA_LABEL,
+  clearButtonLabel = DEFAULT_CLEAR_BUTTON_LABEL,
+  searchingLabel = DEFAULT_SEARCHING_LABEL,
+  noResultsLabel = DEFAULT_NO_RESULTS_LABEL,
+  unavailableMessage = DEFAULT_SEARCH_UNAVAILABLE_MESSAGE,
+  retryLabel,
 }: LocationSearchControlProps) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<LocationSearchResult[]>([]);
@@ -301,13 +335,13 @@ export function LocationSearchControl({
   return (
     <section
       className={styles.root}
-      aria-label="Location search"
+      aria-label={ariaLabel}
       data-testid="location-search"
       data-e2e="location-search"
     >
       <label className={styles.label} htmlFor="map-location-search">
         <Search aria-hidden="true" />
-        Search place
+        {label}
       </label>
       <div className={styles.inputRow}>
         <input
@@ -340,7 +374,7 @@ export function LocationSearchControl({
         {query.length > 0 ? (
           <IconButton
             className={styles.clearButton}
-            label="Clear search"
+            label={clearButtonLabel}
             data-testid="location-search-clear"
             data-e2e="location-search-clear"
             onClick={handleClear}
@@ -350,12 +384,13 @@ export function LocationSearchControl({
         ) : null}
       </div>
       {searching ? (
-        <output className={styles.status}>Searching places...</output>
+        <output className={styles.status}>{searchingLabel}</output>
       ) : null}
       {searchFailed ? (
         <output className={styles.status}>
-          {SEARCH_UNAVAILABLE_MESSAGE}
+          {unavailableMessage}
           <RetryButton
+            label={retryLabel}
             data-testid="location-search-retry"
             data-e2e="location-search-retry"
             onClick={handleRetry}
@@ -363,7 +398,7 @@ export function LocationSearchControl({
         </output>
       ) : null}
       {noMatches ? (
-        <output className={styles.status}>Nothing matched that search.</output>
+        <output className={styles.status}>{noResultsLabel}</output>
       ) : null}
       {hasResults ? (
         <ul

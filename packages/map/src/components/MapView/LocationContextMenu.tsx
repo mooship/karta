@@ -103,7 +103,27 @@ function armGhostClickGuard(
  *   and when it's dismissed, so a slow response can't overwrite a later
  *   (or no longer open) menu with a stale result.
  */
-export interface LocationContextMenuProps {
+/**
+ * `LocationContextMenu`'s own overridable copy, all defaulting to English.
+ * Factored out from `LocationContextMenuProps` so `MapView` -- which renders
+ * this internally -- can accept and forward the same set as one prop.
+ */
+export interface LocationContextMenuLabels {
+  /** `aria-label` on the menu's own action list, before a lookup starts. Defaults to `"Map location actions"`. */
+  ariaLabel?: string;
+  /** Visible text of the menu's only action. Defaults to `"Search this location"`. */
+  searchHereLabel?: string;
+  /** Status text shown while the reverse-geocode lookup is in flight. Defaults to `"Looking up address…"`. */
+  loadingLabel?: string;
+  /** Status text shown when the lookup fails, alongside a retry button. Defaults to `"Couldn't look up this address."`. */
+  failedLabel?: string;
+  /** Status text shown when the lookup succeeds with no match. Defaults to `"No address found here."`. */
+  noAddressLabel?: string;
+  /** Visible text of the retry button shown alongside `failedLabel`. Defaults to `"Retry"`. */
+  retryLabel?: string;
+}
+
+export interface LocationContextMenuProps extends LocationContextMenuLabels {
   /**
    * Geocoder backend used for the reverse lookup. Defaults to OpenStreetMap
    * Nominatim, matching `LocationSearchControl`'s own default.
@@ -111,8 +131,20 @@ export interface LocationContextMenuProps {
   provider?: GeocoderProvider;
 }
 
+const DEFAULT_ARIA_LABEL = "Map location actions";
+const DEFAULT_SEARCH_HERE_LABEL = "Search this location";
+const DEFAULT_LOADING_LABEL = "Looking up address…";
+const DEFAULT_FAILED_LABEL = "Couldn't look up this address.";
+const DEFAULT_NO_ADDRESS_LABEL = "No address found here.";
+
 export function LocationContextMenu({
   provider = nominatimGeocoderProvider,
+  ariaLabel = DEFAULT_ARIA_LABEL,
+  searchHereLabel = DEFAULT_SEARCH_HERE_LABEL,
+  loadingLabel = DEFAULT_LOADING_LABEL,
+  failedLabel = DEFAULT_FAILED_LABEL,
+  noAddressLabel = DEFAULT_NO_ADDRESS_LABEL,
+  retryLabel,
 }: LocationContextMenuProps = {}) {
   const [menu, setMenu] = useState<MenuState | null>(null);
   const { next, abort } = useAbortController();
@@ -200,29 +232,25 @@ export function LocationContextMenu({
         {menu.search ? (
           <output className={styles.result}>
             {menu.search.status === "loading" ? (
-              "Looking up address…"
+              loadingLabel
             ) : menu.search.status === "failed" ? (
               <>
-                Couldn't look up this address.{" "}
-                <RetryButton onClick={handleSearchHere} />
+                {failedLabel}{" "}
+                <RetryButton label={retryLabel} onClick={handleSearchHere} />
               </>
             ) : (
-              (menu.search.label ?? "No address found here.")
+              (menu.search.label ?? noAddressLabel)
             )}
           </output>
         ) : (
-          <div
-            className={styles.menu}
-            role="menu"
-            aria-label="Map location actions"
-          >
+          <div className={styles.menu} role="menu" aria-label={ariaLabel}>
             <button
               type="button"
               role="menuitem"
               className={styles.menuItem}
               onClick={handleSearchHere}
             >
-              Search this location
+              {searchHereLabel}
             </button>
           </div>
         )}

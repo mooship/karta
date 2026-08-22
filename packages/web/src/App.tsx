@@ -267,6 +267,9 @@ const PanelViewContent = memo(function PanelViewContent({
         features={selectableFeatures}
         selectedFeatureId={selectedFeatureId}
         onSelect={onSelectFeature}
+        filterLabel={m.feature_browser_filter_label()}
+        filterPlaceholder={m.feature_browser_filter_placeholder()}
+        emptyMessage={m.search_no_results()}
       />
     );
   } else {
@@ -398,6 +401,56 @@ export function App() {
     [],
   );
   const story = domain.story;
+  /**
+   * Localized copy forwarded to both `DesktopLegend`/`MobileLegend`'s
+   * internal `Legend`, computed fresh per render for the same per-request
+   * locale reason as `domain` above.
+   */
+  const legendLabels = useMemo(
+    () => ({
+      noDataLabel: m.legend_no_data(),
+      transitRoutesLabel: m.legend_transit_routes(),
+      transitColorsAriaLabel: m.legend_transit_colors_aria_label(),
+      emptyMessage: m.legend_empty(),
+      lineAndStationsNote: m.legend_line_and_stations_note(),
+      routeOnlyNote: m.legend_route_only_note(),
+      formatActiveAriaLabel: (label: string) =>
+        m.legend_active_aria_label({ label }),
+    }),
+    [],
+  );
+  /** Localized copy forwarded to `MapView`'s internal `LocationContextMenu`, memoized for the same reason as `legendLabels`. */
+  const locationContextMenuLabels = useMemo(
+    () => ({
+      ariaLabel: m.location_context_menu_aria_label(),
+      searchHereLabel: m.location_context_menu_search_here(),
+      loadingLabel: m.location_context_menu_loading(),
+      failedLabel: m.location_context_menu_failed(),
+      noAddressLabel: m.location_context_menu_no_address(),
+      retryLabel: m.retry(),
+    }),
+    [],
+  );
+  /** Localized copy forwarded to `MapView`'s internal `MeasurementControl`, memoized for the same reason as `legendLabels`. */
+  const measurementLabels = useMemo(
+    () => ({
+      toggleLabel: m.measurement_toggle(),
+      backToMapLabel: m.measurement_back_to_map(),
+      ariaLabel: m.measurement_aria_label(),
+      title: m.measurement_title(),
+      stopLabel: m.measurement_stop(),
+      modeLabel: m.measurement_mode_label(),
+      distanceModeLabel: m.measurement_mode_distance(),
+      areaModeLabel: m.measurement_mode_area(),
+      hint: m.measurement_hint(),
+      clearLabel: m.measurement_clear(),
+    }),
+    [],
+  );
+  const formatSelectionAnnouncement = useCallback(
+    (label: string) => m.map_selection_announcement({ label }),
+    [],
+  );
   /**
    * Whether the active domain declares any `interaction.selectable` layer at
    * all -- a structural fact about the domain's own layer catalogue, checked
@@ -880,9 +933,12 @@ export function App() {
                 onLayerDataError={setFailedLayerIds}
                 onReady={handleMapReady}
                 onBasemapError={() => setBasemap("street")}
+                formatSelectionAnnouncement={formatSelectionAnnouncement}
                 locationContextMenu
                 locationContextMenuProvider={locationSearchProvider}
+                locationContextMenuLabels={locationContextMenuLabels}
                 measurementTool
+                measurementLabels={measurementLabels}
                 measurementPanelOpen={!isDesktopViewport && panelOpen}
                 onMeasurementPanelClose={closePanel}
                 measurementRequest={measurementRequest}
@@ -916,6 +972,12 @@ export function App() {
           </p>
           <LocationSearchControl
             placeholder={m.search_placeholder()}
+            label={m.search_label()}
+            ariaLabel={m.search_aria_label()}
+            clearButtonLabel={m.search_clear()}
+            searchingLabel={m.search_searching()}
+            noResultsLabel={m.search_no_results()}
+            unavailableMessage={m.search_unavailable()}
             provider={locationSearchProvider}
             onLocationSelect={handleLocationSelect}
             onQueryChange={() => setOutOfCoverageLocationLabel(null)}
@@ -956,6 +1018,8 @@ export function App() {
           <DesktopLegend
             visibleLayerIds={visibleLayerIds}
             suppressed={settingsOpen}
+            title={m.legend_title()}
+            legendLabels={legendLabels}
           />
         ) : (
           <MobileLegend
@@ -963,6 +1027,10 @@ export function App() {
             suppressed={false}
             panelOpen={panelVisuallyOpen}
             panelExpanded={mobilePanelExpanded}
+            title={m.legend_title()}
+            openLabel={m.legend_open()}
+            closeLabel={m.legend_close()}
+            legendLabels={legendLabels}
           />
         )}
 

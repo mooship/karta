@@ -9,11 +9,43 @@ import { memo, useMemo } from "react";
 import { useDomain } from "../../context/DomainContext";
 import styles from "./Legend.module.css";
 
-interface LegendProps {
+/**
+ * `Legend`'s own overridable copy, all defaulting to English. Factored out
+ * from `LegendProps` so `DesktopLegend`/`MobileLegend` -- which each render
+ * a `Legend` internally -- can accept and forward the same set without
+ * repeating every field.
+ */
+export interface LegendLabels {
+  /** Fallback bucket label for a choropleth value outside every configured bucket. Defaults to `"No data"`. */
+  noDataLabel?: string;
+  /** Heading above the transit-route entries. Defaults to `"Transit routes"`. */
+  transitRoutesLabel?: string;
+  /** `aria-label` on the transit entries' own list. Defaults to `"Transit route colours"`. */
+  transitColorsAriaLabel?: string;
+  /** Shown in place of any legend sections when `mode="active"` and no layer is visible. Defaults to `"Turn on layers to view their legend."`. */
+  emptyMessage?: string;
+  /** Appended to a transit entry that has station markers as well as a route line. Defaults to `" · line + stations"`. */
+  lineAndStationsNote?: string;
+  /** Appended to a transit entry that has a route line only. Defaults to `" · route only"`. */
+  routeOnlyNote?: string;
+  /** Builds a choropleth section's `aria-label` when `mode="active"`, from that section's own heading text. Defaults to `` (label) => `Active map layers legend: ${label}` ``. */
+  formatActiveAriaLabel?: (label: string) => string;
+}
+
+interface LegendProps extends LegendLabels {
   mode?: "all" | "active";
   visibleLayerIds?: string[];
   compact?: boolean;
 }
+
+const DEFAULT_NO_DATA_LABEL = "No data";
+const DEFAULT_TRANSIT_ROUTES_LABEL = "Transit routes";
+const DEFAULT_TRANSIT_COLORS_ARIA_LABEL = "Transit route colours";
+const DEFAULT_EMPTY_MESSAGE = "Turn on layers to view their legend.";
+const DEFAULT_LINE_AND_STATIONS_NOTE = " · line + stations";
+const DEFAULT_ROUTE_ONLY_NOTE = " · route only";
+const DEFAULT_FORMAT_ACTIVE_ARIA_LABEL = (label: string) =>
+  `Active map layers legend: ${label}`;
 
 /**
  * Resolves choropleth legend sections, one per visible choropleth layer.
@@ -25,6 +57,7 @@ function choroplethLegends(
   layers: readonly Layer[],
   visibleLayerIds: string[] | undefined,
   dark: boolean,
+  noDataLabel: string,
 ) {
   return layers.flatMap((layer) => {
     if (layer.style.kind !== "choropleth") {
@@ -42,7 +75,7 @@ function choroplethLegends(
             color: resolveThemedColor(bucket.color, bucket.darkColor, dark),
           })),
           {
-            label: "No data",
+            label: noDataLabel,
             color: resolveThemedColor(
               DEFAULT_NO_DATA_COLOR,
               DEFAULT_NO_DATA_COLOR_DARK,
@@ -83,9 +116,13 @@ function getTransitEntries(
   });
 }
 
-function getLegendAriaLabel(mode: "all" | "active", label: string) {
+function getLegendAriaLabel(
+  mode: "all" | "active",
+  label: string,
+  formatActiveAriaLabel: (label: string) => string,
+) {
   if (mode === "active") {
-    return `Active map layers legend: ${label}`;
+    return formatActiveAriaLabel(label);
   }
   return label;
 }
@@ -94,6 +131,13 @@ function LegendComponent({
   mode = "all",
   visibleLayerIds = [],
   compact = false,
+  noDataLabel = DEFAULT_NO_DATA_LABEL,
+  transitRoutesLabel = DEFAULT_TRANSIT_ROUTES_LABEL,
+  transitColorsAriaLabel = DEFAULT_TRANSIT_COLORS_ARIA_LABEL,
+  emptyMessage = DEFAULT_EMPTY_MESSAGE,
+  lineAndStationsNote = DEFAULT_LINE_AND_STATIONS_NOTE,
+  routeOnlyNote = DEFAULT_ROUTE_ONLY_NOTE,
+  formatActiveAriaLabel = DEFAULT_FORMAT_ACTIVE_ARIA_LABEL,
 }: LegendProps) {
   const { getLayers } = useDomain();
   const layers = getLayers();
@@ -109,8 +153,8 @@ function LegendComponent({
    *   entry a new identity for no benefit.
    */
   const choroplethSections = useMemo(
-    () => choroplethLegends(layers, activeLayerIds, resolvedDark),
-    [layers, activeLayerIds, resolvedDark],
+    () => choroplethLegends(layers, activeLayerIds, resolvedDark, noDataLabel),
+    [layers, activeLayerIds, resolvedDark, noDataLabel],
   );
   const transitEntries = useMemo(
     () => getTransitEntries(layers, activeLayerIds),
@@ -126,7 +170,11 @@ function LegendComponent({
           <h3 className={styles.groupTitle}>{layer.label}</h3>
           <ul
             className={styles.legend}
-            aria-label={getLegendAriaLabel(mode, layer.label)}
+            aria-label={getLegendAriaLabel(
+              mode,
+              layer.label,
+              formatActiveAriaLabel,
+            )}
           >
             {entries.map((entry) => (
               <li key={entry.label} className={styles.entry}>
@@ -143,10 +191,14 @@ function LegendComponent({
       ))}
       {transitEntries.length > 0 ? (
         <div className={styles.fullWidthGroup}>
-          <h3 className={styles.groupTitle}>Transit routes</h3>
+          <h3 className={styles.groupTitle}>{transitRoutesLabel}</h3>
           <ul
             className={styles.legend}
-            aria-label={getLegendAriaLabel(mode, "Transit route colours")}
+            aria-label={getLegendAriaLabel(
+              mode,
+              transitColorsAriaLabel,
+              formatActiveAriaLabel,
+            )}
           >
             {transitEntries.map((entry) => (
               <li key={entry.label} className={styles.entry}>
@@ -164,14 +216,9 @@ function LegendComponent({
                 </span>
                 <span className={styles.label}>
                   {entry.label}
-                  {entry.hasStations ? (
-                    <span className={styles.symbolNote}>
-                      {" "}
-                      · line + stations
-                    </span>
-                  ) : (
-                    <span className={styles.symbolNote}> · route only</span>
-                  )}
+                  <span className={styles.symbolNote}>
+                    {entry.hasStations ? lineAndStationsNote : routeOnlyNote}
+                  </span>
                 </span>
               </li>
             ))}
@@ -179,7 +226,7 @@ function LegendComponent({
         </div>
       ) : null}
       {!hasAnyLegendSection ? (
-        <p className={styles.empty}>Turn on layers to view their legend.</p>
+        <p className={styles.empty}>{emptyMessage}</p>
       ) : null}
     </div>
   );

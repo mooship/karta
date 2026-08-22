@@ -248,6 +248,96 @@ describe("LocationSearchControl", () => {
     ).not.toBeInTheDocument();
   });
 
+  it("uses custom copy for the label, aria-label, clear button and status messages when given", async () => {
+    let resolveSearch: (value: never[]) => void = () => {};
+    searchMocks.fetchLocationSearchResults.mockReturnValue(
+      new Promise((resolve) => {
+        resolveSearch = resolve;
+      }),
+    );
+
+    render(
+      <LocationSearchControl
+        onLocationSelect={vi.fn()}
+        label="Soek plek"
+        ariaLabel="Pleksoektog"
+        clearButtonLabel="Maak soektog skoon"
+        searchingLabel="Deursoek plekke..."
+        noResultsLabel="Niks het by daardie soektog gepas nie."
+      />,
+    );
+
+    expect(screen.getByText("Soek plek")).toBeInTheDocument();
+    expect(screen.getByTestId("location-search")).toHaveAttribute(
+      "aria-label",
+      "Pleksoektog",
+    );
+
+    const input = screen.getByTestId("location-search-input");
+    fireEvent.change(input, { target: { value: "Soweto" } });
+
+    await waitFor(() => {
+      expect(screen.getByText("Deursoek plekke...")).toBeInTheDocument();
+    });
+    expect(
+      screen.getByRole("button", { name: "Maak soektog skoon" }),
+    ).toBeInTheDocument();
+
+    resolveSearch([]);
+
+    await waitFor(() => {
+      expect(
+        screen.getByText("Niks het by daardie soektog gepas nie."),
+      ).toBeInTheDocument();
+    });
+  });
+
+  it("uses a custom retry label when given", async () => {
+    searchMocks.fetchLocationSearchResults.mockRejectedValue(
+      new Error("network"),
+    );
+
+    render(
+      <LocationSearchControl
+        onLocationSelect={vi.fn()}
+        retryLabel="Probeer weer"
+      />,
+    );
+
+    fireEvent.change(screen.getByTestId("location-search-input"), {
+      target: { value: "Soweto" },
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole("button", { name: "Probeer weer" }),
+      ).toBeInTheDocument();
+    });
+  });
+
+  it("uses a custom unavailable message when given", async () => {
+    searchMocks.fetchLocationSearchResults.mockRejectedValue(
+      new Error("network"),
+    );
+
+    render(
+      <LocationSearchControl
+        onLocationSelect={vi.fn()}
+        unavailableMessage="Soek is tans nie beskikbaar nie."
+      />,
+    );
+
+    fireEvent.change(screen.getByTestId("location-search-input"), {
+      target: { value: "Soweto" },
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.getByText("Soek is tans nie beskikbaar nie."),
+      ).toBeInTheDocument();
+    });
+  });
+
   it("keeps showing Searching for the active request even if a superseded request settles", async () => {
     let resolveFirst: (value: never[]) => void = () => {};
     let resolveSecond: (

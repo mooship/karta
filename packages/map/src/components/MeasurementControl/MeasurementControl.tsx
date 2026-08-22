@@ -10,13 +10,47 @@ import styles from "./MeasurementControl.module.css";
 /** Which quantity a `MeasurementControl` is currently measuring. */
 export type MeasurementMode = "distance" | "area";
 
-const MODE_OPTIONS: SegmentedControlOption<MeasurementMode>[] = [
-  { id: "distance", label: "Distance" },
-  { id: "area", label: "Area" },
-];
+/**
+ * `MeasurementControl`'s own overridable copy, all defaulting to English.
+ * Factored out from `MeasurementControlProps` so `MapView` -- which renders
+ * this internally -- can accept and forward the same set as one prop.
+ */
+export interface MeasurementControlLabels {
+  /** Accessible label of the idle toggle button while closed. Defaults to `"Measure distance and area"`. */
+  toggleLabel?: string;
+  /** Accessible label of the idle toggle button while it doubles as "dismiss the host panel" (see `panelOpen`). Defaults to `"Back to map"`. */
+  backToMapLabel?: string;
+  /** `aria-label` on the open panel. Defaults to `"Measurement tool"`. */
+  ariaLabel?: string;
+  /** Visible panel heading. Defaults to `"Measure"`. */
+  title?: string;
+  /** Accessible label of the panel's close button. Defaults to `"Stop measuring"`. */
+  stopLabel?: string;
+  /** Label of the distance/area mode switch. Defaults to `"Measurement mode"`. */
+  modeLabel?: string;
+  /** Visible text of the distance mode option. Defaults to `"Distance"`. */
+  distanceModeLabel?: string;
+  /** Visible text of the area mode option. Defaults to `"Area"`. */
+  areaModeLabel?: string;
+  /** Shown before any points are clicked. Defaults to `"Click the map to start measuring."`. */
+  hint?: string;
+  /** Visible text of the button that discards the points clicked so far. Defaults to `"Clear"`. */
+  clearLabel?: string;
+}
+
+const DEFAULT_TOGGLE_LABEL = "Measure distance and area";
+const DEFAULT_BACK_TO_MAP_LABEL = "Back to map";
+const DEFAULT_ARIA_LABEL = "Measurement tool";
+const DEFAULT_TITLE = "Measure";
+const DEFAULT_STOP_LABEL = "Stop measuring";
+const DEFAULT_MODE_LABEL = "Measurement mode";
+const DEFAULT_DISTANCE_MODE_LABEL = "Distance";
+const DEFAULT_AREA_MODE_LABEL = "Area";
+const DEFAULT_HINT = "Click the map to start measuring.";
+const DEFAULT_CLEAR_LABEL = "Clear";
 
 /** Props for {@link MeasurementControl}. */
-export interface MeasurementControlProps {
+export interface MeasurementControlProps extends MeasurementControlLabels {
   /** Whether the measuring panel is open and the map is listening for clicks. */
   active: boolean;
   mode: MeasurementMode;
@@ -62,10 +96,11 @@ export interface MeasurementControlProps {
  * @remarks Purely presentational — the click-to-add-point behaviour and the
  *   drawn preview line/polygon live in `MeasurementLayer`, which must be
  *   rendered inside the same `MapView`'s `MapContainer` and driven by the
- *   same `active`/`mode`/points state as this component. Text is
- *   deliberately hardcoded English, matching this package's other chrome
- *   (`SettingsMenu`, `ThemeToggle`, `BasemapToggle`): `@karta/map` has no
- *   access to a caller's translation catalogue.
+ *   same `active`/`mode`/points state as this component. Every piece of its
+ *   own copy is an overridable prop defaulting to English, the same pattern
+ *   `LocationSearchControl` uses: `@karta/map` has no access to a caller's
+ *   translation catalogue, but a caller with one can still localise every
+ *   string this control renders.
  */
 export function MeasurementControl({
   active,
@@ -77,18 +112,32 @@ export function MeasurementControl({
   onClear,
   panelOpen = false,
   onRequestPanelClose,
+  toggleLabel = DEFAULT_TOGGLE_LABEL,
+  backToMapLabel = DEFAULT_BACK_TO_MAP_LABEL,
+  ariaLabel = DEFAULT_ARIA_LABEL,
+  title = DEFAULT_TITLE,
+  stopLabel = DEFAULT_STOP_LABEL,
+  modeLabel = DEFAULT_MODE_LABEL,
+  distanceModeLabel = DEFAULT_DISTANCE_MODE_LABEL,
+  areaModeLabel = DEFAULT_AREA_MODE_LABEL,
+  hint = DEFAULT_HINT,
+  clearLabel = DEFAULT_CLEAR_LABEL,
 }: MeasurementControlProps) {
   const rootProps = {
     className: styles.root,
     "data-testid": "measurement-control-root",
     "data-panel-open": panelOpen ? "true" : "false",
   } as const;
+  const modeOptions: SegmentedControlOption<MeasurementMode>[] = [
+    { id: "distance", label: distanceModeLabel },
+    { id: "area", label: areaModeLabel },
+  ];
 
   if (!active || panelOpen) {
     return (
       <div {...rootProps}>
         <IconButton
-          label={panelOpen ? "Back to map" : "Measure distance and area"}
+          label={panelOpen ? backToMapLabel : toggleLabel}
           data-testid="measurement-control-toggle"
           data-e2e="measurement-control-toggle"
           onClick={panelOpen ? onRequestPanelClose : onToggleActive}
@@ -103,14 +152,14 @@ export function MeasurementControl({
     <div {...rootProps}>
       <section
         className={styles.panel}
-        aria-label="Measurement tool"
+        aria-label={ariaLabel}
         data-testid="measurement-control-panel"
         data-e2e="measurement-control-panel"
       >
         <div className={styles.header}>
-          <h2 className={styles.title}>Measure</h2>
+          <h2 className={styles.title}>{title}</h2>
           <IconButton
-            label="Stop measuring"
+            label={stopLabel}
             data-testid="measurement-control-close"
             data-e2e="measurement-control-close"
             onClick={onToggleActive}
@@ -119,9 +168,9 @@ export function MeasurementControl({
           </IconButton>
         </div>
         <SegmentedControl
-          label="Measurement mode"
+          label={modeLabel}
           testId="measurement-control-mode"
-          options={MODE_OPTIONS}
+          options={modeOptions}
           value={mode}
           onChange={onModeChange}
         />
@@ -131,7 +180,7 @@ export function MeasurementControl({
             data-testid="measurement-control-hint"
             data-e2e="measurement-control-hint"
           >
-            Click the map to start measuring.
+            {hint}
           </p>
         ) : (
           <div className={styles.resultRow}>
@@ -149,7 +198,7 @@ export function MeasurementControl({
               data-e2e="measurement-control-clear"
               onClick={onClear}
             >
-              Clear
+              {clearLabel}
             </ControlButton>
           </div>
         )}
