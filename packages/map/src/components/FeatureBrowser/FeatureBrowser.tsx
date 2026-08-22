@@ -12,6 +12,12 @@ interface FeatureBrowserProps {
   selectedFeatureId: string | null;
   /** Called with a feature's id when its row is chosen. */
   onSelect: (featureId: string) => void;
+  /** Visible text of the filter input's own `<label>`. Defaults to `"Filter features"`. */
+  filterLabel?: string;
+  /** Filter input placeholder text. Defaults to `"Search by name"`. */
+  filterPlaceholder?: string;
+  /** Message shown when nothing matches the filter. Defaults to `"Nothing matched that search."`. */
+  emptyMessage?: string;
 }
 
 interface FeatureGroup {
@@ -20,14 +26,17 @@ interface FeatureGroup {
   entries: SelectableFeatureSearchEntry[];
 }
 
-const FILTER_LABEL = "Filter features";
-const FILTER_PLACEHOLDER = "Search by name";
-const EMPTY_MESSAGE = "Nothing matched that search.";
+const DEFAULT_FILTER_LABEL = "Filter features";
+const DEFAULT_FILTER_PLACEHOLDER = "Search by name";
+const DEFAULT_EMPTY_MESSAGE = "Nothing matched that search.";
 
 function FeatureBrowserComponent({
   features,
   selectedFeatureId,
   onSelect,
+  filterLabel = DEFAULT_FILTER_LABEL,
+  filterPlaceholder = DEFAULT_FILTER_PLACEHOLDER,
+  emptyMessage = DEFAULT_EMPTY_MESSAGE,
 }: FeatureBrowserProps) {
   const { getLayer, getLayers } = useDomain();
   const [query, setQuery] = useState("");
@@ -72,20 +81,20 @@ function FeatureBrowserComponent({
   return (
     <div className={styles.browser}>
       <label className={styles.filterLabel} htmlFor="feature-browser-filter">
-        {FILTER_LABEL}
+        {filterLabel}
       </label>
       <input
         id="feature-browser-filter"
         type="search"
         className={styles.filterInput}
-        placeholder={FILTER_PLACEHOLDER}
+        placeholder={filterPlaceholder}
         value={query}
         onChange={(event) => setQuery(event.target.value)}
         data-testid="feature-browser-filter"
         data-e2e="feature-browser-filter"
       />
       {groups.length === 0 ? (
-        <p className={styles.empty}>{EMPTY_MESSAGE}</p>
+        <p className={styles.empty}>{emptyMessage}</p>
       ) : (
         <div className={styles.groups}>
           {groups.map((group) => (
@@ -137,13 +146,13 @@ function FeatureBrowserComponent({
  *   each entry's `label` via `matchesFeatureLabel`, the same predicate
  *   `LocationSearchControl` uses for its own feature search -- cheap even
  *   for a few thousand entries, and no debounce is needed since there's no
- *   network round trip. Its own copy (filter label/placeholder, empty-state
- *   message) is hardcoded English, like every other component in this
- *   package: `packages/map` can't depend on an app-specific message
- *   catalogue, so an app rendering this alongside its own translated UI
- *   (see the reference app's "Browse" tab heading, which stays app-level
- *   copy) accepts this one control's chrome staying English, the same
- *   trade-off `LocationSearchControl` already makes. Memoized, matching
+ *   network round trip. Its own copy (`filterLabel`, `filterPlaceholder`,
+ *   `emptyMessage`) is an overridable prop defaulting to English, the same
+ *   pattern `LocationSearchControl` uses: this package can't depend on an
+ *   app-specific message catalogue, but a caller with one (like the
+ *   reference app's paraglide messages, alongside its own app-level
+ *   "Browse" tab heading) can still localise every string this control
+ *   renders. Memoized, matching
  *   `LayerToggles`'s own `memo()` wrapper, since it can render hundreds of
  *   rows and shares a parent that re-renders on unrelated UI state (e.g. a
  *   mobile drag-sheet's per-frame updates in the reference app).

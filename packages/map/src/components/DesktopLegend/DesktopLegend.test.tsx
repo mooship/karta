@@ -23,4 +23,22 @@ describe("DesktopLegend", () => {
 
     expect(screen.queryByTestId("desktop-legend")).not.toBeInTheDocument();
   });
+
+  it("uses a custom title (also used as the panel's aria-label) and forwards legend labels when given", () => {
+    render(
+      withDomain(
+        <DesktopLegend
+          visibleLayerIds={["areas"]}
+          title="Kaartlegende"
+          legendLabels={{ emptyMessage: "Skakel lae aan." }}
+        />,
+      ),
+    );
+
+    expect(screen.getByTestId("desktop-legend")).toHaveAttribute(
+      "aria-label",
+      "Kaartlegende",
+    );
+    expect(screen.getByText("Kaartlegende")).toBeInTheDocument();
+  });
 });

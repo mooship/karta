@@ -515,6 +515,22 @@ describe("MapView", () => {
     expect(screen.getByRole("status")).toHaveTextContent("Mamelodi selected");
   });
 
+  it("uses a custom selection-announcement formatter when given", () => {
+    render(
+      withDomain(
+        <MapView
+          {...DEFAULT_MAP_VIEW_PROPS}
+          areas={areas}
+          visibleLayerIds={["areas"]}
+          selectedFeatureId="A"
+          formatSelectionAnnouncement={(label) => `${label} gekies`}
+        />,
+      ),
+    );
+
+    expect(screen.getByRole("status")).toHaveTextContent("Mamelodi gekies");
+  });
+
   it("does not open a stale selection's popup once its markup resolves after that selection was superseded", async () => {
     const renderFeaturePopup = vi.fn().mockReturnValue(<div>Custom popup</div>);
 
@@ -1551,6 +1567,30 @@ describe("MapView", () => {
     );
   });
 
+  it("forwards locationContextMenuLabels to the internal LocationContextMenu", () => {
+    render(
+      withDomain(
+        <MapView
+          {...DEFAULT_MAP_VIEW_PROPS}
+          areas={[]}
+          visibleLayerIds={[]}
+          locationContextMenu
+          locationContextMenuLabels={{ searchHereLabel: "Soek hier" }}
+        />,
+      ),
+    );
+
+    act(() => {
+      mapMocks.mapContextMenuHandler?.({
+        latlng: { lat: -26.19, lng: 28.03 },
+      });
+    });
+
+    expect(
+      screen.getByRole("menuitem", { name: "Soek hier" }),
+    ).toBeInTheDocument();
+  });
+
   it("does not show the measurement control when measurementTool is not set", () => {
     render(
       withDomain(
@@ -1584,6 +1624,24 @@ describe("MapView", () => {
 
     expect(screen.getByTestId("measurement-control-panel")).toBeInTheDocument();
     expect(mapMocks.mapClickHandler).not.toBeNull();
+  });
+
+  it("forwards measurementLabels to the internal MeasurementControl", () => {
+    render(
+      withDomain(
+        <MapView
+          {...DEFAULT_MAP_VIEW_PROPS}
+          areas={[]}
+          visibleLayerIds={[]}
+          measurementTool
+          measurementLabels={{ toggleLabel: "Meet afstand" }}
+        />,
+      ),
+    );
+
+    expect(
+      screen.getByRole("button", { name: "Meet afstand" }),
+    ).toBeInTheDocument();
   });
 
   it("passes measurementPanelOpen through to the measurement control's own panel-state attribute", () => {

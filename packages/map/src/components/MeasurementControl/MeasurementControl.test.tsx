@@ -229,6 +229,78 @@ describe("MeasurementControl", () => {
     expect(onToggleActive).not.toHaveBeenCalled();
   });
 
+  it("uses custom copy for the toggle, panel, mode options, hint and clear button when given", () => {
+    const { rerender } = render(
+      <MeasurementControl
+        active={false}
+        mode="distance"
+        pointCount={0}
+        resultLabel={null}
+        onToggleActive={vi.fn()}
+        onModeChange={vi.fn()}
+        onClear={vi.fn()}
+        toggleLabel="Meet afstand en area"
+        backToMapLabel="Terug na kaart"
+      />,
+    );
+
+    expect(
+      screen.getByRole("button", { name: "Meet afstand en area" }),
+    ).toBeInTheDocument();
+
+    rerender(
+      <MeasurementControl
+        active
+        mode="distance"
+        pointCount={2}
+        resultLabel="1.2 km"
+        onToggleActive={vi.fn()}
+        onModeChange={vi.fn()}
+        onClear={vi.fn()}
+        ariaLabel="Meetnutsding"
+        title="Meet"
+        stopLabel="Stop met meet"
+        modeLabel="Meetmodus"
+        distanceModeLabel="Afstand"
+        areaModeLabel="Area"
+        clearLabel="Maak skoon"
+      />,
+    );
+
+    expect(
+      screen.getByRole("region", { name: "Meetnutsding" }),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Meet")).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Stop met meet" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("group", { name: "Meetmodus" }),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Afstand")).toBeInTheDocument();
+    expect(screen.getByText("Area")).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Maak skoon" }),
+    ).toBeInTheDocument();
+
+    rerender(
+      <MeasurementControl
+        active
+        mode="distance"
+        pointCount={0}
+        resultLabel={null}
+        onToggleActive={vi.fn()}
+        onModeChange={vi.fn()}
+        onClear={vi.fn()}
+        hint="Klik op die kaart om te begin meet."
+      />,
+    );
+
+    expect(
+      screen.getByText("Klik op die kaart om te begin meet."),
+    ).toBeInTheDocument();
+  });
+
   it("reflects panelOpen as data-panel-open, on both the inactive and active render", () => {
     const { rerender } = render(
       <MeasurementControl

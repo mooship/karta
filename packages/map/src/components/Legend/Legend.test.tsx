@@ -170,4 +170,62 @@ describe("Legend", () => {
       screen.getByText("Turn on layers to view their legend."),
     ).toBeInTheDocument();
   });
+
+  it("uses custom copy for the no-data label, transit heading, notes, empty message and active aria-label when given", () => {
+    render(
+      withDomain(
+        <Legend
+          noDataLabel="Geen data"
+          transitRoutesLabel="Vervoerroetes"
+          transitColorsAriaLabel="Vervoerroetekleure"
+          lineAndStationsNote=" · lyn + stasies"
+          routeOnlyNote=" · net roete"
+          formatActiveAriaLabel={(label) =>
+            `Aktiewe kaartlae-legende: ${label}`
+          }
+        />,
+      ),
+    );
+
+    expect(screen.getAllByText("Geen data")).toHaveLength(2);
+    expect(screen.getByText("Vervoerroetes")).toBeInTheDocument();
+    expect(
+      screen.getByRole("list", { name: "Vervoerroetekleure" }),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Rail").closest("li")).toHaveTextContent(
+      "lyn + stasies",
+    );
+    expect(screen.getByText("Bus").closest("li")).toHaveTextContent(
+      "net roete",
+    );
+  });
+
+  it("uses a custom empty message and active aria-label when given", () => {
+    render(
+      withDomain(
+        <Legend
+          mode="active"
+          visibleLayerIds={["areas"]}
+          formatActiveAriaLabel={(label) => `Aktief: ${label}`}
+        />,
+      ),
+    );
+
+    expect(screen.getByRole("list", { name: /^Aktief:/ })).toBeInTheDocument();
+  });
+
+  it("uses a custom empty-state message when given", () => {
+    render(
+      withDomain(
+        <Legend
+          mode="active"
+          visibleLayerIds={[]}
+          emptyMessage="Skakel lae aan om die legende te sien."
+        />,
+      ),
+    );
+    expect(
+      screen.getByText("Skakel lae aan om die legende te sien."),
+    ).toBeInTheDocument();
+  });
 });
