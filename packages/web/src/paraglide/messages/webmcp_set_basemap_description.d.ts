@@ -6,11 +6,11 @@ export type Webmcp_Set_Basemap_DescriptionInputs = {};
 * | "Switch the map's basemap style." |
 *
 * @param {Webmcp_Set_Basemap_DescriptionInputs} inputs
-* @param {{ locale?: "en" | "st" | "zu" | "xh" | "af" }} options
+* @param {{ locale?: "en" | "af" }} options
 * @returns {LocalizedString}
 */
 export declare const webmcp_set_basemap_description: ((inputs?: Webmcp_Set_Basemap_DescriptionInputs, options?: {
-    locale?: "en" | "st" | "zu" | "xh" | "af";
+    locale?: "en" | "af";
 }) => LocalizedString) & import('../runtime.js').MessageMetadata<Webmcp_Set_Basemap_DescriptionInputs, {
-    locale?: "en" | "st" | "zu" | "xh" | "af";
+    locale?: "en" | "af";
 }, {}>;

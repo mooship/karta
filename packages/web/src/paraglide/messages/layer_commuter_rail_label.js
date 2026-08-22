@@ -9,18 +9,6 @@ const en_layer_commuter_rail_label = /** @type {(inputs: Layer_Commuter_Rail_Lab
 	return /** @type {LocalizedString} */ (`Commuter Rail`)
 };
 
-const st_layer_commuter_rail_label = /** @type {(inputs: Layer_Commuter_Rail_LabelInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Terene ya Maeto`)
-};
-
-const zu_layer_commuter_rail_label = /** @type {(inputs: Layer_Commuter_Rail_LabelInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Isitimela Sokuya Emsebenzini`)
-};
-
-const xh_layer_commuter_rail_label = /** @type {(inputs: Layer_Commuter_Rail_LabelInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Uloliwe Wokuya Emsebenzini`)
-};
-
 const af_layer_commuter_rail_label = /** @type {(inputs: Layer_Commuter_Rail_LabelInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Pendelspoor`)
 };
@@ -31,14 +19,11 @@ const af_layer_commuter_rail_label = /** @type {(inputs: Layer_Commuter_Rail_Lab
 * | "Commuter Rail" |
 *
 * @param {Layer_Commuter_Rail_LabelInputs} inputs
-* @param {{ locale?: "en" | "st" | "zu" | "xh" | "af" }} options
+* @param {{ locale?: "en" | "af" }} options
 * @returns {LocalizedString}
 */
-export const layer_commuter_rail_label = /** @type {((inputs?: Layer_Commuter_Rail_LabelInputs, options?: { locale?: "en" | "st" | "zu" | "xh" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Layer_Commuter_Rail_LabelInputs, { locale?: "en" | "st" | "zu" | "xh" | "af" }, {}>} */ ((inputs = {}, options = {}) => {
+export const layer_commuter_rail_label = /** @type {((inputs?: Layer_Commuter_Rail_LabelInputs, options?: { locale?: "en" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Layer_Commuter_Rail_LabelInputs, { locale?: "en" | "af" }, {}>} */ ((inputs = {}, options = {}) => {
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "st") return st_layer_commuter_rail_label(inputs)
-	if (locale === "zu") return zu_layer_commuter_rail_label(inputs)
-	if (locale === "xh") return xh_layer_commuter_rail_label(inputs)
 	if (locale === "af") return af_layer_commuter_rail_label(inputs)
 	return en_layer_commuter_rail_label(inputs)
 });

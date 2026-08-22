@@ -8,11 +8,11 @@ export type Webmcp_Set_Theme_SwitchedInputs = {
 * | "Theme switched to \"{theme}\"." |
 *
 * @param {Webmcp_Set_Theme_SwitchedInputs} inputs
-* @param {{ locale?: "en" | "st" | "zu" | "xh" | "af" }} options
+* @param {{ locale?: "en" | "af" }} options
 * @returns {LocalizedString}
 */
 export declare const webmcp_set_theme_switched: ((inputs: Webmcp_Set_Theme_SwitchedInputs, options?: {
-    locale?: "en" | "st" | "zu" | "xh" | "af";
+    locale?: "en" | "af";
 }) => LocalizedString) & import('../runtime.js').MessageMetadata<Webmcp_Set_Theme_SwitchedInputs, {
-    locale?: "en" | "st" | "zu" | "xh" | "af";
+    locale?: "en" | "af";
 }, {}>;

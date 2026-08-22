@@ -9,18 +9,6 @@ const en_layer_group_transit_networks_title = /** @type {(inputs: Layer_Group_Tr
 	return /** @type {LocalizedString} */ (`Transit networks`)
 };
 
-const st_layer_group_transit_networks_title = /** @type {(inputs: Layer_Group_Transit_Networks_TitleInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Marangrang a dipalangwa`)
-};
-
-const zu_layer_group_transit_networks_title = /** @type {(inputs: Layer_Group_Transit_Networks_TitleInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Amanethiwekhi ezokuthutha`)
-};
-
-const xh_layer_group_transit_networks_title = /** @type {(inputs: Layer_Group_Transit_Networks_TitleInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Amanethiwekhi ezokuthutha`)
-};
-
 const af_layer_group_transit_networks_title = /** @type {(inputs: Layer_Group_Transit_Networks_TitleInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Vervoernetwerke`)
 };
@@ -31,14 +19,11 @@ const af_layer_group_transit_networks_title = /** @type {(inputs: Layer_Group_Tr
 * | "Transit networks" |
 *
 * @param {Layer_Group_Transit_Networks_TitleInputs} inputs
-* @param {{ locale?: "en" | "st" | "zu" | "xh" | "af" }} options
+* @param {{ locale?: "en" | "af" }} options
 * @returns {LocalizedString}
 */
-export const layer_group_transit_networks_title = /** @type {((inputs?: Layer_Group_Transit_Networks_TitleInputs, options?: { locale?: "en" | "st" | "zu" | "xh" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Layer_Group_Transit_Networks_TitleInputs, { locale?: "en" | "st" | "zu" | "xh" | "af" }, {}>} */ ((inputs = {}, options = {}) => {
+export const layer_group_transit_networks_title = /** @type {((inputs?: Layer_Group_Transit_Networks_TitleInputs, options?: { locale?: "en" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Layer_Group_Transit_Networks_TitleInputs, { locale?: "en" | "af" }, {}>} */ ((inputs = {}, options = {}) => {
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "st") return st_layer_group_transit_networks_title(inputs)
-	if (locale === "zu") return zu_layer_group_transit_networks_title(inputs)
-	if (locale === "xh") return xh_layer_group_transit_networks_title(inputs)
 	if (locale === "af") return af_layer_group_transit_networks_title(inputs)
 	return en_layer_group_transit_networks_title(inputs)
 });

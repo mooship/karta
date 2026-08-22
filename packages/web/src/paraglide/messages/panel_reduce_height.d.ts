@@ -6,11 +6,11 @@ export type Panel_Reduce_HeightInputs = {};
 * | "Reduce panel height" |
 *
 * @param {Panel_Reduce_HeightInputs} inputs
-* @param {{ locale?: "en" | "st" | "zu" | "xh" | "af" }} options
+* @param {{ locale?: "en" | "af" }} options
 * @returns {LocalizedString}
 */
 export declare const panel_reduce_height: ((inputs?: Panel_Reduce_HeightInputs, options?: {
-    locale?: "en" | "st" | "zu" | "xh" | "af";
+    locale?: "en" | "af";
 }) => LocalizedString) & import('../runtime.js').MessageMetadata<Panel_Reduce_HeightInputs, {
-    locale?: "en" | "st" | "zu" | "xh" | "af";
+    locale?: "en" | "af";
 }, {}>;
