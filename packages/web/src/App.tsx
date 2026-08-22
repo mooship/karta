@@ -419,6 +419,38 @@ export function App() {
     }),
     [],
   );
+  /** Localized copy forwarded to `MapView`'s internal `LocationContextMenu`, memoized for the same reason as `legendLabels`. */
+  const locationContextMenuLabels = useMemo(
+    () => ({
+      ariaLabel: m.location_context_menu_aria_label(),
+      searchHereLabel: m.location_context_menu_search_here(),
+      loadingLabel: m.location_context_menu_loading(),
+      failedLabel: m.location_context_menu_failed(),
+      noAddressLabel: m.location_context_menu_no_address(),
+      retryLabel: m.retry(),
+    }),
+    [],
+  );
+  /** Localized copy forwarded to `MapView`'s internal `MeasurementControl`, memoized for the same reason as `legendLabels`. */
+  const measurementLabels = useMemo(
+    () => ({
+      toggleLabel: m.measurement_toggle(),
+      backToMapLabel: m.measurement_back_to_map(),
+      ariaLabel: m.measurement_aria_label(),
+      title: m.measurement_title(),
+      stopLabel: m.measurement_stop(),
+      modeLabel: m.measurement_mode_label(),
+      distanceModeLabel: m.measurement_mode_distance(),
+      areaModeLabel: m.measurement_mode_area(),
+      hint: m.measurement_hint(),
+      clearLabel: m.measurement_clear(),
+    }),
+    [],
+  );
+  const formatSelectionAnnouncement = useCallback(
+    (label: string) => m.map_selection_announcement({ label }),
+    [],
+  );
   /**
    * Whether the active domain declares any `interaction.selectable` layer at
    * all -- a structural fact about the domain's own layer catalogue, checked
@@ -901,32 +933,12 @@ export function App() {
                 onLayerDataError={setFailedLayerIds}
                 onReady={handleMapReady}
                 onBasemapError={() => setBasemap("street")}
-                formatSelectionAnnouncement={(label) =>
-                  m.map_selection_announcement({ label })
-                }
+                formatSelectionAnnouncement={formatSelectionAnnouncement}
                 locationContextMenu
                 locationContextMenuProvider={locationSearchProvider}
-                locationContextMenuLabels={{
-                  ariaLabel: m.location_context_menu_aria_label(),
-                  searchHereLabel: m.location_context_menu_search_here(),
-                  loadingLabel: m.location_context_menu_loading(),
-                  failedLabel: m.location_context_menu_failed(),
-                  noAddressLabel: m.location_context_menu_no_address(),
-                  retryLabel: m.retry(),
-                }}
+                locationContextMenuLabels={locationContextMenuLabels}
                 measurementTool
-                measurementLabels={{
-                  toggleLabel: m.measurement_toggle(),
-                  backToMapLabel: m.measurement_back_to_map(),
-                  ariaLabel: m.measurement_aria_label(),
-                  title: m.measurement_title(),
-                  stopLabel: m.measurement_stop(),
-                  modeLabel: m.measurement_mode_label(),
-                  distanceModeLabel: m.measurement_mode_distance(),
-                  areaModeLabel: m.measurement_mode_area(),
-                  hint: m.measurement_hint(),
-                  clearLabel: m.measurement_clear(),
-                }}
+                measurementLabels={measurementLabels}
                 measurementPanelOpen={!isDesktopViewport && panelOpen}
                 onMeasurementPanelClose={closePanel}
                 measurementRequest={measurementRequest}
