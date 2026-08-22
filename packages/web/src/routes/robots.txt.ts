@@ -1,4 +1,7 @@
 import { SITE_URL } from "../constants/siteConfig";
+import { staticTextResponse } from "./staticTextResponse";
+
+const ROBOTS_TXT_BODY = `User-agent: *\nAllow: /\n\nSitemap: ${SITE_URL}/sitemap.xml\n`;
 
 /**
  * React Router resource route: generates `/robots.txt` from `SITE_URL`
@@ -6,12 +9,5 @@ import { SITE_URL } from "../constants/siteConfig";
  * can't drift from the app's actual production origin.
  */
 export function loader(): Response {
-  const body = `User-agent: *\nAllow: /\n\nSitemap: ${SITE_URL}/sitemap.xml\n`;
-
-  return new Response(body, {
-    headers: {
-      "Content-Type": "text/plain; charset=utf-8",
-      "Cache-Control": "public, max-age=3600",
-    },
-  });
+  return staticTextResponse(ROBOTS_TXT_BODY, "text/plain; charset=utf-8");
 }
