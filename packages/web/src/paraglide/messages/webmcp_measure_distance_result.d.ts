@@ -9,11 +9,11 @@ export type Webmcp_Measure_Distance_ResultInputs = {
 * | "Distance along {locations}: {result}." |
 *
 * @param {Webmcp_Measure_Distance_ResultInputs} inputs
-* @param {{ locale?: "en" | "st" | "zu" | "xh" | "af" }} options
+* @param {{ locale?: "en" | "af" }} options
 * @returns {LocalizedString}
 */
 export declare const webmcp_measure_distance_result: ((inputs: Webmcp_Measure_Distance_ResultInputs, options?: {
-    locale?: "en" | "st" | "zu" | "xh" | "af";
+    locale?: "en" | "af";
 }) => LocalizedString) & import('../runtime.js').MessageMetadata<Webmcp_Measure_Distance_ResultInputs, {
-    locale?: "en" | "st" | "zu" | "xh" | "af";
+    locale?: "en" | "af";
 }, {}>;

@@ -6,11 +6,11 @@ export type Bucket_Transit_Distance_NearInputs = {};
 * | "Near (≤ 1 km)" |
 *
 * @param {Bucket_Transit_Distance_NearInputs} inputs
-* @param {{ locale?: "en" | "st" | "zu" | "xh" | "af" }} options
+* @param {{ locale?: "en" | "af" }} options
 * @returns {LocalizedString}
 */
 export declare const bucket_transit_distance_near: ((inputs?: Bucket_Transit_Distance_NearInputs, options?: {
-    locale?: "en" | "st" | "zu" | "xh" | "af";
+    locale?: "en" | "af";
 }) => LocalizedString) & import('../runtime.js').MessageMetadata<Bucket_Transit_Distance_NearInputs, {
-    locale?: "en" | "st" | "zu" | "xh" | "af";
+    locale?: "en" | "af";
 }, {}>;

@@ -8,11 +8,11 @@ export type Layer_Download_Csv_Aria_LabelInputs = {
 * | "Download {label} data (CSV)" |
 *
 * @param {Layer_Download_Csv_Aria_LabelInputs} inputs
-* @param {{ locale?: "en" | "st" | "zu" | "xh" | "af" }} options
+* @param {{ locale?: "en" | "af" }} options
 * @returns {LocalizedString}
 */
 export declare const layer_download_csv_aria_label: ((inputs: Layer_Download_Csv_Aria_LabelInputs, options?: {
-    locale?: "en" | "st" | "zu" | "xh" | "af";
+    locale?: "en" | "af";
 }) => LocalizedString) & import('../runtime.js').MessageMetadata<Layer_Download_Csv_Aria_LabelInputs, {
-    locale?: "en" | "st" | "zu" | "xh" | "af";
+    locale?: "en" | "af";
 }, {}>;
