@@ -9,18 +9,6 @@ const en_layer_townships_label = /** @type {(inputs: Layer_Townships_LabelInputs
 	return /** @type {LocalizedString} */ (`Modelled car time`)
 };
 
-const st_layer_townships_label = /** @type {(inputs: Layer_Townships_LabelInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Nako ya koloi e akantsweng`)
-};
-
-const zu_layer_townships_label = /** @type {(inputs: Layer_Townships_LabelInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Isikhathi semoto esilinganiselwe`)
-};
-
-const xh_layer_townships_label = /** @type {(inputs: Layer_Townships_LabelInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Ixesha lemoto elilinganiselweyo`)
-};
-
 const af_layer_townships_label = /** @type {(inputs: Layer_Townships_LabelInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Gemodelleerde motortyd`)
 };
@@ -31,14 +19,11 @@ const af_layer_townships_label = /** @type {(inputs: Layer_Townships_LabelInputs
 * | "Modelled car time" |
 *
 * @param {Layer_Townships_LabelInputs} inputs
-* @param {{ locale?: "en" | "st" | "zu" | "xh" | "af" }} options
+* @param {{ locale?: "en" | "af" }} options
 * @returns {LocalizedString}
 */
-export const layer_townships_label = /** @type {((inputs?: Layer_Townships_LabelInputs, options?: { locale?: "en" | "st" | "zu" | "xh" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Layer_Townships_LabelInputs, { locale?: "en" | "st" | "zu" | "xh" | "af" }, {}>} */ ((inputs = {}, options = {}) => {
+export const layer_townships_label = /** @type {((inputs?: Layer_Townships_LabelInputs, options?: { locale?: "en" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Layer_Townships_LabelInputs, { locale?: "en" | "af" }, {}>} */ ((inputs = {}, options = {}) => {
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "st") return st_layer_townships_label(inputs)
-	if (locale === "zu") return zu_layer_townships_label(inputs)
-	if (locale === "xh") return xh_layer_townships_label(inputs)
 	if (locale === "af") return af_layer_townships_label(inputs)
 	return en_layer_townships_label(inputs)
 });

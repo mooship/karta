@@ -15,9 +15,6 @@ import {
  */
 const LOCALE_AUTONYMS: Record<Locale, string> = {
   en: "English",
-  st: "Sesotho",
-  zu: "isiZulu",
-  xh: "isiXhosa",
   af: "Afrikaans",
 };
 

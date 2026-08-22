@@ -8,11 +8,11 @@ export type Webmcp_Toggle_Layer_Now_VisibleInputs = {
 * | "Layer \"{label}\" is now visible." |
 *
 * @param {Webmcp_Toggle_Layer_Now_VisibleInputs} inputs
-* @param {{ locale?: "en" | "st" | "zu" | "xh" | "af" }} options
+* @param {{ locale?: "en" | "af" }} options
 * @returns {LocalizedString}
 */
 export declare const webmcp_toggle_layer_now_visible: ((inputs: Webmcp_Toggle_Layer_Now_VisibleInputs, options?: {
-    locale?: "en" | "st" | "zu" | "xh" | "af";
+    locale?: "en" | "af";
 }) => LocalizedString) & import('../runtime.js').MessageMetadata<Webmcp_Toggle_Layer_Now_VisibleInputs, {
-    locale?: "en" | "st" | "zu" | "xh" | "af";
+    locale?: "en" | "af";
 }, {}>;

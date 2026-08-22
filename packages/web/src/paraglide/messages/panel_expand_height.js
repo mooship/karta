@@ -9,18 +9,6 @@ const en_panel_expand_height = /** @type {(inputs: Panel_Expand_HeightInputs) =>
 	return /** @type {LocalizedString} */ (`Expand panel height`)
 };
 
-const st_panel_expand_height = /** @type {(inputs: Panel_Expand_HeightInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Atolosa bophahamo ba panele`)
-};
-
-const zu_panel_expand_height = /** @type {(inputs: Panel_Expand_HeightInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Andisa ukuphakama kwephaneli`)
-};
-
-const xh_panel_expand_height = /** @type {(inputs: Panel_Expand_HeightInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Andisa ubude bephaneli`)
-};
-
 const af_panel_expand_height = /** @type {(inputs: Panel_Expand_HeightInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Vergroot paneelhoogte`)
 };
@@ -31,14 +19,11 @@ const af_panel_expand_height = /** @type {(inputs: Panel_Expand_HeightInputs) =>
 * | "Expand panel height" |
 *
 * @param {Panel_Expand_HeightInputs} inputs
-* @param {{ locale?: "en" | "st" | "zu" | "xh" | "af" }} options
+* @param {{ locale?: "en" | "af" }} options
 * @returns {LocalizedString}
 */
-export const panel_expand_height = /** @type {((inputs?: Panel_Expand_HeightInputs, options?: { locale?: "en" | "st" | "zu" | "xh" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Panel_Expand_HeightInputs, { locale?: "en" | "st" | "zu" | "xh" | "af" }, {}>} */ ((inputs = {}, options = {}) => {
+export const panel_expand_height = /** @type {((inputs?: Panel_Expand_HeightInputs, options?: { locale?: "en" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Panel_Expand_HeightInputs, { locale?: "en" | "af" }, {}>} */ ((inputs = {}, options = {}) => {
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "st") return st_panel_expand_height(inputs)
-	if (locale === "zu") return zu_panel_expand_height(inputs)
-	if (locale === "xh") return xh_panel_expand_height(inputs)
 	if (locale === "af") return af_panel_expand_height(inputs)
 	return en_panel_expand_height(inputs)
 });

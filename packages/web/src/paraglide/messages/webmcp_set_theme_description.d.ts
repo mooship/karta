@@ -6,11 +6,11 @@ export type Webmcp_Set_Theme_DescriptionInputs = {};
 * | "Switch the app's colour theme. \"system\" follows the OS preference." |
 *
 * @param {Webmcp_Set_Theme_DescriptionInputs} inputs
-* @param {{ locale?: "en" | "st" | "zu" | "xh" | "af" }} options
+* @param {{ locale?: "en" | "af" }} options
 * @returns {LocalizedString}
 */
 export declare const webmcp_set_theme_description: ((inputs?: Webmcp_Set_Theme_DescriptionInputs, options?: {
-    locale?: "en" | "st" | "zu" | "xh" | "af";
+    locale?: "en" | "af";
 }) => LocalizedString) & import('../runtime.js').MessageMetadata<Webmcp_Set_Theme_DescriptionInputs, {
-    locale?: "en" | "st" | "zu" | "xh" | "af";
+    locale?: "en" | "af";
 }, {}>;

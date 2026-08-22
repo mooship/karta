@@ -9,18 +9,6 @@ const en_bucket_transit_distance_far = /** @type {(inputs: Bucket_Transit_Distan
 	return /** @type {LocalizedString} */ (`Far (3–8 km)`)
 };
 
-const st_bucket_transit_distance_far = /** @type {(inputs: Bucket_Transit_Distance_FarInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Bohole bo hole (3–8 km)`)
-};
-
-const zu_bucket_transit_distance_far = /** @type {(inputs: Bucket_Transit_Distance_FarInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Ibanga elikude (3–8 km)`)
-};
-
-const xh_bucket_transit_distance_far = /** @type {(inputs: Bucket_Transit_Distance_FarInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Umgama okude (3–8 km)`)
-};
-
 const af_bucket_transit_distance_far = /** @type {(inputs: Bucket_Transit_Distance_FarInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Ver (3–8 km)`)
 };
@@ -31,14 +19,11 @@ const af_bucket_transit_distance_far = /** @type {(inputs: Bucket_Transit_Distan
 * | "Far (3–8 km)" |
 *
 * @param {Bucket_Transit_Distance_FarInputs} inputs
-* @param {{ locale?: "en" | "st" | "zu" | "xh" | "af" }} options
+* @param {{ locale?: "en" | "af" }} options
 * @returns {LocalizedString}
 */
-export const bucket_transit_distance_far = /** @type {((inputs?: Bucket_Transit_Distance_FarInputs, options?: { locale?: "en" | "st" | "zu" | "xh" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Bucket_Transit_Distance_FarInputs, { locale?: "en" | "st" | "zu" | "xh" | "af" }, {}>} */ ((inputs = {}, options = {}) => {
+export const bucket_transit_distance_far = /** @type {((inputs?: Bucket_Transit_Distance_FarInputs, options?: { locale?: "en" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Bucket_Transit_Distance_FarInputs, { locale?: "en" | "af" }, {}>} */ ((inputs = {}, options = {}) => {
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "st") return st_bucket_transit_distance_far(inputs)
-	if (locale === "zu") return zu_bucket_transit_distance_far(inputs)
-	if (locale === "xh") return xh_bucket_transit_distance_far(inputs)
 	if (locale === "af") return af_bucket_transit_distance_far(inputs)
 	return en_bucket_transit_distance_far(inputs)
 });

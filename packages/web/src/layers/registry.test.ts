@@ -66,15 +66,15 @@ describe("registry", () => {
   });
 
   it("translates layers, groups, and the story to the current locale", () => {
-    getLocale.mockReturnValue("zu");
+    getLocale.mockReturnValue("af");
 
-    expect(getLayer("bus")?.label).toBe("Ibhasi");
-    expect(getLayerGroups()[0]?.title).toBe("Izingqimba zokufinyelela");
-    expect(getStory()?.title).toBe("Kungani leli balazwe likhona");
+    expect(getLayer("rapid-rail")?.label).toBe("Snelspoor");
+    expect(getLayerGroups()[0]?.title).toBe("Toeganklikheidslae");
+    expect(getStory()?.title).toBe("Waarom hierdie kaart bestaan");
   });
 
   it("returns layer structure (ids, defaultVisible) without translating labels", () => {
-    getLocale.mockReturnValue("zu");
+    getLocale.mockReturnValue("af");
 
     const structure = getLayerStructure();
     expect(structure.map((l) => l.id)).toEqual(getLayers().map((l) => l.id));

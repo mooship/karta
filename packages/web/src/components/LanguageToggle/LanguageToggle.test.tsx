@@ -16,26 +16,14 @@ import { LanguageToggle } from "./LanguageToggle";
 
 describe("LanguageToggle", () => {
   it("marks the current locale as pressed", () => {
-    getLocale.mockReturnValue("st");
+    getLocale.mockReturnValue("af");
     render(<LanguageToggle />);
 
-    expect(screen.getByTestId("language-option-st")).toHaveAttribute(
+    expect(screen.getByTestId("language-option-af")).toHaveAttribute(
       "aria-pressed",
       "true",
     );
     expect(screen.getByTestId("language-option-en")).toHaveAttribute(
-      "aria-pressed",
-      "false",
-    );
-    expect(screen.getByTestId("language-option-zu")).toHaveAttribute(
-      "aria-pressed",
-      "false",
-    );
-    expect(screen.getByTestId("language-option-xh")).toHaveAttribute(
-      "aria-pressed",
-      "false",
-    );
-    expect(screen.getByTestId("language-option-af")).toHaveAttribute(
       "aria-pressed",
       "false",
     );
@@ -48,15 +36,6 @@ describe("LanguageToggle", () => {
     expect(screen.getByTestId("language-option-en")).toHaveTextContent(
       "English",
     );
-    expect(screen.getByTestId("language-option-st")).toHaveTextContent(
-      "Sesotho",
-    );
-    expect(screen.getByTestId("language-option-zu")).toHaveTextContent(
-      "isiZulu",
-    );
-    expect(screen.getByTestId("language-option-xh")).toHaveTextContent(
-      "isiXhosa",
-    );
     expect(screen.getByTestId("language-option-af")).toHaveTextContent(
       "Afrikaans",
     );
@@ -66,8 +45,8 @@ describe("LanguageToggle", () => {
     getLocale.mockReturnValue("en");
     render(<LanguageToggle />);
 
-    fireEvent.click(screen.getByTestId("language-option-zu"));
+    fireEvent.click(screen.getByTestId("language-option-af"));
 
-    expect(setLocale).toHaveBeenCalledWith("zu");
+    expect(setLocale).toHaveBeenCalledWith("af");
   });
 });

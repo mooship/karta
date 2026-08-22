@@ -15,7 +15,7 @@ export declare const baseLocale = "en";
  *     throw new Error('Locale is not available');
  *   }
  */
-export declare const locales: readonly ["en", "st", "zu", "xh", "af"];
+export declare const locales: readonly ["en", "af"];
 /** @type {string} */
 export declare const cookieName: string;
 /** @type {number} */

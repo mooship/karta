@@ -9,18 +9,6 @@ const en_township_popup_job_center = /** @type {(inputs: Township_Popup_Job_Cent
 	return /** @type {LocalizedString} */ (`Nearest job centre`)
 };
 
-const st_township_popup_job_center = /** @type {(inputs: Township_Popup_Job_CenterInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Setsi sa mesebetsi se haufi`)
-};
-
-const zu_township_popup_job_center = /** @type {(inputs: Township_Popup_Job_CenterInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Isikhungo somsebenzi esiseduze`)
-};
-
-const xh_township_popup_job_center = /** @type {(inputs: Township_Popup_Job_CenterInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Isikhungo somsebenzi esikufuphi`)
-};
-
 const af_township_popup_job_center = /** @type {(inputs: Township_Popup_Job_CenterInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Naaste werksentrum`)
 };
@@ -31,14 +19,11 @@ const af_township_popup_job_center = /** @type {(inputs: Township_Popup_Job_Cent
 * | "Nearest job centre" |
 *
 * @param {Township_Popup_Job_CenterInputs} inputs
-* @param {{ locale?: "en" | "st" | "zu" | "xh" | "af" }} options
+* @param {{ locale?: "en" | "af" }} options
 * @returns {LocalizedString}
 */
-export const township_popup_job_center = /** @type {((inputs?: Township_Popup_Job_CenterInputs, options?: { locale?: "en" | "st" | "zu" | "xh" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Township_Popup_Job_CenterInputs, { locale?: "en" | "st" | "zu" | "xh" | "af" }, {}>} */ ((inputs = {}, options = {}) => {
+export const township_popup_job_center = /** @type {((inputs?: Township_Popup_Job_CenterInputs, options?: { locale?: "en" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Township_Popup_Job_CenterInputs, { locale?: "en" | "af" }, {}>} */ ((inputs = {}, options = {}) => {
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "st") return st_township_popup_job_center(inputs)
-	if (locale === "zu") return zu_township_popup_job_center(inputs)
-	if (locale === "xh") return xh_township_popup_job_center(inputs)
 	if (locale === "af") return af_township_popup_job_center(inputs)
 	return en_township_popup_job_center(inputs)
 });

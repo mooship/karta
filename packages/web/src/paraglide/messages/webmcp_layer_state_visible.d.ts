@@ -6,11 +6,11 @@ export type Webmcp_Layer_State_VisibleInputs = {};
 * | "visible" |
 *
 * @param {Webmcp_Layer_State_VisibleInputs} inputs
-* @param {{ locale?: "en" | "st" | "zu" | "xh" | "af" }} options
+* @param {{ locale?: "en" | "af" }} options
 * @returns {LocalizedString}
 */
 export declare const webmcp_layer_state_visible: ((inputs?: Webmcp_Layer_State_VisibleInputs, options?: {
-    locale?: "en" | "st" | "zu" | "xh" | "af";
+    locale?: "en" | "af";
 }) => LocalizedString) & import('../runtime.js').MessageMetadata<Webmcp_Layer_State_VisibleInputs, {
-    locale?: "en" | "st" | "zu" | "xh" | "af";
+    locale?: "en" | "af";
 }, {}>;

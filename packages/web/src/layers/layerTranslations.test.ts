@@ -102,32 +102,32 @@ const UNKNOWN_LAYER: Layer = {
 
 describe("localizeLayer", () => {
   it("translates label and description for a known layer id", () => {
-    getLocale.mockReturnValue("st");
+    getLocale.mockReturnValue("af");
 
     const localized = localizeLayer(CHOROPLETH_LAYER);
 
-    expect(localized.label).toBe("Nako ya koloi e akantsweng");
+    expect(localized.label).toBe("Gemodelleerde motortyd");
     expect(localized.description).not.toBe(CHOROPLETH_LAYER.description);
   });
 
   it("translates choropleth bucket labels in order", () => {
-    getLocale.mockReturnValue("zu");
+    getLocale.mockReturnValue("af");
 
     const localized = localizeLayer(CHOROPLETH_LAYER);
 
     expect(localized.style.kind).toBe("choropleth");
     if (localized.style.kind === "choropleth") {
       expect(localized.style.buckets.map((b) => b.label)).toEqual([
-        "Isikhathi esifushane (≤ 20 min)",
-        "Isikhathi esimaphakathi (21–40 min)",
-        "Isikhathi eside (41–60 min)",
-        "Isikhathi eside kakhulu (> 60 min)",
+        "Kort (≤ 20 min)",
+        "Matig (21–40 min)",
+        "Lank (41–60 min)",
+        "Baie lank (> 60 min)",
       ]);
     }
   });
 
   it("falls back to a bucket's own English label when the translation table has fewer bucketLabels than the layer has buckets", () => {
-    getLocale.mockReturnValue("zu");
+    getLocale.mockReturnValue("af");
     const extraBucketLayer: Layer = {
       ...CHOROPLETH_LAYER,
       style: {
@@ -157,19 +157,19 @@ describe("localizeLayer", () => {
   });
 
   it("mirrors the translated label into a line layer's legendLabel", () => {
-    getLocale.mockReturnValue("st");
+    getLocale.mockReturnValue("af");
 
     const localized = localizeLayer(LINE_LAYER);
 
-    expect(localized.label).toBe("Terene e Potlakileng");
+    expect(localized.label).toBe("Snelspoor");
     expect(localized.style.kind).toBe("line");
     if (localized.style.kind === "line") {
-      expect(localized.style.legendLabel).toBe("Terene e Potlakileng");
+      expect(localized.style.legendLabel).toBe("Snelspoor");
     }
   });
 
   it("leaves colorClassification stop labels (operator names) untranslated", () => {
-    getLocale.mockReturnValue("zu");
+    getLocale.mockReturnValue("af");
 
     const localized = localizeLayer(BRT_LAYER);
 
@@ -182,7 +182,7 @@ describe("localizeLayer", () => {
   });
 
   it("falls back to the original English fields for an id with no translation entry", () => {
-    getLocale.mockReturnValue("zu");
+    getLocale.mockReturnValue("af");
 
     const localized = localizeLayer(UNKNOWN_LAYER);
 
@@ -191,7 +191,7 @@ describe("localizeLayer", () => {
   });
 
   it("leaves a choropleth layer's buckets untouched for an id with no translation entry", () => {
-    getLocale.mockReturnValue("zu");
+    getLocale.mockReturnValue("af");
 
     const localized = localizeLayer(UNKNOWN_CHOROPLETH_LAYER);
 
@@ -230,18 +230,18 @@ const UNKNOWN_GROUP: LayerGroup = {
 
 describe("localizeLayerGroup", () => {
   it("translates title and description for a known group id", () => {
-    getLocale.mockReturnValue("zu");
+    getLocale.mockReturnValue("af");
 
     const localized = localizeLayerGroup(KNOWN_GROUP);
 
-    expect(localized.title).toBe("Izingqimba zokufinyelela");
+    expect(localized.title).toBe("Toeganklikheidslae");
     expect(localized.description).toBe(
-      "Yingqimba eyodwa kuphela engasebenza ngesikhathi esisodwa.",
+      "Slegs een laag kan op 'n slag aktief wees.",
     );
   });
 
   it("falls back to the original title for an id with no translation entry", () => {
-    getLocale.mockReturnValue("zu");
+    getLocale.mockReturnValue("af");
 
     const localized = localizeLayerGroup(UNKNOWN_GROUP);
 
@@ -251,14 +251,14 @@ describe("localizeLayerGroup", () => {
 
 describe("localizeStory", () => {
   it("translates the domain story", () => {
-    getLocale.mockReturnValue("st");
+    getLocale.mockReturnValue("af");
 
     const localized = localizeStory({
       title: "Why this map exists",
       body: "English body",
     });
 
-    expect(localized?.title).toBe("Hobaneng 'mapa ona o le teng");
+    expect(localized?.title).toBe("Waarom hierdie kaart bestaan");
   });
 
   it("returns undefined when the domain has no story", () => {

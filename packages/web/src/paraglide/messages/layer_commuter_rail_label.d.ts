@@ -6,11 +6,11 @@ export type Layer_Commuter_Rail_LabelInputs = {};
 * | "Commuter Rail" |
 *
 * @param {Layer_Commuter_Rail_LabelInputs} inputs
-* @param {{ locale?: "en" | "st" | "zu" | "xh" | "af" }} options
+* @param {{ locale?: "en" | "af" }} options
 * @returns {LocalizedString}
 */
 export declare const layer_commuter_rail_label: ((inputs?: Layer_Commuter_Rail_LabelInputs, options?: {
-    locale?: "en" | "st" | "zu" | "xh" | "af";
+    locale?: "en" | "af";
 }) => LocalizedString) & import('../runtime.js').MessageMetadata<Layer_Commuter_Rail_LabelInputs, {
-    locale?: "en" | "st" | "zu" | "xh" | "af";
+    locale?: "en" | "af";
 }, {}>;

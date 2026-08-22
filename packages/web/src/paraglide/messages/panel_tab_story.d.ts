@@ -6,11 +6,11 @@ export type Panel_Tab_StoryInputs = {};
 * | "Story" |
 *
 * @param {Panel_Tab_StoryInputs} inputs
-* @param {{ locale?: "en" | "st" | "zu" | "xh" | "af" }} options
+* @param {{ locale?: "en" | "af" }} options
 * @returns {LocalizedString}
 */
 export declare const panel_tab_story: ((inputs?: Panel_Tab_StoryInputs, options?: {
-    locale?: "en" | "st" | "zu" | "xh" | "af";
+    locale?: "en" | "af";
 }) => LocalizedString) & import('../runtime.js').MessageMetadata<Panel_Tab_StoryInputs, {
-    locale?: "en" | "st" | "zu" | "xh" | "af";
+    locale?: "en" | "af";
 }, {}>;

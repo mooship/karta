@@ -9,11 +9,11 @@ export type Webmcp_Measure_Area_ResultInputs = {
 * | "Area enclosed by {locations}: {result}." |
 *
 * @param {Webmcp_Measure_Area_ResultInputs} inputs
-* @param {{ locale?: "en" | "st" | "zu" | "xh" | "af" }} options
+* @param {{ locale?: "en" | "af" }} options
 * @returns {LocalizedString}
 */
 export declare const webmcp_measure_area_result: ((inputs: Webmcp_Measure_Area_ResultInputs, options?: {
-    locale?: "en" | "st" | "zu" | "xh" | "af";
+    locale?: "en" | "af";
 }) => LocalizedString) & import('../runtime.js').MessageMetadata<Webmcp_Measure_Area_ResultInputs, {
-    locale?: "en" | "st" | "zu" | "xh" | "af";
+    locale?: "en" | "af";
 }, {}>;

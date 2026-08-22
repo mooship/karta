@@ -6,11 +6,11 @@ export type Panel_Tab_BrowseInputs = {};
 * | "Browse" |
 *
 * @param {Panel_Tab_BrowseInputs} inputs
-* @param {{ locale?: "en" | "st" | "zu" | "xh" | "af" }} options
+* @param {{ locale?: "en" | "af" }} options
 * @returns {LocalizedString}
 */
 export declare const panel_tab_browse: ((inputs?: Panel_Tab_BrowseInputs, options?: {
-    locale?: "en" | "st" | "zu" | "xh" | "af";
+    locale?: "en" | "af";
 }) => LocalizedString) & import('../runtime.js').MessageMetadata<Panel_Tab_BrowseInputs, {
-    locale?: "en" | "st" | "zu" | "xh" | "af";
+    locale?: "en" | "af";
 }, {}>;

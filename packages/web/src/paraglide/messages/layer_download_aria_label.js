@@ -9,18 +9,6 @@ const en_layer_download_aria_label = /** @type {(inputs: Layer_Download_Aria_Lab
 	return /** @type {LocalizedString} */ (`Download ${i?.label} data (GeoJSON)`)
 };
 
-const st_layer_download_aria_label = /** @type {(inputs: Layer_Download_Aria_LabelInputs) => LocalizedString} */ (i) => {
-	return /** @type {LocalizedString} */ (`Daonlouda boitsebiso ba ${i?.label} (GeoJSON)`)
-};
-
-const zu_layer_download_aria_label = /** @type {(inputs: Layer_Download_Aria_LabelInputs) => LocalizedString} */ (i) => {
-	return /** @type {LocalizedString} */ (`Landa idatha ye-${i?.label} (GeoJSON)`)
-};
-
-const xh_layer_download_aria_label = /** @type {(inputs: Layer_Download_Aria_LabelInputs) => LocalizedString} */ (i) => {
-	return /** @type {LocalizedString} */ (`Khuphela idatha ye-${i?.label} (GeoJSON)`)
-};
-
 const af_layer_download_aria_label = /** @type {(inputs: Layer_Download_Aria_LabelInputs) => LocalizedString} */ (i) => {
 	return /** @type {LocalizedString} */ (`Laai ${i?.label}-data af (GeoJSON)`)
 };
@@ -31,14 +19,11 @@ const af_layer_download_aria_label = /** @type {(inputs: Layer_Download_Aria_Lab
 * | "Download {label} data (GeoJSON)" |
 *
 * @param {Layer_Download_Aria_LabelInputs} inputs
-* @param {{ locale?: "en" | "st" | "zu" | "xh" | "af" }} options
+* @param {{ locale?: "en" | "af" }} options
 * @returns {LocalizedString}
 */
-export const layer_download_aria_label = /** @type {((inputs: Layer_Download_Aria_LabelInputs, options?: { locale?: "en" | "st" | "zu" | "xh" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Layer_Download_Aria_LabelInputs, { locale?: "en" | "st" | "zu" | "xh" | "af" }, {}>} */ ((inputs, options = {}) => {
+export const layer_download_aria_label = /** @type {((inputs: Layer_Download_Aria_LabelInputs, options?: { locale?: "en" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Layer_Download_Aria_LabelInputs, { locale?: "en" | "af" }, {}>} */ ((inputs, options = {}) => {
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "st") return st_layer_download_aria_label(inputs)
-	if (locale === "zu") return zu_layer_download_aria_label(inputs)
-	if (locale === "xh") return xh_layer_download_aria_label(inputs)
 	if (locale === "af") return af_layer_download_aria_label(inputs)
 	return en_layer_download_aria_label(inputs)
 });
