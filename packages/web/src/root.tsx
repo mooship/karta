@@ -12,6 +12,8 @@ import {
   ScrollRestoration,
   useRouteError,
 } from "react-router";
+import { buildPageMeta } from "./buildPageMeta";
+import { SITE_URL } from "./constants/siteConfig";
 import { THEME_COLOR, THEME_STORAGE_KEY } from "./constants/themeConfig";
 import "./index.css";
 import { m } from "./paraglide/messages.js";
@@ -33,20 +35,21 @@ const THEME_BOOTSTRAP_SCRIPT = `(() => {
   }
 })();`;
 
-/** React Router route module export: page `<title>`/`<meta>` tags. */
-export const meta: MetaFunction = () => {
-  return [
-    { title: m.app_title() },
-    {
-      name: "description",
-      content: m.meta_description(),
-    },
-    {
-      name: "viewport",
-      content: "width=device-width, initial-scale=1.0, viewport-fit=cover",
-    },
-  ];
-};
+/**
+ * React Router route module export: page `<title>`/`<meta>` tags, including
+ * Open Graph, Twitter card, and `Dataset` JSON-LD structured data, all
+ * derived by `buildPageMeta` from this route's own title/description/URL.
+ * @remarks Runs per request rather than once at module scope, like
+ *   `layers/registry.ts`'s getters — `buildPageMeta`'s `getLocale()` call
+ *   and every `m.*()` call below must reflect the current request's locale,
+ *   not whichever locale first touched this Cloudflare Workers isolate.
+ */
+export const meta: MetaFunction = () =>
+  buildPageMeta({
+    title: m.app_heading(),
+    description: m.meta_description(),
+    url: SITE_URL,
+  });
 
 /**
  * Leaflet's default `{s}` subdomain shards for the CARTO basemap tile
