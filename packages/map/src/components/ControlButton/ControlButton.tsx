@@ -1,5 +1,5 @@
 import { type ButtonHTMLAttributes, forwardRef, type ReactNode } from "react";
-import styles from "./ControlButton.module.css";
+import * as styles from "./ControlButton.css";
 
 /** Visual shape of a `ControlButton`. */
 export type ControlButtonShape = "icon" | "pill";
