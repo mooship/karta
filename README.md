@@ -16,7 +16,7 @@
 
 ## Stack
 
-React + TypeScript SSR app (React Router framework mode on Vite, `react-leaflet`, Zustand, Zod, CSS Modules) split into five npm workspace packages — `@karta/core`, `@karta/map`, `@karta/react`, `@karta/app`, and `@karta/web` — plus a Node/TypeScript offline data pipeline (public OSRM for routing, Overpass API + open data portals for transit, no Docker/GDAL required), and Cloudflare Workers for edge rendering and asset delivery. No accounts and no tracking beyond cookieless page views.
+React + TypeScript SSR app (React Router framework mode on Vite, `react-leaflet`, Zustand, Zod, vanilla-extract) split into six npm workspace packages — `@karta/core`, `@karta/map`, `@karta/react`, `@karta/theme`, `@karta/app`, and `@karta/web` — plus a Node/TypeScript offline data pipeline (public OSRM for routing, Overpass API + open data portals for transit, no Docker/GDAL required), and Cloudflare Workers for edge rendering and asset delivery. No accounts and no tracking beyond cookieless page views.
 
 ## Contributing
 

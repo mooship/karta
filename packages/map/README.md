@@ -1,6 +1,6 @@
 # `@karta/map`
 
-Generic map rendering and UI components (React + Leaflet) for Karta, built on `@karta/core`. Has no dependency on `@karta/app` or `@karta/web` — components take a `DomainConfig`/`Layer` values via context or props instead of a hardcoded domain.
+Generic map rendering and UI components (React + Leaflet) for Karta, built on `@karta/core`, `@karta/react`, and `@karta/theme`. Has no dependency on `@karta/app` or `@karta/web` — components take a `DomainConfig`/`Layer` values via context or props instead of a hardcoded domain.
 
 ## What belongs here
 
@@ -18,6 +18,36 @@ Generic map rendering and UI components (React + Leaflet) for Karta, built on `@
 - Domain-specific components like a township popup or township browser — those read domain-specific properties (`nearestJobCenter`, `commuteMinutes`, …) that don't exist on a generic `Layer`. Pass a `renderFeaturePopup` callback into `MapView` instead.
 - Domain-specific accessible copy — `MapView` takes a required `ariaLabel` prop rather than a baked-in accessible name, since what the map depicts is domain-specific.
 - Gauteng domain data (`GAUTENG_SPATIAL_LEGACY_DOMAIN`, metros, townships) — see `@karta/app`.
+
+## Styling
+
+Every component's styles are written in [vanilla-extract](https://vanilla-extract.style/)
+(`*.css.ts`, colocated beside each component) and reach the M3 design
+tokens through `@karta/theme`'s typed contract — see `docs/design-system.md`'s
+"Styling implementation" section in the root of this repo for the full
+token model. Because this package ships source with no build step,
+`@vanilla-extract/css` is a real runtime `dependencies` entry, not an
+implementation detail hidden behind a build artifact: **any host
+application embedding `@karta/map` components must register
+`@vanilla-extract/vite-plugin`'s `vanillaExtractPlugin()` in its own Vite
+config**, or `.css.ts` imports will fail to resolve. This is a breaking
+integration change for any consumer of an earlier, CSS-Modules-based
+version of this package.
+
+```ts
+// vite.config.ts
+import { vanillaExtractPlugin } from "@vanilla-extract/vite-plugin";
+
+export default defineConfig({
+  plugins: [vanillaExtractPlugin() /* , ...your other plugins */],
+});
+```
+
+A consuming app must also define every `--md-sys-color-*`/`-shape-*`/
+`-elevation-*`/`--state-*`/`--motion-*` custom property `@karta/theme`'s
+`vars` contract declares (see `packages/web/src/index.css` for a complete
+reference implementation, including light/dark switching) — the contract
+itself emits no CSS and has no fallback values.
 
 ## `MapView` and code-splitting
 

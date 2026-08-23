@@ -1,6 +1,0 @@
-.link {
-  composes: link from "../../shared.module.css";
-  align-self: flex-start;
-  font-family: var(--font-body);
-  font-size: var(--font-size-md);
-}

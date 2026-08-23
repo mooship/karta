@@ -1,13 +1,8 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
+import { findVanillaExtractFiles } from "../testUtils/findVanillaExtractFiles";
 import { Z_INDEX_CSS_VAR_DEFAULTS } from "./zIndexTokens";
-
-/** Counts `var(--name)` references with no fallback argument at all. */
-function countUnguardedUsages(css: string, varName: string): number {
-  const pattern = new RegExp(`var\\(${varName}\\s*\\)`, "g");
-  return (css.match(pattern) ?? []).length;
-}
 
 describe("Z_INDEX_CSS_VAR_DEFAULTS", () => {
   it("names every entry as a CSS custom property", () => {
@@ -22,17 +17,18 @@ describe("Z_INDEX_CSS_VAR_DEFAULTS", () => {
     }
   });
 
-  it.each([
-    "../components/DesktopLegend/DesktopLegend.module.css",
-    "../components/MobileLegend/MobileLegend.module.css",
-    "../components/MeasurementControl/MeasurementControl.module.css",
-  ])(
-    "never references a documented z-index var in %s without a fallback",
-    (relativePath) => {
-      const css = readFileSync(path.join(__dirname, relativePath), "utf8");
+  it("never reaches a documented z-index var from a .css.ts file except through mapTokens.ts's typed helper", () => {
+    const tsFiles = findVanillaExtractFiles();
+    expect(tsFiles.length).toBeGreaterThan(0);
+
+    for (const file of tsFiles) {
+      const source = readFileSync(file, "utf8");
       for (const name of Object.keys(Z_INDEX_CSS_VAR_DEFAULTS)) {
-        expect(countUnguardedUsages(css, name)).toBe(0);
+        expect(
+          source.includes(name),
+          `${path.relative(path.join(__dirname, ".."), file)} references ${name} directly instead of through mapTokens.ts's zIndexTokens object`,
+        ).toBe(false);
       }
-    },
-  );
+    }
+  });
 });

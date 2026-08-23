@@ -53,6 +53,36 @@ test.describe("responsive panel", () => {
     await expect(viewport).toBeVisible();
   });
 
+  test("gives the panel trigger a bottom transition via its own extra-transition override point", async ({
+    page,
+  }) => {
+    await page.goto("/");
+
+    const trigger = page.getByTestId(E2E.panelToggle);
+    await expect(trigger).toBeVisible();
+
+    // On mobile, `.panelTrigger` sets `--control-button-extra-transition`
+    // unconditionally (gated by the viewport media query, not
+    // `data-panel-open` -- the transition must already be active before
+    // `bottom` changes, not applied reactively afterwards).
+    // ControlButton's own `.button` style appends that custom property to
+    // its base transition list, so the trigger's *computed* `transition`
+    // should include a `bottom` component. Verifying this end-to-end
+    // (not just against the compiled CSS) is the regression guard for
+    // replacing the old cascade-specificity trick with a real
+    // custom-property override point: without it, this element's
+    // `bottom` position would snap instantly instead of climbing when
+    // the panel opens.
+    const transition = await trigger.evaluate(
+      (el) => getComputedStyle(el).transition,
+    );
+    expect(transition).toContain("bottom");
+
+    // The trigger still climbs correctly when the panel actually opens.
+    await trigger.click();
+    await expect(trigger).toHaveAttribute("aria-expanded", "true");
+  });
+
   test("provides one-tap map legend access on mobile without opening Explore", async ({
     page,
   }) => {

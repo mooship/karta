@@ -1,11 +1,11 @@
+import { assignInlineVars } from "@vanilla-extract/dynamic";
 import { BookOpen, X } from "lucide-react";
-import type { CSSProperties } from "react";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
 import { useDismissableOverlay } from "../../hooks/useDismissableOverlay";
 import { useSwipeToDismiss } from "../../hooks/useSwipeToDismiss";
 import { IconButton } from "../IconButton/IconButton";
 import { Legend, type LegendLabels } from "../Legend/Legend";
-import styles from "./MobileLegend.module.css";
+import * as styles from "./MobileLegend.css";
 
 interface MobileLegendProps {
   visibleLayerIds: string[];
@@ -67,9 +67,9 @@ function MobileLegendComponent({
     return null;
   }
 
-  const dragStyle = {
-    "--sheet-drag-offset": `${dragOffsetPx}px`,
-  } as CSSProperties;
+  const dragStyle = assignInlineVars({
+    [styles.sheetDragOffset]: `${dragOffsetPx}px`,
+  });
 
   return (
     <div
@@ -80,7 +80,6 @@ function MobileLegendComponent({
     >
       <IconButton
         ref={triggerRef}
-        className={styles.trigger}
         data-testid="mobile-legend-trigger"
         data-e2e="mobile-legend-trigger"
         aria-expanded={open}
