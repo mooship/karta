@@ -210,8 +210,8 @@ export const download = style({
   flexShrink: 0,
   alignItems: "center",
   justifyContent: "center",
-  width: "var(--control-height)",
-  height: "var(--control-height)",
+  width: appVars.controlHeight,
+  height: appVars.controlHeight,
   border: 0,
   borderRadius: vars.shape.cornerFull,
   background: "transparent",
@@ -232,7 +232,7 @@ export const download = style({
 });
 
 globalStyle(`.${checkbox}:focus-visible, .${download}:focus-visible`, {
-  outline: `var(--focus-ring-width) solid ${vars.color.onSurface}`,
+  outline: `${appVars.focusRingWidth} solid ${vars.color.onSurface}`,
   outlineOffset: 2,
 });
 

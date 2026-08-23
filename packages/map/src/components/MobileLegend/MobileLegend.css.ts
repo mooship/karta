@@ -55,44 +55,32 @@ export const container = style({
        * in step with the sheet's slide-out instead of snapping into place
        * only after it's already gone.
        */
-      transition: `bottom ${mobileLayoutTokens.panelRepositionDuration} var(--motion-ease-large-surface, cubic-bezier(0.2, 0, 0, 1))`,
-    },
-  },
-  selectors: {
-    /**
-     * Climbs to sit just above the sheet (its own height plus a gap), but
-     * never higher than clearing the search box (see
-     * MeasurementControl.css.ts's `mobileSearchClearance`, the same
-     * boundary that control's own toggle sits below) plus this trigger's
-     * own height and `MeasurementControl`'s own idle toggle stacked
-     * beneath it -- on a "full" sheet there's so little headroom left
-     * above it that an unclamped climb pushes the trigger off the top of
-     * the screen entirely. `MeasurementControl` collapses to its idle
-     * toggle whenever the host panel is open (see its own mobile rules)
-     * but stays visible, so this ceiling still has to reserve room for it
-     * alongside the search box. `--sheet-height` is set per panel size
-     * below, matching `MeasurementControl`'s own pattern for the same
-     * terms.
-     */
-    '&[data-panel-open="true"]': {
-      "@media": {
-        [`screen and (max-width: ${MOBILE_BREAKPOINT_PX}px)`]: {
+      transition: `bottom ${mobileLayoutTokens.panelRepositionDuration} ${vars.motion.easeLargeSurface}`,
+      selectors: {
+        /**
+         * Climbs to sit just above the sheet (its own height plus a gap),
+         * but never higher than clearing the search box (see
+         * MeasurementControl.css.ts's `mobileSearchClearance`, the same
+         * boundary that control's own toggle sits below) plus this
+         * trigger's own height and `MeasurementControl`'s own idle toggle
+         * stacked beneath it -- on a "full" sheet there's so little
+         * headroom left above it that an unclamped climb pushes the
+         * trigger off the top of the screen entirely. `MeasurementControl`
+         * collapses to its idle toggle whenever the host panel is open
+         * (see its own mobile rules) but stays visible, so this ceiling
+         * still has to reserve room for it alongside the search box.
+         * `--sheet-height` is set per panel size below, matching
+         * `MeasurementControl`'s own pattern for the same terms.
+         */
+        '&[data-panel-open="true"]': {
           bottom: `min(calc(var(--sheet-height) + 0.75rem + env(safe-area-inset-bottom)), calc(100dvh - ${mobileLayoutTokens.mobileSearchClearance} - ${mobileLayoutTokens.mobileSafeTop} - (${mobileLayoutTokens.mobileControlSize} * 2)))`,
         },
-      },
-    },
-    '&[data-panel-open="true"][data-panel-size="medium"]': {
-      "@media": {
-        [`screen and (max-width: ${MOBILE_BREAKPOINT_PX}px)`]: {
+        '&[data-panel-open="true"][data-panel-size="medium"]': {
           vars: {
             "--sheet-height": mobileLayoutTokens.mobileSheetHeightMedium,
           },
         },
-      },
-    },
-    '&[data-panel-open="true"][data-panel-size="full"]': {
-      "@media": {
-        [`screen and (max-width: ${MOBILE_BREAKPOINT_PX}px)`]: {
+        '&[data-panel-open="true"][data-panel-size="full"]': {
           vars: {
             "--sheet-height": mobileLayoutTokens.mobileSheetHeightFull,
           },

@@ -13,6 +13,9 @@ import {
 } from "./shared.css";
 import { appVars } from "./theme/app.css";
 
+const mobileMediaQuery = `screen and (max-width: ${MOBILE_BREAKPOINT_PX}px)`;
+const desktopMediaQuery = `screen and (min-width: ${MOBILE_BREAKPOINT_PX + 1}px)`;
+
 /**
  * The mobile Explore sheet's live drag offset, set per-render via
  * `@vanilla-extract/dynamic`'s `assignInlineVars()` in `App.tsx` (replacing
@@ -183,7 +186,7 @@ globalStyle(`.${dataError} button:hover`, {
 });
 
 globalStyle(`.${dataError} button:focus-visible`, {
-  outline: `var(--focus-ring-width) solid ${vars.color.onSurface}`,
+  outline: `${appVars.focusRingWidth} solid ${vars.color.onSurface}`,
   outlineOffset: 2,
 });
 
@@ -229,7 +232,7 @@ const panelSheetOut = keyframes({
 
 export const panel = style({
   position: "absolute",
-  top: "calc(1.25rem + var(--control-height) + 0.625rem)",
+  top: `calc(1.25rem + ${appVars.controlHeight} + 0.625rem)`,
   right: "1.25rem",
   zIndex: 1245,
   width: "30rem",
@@ -282,10 +285,10 @@ export const panel = style({
      * it's paused, since a paused animation has no frame-to-frame changes
      * to repaint.
      */
-    [`screen and (min-width: ${MOBILE_BREAKPOINT_PX + 1}px)`]: {
+    [desktopMediaQuery]: {
       animationPlayState: "paused",
     },
-    [`screen and (max-width: ${MOBILE_BREAKPOINT_PX}px)`]: {
+    [mobileMediaQuery]: {
       top: "auto",
       right: 0,
       left: 0,
@@ -335,7 +338,7 @@ export const panel = style({
 
 globalStyle(`.${app}[data-entrance-ready="true"] .${panel}`, {
   "@media": {
-    [`screen and (min-width: ${MOBILE_BREAKPOINT_PX + 1}px)`]: {
+    [desktopMediaQuery]: {
       animationPlayState: "running",
     },
   },
@@ -343,7 +346,7 @@ globalStyle(`.${app}[data-entrance-ready="true"] .${panel}`, {
 
 globalStyle(`.${app}[data-sheet-entrance-ready="true"] .${panel}`, {
   "@media": {
-    [`screen and (max-width: ${MOBILE_BREAKPOINT_PX}px)`]: {
+    [mobileMediaQuery]: {
       animationPlayState: "running",
     },
   },
@@ -351,7 +354,7 @@ globalStyle(`.${app}[data-sheet-entrance-ready="true"] .${panel}`, {
 
 globalStyle(`.${panel}[data-panel-dragging="true"]`, {
   "@media": {
-    [`screen and (max-width: ${MOBILE_BREAKPOINT_PX}px)`]: {
+    [mobileMediaQuery]: {
       boxShadow: vars.elevation.shadow3,
       transition: "none",
     },
@@ -360,7 +363,7 @@ globalStyle(`.${panel}[data-panel-dragging="true"]`, {
 
 globalStyle(`.${panel}[data-panel-closing="true"]`, {
   "@media": {
-    [`screen and (max-width: ${MOBILE_BREAKPOINT_PX}px)`]: {
+    [mobileMediaQuery]: {
       animation: `${panelSheetOut} ${appVars.mobileLayout.panelRepositionDuration} ${vars.motion.easeLargeSurface} forwards`,
       pointerEvents: "none",
     },
@@ -369,7 +372,7 @@ globalStyle(`.${panel}[data-panel-closing="true"]`, {
 
 globalStyle(`.${panel}[data-panel-size="full"]`, {
   "@media": {
-    [`screen and (max-width: ${MOBILE_BREAKPOINT_PX}px)`]: {
+    [mobileMediaQuery]: {
       height: appVars.mobileLayout.sheetHeightFull,
     },
   },
@@ -378,7 +381,7 @@ globalStyle(`.${panel}[data-panel-size="full"]`, {
 export const sheetHandleButton = style({
   display: "none",
   "@media": {
-    [`screen and (max-width: ${MOBILE_BREAKPOINT_PX}px)`]: {
+    [mobileMediaQuery]: {
       display: "grid",
       placeItems: "center",
       width: "100%",
@@ -391,7 +394,7 @@ export const sheetHandleButton = style({
       touchAction: "none",
       selectors: {
         "&:focus-visible": {
-          outline: `var(--focus-ring-width) solid ${vars.color.onSurface}`,
+          outline: `${appVars.focusRingWidth} solid ${vars.color.onSurface}`,
           outlineOffset: 2,
         },
       },
@@ -434,10 +437,10 @@ export const panelViewport = style({
 export const sheetHandle = style({
   display: "none",
   "@media": {
-    [`screen and (max-width: ${MOBILE_BREAKPOINT_PX}px)`]: {
+    [mobileMediaQuery]: {
       display: "block",
-      width: "var(--drag-handle-width)",
-      height: "var(--drag-handle-height)",
+      width: appVars.dragHandle.width,
+      height: appVars.dragHandle.height,
       margin: "0 auto",
       borderRadius: vars.shape.cornerFull,
       background: vars.color.outlineVariant,
@@ -448,15 +451,15 @@ export const sheetHandle = style({
 
 globalStyle(`.${sheetHandleButton}[data-dragging="true"] .${sheetHandle}`, {
   "@media": {
-    [`screen and (max-width: ${MOBILE_BREAKPOINT_PX}px)`]: {
-      width: "var(--drag-handle-width-dragging)",
+    [mobileMediaQuery]: {
+      width: appVars.dragHandle.widthDragging,
     },
   },
 });
 
 globalStyle(`.${sheetHandleButton}[data-drag-direction="up"] .${sheetHandle}`, {
   "@media": {
-    [`screen and (max-width: ${MOBILE_BREAKPOINT_PX}px)`]: {
+    [mobileMediaQuery]: {
       background: `color-mix(in srgb, ${vars.color.primary} 38%, ${vars.color.outlineVariant})`,
     },
   },
@@ -466,7 +469,7 @@ globalStyle(
   `.${sheetHandleButton}[data-drag-direction="down"] .${sheetHandle}`,
   {
     "@media": {
-      [`screen and (max-width: ${MOBILE_BREAKPOINT_PX}px)`]: {
+      [mobileMediaQuery]: {
         background: `color-mix(in srgb, ${vars.color.onSurface} 20%, ${vars.color.outlineVariant})`,
       },
     },
@@ -507,7 +510,7 @@ export const panelTab = style({
       color: vars.color.onSurface,
     },
     "&:focus-visible": {
-      outline: `var(--focus-ring-width) solid ${vars.color.onSurface}`,
+      outline: `${appVars.focusRingWidth} solid ${vars.color.onSurface}`,
       outlineOffset: -2,
     },
   },
@@ -527,7 +530,7 @@ export const panelTrigger = style({
   right: "1.25rem",
   zIndex: 1250,
   "@media": {
-    [`screen and (max-width: ${MOBILE_BREAKPOINT_PX}px)`]: {
+    [mobileMediaQuery]: {
       top: "auto",
       right: appVars.mobileLayout.controlEdge,
       /**
@@ -582,8 +585,6 @@ globalStyle(`.${panelTrigger} svg`, {
 export const panelTriggerLabel = style({
   display: "inline",
 });
-
-const mobileMediaQuery = `screen and (max-width: ${MOBILE_BREAKPOINT_PX}px)`;
 
 globalStyle(
   `.${app}[data-panel-open="true"][data-panel-size="medium"] .${panelTrigger}, .${app}[data-panel-open="true"][data-panel-size="full"] .${panelTrigger}`,

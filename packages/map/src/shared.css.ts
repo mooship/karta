@@ -70,8 +70,10 @@ export const searchInput = style({
   color: vars.color.onSurface,
   font: "inherit",
   transition: `background-color ${vars.motion.durationShort} ${vars.motion.easeStandard}`,
-  ":focus": {
-    background: vars.color.surfaceContainerHigh,
+  selectors: {
+    "&:focus": {
+      background: vars.color.surfaceContainerHigh,
+    },
   },
   "::-webkit-search-cancel-button": {
     display: "none",

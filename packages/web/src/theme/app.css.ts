@@ -53,4 +53,18 @@ export const appVars = createGlobalThemeContract({
     panelRepositionDuration: "panel-reposition-duration",
   },
   floatingControlZIndex: "floating-control-z-index",
+  /**
+   * More names shared with `@karta/map`'s own bespoke token contract (see
+   * `DESIGN_TOKEN_CSS_VAR_DEFAULTS`, packages/map/src/constants/designTokenDefaults.ts)
+   * -- this app defines these too, so `.css.ts` files here get the same
+   * typed, fallback-free access `space`/`font`/`fontSize` already do,
+   * instead of hand-typing the raw custom property name.
+   */
+  controlHeight: "control-height",
+  focusRingWidth: "focus-ring-width",
+  dragHandle: {
+    width: "drag-handle-width",
+    widthDragging: "drag-handle-width-dragging",
+    height: "drag-handle-height",
+  },
 });
