@@ -3,23 +3,27 @@
  * used by `root.tsx`'s `meta()`, from a small self-contained HTML template.
  *
  * @remarks
- * Run with `npm run generate:og-image --workspace @karta/web` after changing
- * the brand copy/colours below. There's no image-generation library in the
+ * Run with `npm run generate:og-image --workspace @karta/web` after brand
+ * copy or colours change. There's no image-generation library in the
  * dependency tree (no `sharp`/`satori`/`resvg`), but `@playwright/test`'s
  * bundled Chromium already is — this reuses it as a one-shot HTML-to-PNG
  * renderer rather than adding a new dependency for the same job. Uses the
- * same self-hosted Inter/Martian Mono font files and M3 brand colours
- * (`SEED_COLOR_HEX` in `generateM3Theme.ts`) as the live app, so the card
- * matches what a visitor sees after clicking through.
+ * same self-hosted Inter/Martian Mono font files, `SITE_URL`, brand copy
+ * (`m.app_title()`/`m.meta_description()`), and M3 colour tokens already
+ * generated into `src/index.css` by `generateM3Theme.ts` as the live app,
+ * so the card can't drift from what a visitor sees after clicking through.
  */
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium } from "@playwright/test";
-
-const OG_IMAGE_WIDTH = 1200;
-const OG_IMAGE_HEIGHT = 630;
+import {
+  OG_IMAGE_HEIGHT,
+  OG_IMAGE_WIDTH,
+  SITE_URL,
+} from "../src/constants/siteConfig";
+import { m } from "../src/paraglide/messages.js";
 
 const INTER_FONT_PATH = fileURLToPath(
   import.meta.resolve(
@@ -34,11 +38,43 @@ const MARTIAN_MONO_FONT_PATH = fileURLToPath(
 const OUTPUT_PATH = fileURLToPath(
   new URL("../public/og-image.png", import.meta.url),
 );
+const INDEX_CSS_PATH = fileURLToPath(
+  new URL("../src/index.css", import.meta.url),
+);
 
-const TITLE = "Karta";
-const TAGLINE =
-  "Visualising how apartheid-era spatial planning still shapes commute times and access to jobs across Gauteng.";
-const URL_LABEL = "karta.timothybrits.co.za";
+const TITLE = m.app_title();
+const TAGLINE = m.meta_description();
+const URL_LABEL = SITE_URL.replace(/^https?:\/\//, "");
+
+/**
+ * Reads one `--md-sys-color-<role>` hex value out of `index.css`'s
+ * generated light-mode token block, so this template's colours track
+ * `generateM3Theme.ts`'s brand seed instead of duplicating hand-typed hex
+ * literals that would silently drift from it.
+ */
+function readM3LightColor(indexCss: string, role: string): string {
+  const startMarker =
+    "/* GENERATED M3 LIGHT TOKENS — see scripts/generateM3Theme.ts */";
+  const endMarker = "/* END GENERATED M3 LIGHT TOKENS */";
+  const start = indexCss.indexOf(startMarker);
+  const end = indexCss.indexOf(endMarker, start);
+  const block = indexCss.slice(start, end);
+  const match = block.match(
+    new RegExp(`--md-sys-color-${role}:\\s*(#[0-9a-fA-F]{3,8});`),
+  );
+  if (!match) {
+    throw new Error(
+      `Could not find --md-sys-color-${role} in index.css's generated M3 light tokens`,
+    );
+  }
+  return match[1];
+}
+
+const indexCss = readFileSync(INDEX_CSS_PATH, "utf8");
+const surfaceColor = readM3LightColor(indexCss, "surface");
+const primaryColor = readM3LightColor(indexCss, "primary");
+const onSurfaceColor = readM3LightColor(indexCss, "on-surface");
+const secondaryColor = readM3LightColor(indexCss, "secondary");
 
 const TEMPLATE = `<!doctype html>
 <html>
@@ -63,7 +99,7 @@ const TEMPLATE = `<!doctype html>
   body {
     width: ${OG_IMAGE_WIDTH}px;
     height: ${OG_IMAGE_HEIGHT}px;
-    background: #f4fbfa;
+    background: ${surfaceColor};
     font-family: "Inter Variable", sans-serif;
     position: relative;
     overflow: hidden;
@@ -75,7 +111,11 @@ const TEMPLATE = `<!doctype html>
     width: 640px;
     height: 640px;
     border-radius: 50%;
-    background: radial-gradient(circle at 35% 35%, #7fd7da, #00696d 70%);
+    background: radial-gradient(
+      circle at 35% 35%,
+      color-mix(in srgb, ${primaryColor} 55%, white),
+      ${primaryColor} 70%
+    );
     opacity: 0.9;
   }
   .content {
@@ -89,7 +129,7 @@ const TEMPLATE = `<!doctype html>
   .title {
     font-size: 108px;
     font-weight: 800;
-    color: #00696d;
+    color: ${primaryColor};
     letter-spacing: -0.02em;
     line-height: 1;
   }
@@ -99,7 +139,7 @@ const TEMPLATE = `<!doctype html>
     font-size: 34px;
     font-weight: 500;
     line-height: 1.35;
-    color: #161d1d;
+    color: ${onSurfaceColor};
   }
   .url {
     position: absolute;
@@ -108,7 +148,7 @@ const TEMPLATE = `<!doctype html>
     font-family: "Martian Mono Variable", monospace;
     font-size: 26px;
     font-weight: 500;
-    color: #4a6364;
+    color: ${secondaryColor};
   }
 </style>
 </head>

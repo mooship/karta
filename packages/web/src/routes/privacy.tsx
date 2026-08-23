@@ -1,4 +1,5 @@
 import type { LinksFunction, MetaFunction } from "react-router";
+import { buildPageMeta } from "../buildPageMeta";
 import {
   PRIVACY_POLICY_TITLE,
   PrivacyPolicy,
@@ -9,33 +10,25 @@ import { SITE_URL } from "../constants/siteConfig";
 const PRIVACY_POLICY_DESCRIPTION =
   "Karta's privacy policy: a static-content map with no accounts, no forms, and no server-side database of visitor data.";
 
+/** Canonical URL of this route, shared by its `meta` and `links` exports. */
+const PRIVACY_URL = `${SITE_URL}/privacy`;
+
 /**
  * React Router route module export: the `/privacy` route's `<title>`/`<meta>`
- * tags.
- * @remarks A route's `meta` export replaces its parent's entirely unless it
- *   re-includes them via `matches` — this pulls in the root route's Open
- *   Graph/Twitter/viewport tags rather than losing them, and overrides only
- *   `title` and `description` for this page rather than inheriting the
- *   root's Gauteng-map-specific ones.
+ * tags, via the same `buildPageMeta` the root route uses, so this page's
+ * Open Graph/Twitter/JSON-LD tags describe itself rather than inheriting
+ * the root route's Gauteng-map-specific ones.
  */
-export const meta: MetaFunction = ({ matches }) => {
-  const inheritedMeta = matches
-    .flatMap((match) => match.meta ?? [])
-    .filter(
-      (tag) =>
-        !("title" in tag) && !("name" in tag && tag.name === "description"),
-    );
-
-  return [
-    ...inheritedMeta,
-    { title: `${PRIVACY_POLICY_TITLE} — Karta` },
-    { name: "description", content: PRIVACY_POLICY_DESCRIPTION },
-  ];
-};
+export const meta: MetaFunction = () =>
+  buildPageMeta({
+    title: `${PRIVACY_POLICY_TITLE} — Karta`,
+    description: PRIVACY_POLICY_DESCRIPTION,
+    url: PRIVACY_URL,
+  });
 
 /** React Router route module export: the `/privacy` route's canonical `<link>`. */
 export const links: LinksFunction = () => [
-  { rel: "canonical", href: `${SITE_URL}/privacy` },
+  { rel: "canonical", href: PRIVACY_URL },
 ];
 
 /** React Router route module export: the `/privacy` route, rendering the site's privacy policy. */
