@@ -19,6 +19,7 @@
     "test:e2e:ui": "playwright test --ui",
     "playwright:install": "playwright install --with-deps chromium",
     "generate:theme": "tsx scripts/generateM3Theme.ts",
+    "generate:og-image": "tsx scripts/generateOgImage.ts",
     "messages:compile": "paraglide-js compile --project ./project.inlang --outdir ./src/paraglide --strategy cookie preferredLanguage baseLocale --emit-ts-declarations --no-emit-git-ignore --no-emit-prettier-ignore --no-emit-readme --is-server \"import.meta.env?.SSR ?? typeof window === 'undefined'\""
   },
   "devDependencies": {
