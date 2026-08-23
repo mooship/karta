@@ -5,7 +5,7 @@ import {
   SegmentedControl,
   type SegmentedControlOption,
 } from "../SegmentedControl/SegmentedControl";
-import styles from "./MeasurementControl.module.css";
+import * as styles from "./MeasurementControl.css";
 
 /** Which quantity a `MeasurementControl` is currently measuring. */
 export type MeasurementMode = "distance" | "area";
