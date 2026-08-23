@@ -1,5 +1,5 @@
 import type { ButtonHTMLAttributes } from "react";
-import styles from "./RetryButton.module.css";
+import * as styles from "./RetryButton.css";
 
 /** Props for {@link RetryButton}. */
 export interface RetryButtonProps

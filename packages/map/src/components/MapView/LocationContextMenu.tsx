@@ -7,7 +7,7 @@ import {
 } from "../../data/locationSearch";
 import { useAbortController } from "../../hooks/useAbortController";
 import { RetryButton } from "../RetryButton/RetryButton";
-import styles from "./LocationContextMenu.module.css";
+import * as styles from "./LocationContextMenu.css";
 
 /**
  * A reverse-geocode lookup's status: in flight, resolved (with a match or
