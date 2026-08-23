@@ -425,26 +425,19 @@
      * after it's already gone.
      *
      * This button is a `ControlButton`, whose own stylesheet
-     * (ControlButton.module.css's `.button`) declares its own `transition`
-     * shorthand at the same specificity as `.panelTrigger` here. CSS's
-     * `transition` shorthand doesn't merge across rules -- whichever
+     * (`ControlButton.css.ts`) declares its own `transition` shorthand.
+     * CSS's `transition` shorthand doesn't merge across rules -- whichever
      * declaration wins the cascade wins outright, silently dropping the
-     * other's transitioned properties -- so `.button`'s list was winning
-     * over this one and `bottom` was never actually transitioning at all
-     * (the trigger just snapped, exactly reproducing the bug the comment
-     * above describes). `button.panelTrigger` outranks the plain `.button`
-     * class selector regardless of stylesheet order, and reusing
-     * `.button`'s own `--control-button-transition` custom property (rather
-     * than hand-copying its value) keeps this rule in sync with
-     * `.button`'s hover/press-feedback transitions automatically, instead
-     * of silently going stale the next time that list changes.
+     * other's transitioned properties -- so setting `transition` again here
+     * would have one of the two lists silently overwrite the other
+     * regardless of which "should" win. `ControlButton` instead exposes a
+     * `--control-button-extra-transition` custom property (defaulting to
+     * `none`) that it appends to its own transition list, so this rule only
+     * ever sets that one custom property -- never `transition` itself --
+     * and there's no rule for it to lose a race against.
      */
-  }
-
-  button.panelTrigger {
-    transition:
-      var(--control-button-transition),
-      bottom var(--panel-reposition-duration) var(--motion-ease-large-surface);
+    --control-button-extra-transition: bottom var(--panel-reposition-duration)
+      var(--motion-ease-large-surface);
   }
 
   .panel {
