@@ -14,7 +14,7 @@ import {
 import { useAbortController } from "../../hooks/useAbortController";
 import { IconButton } from "../IconButton/IconButton";
 import { RetryButton } from "../RetryButton/RetryButton";
-import styles from "./LocationSearchControl.module.css";
+import * as styles from "./LocationSearchControl.css";
 
 /**
  * One selectable map feature's search-index entry: its id, accessible label,
