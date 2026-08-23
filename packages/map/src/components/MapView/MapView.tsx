@@ -63,7 +63,7 @@ import {
   LocationContextMenu,
   type LocationContextMenuLabels,
 } from "./LocationContextMenu";
-import styles from "./MapView.module.css";
+import * as styles from "./MapView.css";
 import { MeasurementLayer } from "./MeasurementLayer";
 import { VectorBasemapLayer } from "./VectorBasemapLayer";
 
@@ -614,7 +614,7 @@ function AreaLabelVisibility() {
   const secondaryLabelsClass = styles.showSecondaryLabels;
 
   useEffect(() => {
-    /* v8 ignore next 3 -- unreachable: CSS Modules always resolve these class names to real hashed strings in a real build */
+    /* v8 ignore next 3 -- unreachable: vanilla-extract's style() always resolves these class names to real hashed strings in a real build */
     if (!primaryLabelsClass || !secondaryLabelsClass) {
       return;
     }
