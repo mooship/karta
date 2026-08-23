@@ -6,7 +6,7 @@ import { useDismissableOverlay } from "../../hooks/useDismissableOverlay";
 import { BasemapToggle } from "../BasemapToggle/BasemapToggle";
 import { IconButton } from "../IconButton/IconButton";
 import { ThemeToggle } from "../ThemeToggle/ThemeToggle";
-import styles from "./SettingsMenu.module.css";
+import * as styles from "./SettingsMenu.css";
 
 interface SettingsMenuProps {
   basemap: Basemap;
