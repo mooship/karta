@@ -1,6 +1,6 @@
 import { THEME_STORAGE_KEY } from "../../constants/themeConfig";
 import { cookieName as LOCALE_COOKIE_NAME } from "../../paraglide/runtime.js";
-import styles from "./PrivacyPolicy.module.css";
+import * as styles from "./PrivacyPolicy.css";
 
 /** ISO date this policy's content was last reviewed for accuracy. */
 const LAST_UPDATED = "2026-08-18";
