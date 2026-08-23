@@ -4,7 +4,7 @@ import {
   matchesFeatureLabel,
   type SelectableFeatureSearchEntry,
 } from "../LocationSearchControl/LocationSearchControl";
-import styles from "./FeatureBrowser.module.css";
+import * as styles from "./FeatureBrowser.css";
 
 interface FeatureBrowserProps {
   /** Every selectable feature currently reported by `MapView` (via `onSelectableFeaturesChange`), across all its selectable layers. */
