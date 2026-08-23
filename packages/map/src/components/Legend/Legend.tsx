@@ -7,7 +7,7 @@ import {
 import { useResolvedDarkTheme } from "@karta/react";
 import { memo, useMemo } from "react";
 import { useDomain } from "../../context/DomainContext";
-import styles from "./Legend.module.css";
+import * as styles from "./Legend.css";
 
 /**
  * `Legend`'s own overridable copy, all defaulting to English. Factored out

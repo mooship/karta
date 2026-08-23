@@ -78,7 +78,7 @@ export const button = style({
   },
 });
 
-globalStyle(`${button} svg`, {
+globalStyle(`.${button} svg`, {
   width: "1.125rem",
   height: "1.125rem",
 });
