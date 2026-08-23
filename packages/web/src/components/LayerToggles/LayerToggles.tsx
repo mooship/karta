@@ -7,7 +7,7 @@ import { Download, FileSpreadsheet } from "lucide-react";
 import { Fragment, memo, type ReactNode, useMemo, useState } from "react";
 import { getLayer, getLayerGroups } from "../../layers/registry";
 import { m } from "../../paraglide/messages.js";
-import styles from "./LayerToggles.module.css";
+import * as styles from "./LayerToggles.css";
 
 /** Download filename for one of a layer's `dataSource` URLs, numbering entries past the first. */
 function downloadFileName(
