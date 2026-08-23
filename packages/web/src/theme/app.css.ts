@@ -30,4 +30,27 @@ export const appVars = createGlobalThemeContract({
     base: "font-size-base",
     lg: "font-size-lg",
   },
+  /**
+   * `.app`'s own mobile chrome geometry (App.css.ts) -- shares names with
+   * `@karta/map`'s `MOBILE_LAYOUT_CSS_VAR_DEFAULTS`/`Z_INDEX_CSS_VAR_DEFAULTS`
+   * (packages/map/src/constants/mobileLayoutTokens.ts, zIndexTokens.ts),
+   * since `MobileLegend`/`MeasurementControl`/`DesktopLegend` read these
+   * very properties to position themselves around this app's own search
+   * box, Explore sheet, and safe-area insets. This app declares the actual
+   * values (equal to those contracts' own defaults, by design -- see
+   * `App.css.ts`'s own note); this is purely a typed accessor for reading
+   * them back within `packages/web`'s own style files.
+   */
+  mobileLayout: {
+    safeTop: "mobile-safe-top",
+    controlEdge: "mobile-control-edge",
+    controlSize: "mobile-control-size",
+    controlGap: "mobile-control-gap",
+    controlBottom: "mobile-control-bottom",
+    sheetHeightMedium: "mobile-sheet-height-medium",
+    sheetHeightFull: "mobile-sheet-height-full",
+    searchClearance: "mobile-search-clearance",
+    panelRepositionDuration: "panel-reposition-duration",
+  },
+  floatingControlZIndex: "floating-control-z-index",
 });
