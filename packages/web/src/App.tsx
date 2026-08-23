@@ -27,12 +27,12 @@ import {
   useIsDesktopViewport,
   useThemePreference,
 } from "@karta/react";
+import { assignInlineVars } from "@vanilla-extract/dynamic";
 import clsx from "clsx";
 import type { Feature } from "geojson";
 import { Layers, X } from "lucide-react";
 import {
   type AnimationEvent,
-  type CSSProperties,
   type KeyboardEvent,
   lazy,
   memo,
@@ -45,7 +45,7 @@ import {
   useRef,
   useState,
 } from "react";
-import styles from "./App.module.css";
+import * as styles from "./App.css";
 import { DomainStory } from "./components/DomainStory/DomainStory";
 import { LanguageToggle } from "./components/LanguageToggle/LanguageToggle";
 import { LayerToggles } from "./components/LayerToggles/LayerToggles";
@@ -606,9 +606,9 @@ export function App() {
    * step with the sheet's own slide-out rather than a beat behind it.
    */
   const panelVisuallyOpen = panelOpen && !mobileSheetClosing;
-  const mobilePanelDragStyle = {
-    "--panel-drag-offset": `${mobileSheetDragOffset}px`,
-  } as CSSProperties;
+  const mobilePanelDragStyle = assignInlineVars({
+    [styles.panelDragOffset]: `${mobileSheetDragOffset}px`,
+  });
 
   const handleMapReady = useCallback(() => setMapReady(true), []);
 

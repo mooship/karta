@@ -1,6 +1,7 @@
 import { cloudflare } from "@cloudflare/vite-plugin";
 import { paraglideVitePlugin } from "@inlang/paraglide-js";
 import { reactRouter } from "@react-router/dev/vite";
+import { vanillaExtractPlugin } from "@vanilla-extract/vite-plugin";
 import react from "@vitejs/plugin-react";
 import { FontaineTransform } from "fontaine";
 import { defineConfig } from "vite";
@@ -10,54 +11,60 @@ export default defineConfig(({ mode }) => {
 
   return {
     cacheDir: "node_modules/.vite",
-    plugins: isTest
-      ? [react()]
-      : [
-          cloudflare({
-            viteEnvironment: { name: "ssr" },
-          }),
-          reactRouter(),
-          FontaineTransform.vite({
-            fallbacks: ["Arial", "sans-serif"],
-            resolvePath: (id) =>
-              new URL(`./node_modules/${id}`, import.meta.url),
-          }),
-          /**
-           * Recompiles `messages/{locale}.json` into `src/paraglide/` on
-           * every `dev`/`build` (and `react-router typegen`, which also
-           * spins up this Vite pipeline) — that checked-in output is the
-           * source of truth `vitest` reads from, so these options must stay
-           * identical to `messages:compile`'s CLI flags: a mismatch here
-           * regenerates the committed output without `.d.ts` files or with a
-           * stray `.gitignore` next time either runs.
-           *
-           * `strategy: ["cookie", "preferredLanguage", "baseLocale"]`: a
-           * first-time visitor is served in their browser's `Accept-Language`
-           * (`preferredLanguage`), falling back to English; a manual pick
-           * from `LanguageToggle` persists in a first-party `PARAGLIDE_LOCALE`
-           * cookie so the *next* request's SSR render, not just the client,
-           * reflects it — `localStorage` alone can't do that (it isn't sent
-           * with the request), which would otherwise render the wrong
-           * locale's text server-side and produce a real hydration mismatch
-           * on the very next load, not just a cosmetic flash. This is a
-           * single-purpose functional cookie storing a language code only —
-           * nothing identifying, nothing shared across origins — so it
-           * doesn't reintroduce the tracking this app otherwise avoids.
-           * Deliberately no `"url"` strategy: this app has one route, so
-           * locale-prefixed paths would add routing/redirect machinery
-           * (`paraglideMiddleware`'s URL localisation, `localizeHref`,
-           * `urlPatterns`) with nothing for it to disambiguate.
-           */
-          paraglideVitePlugin({
-            project: "./project.inlang",
-            outdir: "./src/paraglide",
-            strategy: ["cookie", "preferredLanguage", "baseLocale"],
-            emitTsDeclarations: true,
-            emitGitIgnore: false,
-            emitPrettierIgnore: false,
-            emitReadme: false,
-          }),
-        ],
+    plugins: [
+      // Must run before reactRouter()/cloudflare()/react(): .css.ts files
+      // need to resolve to plain CSS before route/SSR transformation or the
+      // JSX transform ever sees them.
+      vanillaExtractPlugin(),
+      ...(isTest
+        ? [react()]
+        : [
+            cloudflare({
+              viteEnvironment: { name: "ssr" },
+            }),
+            reactRouter(),
+            FontaineTransform.vite({
+              fallbacks: ["Arial", "sans-serif"],
+              resolvePath: (id) =>
+                new URL(`./node_modules/${id}`, import.meta.url),
+            }),
+            /**
+             * Recompiles `messages/{locale}.json` into `src/paraglide/` on
+             * every `dev`/`build` (and `react-router typegen`, which also
+             * spins up this Vite pipeline) — that checked-in output is the
+             * source of truth `vitest` reads from, so these options must stay
+             * identical to `messages:compile`'s CLI flags: a mismatch here
+             * regenerates the committed output without `.d.ts` files or with a
+             * stray `.gitignore` next time either runs.
+             *
+             * `strategy: ["cookie", "preferredLanguage", "baseLocale"]`: a
+             * first-time visitor is served in their browser's `Accept-Language`
+             * (`preferredLanguage`), falling back to English; a manual pick
+             * from `LanguageToggle` persists in a first-party `PARAGLIDE_LOCALE`
+             * cookie so the *next* request's SSR render, not just the client,
+             * reflects it — `localStorage` alone can't do that (it isn't sent
+             * with the request), which would otherwise render the wrong
+             * locale's text server-side and produce a real hydration mismatch
+             * on the very next load, not just a cosmetic flash. This is a
+             * single-purpose functional cookie storing a language code only —
+             * nothing identifying, nothing shared across origins — so it
+             * doesn't reintroduce the tracking this app otherwise avoids.
+             * Deliberately no `"url"` strategy: this app has one route, so
+             * locale-prefixed paths would add routing/redirect machinery
+             * (`paraglideMiddleware`'s URL localisation, `localizeHref`,
+             * `urlPatterns`) with nothing for it to disambiguate.
+             */
+            paraglideVitePlugin({
+              project: "./project.inlang",
+              outdir: "./src/paraglide",
+              strategy: ["cookie", "preferredLanguage", "baseLocale"],
+              emitTsDeclarations: true,
+              emitGitIgnore: false,
+              emitPrettierIgnore: false,
+              emitReadme: false,
+            }),
+          ]),
+    ],
     build: {
       assetsInlineLimit: 0,
       cssCodeSplit: true,

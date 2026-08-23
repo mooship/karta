@@ -1,5 +1,5 @@
 import { m } from "../../paraglide/messages.js";
-import styles from "./PrivacyLink.module.css";
+import * as styles from "./PrivacyLink.css";
 
 /**
  * A plain link to the site's `/privacy` page, rendered inside

@@ -18,7 +18,7 @@ import { THEME_COLOR, THEME_STORAGE_KEY } from "./constants/themeConfig";
 import "./index.css";
 import { m } from "./paraglide/messages.js";
 import { getLocale, getTextDirection } from "./paraglide/runtime.js";
-import styles from "./root.module.css";
+import * as styles from "./root.css";
 
 /**
  * Pre-hydration theme-bootstrap script: reads the stored theme preference

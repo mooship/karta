@@ -1,6 +1,6 @@
 import { memo } from "react";
 import { Legend, type LegendLabels } from "../Legend/Legend";
-import styles from "./DesktopLegend.module.css";
+import * as styles from "./DesktopLegend.css";
 
 interface DesktopLegendProps {
   visibleLayerIds: string[];

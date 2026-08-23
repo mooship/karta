@@ -1,5 +1,5 @@
 import type { DomainStory as DomainStoryContent } from "@karta/core";
-import styles from "./DomainStory.module.css";
+import * as styles from "./DomainStory.css";
 
 interface DomainStoryProps {
   story: DomainStoryContent;
