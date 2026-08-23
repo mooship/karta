@@ -13,11 +13,13 @@ export const button = style({
   fontSize: designTokens.fontSizeSm,
   cursor: "pointer",
   transition: `background-color ${vars.motion.durationShort} ${vars.motion.easeStandard}`,
-  ":hover": {
-    background: vars.state.hover,
-  },
-  ":focus-visible": {
-    outline: `${designTokens.focusRingWidth} solid ${vars.color.onSurface}`,
-    outlineOffset: 2,
+  selectors: {
+    "&:hover": {
+      background: vars.state.hover,
+    },
+    "&:focus-visible": {
+      outline: `${designTokens.focusRingWidth} solid ${vars.color.onSurface}`,
+      outlineOffset: 2,
+    },
   },
 });

@@ -1,18 +1,8 @@
-import { readdirSync, readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
+import { findVanillaExtractFiles } from "../testUtils/findVanillaExtractFiles";
 import { MOBILE_LAYOUT_CSS_VAR_DEFAULTS } from "./mobileLayoutTokens";
-
-/** Every `.css.ts` (vanilla-extract) file in this package. */
-function findVanillaExtractFiles(): string[] {
-  const srcDir = path.join(__dirname, "..");
-  return readdirSync(srcDir, { recursive: true })
-    .filter(
-      (entry): entry is string =>
-        typeof entry === "string" && entry.endsWith(".css.ts"),
-    )
-    .map((entry) => path.join(srcDir, entry));
-}
 
 describe("MOBILE_LAYOUT_CSS_VAR_DEFAULTS", () => {
   it("names every entry as a CSS custom property", () => {

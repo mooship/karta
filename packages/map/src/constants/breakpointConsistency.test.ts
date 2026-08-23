@@ -1,16 +1,12 @@
-import { readdirSync, readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
+import { findVanillaExtractFiles } from "../testUtils/findVanillaExtractFiles";
 
 describe("mobile breakpoint consistency", () => {
   it("never hardcodes a pixel breakpoint literal in a .css.ts file", () => {
     const srcDir = path.join(__dirname, "..");
-    const vanillaExtractFiles = readdirSync(srcDir, { recursive: true })
-      .filter(
-        (entry): entry is string =>
-          typeof entry === "string" && entry.endsWith(".css.ts"),
-      )
-      .map((entry) => path.join(srcDir, entry));
+    const vanillaExtractFiles = findVanillaExtractFiles();
 
     expect(vanillaExtractFiles.length).toBeGreaterThan(0);
 

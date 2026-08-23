@@ -21,18 +21,29 @@ import { describe, expect, it } from "vitest";
  *   `MOBILE_BREAKPOINT_PX` directly (see the test below) rather than a
  *   literal, and so should never show up in this scan at all.
  */
+/** Every `.css.ts` (vanilla-extract) file under this app's own `src`. */
+function findVanillaExtractFiles(): string[] {
+  const srcDir = path.join(__dirname);
+  return readdirSync(srcDir, { recursive: true })
+    .filter(
+      (entry): entry is string =>
+        typeof entry === "string" && entry.endsWith(".css.ts"),
+    )
+    .map((entry) => path.join(srcDir, entry));
+}
+
 function findMobileBreakpointDeclarations(): Array<{
   file: string;
   breakpointPx: number;
 }> {
   const srcDir = path.join(__dirname);
-  const styleFiles = readdirSync(srcDir, { recursive: true })
+  const indexCssFiles = readdirSync(srcDir, { recursive: true })
     .filter(
       (entry): entry is string =>
-        typeof entry === "string" &&
-        (entry.endsWith("index.css") || entry.endsWith(".css.ts")),
+        typeof entry === "string" && entry.endsWith("index.css"),
     )
     .map((entry) => path.join(srcDir, entry));
+  const styleFiles = [...indexCssFiles, ...findVanillaExtractFiles()];
 
   const declarations: Array<{ file: string; breakpointPx: number }> = [];
   for (const file of styleFiles) {
@@ -59,14 +70,8 @@ describe("mobile breakpoint consistency", () => {
 
   it("never hardcodes a pixel breakpoint literal in a .css.ts file", () => {
     const srcDir = path.join(__dirname);
-    const vanillaExtractFiles = readdirSync(srcDir, { recursive: true })
-      .filter(
-        (entry): entry is string =>
-          typeof entry === "string" && entry.endsWith(".css.ts"),
-      )
-      .map((entry) => path.join(srcDir, entry));
 
-    for (const file of vanillaExtractFiles) {
+    for (const file of findVanillaExtractFiles()) {
       const source = readFileSync(file, "utf8");
       expect(
         source,
