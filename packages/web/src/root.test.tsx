@@ -53,6 +53,12 @@ describe("root links", () => {
     expect(rels).toContain("preconnect");
   });
 
+  it("leaves the canonical link to each leaf route, since a shared one here would apply to every page", () => {
+    const rels = links().map((link) => ("rel" in link ? link.rel : ""));
+
+    expect(rels).not.toContain("canonical");
+  });
+
   it("leaves stylesheets to the bundler's own route-module CSS links", () => {
     expect(
       links().filter((link) => "rel" in link && link.rel === "stylesheet"),
@@ -64,7 +70,7 @@ describe("root meta", () => {
   it("sets the page title, description, and viewport", () => {
     const tags = meta({} as never);
 
-    expect(tags).toContainEqual({ title: "Karta" });
+    expect(tags).toContainEqual({ title: "Karta: Gauteng spatial legacy map" });
     expect(tags).toContainEqual(
       expect.objectContaining({ name: "description" }),
     );
@@ -74,6 +80,65 @@ describe("root meta", () => {
         content: "width=device-width, initial-scale=1.0, viewport-fit=cover",
       }),
     );
+  });
+
+  it("sets Open Graph and Twitter card tags pointing at an absolute, sized og-image", () => {
+    const tags = meta({} as never);
+
+    expect(tags).toContainEqual({ property: "og:type", content: "website" });
+    expect(tags).toContainEqual(
+      expect.objectContaining({ property: "og:title" }),
+    );
+    expect(tags).toContainEqual(
+      expect.objectContaining({ property: "og:description" }),
+    );
+    expect(tags).toContainEqual({
+      property: "og:url",
+      content: "https://karta.timothybrits.co.za",
+    });
+    expect(tags).toContainEqual({
+      property: "og:image",
+      content: "https://karta.timothybrits.co.za/og-image.png",
+    });
+    expect(tags).toContainEqual({
+      property: "og:image:width",
+      content: "1200",
+    });
+    expect(tags).toContainEqual({
+      property: "og:image:height",
+      content: "630",
+    });
+    expect(tags).toContainEqual({
+      name: "twitter:card",
+      content: "summary_large_image",
+    });
+    expect(tags).toContainEqual(
+      expect.objectContaining({ name: "twitter:image" }),
+    );
+  });
+
+  it("declares an og:locale for the current locale, and an alternate for every other configured locale", () => {
+    const tags = meta({} as never);
+
+    expect(tags).toContainEqual({ property: "og:locale", content: "en_ZA" });
+    expect(tags).toContainEqual({
+      property: "og:locale:alternate",
+      content: "af_ZA",
+    });
+  });
+
+  it("emits Dataset JSON-LD structured data describing the site", () => {
+    const tags = meta({} as never);
+    const jsonLdTag = tags.find((tag) => "script:ld+json" in tag) as
+      | { "script:ld+json": Record<string, unknown> }
+      | undefined;
+
+    expect(jsonLdTag).toBeDefined();
+    expect(jsonLdTag?.["script:ld+json"]).toMatchObject({
+      "@context": "https://schema.org",
+      "@type": "Dataset",
+      url: "https://karta.timothybrits.co.za",
+    });
   });
 });
 
