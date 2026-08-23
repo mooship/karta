@@ -5,18 +5,21 @@ import { describe, expect, it } from "vitest";
 
 /**
  * Every `@media (max-width: ...)` breakpoint declared as a literal pixel
- * value across this app's own `.module.css`/`index.css`/`.css.ts` files,
- * alongside the file it came from.
- * @remarks CSS custom properties can't be referenced inside a media query
- *   condition, so `.module.css` files and `index.css` (out of scope for the
- *   vanilla-extract migration — it stays plain CSS) stay literal pixel
- *   values rather than `var(...)` references to `MOBILE_BREAKPOINT_PX`
- *   (App.tsx's own single source of truth, re-exported from `@karta/react`)
- *   — this scan is what actually guards against one of them silently
- *   drifting from it instead of a code comment alone. A `.css.ts` file has
- *   no such excuse — it's real TypeScript, so it should build its
- *   breakpoint from `MOBILE_BREAKPOINT_PX` directly (see the test below)
- *   rather than a literal, and so should never show up in this scan at all.
+ * value across this app's own `index.css`/`.css.ts` files, alongside the
+ * file it came from.
+ * @remarks `packages/web` has zero `.module.css` files left (the CSS
+ *   Modules -> vanilla-extract migration is complete) -- this scan now
+ *   covers only `index.css` (out of scope for that migration; it stays
+ *   plain CSS) and `.css.ts` files. CSS custom properties can't be
+ *   referenced inside a media query condition, so `index.css` stays
+ *   literal pixel values rather than `var(...)` references to
+ *   `MOBILE_BREAKPOINT_PX` (App.tsx's own single source of truth,
+ *   re-exported from `@karta/react`) — this scan is what actually guards
+ *   against it silently drifting from that constant instead of a code
+ *   comment alone. A `.css.ts` file has no such excuse — it's real
+ *   TypeScript, so it should build its breakpoint from
+ *   `MOBILE_BREAKPOINT_PX` directly (see the test below) rather than a
+ *   literal, and so should never show up in this scan at all.
  */
 function findMobileBreakpointDeclarations(): Array<{
   file: string;
@@ -27,9 +30,7 @@ function findMobileBreakpointDeclarations(): Array<{
     .filter(
       (entry): entry is string =>
         typeof entry === "string" &&
-        (entry.endsWith(".module.css") ||
-          entry.endsWith("index.css") ||
-          entry.endsWith(".css.ts")),
+        (entry.endsWith("index.css") || entry.endsWith(".css.ts")),
     )
     .map((entry) => path.join(srcDir, entry));
 

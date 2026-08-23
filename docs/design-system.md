@@ -2,13 +2,14 @@
 
 Karta adopts Google's Material 3 (M3) design language directly, rather than
 an app-owned system with its own vocabulary. Every component is Karta's own
-plain React + CSS Modules, styled entirely from M3 tokens — colour roles,
-shape scale, elevation, state layers — so the visual result is faithfully
-Material 3 without depending on Google's own component library (see
-"Component library" below for why). Tokens use Material's own naming
+plain React, styled with vanilla-extract entirely from M3 tokens — colour
+roles, shape scale, elevation, state layers — so the visual result is
+faithfully Material 3 without depending on Google's own component library
+(see "Component library" below for why). Tokens use Material's own naming
 (`--md-sys-color-primary`, `--md-sys-shape-corner-medium`, …) rather than
 app-invented names, so the system stays legible to anyone who already
-knows Material 3.
+knows Material 3. See "Styling implementation" below for how those tokens
+reach component style files.
 
 ## Design direction
 
@@ -133,8 +134,8 @@ text this dense map-chrome app never shows).
 
 ## Component library
 
-Karta implements Material 3 components itself, as plain React + CSS
-Modules against the tokens above, rather than depending on
+Karta implements Material 3 components itself, as plain React styled with
+vanilla-extract against the tokens above, rather than depending on
 `@material/web` (Google's own Shadow DOM custom element library). That
 was tried first and reverted: `@material/web`'s components are Lit-based
 custom elements, and getting them safe under this app's Cloudflare
@@ -151,6 +152,49 @@ mechanism. A plain React implementation gets the same HCT-generated
 colours, same shape scale, same elevation formula, with none of it:
 normal SSR, normal hydration, normal `getByRole` tests, no extra runtime
 weight.
+
+## Styling implementation
+
+Component styles are written in [vanilla-extract](https://vanilla-extract.style/)
+(`*.css.ts`, colocated beside each component, replacing an earlier CSS
+Modules approach) — a zero-runtime, type-safe CSS-in-JS library that
+compiles to static CSS at build time, chosen specifically because it stays
+compatible with the SSR requirement that ruled out `@material/web` above.
+
+**`@karta/theme`** is a small, dependency-free SDK package holding a typed,
+compile-time-checked view onto the M3 tokens: `vars` (colour/shape/
+elevation/state/motion) and `mapLabelVars` (the app-specific composite map
+label tokens), both built with vanilla-extract's `createGlobalThemeContract`.
+That API declares no values and emits no CSS — `packages/web/src/index.css`
+stays the single source of truth for every token's actual value and for
+light/dark switching (the dual `@media (prefers-color-scheme: dark)` +
+`:root[data-theme="dark"]` mechanism described above), exactly as before
+this migration. The contract exists purely so a `.css.ts` file can write
+`vars.color.primary` instead of hand-typing `"var(--md-sys-color-primary)"`,
+where a typo fails silently rather than at compile time.
+
+This produces a two-tier token model:
+
+- **Fallback-free** (`@karta/theme`'s `vars`/`mapLabelVars`, and
+  `packages/web/src/theme/app.css.ts`'s `appVars` for this app's own local
+  tokens — spacing, font sizes, mobile layout geometry): an unconditional
+  dependency with no sensible generic default, used by whichever package
+  actually defines the values (this app, for both).
+- **Fallback-preserving** (`packages/map/src/theme/mapTokens.ts`'s
+  `designTokens`/`zIndexTokens`/`mobileLayoutTokens`): `@karta/map`'s own
+  bespoke typography/spacing/control-sizing/z-index/mobile-layout contract,
+  each entry built as `var(name, documentedDefault)` so a host that hasn't
+  adopted Karta's tokens still gets a working, if generic, `@karta/map` UI.
+  Wrapping the pairing in one helper function means a `.css.ts` file can
+  never reference one of these tokens and forget its fallback.
+
+**SDK integration requirement**: `@karta/map` and `@karta/theme` ship
+source with no build step, so `@vanilla-extract/css` is a real runtime
+`dependencies` entry of both packages (and of `@karta/web`) — any host
+application embedding `@karta/map` components must register
+`@vanilla-extract/vite-plugin`'s `vanillaExtractPlugin()` in its own Vite
+config for their styles to resolve at all. This is a breaking integration
+change from the CSS-Modules-based version of the SDK.
 
 ## Accessibility policy
 
@@ -171,7 +215,8 @@ weight.
 	TOKENS` blocks; change the seed colour and re-run `generate:theme`.
 - No `@material/web` (or any other Shadow DOM custom element component
 	library) dependency — see "Component library" above. Build new controls
-	as plain React + CSS Modules against the M3 tokens.
+	as plain React styled with vanilla-extract against the M3 tokens (see
+	"Styling implementation" above).
 - Avoid visual novelty that competes with evidence layers.
 
 ## Success criteria
