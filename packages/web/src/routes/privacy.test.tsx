@@ -13,42 +13,45 @@ describe("privacy route links", () => {
 });
 
 describe("privacy route meta", () => {
-  it("overrides the title and description rather than inheriting the root's", () => {
-    const tags = meta({
-      matches: [
-        {
-          meta: [
-            { title: "Karta: Gauteng spatial legacy map" },
-            { name: "description", content: "root description" },
-            { property: "og:type", content: "website" },
-          ],
-        },
-      ],
-    } as never);
+  it("sets its own title and description rather than the root route's", () => {
+    const tags = meta({} as never);
 
     expect(tags).toContainEqual({ title: "Privacy policy — Karta" });
     expect(tags).toContainEqual(
-      expect.objectContaining({ name: "description" }),
+      expect.objectContaining({
+        name: "description",
+        content: expect.stringContaining("privacy policy"),
+      }),
     );
-    expect(tags.filter((tag) => "title" in tag)).toHaveLength(1);
-    expect(
-      tags.filter((tag) => "name" in tag && tag.name === "description"),
-    ).toHaveLength(1);
   });
 
-  it("still carries over unrelated root meta, like Open Graph tags", () => {
-    const tags = meta({
-      matches: [
-        {
-          meta: [
-            { title: "Karta: Gauteng spatial legacy map" },
-            { name: "description", content: "root description" },
-            { property: "og:type", content: "website" },
-          ],
-        },
-      ],
-    } as never);
+  it("derives its Open Graph/JSON-LD tags from its own URL and title, not the root route's", () => {
+    const tags = meta({} as never);
+
+    expect(tags).toContainEqual({
+      property: "og:url",
+      content: "https://karta.timothybrits.co.za/privacy",
+    });
+    expect(tags).toContainEqual({
+      property: "og:title",
+      content: "Privacy policy — Karta",
+    });
+
+    const jsonLdTag = tags.find((tag) => "script:ld+json" in tag) as
+      | { "script:ld+json": Record<string, unknown> }
+      | undefined;
+    expect(jsonLdTag?.["script:ld+json"]).toMatchObject({
+      name: "Privacy policy — Karta",
+      url: "https://karta.timothybrits.co.za/privacy",
+    });
+  });
+
+  it("still carries the site-wide Open Graph tags shared with every route", () => {
+    const tags = meta({} as never);
 
     expect(tags).toContainEqual({ property: "og:type", content: "website" });
+    expect(tags).toContainEqual(
+      expect.objectContaining({ name: "twitter:card" }),
+    );
   });
 });
