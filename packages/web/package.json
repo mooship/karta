@@ -50,13 +50,13 @@
     "vitest": "^4.1.10"
   },
   "dependencies": {
-    "@karta/app": "^1.0.0",
+    "@karta/app": "file:../app",
     "@vanilla-extract/css": "^1.21.2",
     "@vanilla-extract/dynamic": "^2.1.5",
-    "@karta/core": "^1.0.0",
-    "@karta/map": "^1.0.0",
-    "@karta/react": "^1.0.0",
-    "@karta/theme": "^1.0.0",
+    "@karta/core": "file:../core",
+    "@karta/map": "file:../map",
+    "@karta/react": "file:../react",
+    "@karta/theme": "file:../theme",
     "clsx": "^2.1.1",
     "leaflet": "^1.9.4",
     "lucide-react": "^1.32.0",
