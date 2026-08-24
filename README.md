@@ -7,11 +7,15 @@
 ## Documentation
 
 - [`docs/building-a-domain.md`](docs/building-a-domain.md) — how to build a new domain on the SDK, from scratch, using a second illustrative example
+- [`docs/adding-a-region.md`](docs/adding-a-region.md) — how to extend the pipeline-backed `gauteng-spatial-legacy` shape to a new geography
+- [`docs/adding-a-locale.md`](docs/adding-a-locale.md) — how to add a new UI language to `packages/web`
+- [`docs/releasing.md`](docs/releasing.md) — how the SDK packages are versioned and released
 - [`docs/domains/gauteng-spatial-legacy.md`](docs/domains/gauteng-spatial-legacy.md) — the reference implementation's domain, scope, and per-metro area classification
 - [`data-pipeline/README.md`](data-pipeline/README.md) — how to (re-)run the data pipeline
 - [`packages/core/README.md`](packages/core/README.md) — `@karta/core`, the domain-agnostic layer model and geodata utilities
 - [`packages/map/README.md`](packages/map/README.md) — `@karta/map`, generic map rendering components and UI primitives
 - [`packages/react/README.md`](packages/react/README.md) — `@karta/react`, generic React hooks (dark-mode detection, theme preference)
+- [`packages/theme/README.md`](packages/theme/README.md) — `@karta/theme`, the typed Material 3 design-token contract
 - [`packages/app/README.md`](packages/app/README.md) — `@karta/app`, the Gauteng-specific domain data and constants
 
 ## Stack
