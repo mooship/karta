@@ -40,9 +40,11 @@ npm run display   # legacy helper: rebuilds compact display files for per-metro 
 See [`data-pipeline/README.md`](data-pipeline/README.md) before running the full
 pipeline — it calls public third-party APIs.
 
-A lefthook pre-commit hook runs Biome on staged files and the full Vitest suite,
-so expect both on every commit. CI runs lint, typecheck, test, and build on every
-pull request, and Playwright end-to-end tests run in a dedicated workflow.
+A lefthook pre-commit hook runs Biome on staged files, dependency-cruiser
+(architecture boundaries between packages), and the full Vitest suite, so
+expect all three on every commit. CI runs lint, typecheck, test, and build on
+every pull request, and Playwright end-to-end tests run in a dedicated
+workflow.
 
 ## How the project is put together
 

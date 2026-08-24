@@ -3,5 +3,7 @@ pre-commit:
     biome:
       run: npx biome check --write --no-errors-on-unmatched {staged_files}
       stage_fixed: true
+    depcruise:
+      run: npm run depcruise
     vitest:
       run: npm run test
