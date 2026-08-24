@@ -22,6 +22,7 @@
     "@karta/theme": "file:../theme",
     "@vanilla-extract/css": "^1.21.2",
     "@vanilla-extract/dynamic": "^2.1.5",
+    "clsx": "^2.1.1",
     "leaflet": "^1.9.4",
     "lucide-react": "^1.32.0",
     "maplibre-gl": "^6.4.1",
