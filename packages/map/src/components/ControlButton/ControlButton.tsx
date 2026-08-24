@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { type ButtonHTMLAttributes, forwardRef, type ReactNode } from "react";
 import * as styles from "./ControlButton.css";
 
@@ -35,15 +36,11 @@ export const ControlButton = forwardRef<HTMLButtonElement, ControlButtonProps>(
     },
     ref,
   ) {
-    const resolvedClassName = className
-      ? `${styles.button} ${className}`
-      : styles.button;
-
     return (
       <button
         ref={ref}
         type={type}
-        className={resolvedClassName}
+        className={clsx(styles.button, className)}
         data-shape={shape}
         data-variant={variant}
         aria-label={label}
