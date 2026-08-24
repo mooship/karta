@@ -58,6 +58,10 @@ map centre/zoom), add a bounding box to `METRO_BBOX` in
 methodology). `run.ts` loops over the region's `METROS` automatically and
 merges them into that region's output.
 
+This is for adding a metro to an existing region (e.g. another Gauteng
+municipality). For a wholly new region — a different province or country —
+see [`docs/adding-a-region.md`](../docs/adding-a-region.md).
+
 ## Adding a new transit operator
 
 Follow `src/adapters/gautrain.ts`, `src/adapters/aReYeng.ts`, or
