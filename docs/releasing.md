@@ -31,7 +31,19 @@ for each, and for a short summary — then writes a Markdown file to
 `packages/app`/`packages/web`, docs, tests, tooling, or CI doesn't need one.
 
 `npx changeset status --since=main` reports what's changed without a
-changeset yet, if you want to check before opening a PR.
+changeset yet, if you want to check before opening a PR. It's read-only —
+use it, not `npx changeset version`, to sanity-check a changeset.
+
+**Never run `npx changeset version` or `npx changeset publish` by hand, on
+any branch.** Both are destructive to the thing you're trying to commit:
+`version` consumes and deletes every pending `.changeset/*.md` file while
+bumping `package.json`/writing the changelog, and `publish` tags and
+releases whatever `version` already produced. They're `release.yml`'s job,
+triggered only by a push to `main` after a Version Packages PR merges — not
+something a contributor, or an agent, runs locally to "check the version
+bump looks right." If you want to see what a changeset will do, read its
+Markdown file, or read the diff of the open Version Packages PR once one
+exists.
 
 ## 2. Merge to `main`
 
