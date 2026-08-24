@@ -10,6 +10,7 @@ import {
   useLatestRef,
   useResolvedDarkTheme,
 } from "@karta/react";
+import clsx from "clsx";
 import type { Feature, FeatureCollection } from "geojson";
 import {
   circleMarker,
@@ -769,12 +770,13 @@ function bindAreaBoundaryLabel(feature: Feature, layer: Layer) {
     permanent: true,
     direction: "center",
     ...(offset ? { offset: offset as [number, number] } : {}),
-    className:
-      labelPriority === "secondary"
-        ? `${styles.areaLabel} ${styles.areaLabelSecondary}`
-        : isMajorPrimaryLabel
-          ? `${styles.areaLabel} ${styles.areaLabelMajor}`
-          : `${styles.areaLabel} ${styles.areaLabelPrimary}`,
+    className: clsx(styles.areaLabel, {
+      [styles.areaLabelSecondary]: labelPriority === "secondary",
+      [styles.areaLabelMajor]:
+        labelPriority !== "secondary" && isMajorPrimaryLabel,
+      [styles.areaLabelPrimary]:
+        labelPriority !== "secondary" && !isMajorPrimaryLabel,
+    }),
   });
 }
 

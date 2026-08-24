@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import type { ButtonHTMLAttributes } from "react";
 import * as styles from "./RetryButton.css";
 
@@ -22,11 +23,7 @@ export function RetryButton({
   ...props
 }: RetryButtonProps) {
   return (
-    <button
-      type="button"
-      className={className ? `${styles.button} ${className}` : styles.button}
-      {...props}
-    >
+    <button type="button" className={clsx(styles.button, className)} {...props}>
       {label}
     </button>
   );
