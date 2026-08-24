@@ -38,7 +38,7 @@ npm run run       # full pipeline: fetch boundaries/transit, OSRM routing, join,
 npm run display   # legacy helper: rebuilds compact display files for per-metro source directories when present
 ```
 
-Pre-commit (lefthook) runs biome (auto-fix staged files) and the full vitest suite — expect both to run on every commit.
+Pre-commit (lefthook) runs biome (auto-fix staged files), dependency-cruiser (`npm run depcruise`), and the full vitest suite — expect all three to run on every commit.
 
 ## Architecture
 
