@@ -17,9 +17,9 @@
   },
   "dependencies": {
     "@maplibre/maplibre-gl-leaflet": "^0.1.4",
-    "@karta/core": "^1.0.0",
-    "@karta/react": "^1.0.0",
-    "@karta/theme": "^1.0.0",
+    "@karta/core": "file:../core",
+    "@karta/react": "file:../react",
+    "@karta/theme": "file:../theme",
     "@vanilla-extract/css": "^1.21.2",
     "@vanilla-extract/dynamic": "^2.1.5",
     "clsx": "^2.1.1",

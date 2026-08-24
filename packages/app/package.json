@@ -12,7 +12,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@karta/core": "^1.0.0"
+    "@karta/core": "file:../core"
   },
   "devDependencies": {
     "@types/geojson": "^7946.0.14"
