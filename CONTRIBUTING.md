@@ -17,10 +17,10 @@ participating, you agree to uphold those standards.
 
 ```bash
 npm install
-npm run test        # Vitest across all workspaces
+npm run test        # Vitest across the npm workspaces under packages/*, plus data-pipeline
 npm run test:coverage # same scope, with a coverage report
-npm run typecheck   # tsc --noEmit for @karta/core, @karta/app, @karta/map, @karta/react + web build + data-pipeline typecheck
-npm run lint        # biome check .
+npm run typecheck   # tsc --noEmit for @karta/core, @karta/app, @karta/theme, @karta/map, @karta/react + web build + data-pipeline typecheck
+npm run lint        # biome check . && dependency-cruiser (architecture boundaries between packages, see .dependency-cruiser.cjs)
 npm run format      # biome format --write .
 npm run dev --workspace @karta/web
 ```
@@ -52,19 +52,25 @@ fetches those static files at runtime. `packages/app` holds the Gauteng-specific
 types and constants both ends agree on, built on the domain-agnostic model in
 `packages/core`. There are no runtime API calls.
 
-The codebase is split into five packages: `packages/core` (domain-agnostic
+The codebase is split into six packages: `packages/core` (domain-agnostic
 layer model, Leaflet config factory, registry factory, geodata utils),
 `packages/map` (generic map rendering components and UI primitives, built on
-`packages/core`), `packages/react` (generic React hooks — dark-mode
-detection, theme preference), `packages/app` (Gauteng-specific domain data
-and constants, built on `packages/core`), and `packages/web` (the SSR app
-that wires the other four together for the published `gauteng-spatial-legacy`
-domain).
+`packages/core`, `packages/react`, and `packages/theme`), `packages/react`
+(generic React hooks — dark-mode detection, theme preference),
+`packages/theme` (a typed, compile-time-checked view onto the Material 3
+design tokens), `packages/app` (Gauteng-specific domain data and constants,
+built on `packages/core`), and `packages/web` (the SSR app that wires the
+other five together for the published `gauteng-spatial-legacy` domain).
+`.dependency-cruiser.cjs` (run via `npm run depcruise`, part of `npm run lint`)
+enforces that dependency direction mechanically — see CLAUDE.md's SOLID
+convention.
 
 Two consequences worth knowing before you start:
 
 - Adding a transit layer usually means one new adapter in
-  `data-pipeline/src/adapters/`, one entry in `packages/web/src/layers/registry.ts`,
+  `data-pipeline/src/adapters/`, wired into a `PipelineSource` entry in that
+  region's config (e.g. `data-pipeline/src/regions/gautengPipelineConfig.ts`),
+  one new `Layer` entry in `packages/app/src/domains/gauteng-spatial-legacy/layers.ts`,
   and a pipeline re-run. Map rendering code should not need edits.
 - Any new field added to GeoJSON properties must be optional or defaulted in the
   Zod schemas, because a CDN or browser may still be serving the previous payload

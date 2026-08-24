@@ -63,8 +63,12 @@ merges them into that region's output.
 Follow `src/adapters/gautrain.ts`, `src/adapters/aReYeng.ts`, or
 `src/adapters/reaVaya.ts` as a template: one adapter file with a
 `fetchX(bbox)` + `normalizeX()` pair, normalizing into the shared
-`TransitLayerFeatureCollection` shape. Wire the adapter into `run.ts` and map
-it to the appropriate layer file(s) for that region, then re-run the pipeline.
+`TransitLayerFeatureCollection` shape. Wire the adapter into that region's
+`RegionPipelineConfig` (e.g. `src/regions/gautengPipelineConfig.ts`) as a new
+or merged `PipelineSource` — `{ layerId, fetch, outputFileName }` — and add
+its network name to `requiredNetworks` if every publish must include it.
+`run.ts` fetches every `PipelineSource` in `config.sources` automatically;
+it doesn't need editing. Then re-run the pipeline.
 
 Gautrain rail, Gautrain Bus, and PRASA/Metrorail are treated as shared
 networks. A Re Yeng (Tshwane) and Rea Vaya (Johannesburg) are city-specific
