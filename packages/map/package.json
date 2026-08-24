@@ -1,6 +1,6 @@
 {
   "name": "@karta/map",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Generic map rendering and UI components for Karta",
   "license": "AGPL-3.0-only",
   "private": true,
