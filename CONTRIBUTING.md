@@ -125,9 +125,6 @@ meaning rather than its code:
 - Open an issue first for anything large or for a change in what the map claims.
   Small fixes can go straight to a pull request.
 - Keep each pull request to one logical change.
-- If the change affects `@karta/core`, `@karta/map`, `@karta/react`, or
-  `@karta/theme`'s public behaviour, run `npx changeset` and commit the
-  generated file — see [`docs/releasing.md`](docs/releasing.md).
 - Describe what changed and why. If it's a visual change, include a screenshot in
   both light and dark themes.
 - Make sure `npm run lint`, `npm run typecheck`, `npm run test`, and
