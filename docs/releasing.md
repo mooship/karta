@@ -58,14 +58,21 @@ reading the open "Version Packages" PR's diff before merging it.
 ## Internal dependency version strings
 
 `packages/app`, `packages/map`, and `packages/web` depend on their sibling
-SDK packages via `file:../<package>` specifiers (e.g. `"@karta/core":
-"file:../core"`), not a semver range. This is why `changeset
-status`/`changeset version` print `Package X must depend on the current
-version of Y: 1.0.0 vs file:../core`-style warnings — Changesets can't
-rewrite a `file:` specifier to track a version the way it would a semver
-range, so those warnings are permanent and harmless (local resolution
-already always points at the workspace package regardless of the version
-text). Switching those specifiers to semver ranges would silence the
-warnings and let `updateInternalDependencies` do something meaningful, but
-that's a separate decision about how internal workspace dependencies are
-declared — not something this release setup should change on its own.
+SDK packages via semver ranges (e.g. `"@karta/core": "^1.0.0"`), not a
+`file:../core` path — npm workspaces link the local package either way, but
+a `file:` specifier only resolves inside this monorepo checkout, so a
+published package with one would have unresolvable dependencies for any
+external consumer. It also means `updateInternalDependencies: "patch"`
+(`.changeset/config.json`) does something real: bumping `@karta/core` bumps
+every dependent SDK package's declared range too, as part of the same
+"Version Packages" PR.
+
+## A note on `changeset status`'s backlog
+
+`npx changeset status --since=main` will report a large backlog of
+"changed but no changeset" packages until this SDK-versioning setup itself
+has merged to `main` — every `@karta/core`/`map`/`react`/`theme` change
+already on a branch predates Changesets existing, so none of it has a
+changeset. That's expected, not a bug in the config: once this work is on
+`main`, that becomes the new comparison baseline and `status` reflects only
+genuinely new, un-changesetted changes from then on.
