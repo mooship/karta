@@ -19,10 +19,16 @@
     "test:coverage": "vitest run --coverage",
     "test:e2e": "npm run test:e2e --workspace @karta/web",
     "typecheck": "npm run typecheck --workspace @karta/core && npm run typecheck --workspace @karta/app && npm run typecheck --workspace @karta/theme && npm run typecheck --workspace @karta/map && npm run typecheck --workspace @karta/react && npm run build --workspace @karta/web && npm run typecheck --prefix data-pipeline",
-    "build": "npm run build --workspaces --if-present"
+    "build": "npm run build --workspaces --if-present",
+    "changeset": "changeset",
+    "changeset:status": "changeset status --since=main",
+    "changeset:version": "changeset version",
+    "changeset:release": "changeset publish"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.9",
+    "@changesets/changelog-github": "^1.0.0",
+    "@changesets/cli": "^3.0.1",
     "@swc/core": "^1.16.1",
     "@vitest/coverage-v8": "^4.1.11",
     "dependency-cruiser": "^18.2.0",

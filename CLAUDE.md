@@ -62,6 +62,8 @@ Pre-commit (lefthook) runs biome (auto-fix staged files), dependency-cruiser (`n
 
 - **Testing** — vitest unit/component tests (gated in CI) deliberately mock `react-leaflet`, so real Leaflet rendering, tile requests, and popup/tooltip binding are untested there by design. `packages/web/e2e/` fills that gap with Playwright, run on demand against a production SSR preview (`npm run build && npm run preview --workspace @karta/web`) with basemap tile requests mocked to a 1x1 PNG so the suite doesn't depend on OSM/CARTO/Esri availability.
 
+- **Releasing** — `@karta/core`/`map`/`react`/`theme` are versioned and changelogged independently via [Changesets](https://github.com/changesets/changesets) (`.changeset/config.json`); `app`/`web` are excluded (`ignore`), since they're the continuously-deployed reference implementation, not a versioned artifact. `.github/workflows/release.yml` opens a "Version Packages" PR from pending changesets and, once merged, tags each bumped package and creates a GitHub Release from its changelog — see [`docs/releasing.md`](docs/releasing.md). No npm publish: all four stay `private: true`, and `privatePackages: { tag: true }` opts them into tagging anyway (`changeset publish` otherwise skips private packages entirely).
+
 ## Conventions
 
 - **TDD.** Write the failing test before implementation code, for both bug fixes and new features — the test is part of the change, not a follow-up, and a change without one is incomplete.
