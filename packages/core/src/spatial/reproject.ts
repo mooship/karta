@@ -2,6 +2,7 @@ import { clone } from "@turf/clone";
 import { coordEach } from "@turf/meta";
 import type { Feature, FeatureCollection, Geometry, Position } from "geojson";
 import proj4, { type Converter } from "proj4";
+import { isUnlocatedFeature } from "../data/geoJsonSchemas";
 
 /**
  * GeoJSON's mandated coordinate reference system (RFC 7946 §4) — the target
@@ -80,10 +81,9 @@ export function reprojectGeometry(
  * Reprojects every feature's geometry in `collection` from `sourceCrs` into WGS84.
  * @param collection - The collection to reproject.
  * @param sourceCrs - A proj4-compatible definition string.
- * @remarks GeoJSON explicitly allows `Feature.geometry: null` (an
- *   "unlocated" feature), which `geoJsonSchemas.ts` validates as a valid
- *   shape. Such features are passed through unchanged rather than handed to
- *   `reprojectGeometry`, which would otherwise throw on the null geometry.
+ * @remarks Unlocated features (see {@link isUnlocatedFeature}) are passed
+ *   through unchanged rather than handed to `reprojectGeometry`, which would
+ *   otherwise throw on the null geometry.
  */
 export function reprojectFeatureCollection(
   collection: FeatureCollection,
@@ -93,7 +93,7 @@ export function reprojectFeatureCollection(
     ...collection,
     features: collection.features.map(
       (feature): Feature =>
-        feature.geometry === null
+        isUnlocatedFeature(feature)
           ? feature
           : {
               ...feature,
