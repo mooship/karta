@@ -43,4 +43,19 @@ describe("worker fetch handler", () => {
     expect(requestHandlerMock).toHaveBeenCalledTimes(1);
     expect(requestHandlerMock).toHaveBeenCalledWith(request);
   });
+
+  it("logs and returns a 500 if the request handler throws", async () => {
+    const consoleErrorSpy = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
+    requestHandlerMock.mockRejectedValueOnce(new Error("boom"));
+    const workerModule = await import("./app");
+    const request = new Request("https://karta.timothybrits.co.za/");
+
+    const response = await workerModule.default.fetch(request);
+
+    expect(response.status).toBe(500);
+    expect(consoleErrorSpy).toHaveBeenCalledTimes(1);
+    consoleErrorSpy.mockRestore();
+  });
 });
