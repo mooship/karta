@@ -59,40 +59,24 @@ describe("/log-error route action", () => {
     expect(consoleErrorSpy).toHaveBeenCalledTimes(1);
   });
 
-  it("rejects a malformed payload without logging", async () => {
-    const consoleErrorSpy = vi
-      .spyOn(console, "error")
-      .mockImplementation(() => {});
-
-    const response = await action(makeRequest({ message: 123 }));
-
-    expect(response.status).toBe(400);
-    expect(consoleErrorSpy).not.toHaveBeenCalled();
-  });
-
-  it("rejects a body that isn't valid JSON without logging", async () => {
-    const consoleErrorSpy = vi
-      .spyOn(console, "error")
-      .mockImplementation(() => {});
-
-    const response = await action(makeRequest(undefined, "POST", "not json"));
-
-    expect(response.status).toBe(400);
-    expect(consoleErrorSpy).not.toHaveBeenCalled();
-  });
-
-  it("rejects a field longer than the maximum length without logging", async () => {
-    const consoleErrorSpy = vi
-      .spyOn(console, "error")
-      .mockImplementation(() => {});
-
-    const response = await action(
-      makeRequest({
+  it.each([
+    ["a malformed payload", { message: 123 }, undefined],
+    ["a body that isn't valid JSON", undefined, "not json"],
+    [
+      "a field longer than the maximum length",
+      {
         message: "x".repeat(CLIENT_ERROR_REPORT_MAX_FIELD_LENGTH + 1),
         url: "https://karta.timothybrits.co.za/",
         source: "error",
-      }),
-    );
+      },
+      undefined,
+    ],
+  ] as const)("rejects %s without logging", async (_case, body, rawBody) => {
+    const consoleErrorSpy = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
+
+    const response = await action(makeRequest(body, "POST", rawBody));
 
     expect(response.status).toBe(400);
     expect(consoleErrorSpy).not.toHaveBeenCalled();
