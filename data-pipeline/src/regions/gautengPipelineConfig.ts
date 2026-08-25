@@ -133,20 +133,66 @@ async function fetchCommuterRail(): Promise<TransitLayerFeatureCollection> {
   });
 }
 
-async function fetchBusRapidTransit(): Promise<TransitLayerFeatureCollection> {
-  const reaVayaBbox = getMetroBbox("johannesburg");
-  const [rawAReYeng, reaVayaRaw, ekurhuleniIrptnRaw] = await Promise.all([
-    fetchAReYengRoutes(),
-    fetchReaVayaRoutes(reaVayaBbox),
-    fetchEkurhuleniIrptnRoutes(),
-  ]);
+/**
+ * Filters a `bus-rapid-transit` fallback file (a merge of A Re Yeng, Rea
+ * Vaya, and Ekurhuleni IRPTN features) down to just `network`'s features,
+ * for `fetchWithPublishedFallback`'s `recoverFromFallback`.
+ */
+function recoverNetworkFromBusRapidTransitFallback(
+  network: string,
+): (fallback: TransitLayerFeatureCollection) => TransitLayerFeatureCollection {
+  return (fallback) => ({
+    type: "FeatureCollection",
+    features: fallback.features.filter(
+      (feature) =>
+        (feature.properties as { network?: unknown } | null)?.network ===
+        network,
+    ),
+  });
+}
 
-  const aReYeng =
-    "elements" in rawAReYeng
-      ? normalizeAReYengOverpass(rawAReYeng)
-      : normalizeAReYeng(rawAReYeng);
-  const reaVaya = normalizeReaVayaOverpass(reaVayaRaw);
-  const ekurhuleniIrptn = normalizeEkurhuleniIrptn(ekurhuleniIrptnRaw);
+async function fetchAReYengWithFallback(): Promise<TransitLayerFeatureCollection> {
+  return fetchWithPublishedFallback({
+    sourceName: "A Re Yeng",
+    fallbackLayerName: "bus-rapid-transit",
+    fetch: async () => {
+      const raw = await fetchAReYengRoutes();
+      return "elements" in raw
+        ? normalizeAReYengOverpass(raw)
+        : normalizeAReYeng(raw);
+    },
+    recoverFromFallback: recoverNetworkFromBusRapidTransitFallback("A Re Yeng"),
+  });
+}
+
+async function fetchReaVayaWithFallback(): Promise<TransitLayerFeatureCollection> {
+  const reaVayaBbox = getMetroBbox("johannesburg");
+  return fetchWithPublishedFallback({
+    sourceName: "Rea Vaya",
+    fallbackLayerName: "bus-rapid-transit",
+    fetch: async () =>
+      normalizeReaVayaOverpass(await fetchReaVayaRoutes(reaVayaBbox)),
+    recoverFromFallback: recoverNetworkFromBusRapidTransitFallback("Rea Vaya"),
+  });
+}
+
+async function fetchEkurhuleniIrptnWithFallback(): Promise<TransitLayerFeatureCollection> {
+  return fetchWithPublishedFallback({
+    sourceName: "Ekurhuleni IRPTN",
+    fallbackLayerName: "bus-rapid-transit",
+    fetch: async () =>
+      normalizeEkurhuleniIrptn(await fetchEkurhuleniIrptnRoutes()),
+    recoverFromFallback:
+      recoverNetworkFromBusRapidTransitFallback("Ekurhuleni IRPTN"),
+  });
+}
+
+async function fetchBusRapidTransit(): Promise<TransitLayerFeatureCollection> {
+  const [aReYeng, reaVaya, ekurhuleniIrptn] = await Promise.all([
+    fetchAReYengWithFallback(),
+    fetchReaVayaWithFallback(),
+    fetchEkurhuleniIrptnWithFallback(),
+  ]);
 
   return mergeFeatureCollections([aReYeng, reaVaya, ekurhuleniIrptn]);
 }

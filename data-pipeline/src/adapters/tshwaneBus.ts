@@ -30,7 +30,11 @@ export async function fetchTshwaneBusRoutes(
 ): Promise<OverpassResponse> {
   try {
     return await fetchOverpass(tshwaneBusQuery(bbox));
-  } catch {
+  } catch (error) {
+    console.warn(
+      "Tshwane Bus Overpass fetch failed, falling back to an empty layer",
+      error,
+    );
     return { elements: [] };
   }
 }

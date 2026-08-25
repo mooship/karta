@@ -22,11 +22,6 @@ export const REGIONS: readonly RegionDefinition[] = [
   { id: "gauteng", label: "Gauteng", kind: "province" },
 ] as const satisfies readonly RegionDefinition[];
 
-/** Looks up a region's definition by id, or `undefined` if `id` isn't configured. */
-export function getRegionDefinition(id: string): RegionDefinition | undefined {
-  return REGIONS.find((region) => region.id === id);
-}
-
 /**
  * Union of the ids actually configured in `REGIONS`, derived from `REGIONS`
  * itself rather than hand-typed. `MetroDefinition.regionId` (`./metros.ts`)

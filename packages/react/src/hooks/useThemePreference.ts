@@ -85,10 +85,22 @@ function isExplicitTheme(value: string | null): value is "light" | "dark" {
   return value === "light" || value === "dark";
 }
 
-/** @remarks Both call sites (`initTheme`, module init) already guard with `typeof window === "undefined"` before calling this. */
+/**
+ * @remarks Both call sites (`initTheme`, module init) already guard with
+ *   `typeof window === "undefined"` before calling this. `localStorage`
+ *   access itself can still throw synchronously (Safari private-mode edge
+ *   cases, a sandboxed iframe without `allow-same-origin`, a strict privacy
+ *   extension) -- caught here so a blocked store degrades to the `"system"`
+ *   default rather than failing the whole module import when this runs at
+ *   module-evaluation time (see the module-level call below).
+ */
 function readStoredPreference(): ThemePreference {
-  const stored = localStorage.getItem(config.storageKey);
-  return isExplicitTheme(stored) ? stored : "system";
+  try {
+    const stored = localStorage.getItem(config.storageKey);
+    return isExplicitTheme(stored) ? stored : "system";
+  } catch {
+    return "system";
+  }
 }
 
 /** @remarks Only called from `applyThemeAttribute`, which already returns before calling it if `document` is undefined. */
@@ -147,14 +159,21 @@ function getServerSnapshot(): ThemePreference {
  * Sets the user's theme preference, persists it to localStorage, and updates
  * the document's `data-theme` attribute and theme-color meta tag.
  * @param preference - `"system"` removes any explicit override.
+ * @remarks If `localStorage.setItem`/`removeItem` throws (a blocked or
+ *   unavailable store), the preference still takes effect in memory and on
+ *   the document for the current session -- it just won't survive a reload.
  */
 export function setThemePreference(preference: ThemePreference) {
   currentPreference = preference;
   if (typeof window !== "undefined") {
-    if (preference === "system") {
-      localStorage.removeItem(config.storageKey);
-    } else {
-      localStorage.setItem(config.storageKey, preference);
+    try {
+      if (preference === "system") {
+        localStorage.removeItem(config.storageKey);
+      } else {
+        localStorage.setItem(config.storageKey, preference);
+      }
+    } catch {
+      // Storage blocked or unavailable -- see the @remarks above.
     }
   }
   applyThemeAttribute(preference);

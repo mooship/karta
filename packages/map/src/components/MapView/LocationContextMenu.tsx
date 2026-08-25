@@ -85,25 +85,6 @@ function armGhostClickGuard(
 }
 
 /**
- * Shows a small context menu at the point the user right-clicks (desktop) or
- * long-presses (mobile) on the map, offering to reverse-geocode that point.
- * @remarks Bound to Leaflet's `contextmenu` event rather than `click`, for
- *   two reasons: a plain background click can't be told apart from the first
- *   of the two taps that make up double-tap-to-zoom, and Leaflet's vector
- *   layers only bubble `contextmenu` (like `click`) up to the map when
- *   `bubblingMouseEvents` is left at its default `true` -- so a long-press or
- *   right-click over a selectable feature still opens this menu, instead of
- *   that feature's own tap-to-select popup winning. Leaflet already closes
- *   the underlying popup (and this menu with it) on Escape or the next map
- *   click, via `Map`'s `closeOnEscapeKey`/`closePopupOnClick` defaults, so
- *   there's no dismissal logic to duplicate here -- beyond `armGhostClickGuard`
- *   above, which stops the long-press's own release from counting as that
- *   "next click" and closing the menu before it's even seen. Any in-flight
- *   reverse-geocode lookup is aborted both when the menu reopens elsewhere
- *   and when it's dismissed, so a slow response can't overwrite a later
- *   (or no longer open) menu with a stale result.
- */
-/**
  * `LocationContextMenu`'s own overridable copy, all defaulting to English.
  * Factored out from `LocationContextMenuProps` so `MapView` -- which renders
  * this internally -- can accept and forward the same set as one prop.
@@ -123,6 +104,9 @@ export interface LocationContextMenuLabels {
   retryLabel?: string;
 }
 
+/**
+ * Props for {@link LocationContextMenu}.
+ */
 export interface LocationContextMenuProps extends LocationContextMenuLabels {
   /**
    * Geocoder backend used for the reverse lookup. Defaults to OpenStreetMap
@@ -137,6 +121,25 @@ const DEFAULT_LOADING_LABEL = "Looking up address…";
 const DEFAULT_FAILED_LABEL = "Couldn't look up this address.";
 const DEFAULT_NO_ADDRESS_LABEL = "No address found here.";
 
+/**
+ * Shows a small context menu at the point the user right-clicks (desktop) or
+ * long-presses (mobile) on the map, offering to reverse-geocode that point.
+ * @remarks Bound to Leaflet's `contextmenu` event rather than `click`, for
+ *   two reasons: a plain background click can't be told apart from the first
+ *   of the two taps that make up double-tap-to-zoom, and Leaflet's vector
+ *   layers only bubble `contextmenu` (like `click`) up to the map when
+ *   `bubblingMouseEvents` is left at its default `true` -- so a long-press or
+ *   right-click over a selectable feature still opens this menu, instead of
+ *   that feature's own tap-to-select popup winning. Leaflet already closes
+ *   the underlying popup (and this menu with it) on Escape or the next map
+ *   click, via `Map`'s `closeOnEscapeKey`/`closePopupOnClick` defaults, so
+ *   there's no dismissal logic to duplicate here -- beyond `armGhostClickGuard`
+ *   above, which stops the long-press's own release from counting as that
+ *   "next click" and closing the menu before it's even seen. Any in-flight
+ *   reverse-geocode lookup is aborted both when the menu reopens elsewhere
+ *   and when it's dismissed, so a slow response can't overwrite a later
+ *   (or no longer open) menu with a stale result.
+ */
 export function LocationContextMenu({
   provider = nominatimGeocoderProvider,
   ariaLabel = DEFAULT_ARIA_LABEL,

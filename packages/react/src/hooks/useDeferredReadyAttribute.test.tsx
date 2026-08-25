@@ -99,6 +99,31 @@ describe("useDeferredReadyAttribute", () => {
     vi.unstubAllGlobals();
   });
 
+  it("cancels a pending markReadyAfterPaint chain on unmount, so the attribute is never set after that", () => {
+    const { flushNext, cancelSpy } = stubRaf();
+    const { result, unmount } = renderHook(() =>
+      useDeferredReadyAttribute("data-ready"),
+    );
+    const el = document.createElement("div");
+    // biome-ignore lint/suspicious/noExplicitAny: assigning a plain ref for the test
+    (result.current.ref as any).current = el;
+
+    act(() => {
+      result.current.markReadyAfterPaint();
+    });
+    act(() => {
+      flushNext();
+    });
+
+    unmount();
+
+    expect(cancelSpy).toHaveBeenCalled();
+    expect(() => flushNext()).toThrow("no pending animation frame to flush");
+    expect(el.getAttribute("data-ready")).toBeNull();
+
+    vi.unstubAllGlobals();
+  });
+
   it("returns stable callback references across renders", () => {
     stubRaf();
     const { result, rerender } = renderHook(() =>

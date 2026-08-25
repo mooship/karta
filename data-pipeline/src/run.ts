@@ -40,7 +40,8 @@ import {
 } from "./transitDistance";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const OUTPUT_ROOT = resolve(__dirname, "../../packages/web/public/data");
+/** Root directory every region's dataset is staged under and published into. */
+export const OUTPUT_ROOT = resolve(__dirname, "../../packages/web/public/data");
 
 async function timedStep<T>(
   label: string,
@@ -62,22 +63,34 @@ async function timedStep<T>(
   }
 }
 
-async function runRegion(config: RegionPipelineConfig): Promise<void> {
+/**
+ * Builds one region's full dataset — transit sources, per-metro sub-place
+ * boundaries, drive times and nearest-transit distances — into a staging
+ * directory, then publishes it into `<outputRoot>/<regionId>` only once every
+ * output file has been written, manifested and validated.
+ * @param outputRoot - Root directory to stage and publish under; defaults to
+ *   the published `packages/web/public/data`. Overridden by tests so a run
+ *   never touches the real published dataset.
+ * @throws If the region is misconfigured, any step fails, or the built output
+ *   fails validation — in which case the staged directory is deleted and the
+ *   previously published dataset is left exactly as it was.
+ */
+export async function runRegion(
+  config: RegionPipelineConfig,
+  outputRoot = OUTPUT_ROOT,
+): Promise<void> {
   const { regionId, metros } = config;
 
   await pruneCache(7 * 24 * 60 * 60 * 1000);
   assertMetroSetup(metros);
-  await cleanupStagingDirectories(OUTPUT_ROOT, regionId);
+  await cleanupStagingDirectories(outputRoot, regionId);
 
   if (metros.length === 0) {
     throw new Error(`No metros configured for region: ${regionId}`);
   }
 
-  const publishDir = resolve(OUTPUT_ROOT, regionId);
-  const stagedDir = resolve(
-    OUTPUT_ROOT,
-    `${regionId}.__staging__${Date.now()}`,
-  );
+  const publishDir = resolve(outputRoot, regionId);
+  const stagedDir = resolve(outputRoot, `${regionId}.__staging__${Date.now()}`);
 
   try {
     const outputDir = stagedDir;
@@ -207,7 +220,18 @@ async function runRegion(config: RegionPipelineConfig): Promise<void> {
   }
 }
 
-async function runAllProvinceRegions(): Promise<void> {
+/**
+ * `npm run run`'s default entry point: builds and publishes every configured
+ * region whose `REGIONS` entry is a province, in registration order.
+ * @param outputRoot - Root directory each region is published under, passed
+ *   straight through to `runRegion`; defaults to `OUTPUT_ROOT`.
+ * @remarks Deliberately sequential and fail-fast — a region that throws
+ *   aborts the whole run, leaving every later region unbuilt rather than
+ *   publishing a partial set of regions from a run that already failed.
+ */
+export async function runAllProvinceRegions(
+  outputRoot = OUTPUT_ROOT,
+): Promise<void> {
   const provinceRegionIds = new Set(
     REGIONS.filter((region) => region.kind === "province").map(
       (region) => region.id,
@@ -218,7 +242,7 @@ async function runAllProvinceRegions(): Promise<void> {
       continue;
     }
     console.log(`\n### Region: ${config.regionId} ###`);
-    await runRegion(config);
+    await runRegion(config, outputRoot);
   }
 }
 
