@@ -1,6 +1,9 @@
 import type { FeatureCollection } from "geojson";
 import { describe, expect, it } from "vitest";
-import { normalizeLineStringTransitFeatureCollection } from "./lineStringTransit";
+import {
+  firstDefinedProperty,
+  normalizeLineStringTransitFeatureCollection,
+} from "./lineStringTransit";
 
 interface RawProps {
   code?: string;
@@ -109,5 +112,35 @@ describe("normalizeLineStringTransitFeatureCollection", () => {
     );
 
     expect(result.features).toHaveLength(0);
+  });
+});
+
+describe("firstDefinedProperty", () => {
+  it("returns the value of the first key that is defined, coerced to a string", () => {
+    const props = { OBJECTID: 7, Name: "Route 2A" };
+
+    expect(firstDefinedProperty(props, ["OBJECTID", "Name"], "unknown")).toBe(
+      "7",
+    );
+  });
+
+  it("skips undefined and null keys to find the next defined one", () => {
+    const props = { ROUTE_ID: undefined, OBJECTID: null, Label: "T1" };
+
+    expect(
+      firstDefinedProperty(props, ["ROUTE_ID", "OBJECTID", "Label"], "unknown"),
+    ).toBe("T1");
+  });
+
+  it("returns the fallback when none of the keys are defined", () => {
+    const props = { ROUTE_ID: undefined };
+
+    expect(firstDefinedProperty(props, ["ROUTE_ID"], "unknown")).toBe(
+      "unknown",
+    );
+  });
+
+  it("returns the fallback for an empty properties object", () => {
+    expect(firstDefinedProperty({}, ["Name"], "Unnamed")).toBe("Unnamed");
   });
 });

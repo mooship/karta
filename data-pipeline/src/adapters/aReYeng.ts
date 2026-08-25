@@ -1,7 +1,10 @@
 import type { TransitLayerFeatureCollection, TransitStop } from "@karta/app";
 import type { Feature, FeatureCollection } from "geojson";
 import { fetchOverpass, type OverpassResponse } from "./gautrain";
-import { normalizeLineStringTransitFeatureCollection } from "./lineStringTransit";
+import {
+  firstDefinedProperty,
+  normalizeLineStringTransitFeatureCollection,
+} from "./lineStringTransit";
 
 // Source: City of Tshwane Open Data / e-GIS ArcGIS Server, "Other_WS/BRT_A_Re_Yeng"
 // MapServer. Verified reachable and returning real route geometry via GeoJSON export
@@ -64,22 +67,18 @@ interface RawAReYengProperties {
 }
 
 function resolveId(props: RawAReYengProperties): string {
-  if (props.ROUTE_ID !== undefined) {
-    return props.ROUTE_ID;
-  }
-  if (props.OBJECTID !== undefined) {
-    return String(props.OBJECTID);
-  }
-  return "unknown";
+  return firstDefinedProperty(
+    props as Record<string, unknown>,
+    ["ROUTE_ID", "OBJECTID"],
+    "unknown",
+  );
 }
 
 function resolveName(props: RawAReYengProperties): string {
-  return (
-    props.ROUTE_NAME ??
-    props.Route_Code ??
-    props.Route_Description ??
-    props.Label ??
-    "Unnamed"
+  return firstDefinedProperty(
+    props as Record<string, unknown>,
+    ["ROUTE_NAME", "Route_Code", "Route_Description", "Label"],
+    "Unnamed",
   );
 }
 

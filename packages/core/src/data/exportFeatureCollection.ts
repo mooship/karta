@@ -19,7 +19,11 @@ function csvField(value: unknown): string {
  * Converts `collection` to CSV text: one row per feature, one column per
  * property key seen across the collection (missing keys fill in as empty
  * fields), plus trailing `centroid_lon`/`centroid_lat` columns giving every
- * feature a plottable location regardless of its geometry type.
+ * feature a plottable location regardless of its geometry type. A feature
+ * with `geometry: null` (GeoJSON's "unlocated" feature — see
+ * `reprojectFeatureCollection` for the same allowance elsewhere in this
+ * package) has no centroid to compute, so its `centroid_lon`/`centroid_lat`
+ * fields are left blank rather than thrown on.
  * @param collection - The collection to export, e.g. layer data a caller
  *   wants to offer as a spreadsheet-friendly download alongside the raw
  *   GeoJSON.
@@ -46,7 +50,10 @@ export function featureCollectionToCsv(collection: FeatureCollection): string {
   const rows = [columns.join(",")];
 
   for (const feature of collection.features) {
-    const [centroidLon, centroidLat] = centroid(feature).geometry.coordinates;
+    const [centroidLon, centroidLat] =
+      feature.geometry === null
+        ? [undefined, undefined]
+        : centroid(feature).geometry.coordinates;
     const propertyValues = propertyKeys.map((key) =>
       csvField(feature.properties?.[key]),
     );
