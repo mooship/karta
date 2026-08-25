@@ -1,7 +1,9 @@
+import type { Feature } from "geojson";
 import { describe, expect, it } from "vitest";
 import {
   createFeatureCollectionParser,
   featureCollectionSchema,
+  isUnlocatedFeature,
 } from "./geoJsonSchemas";
 
 const validRing = [
@@ -18,6 +20,23 @@ function polygonFeature(coordinates: number[][][] = [validRing]) {
     geometry: { type: "Polygon", coordinates },
   };
 }
+
+describe("isUnlocatedFeature", () => {
+  it("returns true for a feature with a null geometry", () => {
+    const feature: Feature = {
+      type: "Feature",
+      properties: {},
+      geometry: null,
+    };
+    expect(isUnlocatedFeature(feature)).toBe(true);
+  });
+
+  it("returns false for a feature with a real geometry", () => {
+    expect(isUnlocatedFeature(polygonFeature() as unknown as Feature)).toBe(
+      false,
+    );
+  });
+});
 
 describe("featureCollectionSchema", () => {
   it("rejects a polygon ring that is not closed", () => {

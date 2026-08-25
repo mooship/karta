@@ -2,13 +2,18 @@ import type { TransitLayerFeatureCollection } from "@karta/app";
 import type { FeatureCollection } from "geojson";
 import { sleep } from "../asyncUtils";
 import { fetchWithTimeout } from "../httpUtils";
-import { normalizeLineStringTransitFeatureCollection } from "./lineStringTransit";
+import {
+  firstDefinedProperty,
+  normalizeLineStringTransitFeatureCollection,
+} from "./lineStringTransit";
 
 const EKURHULENI_IRPTN_URL =
   "https://gis.ekurhuleni.gov.za/arcgis/rest/services/Ekurhuleni/Ekurhuleni_Transportation_Map_v1/MapServer/2/query";
 const PAGE_SIZE = 1000;
 const REQUEST_TIMEOUT_MS = 90_000;
 const PAGE_DELAY_MS = 1_500;
+const MAX_PAGE_FETCH_ATTEMPTS = 3;
+const RETRY_BACKOFF_MS = 1_500;
 
 interface RawIrptnProperties {
   OBJECTID?: number;
@@ -46,20 +51,19 @@ function isFeatureCollection(value: unknown): value is ArcGisGeoJsonResponse {
 }
 
 function resolveId(props: RawIrptnProperties): string {
-  if (props.OBJECTID !== undefined) {
-    return String(props.OBJECTID);
-  }
-  if (props.Id !== undefined) {
-    return String(props.Id);
-  }
-  return "unknown";
+  return firstDefinedProperty(
+    props as Record<string, unknown>,
+    ["OBJECTID", "Id"],
+    "unknown",
+  );
 }
 
 function resolveName(props: RawIrptnProperties): string {
-  if (props.Name !== undefined && props.Name.length > 0) {
-    return props.Name;
-  }
-  return "Unnamed";
+  return firstDefinedProperty(
+    props as Record<string, unknown>,
+    ["Name"],
+    "Unnamed",
+  );
 }
 
 /** Normalizes Ekurhuleni's ArcGIS IRPTN GeoJSON export into `LineString` features. */
@@ -77,6 +81,32 @@ export function normalizeEkurhuleniIrptn(
 }
 
 /**
+ * Requests a single Ekurhuleni IRPTN page, retrying with backoff (up to
+ * `MAX_PAGE_FETCH_ATTEMPTS` attempts total) if the request itself fails
+ * (e.g. a transient network error), rather than failing the whole paginated
+ * fetch on one bad attempt. A non-`ok` HTTP response is not retried here —
+ * it's surfaced to the caller as-is, since it isn't necessarily transient.
+ */
+async function fetchIrptnPage(
+  resultOffset: number,
+  attempt = 1,
+): Promise<Response> {
+  try {
+    return await fetchWithTimeout(
+      createQueryUrl(resultOffset),
+      {},
+      REQUEST_TIMEOUT_MS,
+    );
+  } catch (error) {
+    if (attempt >= MAX_PAGE_FETCH_ATTEMPTS) {
+      throw error;
+    }
+    await sleep(RETRY_BACKOFF_MS * attempt);
+    return fetchIrptnPage(resultOffset, attempt + 1);
+  }
+}
+
+/**
  * Fetches all Ekurhuleni IRPTN route features from the metro's ArcGIS
  * MapServer, paging through results (`resultOffset`/`resultRecordCount`)
  * until the server stops reporting `exceededTransferLimit`.
@@ -91,11 +121,7 @@ export async function fetchEkurhuleniIrptnRoutes(): Promise<FeatureCollection> {
       await sleep(PAGE_DELAY_MS);
     }
 
-    const response = await fetchWithTimeout(
-      createQueryUrl(resultOffset),
-      {},
-      REQUEST_TIMEOUT_MS,
-    );
+    const response = await fetchIrptnPage(resultOffset);
 
     if (!response.ok) {
       throw new Error(

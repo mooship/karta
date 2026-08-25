@@ -24,10 +24,6 @@ export interface MetroDefinition {
    * `filterFeaturesByMunicipality` in `data-pipeline/src/adapters/boundaries.ts`).
    */
   municipalityCodes: readonly number[];
-  /** The metro's approximate map center. */
-  center: { lat: number; lon: number };
-  /** A reasonable map zoom level for viewing this metro alone. */
-  zoom: number;
   /**
    * Hand-maintained mirror of `getJobCentersForMetro(id).length` in
    * `data-pipeline/src/constants/jobCenters.ts`. `data-pipeline`'s
@@ -46,8 +42,6 @@ export const METROS: readonly MetroDefinition[] = [
     shortName: "Tshwane",
     regionId: "gauteng",
     municipalityCodes: [799],
-    center: { lat: -25.7449, lon: 28.1878 },
-    zoom: 10,
     jobCenterCount: 8,
   },
   {
@@ -56,8 +50,6 @@ export const METROS: readonly MetroDefinition[] = [
     shortName: "Johannesburg",
     regionId: "gauteng",
     municipalityCodes: [798],
-    center: { lat: -26.2041, lon: 28.0473 },
-    zoom: 10,
     jobCenterCount: 8,
   },
   {
@@ -66,8 +58,6 @@ export const METROS: readonly MetroDefinition[] = [
     shortName: "Ekurhuleni",
     regionId: "gauteng",
     municipalityCodes: [797],
-    center: { lat: -26.175, lon: 28.29 },
-    zoom: 10,
     jobCenterCount: 6,
   },
   {
@@ -76,8 +66,6 @@ export const METROS: readonly MetroDefinition[] = [
     shortName: "Emfuleni",
     regionId: "gauteng",
     municipalityCodes: [760],
-    center: { lat: -26.67, lon: 27.86 },
-    zoom: 10,
     jobCenterCount: 6,
   },
   {
@@ -86,8 +74,6 @@ export const METROS: readonly MetroDefinition[] = [
     shortName: "Midvaal",
     regionId: "gauteng",
     municipalityCodes: [761],
-    center: { lat: -26.585, lon: 28.0785 },
-    zoom: 10,
     jobCenterCount: 6,
   },
   {
@@ -96,8 +82,6 @@ export const METROS: readonly MetroDefinition[] = [
     shortName: "Lesedi",
     regionId: "gauteng",
     municipalityCodes: [762],
-    center: { lat: -26.4823, lon: 28.4146 },
-    zoom: 10,
     jobCenterCount: 6,
   },
   {
@@ -106,8 +90,6 @@ export const METROS: readonly MetroDefinition[] = [
     shortName: "Mogale City",
     regionId: "gauteng",
     municipalityCodes: [763],
-    center: { lat: -26.063, lon: 27.7376 },
-    zoom: 10,
     jobCenterCount: 6,
   },
   {
@@ -116,8 +98,6 @@ export const METROS: readonly MetroDefinition[] = [
     shortName: "Rand West City",
     regionId: "gauteng",
     municipalityCodes: [764, 765],
-    center: { lat: -26.26, lon: 27.6648 },
-    zoom: 10,
     jobCenterCount: 6,
   },
   {
@@ -126,8 +106,6 @@ export const METROS: readonly MetroDefinition[] = [
     shortName: "Merafong City",
     regionId: "gauteng",
     municipalityCodes: [766],
-    center: { lat: -26.4095, lon: 27.4034 },
-    zoom: 10,
     jobCenterCount: 6,
   },
 ] as const satisfies readonly MetroDefinition[];

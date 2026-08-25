@@ -274,6 +274,51 @@ describe("fetchBusRapidTransit (bus-rapid-transit source)", () => {
     );
   });
 
+  it("falls back to the last published output for A Re Yeng when its fetch fails", async () => {
+    fetchAReYengRoutesMock.mockRejectedValue(new Error("network down"));
+    statMock.mockResolvedValueOnce(undefined);
+    const mixedFallback: TransitLayerFeatureCollection = {
+      type: "FeatureCollection",
+      features: [
+        ...transitLine("A Re Yeng", "areyeng/1").features,
+        ...transitLine("Rea Vaya", "reavaya/1").features,
+        ...transitLine("Ekurhuleni IRPTN", "irptn/1").features,
+      ],
+    };
+    readFileMock.mockResolvedValueOnce(JSON.stringify(mixedFallback));
+
+    const result = await findSource("bus-rapid-transit").fetch();
+
+    expect(networksOf(result).sort()).toEqual(
+      ["A Re Yeng", "Ekurhuleni IRPTN", "Rea Vaya"].sort(),
+    );
+    expect(normalizeAReYengOverpassMock).not.toHaveBeenCalled();
+    expect(normalizeAReYengMock).not.toHaveBeenCalled();
+  });
+
+  it("throws when A Re Yeng fails and the fallback output has no A Re Yeng features", async () => {
+    fetchAReYengRoutesMock.mockRejectedValue(new Error("network down"));
+    statMock.mockResolvedValueOnce(undefined);
+    readFileMock.mockResolvedValueOnce(
+      JSON.stringify({
+        ...transitLine("Rea Vaya", "reavaya/1"),
+      }),
+    );
+
+    await expect(findSource("bus-rapid-transit").fetch()).rejects.toThrow(
+      "Failed to recover A Re Yeng from fallback output",
+    );
+  });
+
+  it("throws when A Re Yeng fails and no fallback output exists", async () => {
+    fetchAReYengRoutesMock.mockRejectedValue(new Error("network down"));
+    statMock.mockRejectedValue(new Error("ENOENT"));
+
+    await expect(findSource("bus-rapid-transit").fetch()).rejects.toThrow(
+      "Failed to fetch A Re Yeng and no fallback output exists",
+    );
+  });
+
   it("fetches A Re Yeng, Rea Vaya and Ekurhuleni IRPTN concurrently, not sequentially", async () => {
     let resolveAReYeng!: (value: unknown) => void;
     let resolveReaVaya!: (value: unknown) => void;

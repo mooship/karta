@@ -133,20 +133,56 @@ async function fetchCommuterRail(): Promise<TransitLayerFeatureCollection> {
   });
 }
 
+/**
+ * Filters a `bus-rapid-transit` fallback file (a merge of A Re Yeng, Rea
+ * Vaya, and Ekurhuleni IRPTN features) down to just `network`'s features,
+ * for `fetchWithPublishedFallback`'s `recoverFromFallback`.
+ */
+function recoverNetworkFromBusRapidTransitFallback(
+  network: string,
+): (fallback: TransitLayerFeatureCollection) => TransitLayerFeatureCollection {
+  return (fallback) => ({
+    type: "FeatureCollection",
+    features: fallback.features.filter(
+      (feature) =>
+        (feature.properties as { network?: unknown } | null)?.network ===
+        network,
+    ),
+  });
+}
+
+/**
+ * Fetches one bus-rapid-transit network's features, falling back to that
+ * network's slice of the last-published `bus-rapid-transit` file on failure.
+ */
+function fetchBusRapidTransitNetworkWithFallback(
+  sourceName: string,
+  fetch: () => Promise<TransitLayerFeatureCollection>,
+): Promise<TransitLayerFeatureCollection> {
+  return fetchWithPublishedFallback({
+    sourceName,
+    fallbackLayerName: "bus-rapid-transit",
+    fetch,
+    recoverFromFallback: recoverNetworkFromBusRapidTransitFallback(sourceName),
+  });
+}
+
 async function fetchBusRapidTransit(): Promise<TransitLayerFeatureCollection> {
   const reaVayaBbox = getMetroBbox("johannesburg");
-  const [rawAReYeng, reaVayaRaw, ekurhuleniIrptnRaw] = await Promise.all([
-    fetchAReYengRoutes(),
-    fetchReaVayaRoutes(reaVayaBbox),
-    fetchEkurhuleniIrptnRoutes(),
+  const [aReYeng, reaVaya, ekurhuleniIrptn] = await Promise.all([
+    fetchBusRapidTransitNetworkWithFallback("A Re Yeng", async () => {
+      const raw = await fetchAReYengRoutes();
+      return "elements" in raw
+        ? normalizeAReYengOverpass(raw)
+        : normalizeAReYeng(raw);
+    }),
+    fetchBusRapidTransitNetworkWithFallback("Rea Vaya", async () =>
+      normalizeReaVayaOverpass(await fetchReaVayaRoutes(reaVayaBbox)),
+    ),
+    fetchBusRapidTransitNetworkWithFallback("Ekurhuleni IRPTN", async () =>
+      normalizeEkurhuleniIrptn(await fetchEkurhuleniIrptnRoutes()),
+    ),
   ]);
-
-  const aReYeng =
-    "elements" in rawAReYeng
-      ? normalizeAReYengOverpass(rawAReYeng)
-      : normalizeAReYeng(rawAReYeng);
-  const reaVaya = normalizeReaVayaOverpass(reaVayaRaw);
-  const ekurhuleniIrptn = normalizeEkurhuleniIrptn(ekurhuleniIrptnRaw);
 
   return mergeFeatureCollections([aReYeng, reaVaya, ekurhuleniIrptn]);
 }

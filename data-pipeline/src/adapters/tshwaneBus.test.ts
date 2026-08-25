@@ -82,4 +82,19 @@ describe("fetchTshwaneBusRoutes", () => {
 
     expect(result).toEqual({ elements: [] });
   });
+
+  it("logs the failure before falling back to an empty collection", async () => {
+    const consoleWarn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const fetchMock = vi.fn().mockResolvedValue({ ok: false, status: 500 });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const { fetchTshwaneBusRoutes } = await import("./tshwaneBus");
+    await fetchTshwaneBusRoutes("-25.9,28.0,-25.5,28.4");
+
+    expect(consoleWarn).toHaveBeenCalledWith(
+      expect.stringContaining("Tshwane Bus"),
+      expect.any(Error),
+    );
+    consoleWarn.mockRestore();
+  });
 });
