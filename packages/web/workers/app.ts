@@ -25,14 +25,27 @@ const requestHandler = createRequestHandler(
  *   leaving `getLocale()` inside the render permanently falling back to
  *   `baseLocale`. `entry.server.tsx` shares Vite's single build graph with
  *   `root.tsx`, so wrapping there is what actually reaches `getLocale()`.
+ * @remarks The `try`/`catch` around `requestHandler` is a last-resort net,
+ *   not the primary error path — `entry.server.tsx`'s `onError` and
+ *   `root.tsx`'s `ErrorBoundary` catch render/loader/action errors and log
+ *   them via `console.error` before this ever sees them. This only fires
+ *   for a failure outside that render lifecycle entirely (e.g. the dynamic
+ *   `import("../build/server/index.js")` itself failing), where an
+ *   unhandled throw would otherwise surface as a bare Workers runtime
+ *   exception instead of a logged error and a response.
  */
 export default {
-  fetch(request: Request) {
+  async fetch(request: Request): Promise<Response> {
     const url = new URL(request.url);
     if (url.hostname === OLD_HOSTNAME) {
       url.hostname = NEW_HOSTNAME;
       return Response.redirect(url.toString(), 301);
     }
-    return requestHandler(request);
+    try {
+      return await requestHandler(request);
+    } catch (error) {
+      console.error(error);
+      return new Response("Internal Server Error", { status: 500 });
+    }
   },
 } satisfies ExportedHandler;
