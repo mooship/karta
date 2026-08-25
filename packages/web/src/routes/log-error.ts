@@ -35,18 +35,11 @@ export async function action({
     return new Response(null, { status: 405 });
   }
 
-  let payload: unknown;
   try {
-    payload = await request.json();
+    const report = clientErrorReportSchema.parse(await request.json());
+    console.error("[client-error]", report);
+    return new Response(null, { status: 204 });
   } catch {
     return new Response(null, { status: 400 });
   }
-
-  const result = clientErrorReportSchema.safeParse(payload);
-  if (!result.success) {
-    return new Response(null, { status: 400 });
-  }
-
-  console.error("[client-error]", JSON.stringify(result.data));
-  return new Response(null, { status: 204 });
 }

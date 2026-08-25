@@ -48,12 +48,10 @@ export function reportClientError(
     };
 
     const body = JSON.stringify(report);
-    const sentViaBeacon =
-      typeof navigator.sendBeacon === "function" &&
-      navigator.sendBeacon(
-        CLIENT_ERROR_REPORT_PATH,
-        new Blob([body], { type: "application/json" }),
-      );
+    const sentViaBeacon = navigator.sendBeacon?.(
+      CLIENT_ERROR_REPORT_PATH,
+      new Blob([body], { type: "application/json" }),
+    );
 
     if (!sentViaBeacon) {
       void fetch(CLIENT_ERROR_REPORT_PATH, {
