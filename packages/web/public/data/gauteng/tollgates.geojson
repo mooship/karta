@@ -1,0 +1,35 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "grasmere",
+        "name": "Grasmere Toll Plaza",
+        "route": "N1",
+        "operator": "SANRAL"
+      },
+      "geometry": { "type": "Point", "coordinates": [27.858, -26.452] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "carousel",
+        "name": "Carousel Toll Plaza",
+        "route": "N1",
+        "operator": "Bakwena N1N4"
+      },
+      "geometry": { "type": "Point", "coordinates": [28.275, -25.37] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "heidelberg",
+        "name": "Heidelberg Toll Plaza",
+        "route": "N3",
+        "operator": "N3 Toll Concession"
+      },
+      "geometry": { "type": "Point", "coordinates": [28.355, -26.545] }
+    }
+  ]
+}

@@ -72,6 +72,9 @@
   "township_popup_transit_distance": "Distance to nearest transit",
   "distance_km": "{value} km",
 
+  "tollgate_popup_route": "Route",
+  "tollgate_popup_operator": "Operator",
+
   "commute_no_data": "No data",
   "commute_minutes": "{minutes} min",
   "commute_hours_minutes": "{hours}h {minutes}min",
@@ -93,10 +96,13 @@
   "layer_bus_rapid_transit_label": "Bus Rapid Transit",
   "layer_commuter_rail_label": "Commuter Rail",
   "layer_bus_label": "Bus",
+  "layer_tollgates_label": "Toll plazas",
+  "layer_tollgates_description": "Approximate locations of physical toll plazas on Gauteng's tolled highways — a direct cost of car-based commuting alongside modelled drive time.",
 
   "layer_group_access_to_opportunity_title": "Accessibility overlays",
   "layer_group_access_to_opportunity_description": "Only one overlay can be active at a time.",
   "layer_group_transit_networks_title": "Transit networks",
+  "layer_group_transport_costs_title": "Transport costs",
 
   "domain_story_title": "Why this map exists",
   "domain_story_body": "Apartheid law controlled where Black, Coloured and Indian people could live. Black townships were deliberately separated from economic centres, and those distances still shape access to work today. This map measures that gap with modelled car time and distance to transit.",

@@ -2,7 +2,7 @@ import type { TownshipProperties } from "@karta/app";
 import { m } from "../../paraglide/messages.js";
 import { getLocale } from "../../paraglide/runtime.js";
 import { formatCommuteTime } from "../../utils/formatCommuteTime";
-import * as styles from "./TownshipPopup.css";
+import * as styles from "../FeaturePopup.css";
 
 interface TownshipPopupProps {
   properties: TownshipProperties;

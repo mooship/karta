@@ -24,4 +24,10 @@ export const GAUTENG_SPATIAL_LEGACY_LAYER_GROUPS: readonly LayerGroup[] = [
     selectionMode: "independent",
     layerIds: ["rapid-rail", "bus-rapid-transit", "commuter-rail", "bus"],
   },
+  {
+    id: "transport-costs",
+    title: "Transport costs",
+    selectionMode: "independent",
+    layerIds: ["tollgates"],
+  },
 ] as const satisfies readonly LayerGroup[];

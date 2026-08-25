@@ -36,4 +36,13 @@ describe("GAUTENG_SPATIAL_LEGACY_LAYER_GROUPS", () => {
       "bus",
     ]);
   });
+
+  it("defines the transport-costs independent group holding the tollgates layer", () => {
+    const group = GAUTENG_SPATIAL_LEGACY_LAYER_GROUPS.find(
+      (g) => g.id === "transport-costs",
+    );
+    expect(group?.title).toBe("Transport costs");
+    expect(group?.selectionMode).toBe("independent");
+    expect(group?.layerIds).toEqual(["tollgates"]);
+  });
 });

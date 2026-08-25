@@ -1,4 +1,8 @@
-import type { TownshipFeature, TownshipProperties } from "@karta/app";
+import type {
+  TollgateProperties,
+  TownshipFeature,
+  TownshipProperties,
+} from "@karta/app";
 import {
   type DomainConfig,
   type DomainStory as DomainStoryContent,
@@ -50,6 +54,7 @@ import { DomainStory } from "./components/DomainStory/DomainStory";
 import { LanguageToggle } from "./components/LanguageToggle/LanguageToggle";
 import { LayerToggles } from "./components/LayerToggles/LayerToggles";
 import { PrivacyLink } from "./components/PrivacyLink/PrivacyLink";
+import { TollgatePopup } from "./components/TollgatePopup/TollgatePopup";
 import { TownshipPopup } from "./components/TownshipPopup/TownshipPopup";
 import { fetchTownships } from "./data/fetchTownships";
 import { buildRegionDataUrls } from "./data/regionDataUrls";
@@ -94,6 +99,20 @@ const SEARCH_COVERAGE_BOUNDS: LatLngBoundsTuple = [
 const locationSearchProvider = createNominatimGeocoderProvider({
   countryCodes: "za",
 });
+
+/**
+ * Whether `properties` is a toll plaza feature rather than a township one.
+ * @remarks `MapView`'s `renderFeaturePopup` receives only a feature's raw
+ *   `properties`, with no layer id attached, so `App` has to tell the two
+ *   selectable layers' shapes apart itself. `route` is unique to
+ *   `TollgateProperties` among today's selectable layers, so its presence
+ *   is a safe discriminant.
+ */
+function isTollgateProperties(
+  properties: Record<string, unknown>,
+): properties is TollgateProperties {
+  return typeof properties.route === "string";
+}
 
 /**
  * Whether `location` falls within `SEARCH_COVERAGE_BOUNDS`.
@@ -613,19 +632,29 @@ export function App() {
   const handleMapReady = useCallback(() => setMapReady(true), []);
 
   /**
-   * Renders a selected township's popup markup for `MapView`.
+   * Renders a selected feature's popup markup for `MapView`, dispatching on
+   * shape (see `isTollgateProperties`) since today's two selectable layers
+   * — townships and tollgates — need different popup content.
    * @remarks Memoised with no dependencies because nothing render-scoped is
-   *   captured here — `TownshipPopup` resolves its own translated copy when
-   *   the element it returns is actually rendered — so there's no reason to
-   *   hand `MapView` a fresh closure every render. `MapView` itself no
-   *   longer depends on this being stable for correctness (it reads the
-   *   latest value through its own ref internally), but keeping it stable
-   *   here still avoids the odd re-render doing pointless work for free.
+   *   captured here — `TownshipPopup`/`TollgatePopup` resolve their own
+   *   translated copy when the element they return is actually rendered —
+   *   so there's no reason to hand `MapView` a fresh closure every render.
+   *   `MapView` itself no longer depends on this being stable for
+   *   correctness (it reads the latest value through its own ref
+   *   internally), but keeping it stable here still avoids the odd
+   *   re-render doing pointless work for free.
    */
   const renderFeaturePopup = useCallback(
-    (properties: Record<string, unknown>) => (
-      <TownshipPopup properties={properties as unknown as TownshipProperties} />
-    ),
+    (properties: Record<string, unknown>) => {
+      if (isTollgateProperties(properties)) {
+        return <TollgatePopup properties={properties} />;
+      }
+      return (
+        <TownshipPopup
+          properties={properties as unknown as TownshipProperties}
+        />
+      );
+    },
     [],
   );
 

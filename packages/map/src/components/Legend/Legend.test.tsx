@@ -156,6 +156,84 @@ describe("Legend", () => {
     expect(screen.queryByText("Traffic")).not.toBeInTheDocument();
   });
 
+  it("renders one section per point layer with its own heading and a dot swatch per entry", () => {
+    const pointDomain: DomainConfig = {
+      layers: [
+        {
+          id: "landmarks",
+          label: "Landmarks",
+          dataSource: ["/data/example/landmarks.geojson"],
+          geometryKind: "point",
+          defaultVisible: true,
+          available: true,
+          style: {
+            kind: "point",
+            color: "#3673B8",
+            radius: 6,
+            legendLabel: "Landmarks",
+          },
+        },
+      ],
+      layerGroups: [],
+    };
+
+    render(
+      <DomainProvider domain={pointDomain}>
+        <Legend />
+      </DomainProvider>,
+    );
+
+    expect(screen.getByRole("list", { name: "Landmarks" })).toBeInTheDocument();
+    const [heading, entryLabel] = screen.getAllByText("Landmarks");
+    expect(heading?.tagName).toBe("H3");
+    expect(entryLabel?.previousElementSibling).toHaveStyle({
+      backgroundColor: "#3673B8",
+    });
+  });
+
+  it("renders one point-layer entry per category for a categorized color classification", () => {
+    const pointDomain: DomainConfig = {
+      layers: [
+        {
+          id: "landmarks",
+          label: "Landmarks",
+          dataSource: ["/data/example/landmarks.geojson"],
+          geometryKind: "point",
+          defaultVisible: true,
+          available: true,
+          style: {
+            kind: "point",
+            color: "#3673B8",
+            radius: 6,
+            legendLabel: "Landmarks",
+            colorClassification: {
+              kind: "categorized",
+              propertyKey: "category",
+              stops: [
+                { match: "museum", value: "#3673B8", label: "Museum" },
+                { match: "memorial", value: "#C1502E", label: "Memorial" },
+              ],
+              fallback: "#3673B8",
+            },
+          },
+        },
+      ],
+      layerGroups: [],
+    };
+
+    render(
+      <DomainProvider domain={pointDomain}>
+        <Legend />
+      </DomainProvider>,
+    );
+
+    expect(screen.getByText("Museum")).toBeInTheDocument();
+    expect(screen.getByText("Memorial")).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Landmarks" }),
+    ).toBeInTheDocument();
+  });
+
   it("in active mode, shows only visible layer sections", () => {
     render(withDomain(<Legend mode="active" visibleLayerIds={["areas"]} />));
     expect(

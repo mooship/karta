@@ -42,6 +42,10 @@ const LAYER_TEXT: Record<string, LayerText> = {
   "bus-rapid-transit": { label: m.layer_bus_rapid_transit_label },
   "commuter-rail": { label: m.layer_commuter_rail_label },
   bus: { label: m.layer_bus_label },
+  tollgates: {
+    label: m.layer_tollgates_label,
+    description: m.layer_tollgates_description,
+  },
 };
 
 interface LayerGroupText {
@@ -57,6 +61,9 @@ const LAYER_GROUP_TEXT: Record<string, LayerGroupText> = {
   },
   "transit-networks": {
     title: m.layer_group_transit_networks_title,
+  },
+  "transport-costs": {
+    title: m.layer_group_transport_costs_title,
   },
 };
 

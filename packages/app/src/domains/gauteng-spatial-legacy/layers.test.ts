@@ -19,7 +19,7 @@ describe("GAUTENG_SPATIAL_LEGACY_LAYERS", () => {
     }
   });
 
-  it("has exactly the 6 layers the current app ships, in order", () => {
+  it("has exactly the 7 layers the current app ships, in order", () => {
     expect(GAUTENG_SPATIAL_LEGACY_LAYERS.map((l) => l.id)).toEqual([
       "townships",
       "nearest-transit",
@@ -27,6 +27,7 @@ describe("GAUTENG_SPATIAL_LEGACY_LAYERS", () => {
       "bus-rapid-transit",
       "commuter-rail",
       "bus",
+      "tollgates",
     ]);
   });
 
@@ -176,5 +177,27 @@ describe("GAUTENG_SPATIAL_LEGACY_LAYERS", () => {
       expect(findLayer(id).defaultVisible).toBe(false);
       expect(findLayer(id).available).toBe(true);
     }
+  });
+
+  it("matches today's tollgates point layer exactly", () => {
+    const layer = GAUTENG_SPATIAL_LEGACY_LAYERS.find(
+      (l) => l.id === "tollgates",
+    );
+    expect(layer?.label).toBe("Toll plazas");
+    expect(layer?.geometryKind).toBe("point");
+    expect(layer?.defaultVisible).toBe(false);
+    expect(layer?.available).toBe(true);
+    expect(layer?.dataSource).toEqual(["/data/gauteng/tollgates.geojson"]);
+    expect(layer?.interaction).toEqual({
+      selectable: true,
+      labelField: "name",
+      popupFields: ["route", "operator"],
+    });
+    expect(layer?.style).toEqual({
+      kind: "point",
+      color: "#8A5A44",
+      radius: 6,
+      legendLabel: "Toll plazas",
+    });
   });
 });

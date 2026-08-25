@@ -73,6 +73,22 @@ const BRT_LAYER: Layer = {
   },
 };
 
+const POINT_LAYER: Layer = {
+  id: "tollgates",
+  label: "Toll plazas",
+  description: "English description",
+  dataSource: ["/data/gauteng/tollgates.geojson"],
+  geometryKind: "point",
+  defaultVisible: false,
+  available: true,
+  style: {
+    kind: "point",
+    color: "#000",
+    radius: 6,
+    legendLabel: "Toll plazas",
+  },
+};
+
 const UNKNOWN_CHOROPLETH_LAYER: Layer = {
   id: "some-future-choropleth",
   label: "Some Future Choropleth",
@@ -165,6 +181,18 @@ describe("localizeLayer", () => {
     expect(localized.style.kind).toBe("line");
     if (localized.style.kind === "line") {
       expect(localized.style.legendLabel).toBe("Snelspoor");
+    }
+  });
+
+  it("mirrors the translated label into a point layer's legendLabel", () => {
+    getLocale.mockReturnValue("af");
+
+    const localized = localizeLayer(POINT_LAYER);
+
+    expect(localized.label).toBe("Tolhekke");
+    expect(localized.style.kind).toBe("point");
+    if (localized.style.kind === "point") {
+      expect(localized.style.legendLabel).toBe("Tolhekke");
     }
   });
 

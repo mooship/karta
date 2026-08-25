@@ -72,6 +72,9 @@
   "township_popup_transit_distance": "Afstand tot naaste vervoer",
   "distance_km": "{value} km",
 
+  "tollgate_popup_route": "Roete",
+  "tollgate_popup_operator": "Operateur",
+
   "commute_no_data": "Geen data",
   "commute_minutes": "{minutes} min",
   "commute_hours_minutes": "{hours}h {minutes}min",
@@ -93,10 +96,13 @@
   "layer_bus_rapid_transit_label": "Snelbus",
   "layer_commuter_rail_label": "Pendelspoor",
   "layer_bus_label": "Bus",
+  "layer_tollgates_label": "Tolhekke",
+  "layer_tollgates_description": "Benaderde liggings van fisiese tolhekke op Gauteng se getolde snelweë — 'n direkte koste van motorgebaseerde pendel, saam met gemodelleerde rytyd.",
 
   "layer_group_access_to_opportunity_title": "Toeganklikheidslae",
   "layer_group_access_to_opportunity_description": "Slegs een laag kan op 'n slag aktief wees.",
   "layer_group_transit_networks_title": "Vervoernetwerke",
+  "layer_group_transport_costs_title": "Vervoerkoste",
 
   "domain_story_title": "Waarom hierdie kaart bestaan",
   "domain_story_body": "Apartheidswetgewing het bepaal waar Swart, Kleurling- en Indiër-mense kon woon. Swart lokasies is doelbewus van ekonomiese sentrums geskei, en daardie afstande bepaal vandag steeds toegang tot werk. Hierdie kaart meet daardie gaping met gemodelleerde motortyd en afstand tot vervoer.",

@@ -1,7 +1,13 @@
 import { vars } from "@karta/theme";
 import { globalStyle, style } from "@vanilla-extract/css";
-import { appVars } from "../../theme/app.css";
+import { appVars } from "../theme/app.css";
 
+/**
+ * Shared layout styles for `MapView`'s `renderFeaturePopup` content —
+ * `TownshipPopup` and `TollgatePopup` both render a name heading over a
+ * `dt`/`dd` field list, so the layout lives here once rather than being
+ * duplicated per popup component.
+ */
 export const popup = style({
   fontFamily: appVars.font.body,
   minWidth: "14rem",

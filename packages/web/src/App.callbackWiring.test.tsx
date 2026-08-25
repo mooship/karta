@@ -277,6 +277,24 @@ describe("App map/location callback wiring", () => {
     expect(screen.getByTestId("township-popup")).toHaveTextContent("Mamelodi");
   });
 
+  it("renders tollgate popup content via renderFeaturePopup for a toll plaza feature", async () => {
+    render(<App />);
+
+    await waitFor(() => expect(mapViewMocks.latestProps).toBeDefined());
+
+    const popup = mapViewMocks.latestProps?.renderFeaturePopup?.({
+      name: "Grasmere Toll Plaza",
+      route: "N1",
+      operator: "SANRAL",
+    });
+
+    render(<div>{popup}</div>);
+
+    expect(screen.getByTestId("tollgate-popup")).toHaveTextContent(
+      "Grasmere Toll Plaza",
+    );
+  });
+
   it("always provides renderFeaturePopup, regardless of panel open state", async () => {
     useMapUiStore.getState().setPanelOpen(true);
 

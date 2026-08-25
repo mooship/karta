@@ -23,7 +23,7 @@ describe("registry", () => {
     getLocale.mockReturnValue("en");
   });
 
-  it("returns the 6 gauteng-spatial-legacy layers", () => {
+  it("returns the 7 gauteng-spatial-legacy layers", () => {
     const layers = getLayers();
     expect(layers.map((l) => l.id)).toEqual(
       expect.arrayContaining([
@@ -33,6 +33,7 @@ describe("registry", () => {
         "bus-rapid-transit",
         "commuter-rail",
         "bus",
+        "tollgates",
       ]),
     );
   });
@@ -50,11 +51,12 @@ describe("registry", () => {
     expect(getLayer("does-not-exist")).toBeUndefined();
   });
 
-  it("returns the 2 layer groups", () => {
+  it("returns the 3 layer groups", () => {
     const groups = getLayerGroups();
     expect(groups.map((g) => g.id)).toEqual([
       "access-to-opportunity",
       "transit-networks",
+      "transport-costs",
     ]);
   });
 

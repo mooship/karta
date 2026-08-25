@@ -5,5 +5,6 @@ export * from "./constants/transitLayers";
 export * from "./domains/gauteng-spatial-legacy";
 export * from "./domains/heritage-sites";
 export * from "./types/genericLayer";
+export * from "./types/tollgate";
 export * from "./types/township";
 export * from "./types/transit";

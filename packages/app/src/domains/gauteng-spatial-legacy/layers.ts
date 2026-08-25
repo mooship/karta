@@ -38,9 +38,12 @@ const TOWNSHIP_EMPHASIS_STYLE = {
 /**
  * The `gauteng-spatial-legacy` domain's layer catalogue: two choropleth
  * layers (modelled car time, distance to nearest transit) sharing the same
- * township-area data, and one line layer per transit network. `rapid-rail`
- * and `commuter-rail` set `hasPointGeometry: true` since real station/stop
- * Point geometry only exists for those two networks.
+ * township-area data, one line layer per transit network, and a single
+ * hand-authored `tollgates` Point layer (no `data-pipeline` fetcher behind
+ * it, like `heritage-sites`' own point layer — toll plaza locations are a
+ * small, static list, not something Overpass/OSRM routing produces).
+ * `rapid-rail` and `commuter-rail` set `hasPointGeometry: true` since real
+ * station/stop Point geometry only exists for those two networks.
  * @remarks `readonly`/`as const`, matching `METROS`/`REGIONS`: Cloudflare
  *   Workers reuse isolates across requests, so an in-place mutation by any
  *   downstream consumer would otherwise leak across unrelated requests for
@@ -183,5 +186,26 @@ export const GAUTENG_SPATIAL_LEGACY_LAYERS: readonly Layer[] = [
     defaultVisible: false,
     available: true,
     style: { kind: "line", color: "#CC79A7", weight: 3, legendLabel: "Bus" },
+  },
+  {
+    id: "tollgates",
+    label: "Toll plazas",
+    description:
+      "Approximate locations of physical toll plazas on Gauteng's tolled highways — a direct cost of car-based commuting alongside modelled drive time.",
+    dataSource: [dataUrl("tollgates.geojson")],
+    geometryKind: "point",
+    defaultVisible: false,
+    available: true,
+    interaction: {
+      selectable: true,
+      labelField: "name",
+      popupFields: ["route", "operator"],
+    },
+    style: {
+      kind: "point",
+      color: "#8A5A44",
+      radius: 6,
+      legendLabel: "Toll plazas",
+    },
   },
 ] as const satisfies readonly Layer[];
