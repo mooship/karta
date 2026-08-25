@@ -3,7 +3,7 @@ import { cookieName as LOCALE_COOKIE_NAME } from "../../paraglide/runtime.js";
 import * as styles from "./PrivacyPolicy.css";
 
 /** ISO date this policy's content was last reviewed for accuracy. */
-const LAST_UPDATED = "2026-08-18";
+const LAST_UPDATED = "2026-08-25";
 
 /** This page's title, shared with `routes/privacy.tsx`'s `<title>` so the two can't drift apart. */
 export const PRIVACY_POLICY_TITLE = "Privacy policy";
@@ -55,6 +55,16 @@ export function PrivacyPolicy() {
         across sites, and stores no personal data. Requests are made to{" "}
         <code>static.cloudflareinsights.com</code> and{" "}
         <code>cloudflareinsights.com</code>.
+      </p>
+
+      <h2 className={styles.sectionTitle}>Error reporting</h2>
+      <p className={styles.body}>
+        If the app hits an unexpected error in your browser, it sends a short
+        diagnostic report — the error message, a stack trace, and the page URL —
+        to this site's own server, where it is written to Cloudflare's
+        operational logs so the fault can be fixed. No cookies, personal data,
+        or persistent identifiers are attached to this report, and it is not
+        stored in any database.
       </p>
 
       <h2 className={styles.sectionTitle}>Hosting logs</h2>

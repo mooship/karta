@@ -6,4 +6,5 @@ export default [
   route("robots.txt", "./routes/robots.txt.ts"),
   route("sitemap.xml", "./routes/sitemap.xml.ts"),
   route("llms.txt", "./routes/llms.txt.ts"),
+  route("log-error", "./routes/log-error.ts"),
 ] satisfies RouteConfig;

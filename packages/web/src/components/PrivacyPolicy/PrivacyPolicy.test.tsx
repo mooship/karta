@@ -43,4 +43,13 @@ describe("PrivacyPolicy", () => {
 
     expect(screen.getByText(/geolocation/i)).toBeInTheDocument();
   });
+
+  it("discloses client-side error reports as containing no personal data", () => {
+    render(<PrivacyPolicy />);
+
+    expect(screen.getByText(/diagnostic report/)).toBeInTheDocument();
+    expect(
+      screen.getByText(/Cloudflare's operational logs/),
+    ).toBeInTheDocument();
+  });
 });
