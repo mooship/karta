@@ -212,6 +212,58 @@ describe("fetchEkurhuleniIrptnRoutes", () => {
     vi.useRealTimers();
   });
 
+  it("retries a page after a transient network failure before succeeding", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockRejectedValueOnce(new TypeError("fetch failed"))
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          type: "FeatureCollection",
+          features: [
+            {
+              type: "Feature",
+              properties: { OBJECTID: 1, Name: "Route 1A" },
+              geometry: {
+                type: "LineString",
+                coordinates: [
+                  [28.2, -26.0],
+                  [28.21, -26.01],
+                ],
+              },
+            },
+          ],
+          exceededTransferLimit: false,
+        }),
+      });
+    vi.stubGlobal("fetch", fetchMock);
+    vi.useFakeTimers();
+
+    const resultPromise = fetchEkurhuleniIrptnRoutes();
+    await vi.advanceTimersByTimeAsync(5000);
+    const result = await resultPromise;
+
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(result.features).toHaveLength(1);
+
+    vi.useRealTimers();
+  });
+
+  it("throws after exhausting retries on a persistent network failure", async () => {
+    const fetchMock = vi.fn().mockRejectedValue(new TypeError("fetch failed"));
+    vi.stubGlobal("fetch", fetchMock);
+    vi.useFakeTimers();
+
+    const resultPromise = fetchEkurhuleniIrptnRoutes();
+    resultPromise.catch(() => {});
+    await vi.advanceTimersByTimeAsync(10_000);
+
+    await expect(resultPromise).rejects.toThrow("fetch failed");
+    expect(fetchMock.mock.calls.length).toBeGreaterThan(1);
+
+    vi.useRealTimers();
+  });
+
   it("throws when the request fails with a non-OK status", async () => {
     const fetchMock = vi.fn().mockResolvedValue({ ok: false, status: 503 });
     vi.stubGlobal("fetch", fetchMock);

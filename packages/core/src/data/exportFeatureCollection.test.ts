@@ -121,6 +121,25 @@ describe("featureCollectionToCsv", () => {
     expect(rows[1]).toBe("28,-26");
   });
 
+  it("does not throw for a feature with null geometry, leaving its centroid columns blank", () => {
+    const collection: FeatureCollection = {
+      type: "FeatureCollection",
+      features: [
+        {
+          type: "Feature",
+          properties: { name: "Unlocated" },
+          geometry: null,
+        },
+      ],
+    };
+
+    expect(() => featureCollectionToCsv(collection)).not.toThrow();
+
+    const rows = featureCollectionToCsv(collection).split("\r\n");
+
+    expect(rows[1]).toBe("Unlocated,,");
+  });
+
   it('treats a null or missing property value as an empty field, not the string "null"', () => {
     const collection: FeatureCollection = {
       type: "FeatureCollection",

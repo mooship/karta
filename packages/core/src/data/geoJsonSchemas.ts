@@ -1,5 +1,21 @@
-import type { FeatureCollection, Position } from "geojson";
+import type { Feature, FeatureCollection, Geometry, Position } from "geojson";
 import * as z from "zod/mini";
+
+/**
+ * Whether `feature` is an "unlocated" GeoJSON feature — `geometry: null`, a
+ * shape RFC 7946 explicitly allows and {@link featureCollectionSchema}
+ * validates as valid.
+ * @remarks Shared by every caller that walks a `FeatureCollection`'s
+ *   features and needs to skip or special-case the ones with no geometry to
+ *   act on (e.g. `featureCollectionToCsv`'s centroid columns,
+ *   `reprojectFeatureCollection`'s pass-through), rather than each writing
+ *   its own `feature.geometry === null` check.
+ */
+export function isUnlocatedFeature(
+  feature: Feature<Geometry | null>,
+): feature is Feature<null> {
+  return feature.geometry === null;
+}
 
 /**
  * Whether `value` is a GeoJSON position: an array of at least two numbers.

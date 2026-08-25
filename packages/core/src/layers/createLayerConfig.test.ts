@@ -296,7 +296,7 @@ describe("createLayerConfig", () => {
     const config = createLayerConfig(layer);
 
     expect(config).toEqual({
-      pathOptions: { color: "#A87FE0", fillColor: "#A87FE0" },
+      pathOptions: { color: "#A87FE0", fillColor: "#A87FE0", radius: 4 },
     });
   });
 

@@ -1,4 +1,4 @@
-import { type RefObject, useCallback, useRef } from "react";
+import { type RefObject, useCallback, useEffect, useRef } from "react";
 
 /** Ref/callback pair returned by `useDeferredReadyAttribute`. */
 export interface DeferredReadyAttribute<T extends Element> {
@@ -28,7 +28,10 @@ export interface DeferredReadyAttribute<T extends Element> {
  *   real frame has already been painted. Mutates the DOM attribute directly
  *   rather than through React state, since a paired CSS rule is the only
  *   consumer -- funnelling it through `useState` would re-render the whole
- *   tree for a value nothing else branches on.
+ *   tree for a value nothing else branches on. Cancels any pending frame(s)
+ *   on unmount, so a `markReadyAfterPaint` chain still in flight when the
+ *   component unmounts doesn't call `setAttribute` on a ref whose element is
+ *   already gone.
  * @example
  * const { ref, markNotReady, markReadyAfterPaint } =
  *   useDeferredReadyAttribute("data-sheet-entrance-ready");
@@ -71,6 +74,10 @@ export function useDeferredReadyAttribute<T extends Element = HTMLElement>(
       });
     });
   }, [attribute, cancelPending]);
+
+  useEffect(() => {
+    return cancelPending;
+  }, [cancelPending]);
 
   return { ref, markNotReady, markReadyAfterPaint };
 }

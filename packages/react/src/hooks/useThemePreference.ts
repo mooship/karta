@@ -1,4 +1,5 @@
 import { useEffect, useLayoutEffect, useSyncExternalStore } from "react";
+import { safeStorage } from "./safeStorage";
 
 /**
  * Ambient, type-only: this package has no dependency on `@types/node`, but
@@ -85,9 +86,16 @@ function isExplicitTheme(value: string | null): value is "light" | "dark" {
   return value === "light" || value === "dark";
 }
 
-/** @remarks Both call sites (`initTheme`, module init) already guard with `typeof window === "undefined"` before calling this. */
+/**
+ * @remarks Both call sites (`initTheme`, module init) already guard with
+ *   `typeof window === "undefined"` before calling this. Reads through
+ *   `safeStorage` rather than `localStorage` directly, so a blocked store
+ *   degrades to the `"system"` default rather than failing the whole module
+ *   import when this runs at module-evaluation time (see the module-level
+ *   call below).
+ */
 function readStoredPreference(): ThemePreference {
-  const stored = localStorage.getItem(config.storageKey);
+  const stored = safeStorage.get(config.storageKey);
   return isExplicitTheme(stored) ? stored : "system";
 }
 
@@ -147,14 +155,18 @@ function getServerSnapshot(): ThemePreference {
  * Sets the user's theme preference, persists it to localStorage, and updates
  * the document's `data-theme` attribute and theme-color meta tag.
  * @param preference - `"system"` removes any explicit override.
+ * @remarks Persists through `safeStorage`, so a blocked or unavailable store
+ *   (see its doc comment) doesn't throw -- the preference still takes effect
+ *   in memory and on the document for the current session, it just won't
+ *   survive a reload.
  */
 export function setThemePreference(preference: ThemePreference) {
   currentPreference = preference;
   if (typeof window !== "undefined") {
     if (preference === "system") {
-      localStorage.removeItem(config.storageKey);
+      safeStorage.remove(config.storageKey);
     } else {
-      localStorage.setItem(config.storageKey, preference);
+      safeStorage.set(config.storageKey, preference);
     }
   }
   applyThemeAttribute(preference);

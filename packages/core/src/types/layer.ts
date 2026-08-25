@@ -101,13 +101,23 @@ export interface CategorizedStop<T> {
   label: string;
 }
 
-/** Classifies a numeric feature property into ranges, each mapped to a style value. */
+/**
+ * Classifies a numeric feature property into ranges, each mapped to a style value.
+ * @remarks A value above every stop's `max` clamps to the highest-`max`
+ *   stop's `value`, it does not fall back to `fallback` — see
+ *   `resolveClassification`. `fallback` is used only when the property is
+ *   missing or non-numeric, or when `stops` is empty.
+ */
 export interface GraduatedClassification<T> {
   kind: "graduated";
   /** GeoJSON feature property whose numeric value drives classification. */
   propertyKey: string;
   stops: GraduatedStop<T>[];
-  /** Value used when the property is missing, non-numeric, or below every stop's max. */
+  /**
+   * Value used when the property is missing, non-numeric, or `stops` is
+   * empty. A value that exceeds every stop's `max` does not use this — it
+   * clamps to the highest-`max` stop's `value` instead.
+   */
   fallback: T;
 }
 

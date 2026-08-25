@@ -74,6 +74,52 @@ describe("LocationSearchControl", () => {
     ).not.toBeInTheDocument();
   });
 
+  it("still searches on the next keystroke after selecting a result whose label exactly matches the typed query", async () => {
+    const onLocationSelect = vi.fn();
+    searchMocks.fetchLocationSearchResults
+      .mockResolvedValueOnce([
+        { id: "1", label: "Soweto", latitude: -26.267, longitude: 27.854 },
+      ])
+      .mockResolvedValueOnce([
+        { id: "2", label: "Sowetox", latitude: -26.1, longitude: 27.9 },
+      ]);
+
+    render(<LocationSearchControl onLocationSelect={onLocationSelect} />);
+    const input = screen.getByTestId("location-search-input");
+
+    fireEvent.change(input, { target: { value: "Soweto" } });
+    await waitFor(() => {
+      expect(searchMocks.fetchLocationSearchResults).toHaveBeenCalledWith(
+        "Soweto",
+        expect.any(AbortSignal),
+      );
+    });
+
+    const resultButton = await screen.findByRole("option", { name: "Soweto" });
+    fireEvent.click(resultButton);
+
+    expect(onLocationSelect).toHaveBeenCalledWith(
+      expect.objectContaining({ id: "1" }),
+    );
+    // Selecting a result whose label is textually identical to the already-typed
+    // query means setQuery(result.label) doesn't change React state, so the
+    // debounced-search effect never re-runs to clear justSelectedRef here --
+    // it must be cleared some other way, or the next real keystroke below gets
+    // silently swallowed by the still-true flag.
+    expect(input).toHaveValue("Soweto");
+
+    fireEvent.change(input, { target: { value: "Sowetox" } });
+
+    await waitFor(() => {
+      expect(searchMocks.fetchLocationSearchResults).toHaveBeenCalledWith(
+        "Sowetox",
+        expect.any(AbortSignal),
+      );
+    });
+    expect(searchMocks.fetchLocationSearchResults).toHaveBeenCalledTimes(2);
+    await screen.findByRole("option", { name: "Sowetox" });
+  });
+
   it("supports keyboard selection from typeahead results", async () => {
     const onLocationSelect = vi.fn();
     searchMocks.fetchLocationSearchResults.mockResolvedValue([

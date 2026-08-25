@@ -7,6 +7,28 @@ import type {
 } from "geojson";
 
 /**
+ * Returns `props[key]`, coerced to a string, for the first `key` in `keys`
+ * whose value is neither `undefined` nor `null`; returns `fallback` if none is.
+ * @remarks Shared by every line-string transit adapter (`aReYeng.ts`,
+ *   `ekurhuleniIrptn.ts`) whose upstream source may expose the same logical
+ *   id/name field under a different raw property name (open-data-portal vs.
+ *   ArcGIS field names).
+ */
+export function firstDefinedProperty(
+  props: Record<string, unknown>,
+  keys: readonly string[],
+  fallback: string,
+): string {
+  for (const key of keys) {
+    const value = props[key];
+    if (value !== undefined && value !== null) {
+      return String(value);
+    }
+  }
+  return fallback;
+}
+
+/**
  * Normalizes a `FeatureCollection`'s `LineString`/`MultiLineString` geometry
  * into one `LineString` feature per line. A `MultiLineString` is split into
  * its constituent parts rather than concatenated, which would draw phantom

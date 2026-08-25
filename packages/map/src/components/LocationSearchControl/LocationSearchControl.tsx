@@ -300,14 +300,20 @@ export function LocationSearchControl({
    * of result they picked.
    */
   function handleCombinedResultSelect(combined: CombinedResult) {
-    justSelectedRef.current = true;
+    const selectedLabel =
+      combined.kind === "feature" ? combined.label : combined.result.label;
+    // If the picked result's label is textually identical to what's already
+    // typed, setQuery below is a no-op as far as React state is concerned,
+    // so the debounced-search effect (keyed on `query`) never re-runs to
+    // clear this flag -- it would otherwise stay stuck `true` and silently
+    // swallow the next real search the user types.
+    justSelectedRef.current = query !== selectedLabel;
     if (combined.kind === "feature") {
       onFeatureSelect?.(combined.id);
-      setQuery(combined.label);
     } else {
       onLocationSelect(combined.result);
-      setQuery(combined.result.label);
     }
+    setQuery(selectedLabel);
     setResults([]);
     setActiveResultIndex(-1);
   }

@@ -197,7 +197,13 @@ export function createLayerConfig(
           },
         };
       }
-      return { pathOptions: { color: style.color, fillColor: style.color } };
+      return {
+        pathOptions: {
+          color: style.color,
+          fillColor: style.color,
+          radius: style.radius,
+        },
+      };
     }
   }
 }
