@@ -1,4 +1,4 @@
-import type { Layer } from "@karta/core";
+import type { Layer, LineLayerStyle, PointLayerStyle } from "@karta/core";
 import {
   DEFAULT_NO_DATA_COLOR,
   DEFAULT_NO_DATA_COLOR_DARK,
@@ -88,6 +88,32 @@ function choroplethLegends(
   });
 }
 
+/** Whether `layer` is available and, when `visibleLayerIds` is given, included in it. */
+function isLayerVisible(
+  layer: Layer,
+  visibleLayerIds: string[] | undefined,
+): boolean {
+  return (
+    layer.available && (!visibleLayerIds || visibleLayerIds.includes(layer.id))
+  );
+}
+
+/**
+ * Resolves a line or point layer's legend entries: one per
+ * `colorClassification` stop, or a single entry from `legendLabel`/`color`
+ * when it has none. Shared by `pointLegends` and `getTransitEntries`, which
+ * only differ in whether they attach a `hasStations` flag afterwards.
+ */
+function resolveClassifiedEntries(style: LineLayerStyle | PointLayerStyle) {
+  if (style.colorClassification) {
+    return style.colorClassification.stops.map((stop) => ({
+      label: stop.label,
+      color: stop.value,
+    }));
+  }
+  return [{ label: style.legendLabel, color: style.color }];
+}
+
 /**
  * Resolves point-layer legend sections, one per visible point-kind layer
  * (e.g. a hand-plotted layer of notable locations), each rendered with its
@@ -100,22 +126,12 @@ function pointLegends(
 ) {
   return layers.flatMap((layer) => {
     if (
-      !layer.available ||
       layer.style.kind !== "point" ||
-      (visibleLayerIds && !visibleLayerIds.includes(layer.id))
+      !isLayerVisible(layer, visibleLayerIds)
     ) {
       return [];
     }
-
-    const { style } = layer;
-    const entries = style.colorClassification
-      ? style.colorClassification.stops.map((stop) => ({
-          label: stop.label,
-          color: stop.value,
-        }))
-      : [{ label: style.legendLabel, color: style.color }];
-
-    return [{ layer, entries }];
+    return [{ layer, entries: resolveClassifiedEntries(layer.style) }];
   });
 }
 
@@ -125,25 +141,16 @@ function getTransitEntries(
 ) {
   return layers.flatMap((layer) => {
     if (
-      !layer.available ||
       layer.style.kind !== "line" ||
-      (visibleLayerIds && !visibleLayerIds.includes(layer.id))
+      !isLayerVisible(layer, visibleLayerIds)
     ) {
       return [];
     }
-
-    const { style } = layer;
     const hasStations = layer.hasPointGeometry === true;
-
-    if (style.colorClassification) {
-      return style.colorClassification.stops.map((stop) => ({
-        label: stop.label,
-        color: stop.value,
-        hasStations,
-      }));
-    }
-
-    return [{ label: style.legendLabel, color: style.color, hasStations }];
+    return resolveClassifiedEntries(layer.style).map((entry) => ({
+      ...entry,
+      hasStations,
+    }));
   });
 }
 
@@ -156,6 +163,54 @@ function getLegendAriaLabel(
     return formatActiveAriaLabel(label);
   }
   return label;
+}
+
+interface LegendSectionProps {
+  layer: Layer;
+  entries: { label: string; color: string }[];
+  /** vanilla-extract class for each entry's swatch — square for choropleth, round for a point layer. */
+  swatchClassName: string;
+  mode: "all" | "active";
+  formatActiveAriaLabel: (label: string) => string;
+}
+
+/**
+ * One legend section: a layer's own heading over a list of color swatches.
+ * Shared by choropleth and point-kind layers, which both get one section per
+ * layer (unlike line layers, folded together under a single "Transit
+ * routes" heading — see the block below this one).
+ */
+function LegendSection({
+  layer,
+  entries,
+  swatchClassName,
+  mode,
+  formatActiveAriaLabel,
+}: LegendSectionProps) {
+  return (
+    <div>
+      <h3 className={styles.groupTitle}>{layer.label}</h3>
+      <ul
+        className={styles.legend}
+        aria-label={getLegendAriaLabel(
+          mode,
+          layer.label,
+          formatActiveAriaLabel,
+        )}
+      >
+        {entries.map((entry) => (
+          <li key={entry.label} className={styles.entry}>
+            <span
+              className={swatchClassName}
+              style={{ backgroundColor: entry.color }}
+              aria-hidden="true"
+            />
+            <span className={styles.label}>{entry.label}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
 }
 
 function LegendComponent({
@@ -203,52 +258,24 @@ function LegendComponent({
   return (
     <div className={styles.groups} data-compact={compact ? "true" : undefined}>
       {choroplethSections.map(({ layer, entries }) => (
-        <div key={layer.id}>
-          <h3 className={styles.groupTitle}>{layer.label}</h3>
-          <ul
-            className={styles.legend}
-            aria-label={getLegendAriaLabel(
-              mode,
-              layer.label,
-              formatActiveAriaLabel,
-            )}
-          >
-            {entries.map((entry) => (
-              <li key={entry.label} className={styles.entry}>
-                <span
-                  className={styles.swatch}
-                  style={{ backgroundColor: entry.color }}
-                  aria-hidden="true"
-                />
-                <span className={styles.label}>{entry.label}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
+        <LegendSection
+          key={layer.id}
+          layer={layer}
+          entries={entries}
+          swatchClassName={styles.swatch}
+          mode={mode}
+          formatActiveAriaLabel={formatActiveAriaLabel}
+        />
       ))}
       {pointSections.map(({ layer, entries }) => (
-        <div key={layer.id}>
-          <h3 className={styles.groupTitle}>{layer.label}</h3>
-          <ul
-            className={styles.legend}
-            aria-label={getLegendAriaLabel(
-              mode,
-              layer.label,
-              formatActiveAriaLabel,
-            )}
-          >
-            {entries.map((entry) => (
-              <li key={entry.label} className={styles.entry}>
-                <span
-                  className={styles.dotSwatch}
-                  style={{ backgroundColor: entry.color }}
-                  aria-hidden="true"
-                />
-                <span className={styles.label}>{entry.label}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
+        <LegendSection
+          key={layer.id}
+          layer={layer}
+          entries={entries}
+          swatchClassName={styles.dotSwatch}
+          mode={mode}
+          formatActiveAriaLabel={formatActiveAriaLabel}
+        />
       ))}
       {transitEntries.length > 0 ? (
         <div className={styles.fullWidthGroup}>
