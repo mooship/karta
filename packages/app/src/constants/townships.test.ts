@@ -25,7 +25,31 @@ describe("township groups", () => {
       "Olievenhoutbosch",
     );
     expect(getTownshipGroup("Plastic View", "799014063")).toBe("Plastic View");
-    expect(TOWNSHIP_AREA_DEFINITIONS).toHaveLength(127);
+    expect(TOWNSHIP_AREA_DEFINITIONS).toHaveLength(138);
+  });
+
+  it("tags each area with its metro and includes Cape Town's townships", () => {
+    expect(getTownshipGroup("Langa SP", "199027001")).toBe("Langa");
+    expect(getTownshipGroup("Nyanga SP", "199035002")).toBe("Nyanga");
+    expect(getTownshipGroup("Gugulethu SP", "199034008")).toBe("Gugulethu");
+    expect(getTownshipGroup("Khayelitsha SP", "199043011")).toBe("Khayelitsha");
+    expect(getTownshipGroup("Mitchells Plain Town Centre", "199044009")).toBe(
+      "Mitchells Plain",
+    );
+    expect(getTownshipGroup("Bishop Lavis", "199040001")).toBe("Bishop Lavis");
+    expect(getTownshipGroup("Manenberg", "199028031")).toBe("Manenberg");
+    expect(getTownshipGroup("Bonteheuwel", "199028001")).toBe("Bonteheuwel");
+    expect(getTownshipGroup("Heideveld", "199028021")).toBe("Heideveld");
+    expect(getTownshipGroup("Hanover Park", "199028029")).toBe("Hanover Park");
+    expect(getTownshipGroup("Elsies Rivier SP", "199025010")).toBe(
+      "Elsies River",
+    );
+    expect(
+      getTownshipGroup("Elsies River Industrial", "199025001"),
+    ).toBeUndefined();
+    expect(getTownshipAreaDefinition("Langa SP", "199027001")).toMatchObject({
+      metroId: "cape-town",
+    });
   });
 
   it("tags each area with its metro and includes Johannesburg's townships", () => {

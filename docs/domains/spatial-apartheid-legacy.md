@@ -6,7 +6,7 @@ This is one domain built on the Karta SDK — the reference implementation that 
 
 This domain maps apartheid-era spatial planning legacy across South African cities: recognized township areas, formal transit routes, and modeled car time to selected job centers in a single combined view. The car layer is a baseline spatial proxy, not an observed commute or a measure of public-transport access.
 
-**Current scope: full Gauteng municipality coverage in one combined regional layer.** The app currently includes City of Tshwane, City of Johannesburg, City of Ekurhuleni, Emfuleni, Midvaal, Lesedi, Mogale City, Rand West City, and Merafong City. It uses Stats SA Census 2011 boundaries, modeled OSRM car routing to each municipality's selected job centers, and transit overlays sourced from Gautrain rail, Gautrain Bus, PRASA rail, A Re Yeng, and Rea Vaya. Route geometry shows where formal transit runs, not service frequency, reliability, waiting, transfers, or jobs reachable. Other South African metros (Durban) are not yet included, and this domain is not the only one the SDK is meant to support — it's the first proof of concept.
+**Current scope: two regions, each in one combined regional layer.** Gauteng covers City of Tshwane, City of Johannesburg, City of Ekurhuleni, Emfuleni, Midvaal, Lesedi, Mogale City, Rand West City, and Merafong City. Western Cape covers City of Cape Town. It uses Stats SA Census 2011 boundaries, modeled OSRM car routing to each municipality's selected job centers, and transit overlays sourced from Gautrain rail, Gautrain Bus, PRASA rail, A Re Yeng, Rea Vaya, and MyCiTi. Route geometry shows where formal transit runs, not service frequency, reliability, waiting, transfers, or jobs reachable. Other South African metros (Durban) are not yet included, and this domain is not the only one the SDK is meant to support — it's the first proof of concept.
 
 ## Why
 
@@ -27,6 +27,7 @@ How included township and settlement areas are selected and displayed, one doc p
 - [`docs/data/mogale-city-area-classification.md`](../data/mogale-city-area-classification.md)
 - [`docs/data/rand-west-city-area-classification.md`](../data/rand-west-city-area-classification.md)
 - [`docs/data/merafong-city-area-classification.md`](../data/merafong-city-area-classification.md)
+- [`docs/data/cape-town-area-classification.md`](../data/cape-town-area-classification.md)
 
 ## Related
 

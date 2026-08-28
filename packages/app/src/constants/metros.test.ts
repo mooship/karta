@@ -3,8 +3,8 @@ import { getMetroDefinition, METROS } from "./metros";
 import { REGIONS } from "./regions";
 
 describe("metros", () => {
-  it("defines all Gauteng municipalities with stable Census 2011 municipality codes", () => {
-    expect(METROS).toHaveLength(9);
+  it("defines all Gauteng municipalities and City of Cape Town with stable Census 2011 municipality codes", () => {
+    expect(METROS).toHaveLength(10);
     expect(getMetroDefinition("tshwane").municipalityCodes).toEqual([799]);
     expect(getMetroDefinition("johannesburg").municipalityCodes).toEqual([798]);
     expect(getMetroDefinition("ekurhuleni").municipalityCodes).toEqual([797]);
@@ -18,11 +18,16 @@ describe("metros", () => {
     expect(getMetroDefinition("merafong-city").municipalityCodes).toEqual([
       766,
     ]);
+    expect(getMetroDefinition("cape-town").municipalityCodes).toEqual([199]);
   });
 
-  it("assigns every metro to the gauteng region", () => {
+  it("assigns every Gauteng metro to the gauteng region and Cape Town to western-cape", () => {
     for (const metro of METROS) {
-      expect(metro.regionId).toBe("gauteng");
+      if (metro.id === "cape-town") {
+        expect(metro.regionId).toBe("western-cape");
+      } else {
+        expect(metro.regionId).toBe("gauteng");
+      }
     }
   });
 

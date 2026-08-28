@@ -200,6 +200,7 @@ export const SPATIAL_APARTHEID_LEGACY_LAYERS: readonly Layer[] = [
             value: "#0072B2",
             label: "Ekurhuleni IRPTN",
           },
+          { match: "MyCiTi", value: "#E69F00", label: "MyCiTi" },
         ],
         fallback: "#009E73",
       },

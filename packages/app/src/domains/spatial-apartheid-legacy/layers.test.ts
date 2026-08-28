@@ -188,6 +188,7 @@ describe("SPATIAL_APARTHEID_LEGACY_LAYERS", () => {
             value: "#0072B2",
             label: "Ekurhuleni IRPTN",
           },
+          { match: "MyCiTi", value: "#E69F00", label: "MyCiTi" },
         ],
         fallback: "#009E73",
       },

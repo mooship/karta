@@ -15,11 +15,12 @@ export interface RegionDefinition {
 
 /**
  * The regions covered by this reference implementation.
- * @remarks Currently a single entry — `gauteng` — but the data pipeline and
- *   `@karta/web` are written to loop over however many are configured here.
+ * @remarks The data pipeline and `@karta/web` are written to loop over
+ *   however many are configured here.
  */
 export const REGIONS: readonly RegionDefinition[] = [
   { id: "gauteng", label: "Gauteng", kind: "province" },
+  { id: "western-cape", label: "Western Cape", kind: "province" },
 ] as const satisfies readonly RegionDefinition[];
 
 /**
