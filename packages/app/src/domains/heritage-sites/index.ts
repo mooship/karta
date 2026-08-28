@@ -4,13 +4,13 @@ import { HERITAGE_SITES_LAYERS } from "./layers";
 /**
  * Karta's second domain: publicly documented anti-apartheid and democracy
  * heritage sites across South Africa, plotted as points rather than the
- * choropleth/line layers `gauteng-spatial-legacy` uses. Unlike
- * `gauteng-spatial-legacy`, it is national rather than province-scoped —
+ * choropleth/line layers `spatial-apartheid-legacy` uses. Unlike
+ * `spatial-apartheid-legacy`, it is national rather than province-scoped —
  * proof that `DomainConfig`/`Layer` carry no notion of region or metro,
  * only whatever geographic scope a domain's own data happens to cover.
  * @remarks Deliberately has no `data-pipeline` source — its one small,
  *   hand-curated `FeatureCollection` (`packages/web/public/data/heritage-sites/heritage-sites.geojson`)
- *   needs no Overpass/OSRM fetching or routing, unlike `gauteng-spatial-legacy`'s
+ *   needs no Overpass/OSRM fetching or routing, unlike `spatial-apartheid-legacy`'s
  *   transit and drive-time layers. It exists to prove the SDK's `DomainConfig`
  *   contract holds for a second, independently authored domain — built using
  *   only `@karta/core`'s exported types, with no id-based special-casing in

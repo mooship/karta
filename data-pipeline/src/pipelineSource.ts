@@ -8,7 +8,7 @@ import type { FeatureCollection } from "geojson";
  *   writes the result to `packages/web/public/data/<regionId>/<outputFileName>`.
  */
 export interface PipelineSource {
-  /** Matches the corresponding `Layer.id` in the region's domain (e.g. `GAUTENG_SPATIAL_LEGACY_LAYERS`). */
+  /** Matches the corresponding `Layer.id` in the region's domain (e.g. `SPATIAL_APARTHEID_LEGACY_LAYERS`). */
   layerId: string;
   fetch(): Promise<FeatureCollection>;
   outputFileName: string;

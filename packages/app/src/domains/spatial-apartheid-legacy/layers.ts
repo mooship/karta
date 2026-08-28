@@ -36,7 +36,7 @@ const TOWNSHIP_EMPHASIS_STYLE = {
 } as const;
 
 /**
- * The `gauteng-spatial-legacy` domain's layer catalogue: two choropleth
+ * The `spatial-apartheid-legacy` domain's layer catalogue: two choropleth
  * layers (modelled car time, distance to nearest transit) sharing the same
  * township-area data, and one line layer per transit network. `rapid-rail`
  * and `commuter-rail` set `hasPointGeometry: true` since real station/stop
@@ -46,7 +46,7 @@ const TOWNSHIP_EMPHASIS_STYLE = {
  *   downstream consumer would otherwise leak across unrelated requests for
  *   the isolate's lifetime.
  */
-export const GAUTENG_SPATIAL_LEGACY_LAYERS: readonly Layer[] = [
+export const SPATIAL_APARTHEID_LEGACY_LAYERS: readonly Layer[] = [
   {
     id: "townships",
     label: "Modelled car time",

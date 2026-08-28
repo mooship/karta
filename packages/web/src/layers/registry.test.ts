@@ -23,7 +23,7 @@ describe("registry", () => {
     getLocale.mockReturnValue("en");
   });
 
-  it("returns the 6 gauteng-spatial-legacy layers", () => {
+  it("returns the 6 spatial-apartheid-legacy layers", () => {
     const layers = getLayers();
     expect(layers.map((l) => l.id)).toEqual(
       expect.arrayContaining([

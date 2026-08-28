@@ -9,7 +9,7 @@ interface LayerText {
 }
 
 /**
- * Per-layer-id translation lookup, keyed to `GAUTENG_SPATIAL_LEGACY_LAYERS`'
+ * Per-layer-id translation lookup, keyed to `SPATIAL_APARTHEID_LEGACY_LAYERS`'
  * ids in `@karta/app`. `@karta/app` stays the single source of truth for
  * layer *structure* (ids, data sources, styling, availability) in English;
  * this table overlays *display text* per locale, read from

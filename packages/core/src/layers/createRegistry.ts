@@ -22,7 +22,7 @@ export interface DomainRegistry {
  * @param domain - The domain whose layers, groups, and story to expose.
  * @returns An object with `getLayers`, `getLayer`, `getLayerGroups`, and `getStory`.
  * @example
- * const { getLayers, getLayer, getLayerGroups, getStory } = createRegistry(GAUTENG_SPATIAL_LEGACY_DOMAIN);
+ * const { getLayers, getLayer, getLayerGroups, getStory } = createRegistry(SPATIAL_APARTHEID_LEGACY_DOMAIN);
  */
 export function createRegistry(domain: DomainConfig): DomainRegistry {
   const layersById = new Map(domain.layers.map((layer) => [layer.id, layer]));

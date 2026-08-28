@@ -1,4 +1,4 @@
-# Gauteng spatial legacy
+# Spatial apartheid legacy
 
 This is one domain built on the Karta SDK — the reference implementation that proves the SDK out end-to-end with a real, published app. It is not what Karta itself is about: a different domain built on the same SDK could map flood risk, public amenities, or anything else, and would carry none of this framing. See the root [`README.md`](../../README.md) for the SDK itself.
 
@@ -6,13 +6,13 @@ This is one domain built on the Karta SDK — the reference implementation that 
 
 This domain maps apartheid-era spatial planning legacy across South African cities: recognized township areas, formal transit routes, and modeled car time to selected job centers in a single combined view. The car layer is a baseline spatial proxy, not an observed commute or a measure of public-transport access.
 
-**Current scope: full Gauteng municipality coverage in one combined regional layer.** The app currently includes City of Tshwane, City of Johannesburg, City of Ekurhuleni, Emfuleni, Midvaal, Lesedi, Mogale City, Rand West City, and Merafong City. It uses Stats SA Census 2011 boundaries, modeled OSRM car routing to each municipality's selected job centers, and transit overlays sourced from Gautrain rail, Gautrain Bus, PRASA rail, A Re Yeng, and Rea Vaya. Route geometry shows where formal transit runs, not service frequency, reliability, waiting, transfers, or jobs reachable. Other South African metros (Cape Town, Durban) are not yet included, and this domain is not the only one the SDK is meant to support — it's the first proof of concept.
+**Current scope: full Gauteng municipality coverage in one combined regional layer.** The app currently includes City of Tshwane, City of Johannesburg, City of Ekurhuleni, Emfuleni, Midvaal, Lesedi, Mogale City, Rand West City, and Merafong City. It uses Stats SA Census 2011 boundaries, modeled OSRM car routing to each municipality's selected job centers, and transit overlays sourced from Gautrain rail, Gautrain Bus, PRASA rail, A Re Yeng, and Rea Vaya. Route geometry shows where formal transit runs, not service frequency, reliability, waiting, transfers, or jobs reachable. Other South African metros (Durban) are not yet included, and this domain is not the only one the SDK is meant to support — it's the first proof of concept.
 
 ## Why
 
 Under apartheid, townships were deliberately separated from economic centers by distance and buffer strips of highways, industrial zoning, or vacant land. That geography did not disappear in 1994. This reference app makes that spatial structure visible while being explicit about what its current data cannot yet establish, and doubles as the proving ground for the underlying SDK. The intended primary accessibility measure is the number of jobs reachable within 45, 60, and 90 minutes by public transport, including walking, waiting, and transfers.
 
-A shorter version of this framing is the domain's `story` (`GAUTENG_SPATIAL_LEGACY_DOMAIN.story` in `packages/app`), shown in the reference app's Story tab alongside layer toggles.
+A shorter version of this framing is the domain's `story` (`SPATIAL_APARTHEID_LEGACY_DOMAIN.story` in `packages/app`), shown in the reference app's Story tab alongside layer toggles.
 
 ## Area classification by metro
 

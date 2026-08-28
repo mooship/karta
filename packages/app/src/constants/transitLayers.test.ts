@@ -24,7 +24,7 @@ describe("transitLayers", () => {
     expect(TRANSIT_OPERATOR_LAYER_NAMES).not.toContain(invalid);
   });
 
-  it("does not overlap with the current gauteng-spatial-legacy transit layer ids", () => {
+  it("does not overlap with the current spatial-apartheid-legacy transit layer ids", () => {
     const currentLayerIds = [
       "rapid-rail",
       "bus-rapid-transit",

@@ -34,7 +34,7 @@ export interface MetroDefinition {
   jobCenterCount: number;
 }
 
-/** The nine Gauteng municipalities covered by the `gauteng-spatial-legacy` domain. */
+/** The nine Gauteng municipalities covered by the `spatial-apartheid-legacy` domain. */
 export const METROS: readonly MetroDefinition[] = [
   {
     id: "tshwane",
