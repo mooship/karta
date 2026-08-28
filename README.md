@@ -15,7 +15,7 @@
 - [`packages/map/README.md`](packages/map/README.md) — `@karta/map`, generic map rendering components and UI primitives
 - [`packages/react/README.md`](packages/react/README.md) — `@karta/react`, generic React hooks (dark-mode detection, theme preference)
 - [`packages/theme/README.md`](packages/theme/README.md) — `@karta/theme`, the typed Material 3 design-token contract
-- [`packages/app/README.md`](packages/app/README.md) — `@karta/app`, the Gauteng-specific domain data and constants
+- [`packages/app/README.md`](packages/app/README.md) — `@karta/app`, the reference domain's data and constants
 
 ## Stack
 
