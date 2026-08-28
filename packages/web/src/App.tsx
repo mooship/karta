@@ -67,6 +67,13 @@ const MapView = lazy(async () => {
 /** A Leaflet-style `[[south, west], [north, east]]` bounding rectangle. */
 type LatLngBoundsTuple = [[number, number], [number, number]];
 
+/** Narrows a `PromiseSettledResult` to its fulfilled case. */
+function isFulfilled<T>(
+  result: PromiseSettledResult<T>,
+): result is PromiseFulfilledResult<T> {
+  return result.status === "fulfilled";
+}
+
 /**
  * A rectangle wide enough to frame both published regions' mapped data
  * (Gauteng and City of Cape Town) on initial load. The two are far enough
@@ -563,20 +570,37 @@ export function App() {
     );
 
     Promise.all([
-      Promise.all(townshipUrls.map((url) => fetchTownships(url))),
-      Promise.all(areaUrls.map((url) => fetchFeatureCollection(url))),
-    ])
-      .then(([townshipsByRegion, areasByRegion]) => {
-        if (!cancelled) {
-          setTownships(townshipsByRegion.flat());
-          setTownshipAreas(mergeFeatureCollections(areasByRegion).features);
+      Promise.allSettled(townshipUrls.map((url) => fetchTownships(url))),
+      Promise.allSettled(areaUrls.map((url) => fetchFeatureCollection(url))),
+    ]).then(([townshipResults, areaResults]) => {
+      if (cancelled) {
+        return;
+      }
+      const townshipsFulfilled = townshipResults.filter(isFulfilled);
+      const areasFulfilled = areaResults.filter(isFulfilled);
+
+      // A region failing to load here (e.g. its data hasn't been published
+      // yet, see docs/adding-a-region.md) shouldn't blank out every other
+      // region's already-working data — only surface the retry banner once
+      // every region's township data (the primary dataset the choropleth
+      // and popups key off; `townshipAreas` is a companion display layer
+      // with no useful properties of its own) failed to load.
+      if (townshipsFulfilled.length === 0) {
+        setDataError(true);
+        return;
+      }
+
+      for (const result of [...townshipResults, ...areaResults]) {
+        if (result.status === "rejected") {
+          console.error("Failed to load region map data", result.reason);
         }
-      })
-      .catch(() => {
-        if (!cancelled) {
-          setDataError(true);
-        }
-      });
+      }
+      setTownships(townshipsFulfilled.flatMap((result) => result.value));
+      setTownshipAreas(
+        mergeFeatureCollections(areasFulfilled.map((result) => result.value))
+          .features,
+      );
+    });
     return () => {
       cancelled = true;
     };
