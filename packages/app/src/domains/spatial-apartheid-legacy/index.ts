@@ -13,7 +13,7 @@ export const SPATIAL_APARTHEID_LEGACY_DOMAIN = {
   layerGroups: SPATIAL_APARTHEID_LEGACY_LAYER_GROUPS,
   story: {
     title: "Why this map exists",
-    body: "Apartheid law controlled where Black, Coloured and Indian people could live. Black townships were deliberately separated from economic centres, and those distances still shape access to work today. This map measures that gap with modelled car time and distance to transit.",
+    body: "South Africa's Group Areas Act (1950) didn't just segregate where people could live — it engineered distance as policy. Black, Coloured and Indian communities were forcibly removed from land near city centres and resettled on the urban periphery, often behind deliberate buffer strips of highway, industrial zoning, or vacant land, placing them furthest from the jobs and services those centres offered. That geography did not end with apartheid's laws in 1994: townships built as peripheries are still peripheries today. This map measures three parts of that legacy — modelled car time to major job centres, straight-line distance to the nearest formal transit route, and a combined score showing where both burdens compound — to make a policy decision's lasting shape visible, not just remembered.",
   },
 };
 
