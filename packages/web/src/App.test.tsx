@@ -81,21 +81,27 @@ describe("App", () => {
       writable: true,
     });
     useMapUiStore.getState().reset();
-    dataMocks.getTownships.mockReset().mockResolvedValue([
-      {
-        type: "Feature",
-        properties: {
-          id: "A",
-          name: "Mamelodi",
-          commuteMinutes: 20,
-          nearestJobCenter: "Pretoria CBD",
-          distanceKm: null,
-          nearestTransitKm: null,
-          nearestAReYengStopKm: null,
-        },
-        geometry: null,
-      },
-    ]);
+    dataMocks.getTownships.mockReset().mockImplementation((url: string) =>
+      Promise.resolve(
+        url.includes("/gauteng/")
+          ? [
+              {
+                type: "Feature",
+                properties: {
+                  id: "A",
+                  name: "Mamelodi",
+                  commuteMinutes: 20,
+                  nearestJobCenter: "Pretoria CBD",
+                  distanceKm: null,
+                  nearestTransitKm: null,
+                  nearestAReYengStopKm: null,
+                },
+                geometry: null,
+              },
+            ]
+          : [],
+      ),
+    );
     dataMocks.fetchAreas.mockReset().mockResolvedValue({
       type: "FeatureCollection",
       features: [],
@@ -876,7 +882,7 @@ describe("App", () => {
     fireEvent.click(screen.getByRole("button", { name: "Retry" }));
 
     await waitFor(() =>
-      expect(dataMocks.getTownships).toHaveBeenCalledTimes(2),
+      expect(dataMocks.getTownships).toHaveBeenCalledTimes(4),
     );
     await waitFor(() =>
       expect(screen.queryByRole("alert")).not.toBeInTheDocument(),

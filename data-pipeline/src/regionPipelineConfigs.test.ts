@@ -5,9 +5,10 @@ import {
 } from "./regionPipelineConfigs";
 
 describe("REGION_PIPELINE_CONFIGS", () => {
-  it("includes the gauteng region", () => {
+  it("includes the gauteng and western-cape regions", () => {
     expect(REGION_PIPELINE_CONFIGS.map((config) => config.regionId)).toEqual([
       "gauteng",
+      "western-cape",
     ]);
   });
 });

@@ -1,6 +1,6 @@
 import type { RegionId } from "./regions";
 
-/** Identifier for one of the nine Gauteng municipalities the SDK's reference domain covers. */
+/** Identifier for one of the metros the SDK's reference domain covers. */
 export type MetroId =
   | "tshwane"
   | "johannesburg"
@@ -10,9 +10,10 @@ export type MetroId =
   | "lesedi"
   | "mogale-city"
   | "rand-west-city"
-  | "merafong-city";
+  | "merafong-city"
+  | "cape-town";
 
-/** Metadata describing one Gauteng municipality used to build and render the `gauteng` region's dataset. */
+/** Metadata describing one metro used to build and render its region's dataset. */
 export interface MetroDefinition {
   id: MetroId;
   name: string;
@@ -34,7 +35,7 @@ export interface MetroDefinition {
   jobCenterCount: number;
 }
 
-/** The nine Gauteng municipalities covered by the `spatial-apartheid-legacy` domain. */
+/** The nine Gauteng municipalities and City of Cape Town covered by the `spatial-apartheid-legacy` domain. */
 export const METROS: readonly MetroDefinition[] = [
   {
     id: "tshwane",
@@ -107,6 +108,14 @@ export const METROS: readonly MetroDefinition[] = [
     regionId: "gauteng",
     municipalityCodes: [766],
     jobCenterCount: 6,
+  },
+  {
+    id: "cape-town",
+    name: "City of Cape Town",
+    shortName: "Cape Town",
+    regionId: "western-cape",
+    municipalityCodes: [199],
+    jobCenterCount: 7,
   },
 ] as const satisfies readonly MetroDefinition[];
 
