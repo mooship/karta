@@ -22,9 +22,9 @@ Every export is JSDoc-documented (TSDoc-compatible).
 
 ```ts
 import { createRegistry, createLayerConfig } from "@karta/core";
-import { GAUTENG_SPATIAL_LEGACY_DOMAIN } from "@karta/app";
+import { SPATIAL_APARTHEID_LEGACY_DOMAIN } from "@karta/app";
 
-const registry = createRegistry(GAUTENG_SPATIAL_LEGACY_DOMAIN);
+const registry = createRegistry(SPATIAL_APARTHEID_LEGACY_DOMAIN);
 const layer = registry.getLayer("townships");
 const { styleFn } = createLayerConfig(layer);
 ```

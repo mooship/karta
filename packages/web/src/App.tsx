@@ -293,7 +293,7 @@ const PanelViewContent = memo(function PanelViewContent({
 /**
  * The reference app's root shell: fetches and merges the Gauteng township
  * choropleth data, wraps the render tree in a `DomainProvider` for
- * `gauteng-spatial-legacy`, and renders the map alongside the desktop/mobile
+ * `spatial-apartheid-legacy`, and renders the map alongside the desktop/mobile
  * info panel and its settings menu.
  * @remarks That township fetch deliberately waits for `MapView`'s `onReady`
  *   (tracked as `mapReady`) rather than starting at mount. Downloading,

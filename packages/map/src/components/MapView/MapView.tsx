@@ -1468,7 +1468,7 @@ function MapViewComponent<
  *   is invoked to produce the popup markup for a selectable feature; when
  *   omitted, clicking or selecting a feature will not show a popup.
  * @example
- * <DomainProvider domain={GAUTENG_SPATIAL_LEGACY_DOMAIN}>
+ * <DomainProvider domain={SPATIAL_APARTHEID_LEGACY_DOMAIN}>
  *   <MapView
  *     bounds={[[-27.15, 27.1], [-25.3, 28.75]]}
  *     ariaLabel="Map of South African township access to job centres"

@@ -1,18 +1,18 @@
 import { describe, expect, it } from "vitest";
 import { expectLayerGroupsReferenceKnownLayers } from "../testUtils";
-import { GAUTENG_SPATIAL_LEGACY_LAYER_GROUPS } from "./layerGroups";
-import { GAUTENG_SPATIAL_LEGACY_LAYERS } from "./layers";
+import { SPATIAL_APARTHEID_LEGACY_LAYER_GROUPS } from "./layerGroups";
+import { SPATIAL_APARTHEID_LEGACY_LAYERS } from "./layers";
 
-describe("GAUTENG_SPATIAL_LEGACY_LAYER_GROUPS", () => {
-  it("only references layer ids that actually exist in GAUTENG_SPATIAL_LEGACY_LAYERS", () => {
+describe("SPATIAL_APARTHEID_LEGACY_LAYER_GROUPS", () => {
+  it("only references layer ids that actually exist in SPATIAL_APARTHEID_LEGACY_LAYERS", () => {
     expectLayerGroupsReferenceKnownLayers(
-      GAUTENG_SPATIAL_LEGACY_LAYERS,
-      GAUTENG_SPATIAL_LEGACY_LAYER_GROUPS,
+      SPATIAL_APARTHEID_LEGACY_LAYERS,
+      SPATIAL_APARTHEID_LEGACY_LAYER_GROUPS,
     );
   });
 
   it("defines the access-to-opportunity exclusive group matching today's LayerToggles copy", () => {
-    const group = GAUTENG_SPATIAL_LEGACY_LAYER_GROUPS.find(
+    const group = SPATIAL_APARTHEID_LEGACY_LAYER_GROUPS.find(
       (g) => g.id === "access-to-opportunity",
     );
     expect(group?.title).toBe("Accessibility overlays");
@@ -24,7 +24,7 @@ describe("GAUTENG_SPATIAL_LEGACY_LAYER_GROUPS", () => {
   });
 
   it("defines the transit-networks independent group matching today's LayerToggles copy", () => {
-    const group = GAUTENG_SPATIAL_LEGACY_LAYER_GROUPS.find(
+    const group = SPATIAL_APARTHEID_LEGACY_LAYER_GROUPS.find(
       (g) => g.id === "transit-networks",
     );
     expect(group?.title).toBe("Transit networks");

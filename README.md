@@ -2,14 +2,14 @@
 
 **Karta** is a reusable SDK for building public-interest geospatial layer platforms — a domain-agnostic layer model, generic map rendering, and React hooks that any dataset can be wired into, with no accounts and no tracking beyond cookieless page views. `@karta/core`, `@karta/map`, and `@karta/react` are the SDK itself; it doesn't encode any particular geography or story.
 
-`packages/app` and `packages/web` are a reference implementation proving the SDK out end-to-end with one real, published domain: **Gauteng spatial legacy**, mapping apartheid-era spatial planning legacy across South African cities. That's just the first domain built on the SDK — a different one could map flood risk, public amenities, or anything else. See [`docs/domains/gauteng-spatial-legacy.md`](docs/domains/gauteng-spatial-legacy.md) for what it covers, why it exists, and how its per-metro area data is classified.
+`packages/app` and `packages/web` are a reference implementation proving the SDK out end-to-end with one real, published domain: **Spatial apartheid legacy**, mapping apartheid-era spatial planning legacy across South African cities. That's just the first domain built on the SDK — a different one could map flood risk, public amenities, or anything else. See [`docs/domains/spatial-apartheid-legacy.md`](docs/domains/spatial-apartheid-legacy.md) for what it covers, why it exists, and how its per-metro area data is classified.
 
 ## Documentation
 
 - [`docs/building-a-domain.md`](docs/building-a-domain.md) — how to build a new domain on the SDK, from scratch, using a second illustrative example
-- [`docs/adding-a-region.md`](docs/adding-a-region.md) — how to extend the pipeline-backed `gauteng-spatial-legacy` shape to a new geography
+- [`docs/adding-a-region.md`](docs/adding-a-region.md) — how to extend the pipeline-backed `spatial-apartheid-legacy` shape to a new geography
 - [`docs/adding-a-locale.md`](docs/adding-a-locale.md) — how to add a new UI language to `packages/web`
-- [`docs/domains/gauteng-spatial-legacy.md`](docs/domains/gauteng-spatial-legacy.md) — the reference implementation's domain, scope, and per-metro area classification
+- [`docs/domains/spatial-apartheid-legacy.md`](docs/domains/spatial-apartheid-legacy.md) — the reference implementation's domain, scope, and per-metro area classification
 - [`data-pipeline/README.md`](data-pipeline/README.md) — how to (re-)run the data pipeline
 - [`packages/core/README.md`](packages/core/README.md) — `@karta/core`, the domain-agnostic layer model and geodata utilities
 - [`packages/map/README.md`](packages/map/README.md) — `@karta/map`, generic map rendering components and UI primitives

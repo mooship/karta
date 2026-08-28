@@ -11,7 +11,7 @@ If what you actually want is a new *dataset* rather than a new geography —
 a different kind of layer, or a domain with no `data-pipeline` source at all
 — see [`docs/building-a-domain.md`](building-a-domain.md) instead;
 `packages/app/src/domains/heritage-sites/` is a worked example of exactly
-that. This doc is for extending the pipeline-backed `gauteng-spatial-legacy`
+that. This doc is for extending the pipeline-backed `spatial-apartheid-legacy`
 shape (municipalities, township areas, job-centre drive times, transit
 overlays) to cover somewhere else.
 
@@ -92,9 +92,9 @@ new config in `REGION_PIPELINE_CONFIGS` (`data-pipeline/src/regionPipelineConfig
   `REGIONS`) to fetch and merge `townships.display.v1.geojson` and
   `township-areas.display.v1.geojson` from every configured region into one
   `FeatureCollection`. No code change needed here for a new region.
-- **Transit overlay layers do not.** `gauteng-spatial-legacy`'s transit
+- **Transit overlay layers do not.** `spatial-apartheid-legacy`'s transit
   layers (`rapid-rail`, `bus-rapid-transit`, `commuter-rail`, `bus`, defined
-  in `packages/app/src/domains/gauteng-spatial-legacy/layers.ts`) each
+  in `packages/app/src/domains/spatial-apartheid-legacy/layers.ts`) each
   declare a single hardcoded-to-`gauteng` `dataSource` URL via a local
   `dataUrl()` helper, not `buildRegionDataUrls()`. `MapView`'s `useLayerData`
   fetches `Layer.dataSource` literally, so a new region's transit files
@@ -111,7 +111,7 @@ new config in `REGION_PIPELINE_CONFIGS` (`data-pipeline/src/regionPipelineConfig
   constants is part of the work, not a pre-built extension point.
 - **Copy is still single-domain.** The domain `story`, page title, and meta
   description (`messages/{locale}.json`) describe Gauteng specifically. A
-  second region under the same `gauteng-spatial-legacy` domain needs that
+  second region under the same `spatial-apartheid-legacy` domain needs that
   copy generalized or reworded; a second region that warrants its own
   framing is probably a second domain instead — see
   [`docs/building-a-domain.md`](building-a-domain.md).

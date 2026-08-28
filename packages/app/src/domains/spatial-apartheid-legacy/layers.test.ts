@@ -1,13 +1,13 @@
 import { describe, expect, it } from "vitest";
 import { REGIONS } from "../../constants/regions";
 import type { Layer } from "../../types/genericLayer";
-import { GAUTENG_SPATIAL_LEGACY_LAYERS } from "./layers";
+import { SPATIAL_APARTHEID_LEGACY_LAYERS } from "./layers";
 
-describe("GAUTENG_SPATIAL_LEGACY_LAYERS", () => {
+describe("SPATIAL_APARTHEID_LEGACY_LAYERS", () => {
   it("derives every data URL's region segment from REGIONS' gauteng entry", () => {
     const gautengRegion = REGIONS.find((region) => region.id === "gauteng");
     expect(gautengRegion).toBeDefined();
-    for (const layer of GAUTENG_SPATIAL_LEGACY_LAYERS) {
+    for (const layer of SPATIAL_APARTHEID_LEGACY_LAYERS) {
       for (const url of layer.dataSource) {
         expect(url.startsWith(`/data/${gautengRegion?.id}/`)).toBe(true);
       }
@@ -20,7 +20,7 @@ describe("GAUTENG_SPATIAL_LEGACY_LAYERS", () => {
   });
 
   it("has exactly the 6 layers the current app ships, in order", () => {
-    expect(GAUTENG_SPATIAL_LEGACY_LAYERS.map((l) => l.id)).toEqual([
+    expect(SPATIAL_APARTHEID_LEGACY_LAYERS.map((l) => l.id)).toEqual([
       "townships",
       "nearest-transit",
       "rapid-rail",
@@ -31,7 +31,7 @@ describe("GAUTENG_SPATIAL_LEGACY_LAYERS", () => {
   });
 
   it("matches today's townships (commute time) choropleth exactly", () => {
-    const layer = GAUTENG_SPATIAL_LEGACY_LAYERS.find(
+    const layer = SPATIAL_APARTHEID_LEGACY_LAYERS.find(
       (l) => l.id === "townships",
     );
     expect(layer?.label).toBe("Modelled car time");
@@ -70,7 +70,7 @@ describe("GAUTENG_SPATIAL_LEGACY_LAYERS", () => {
   });
 
   it("matches today's nearest-transit choropleth exactly", () => {
-    const layer = GAUTENG_SPATIAL_LEGACY_LAYERS.find(
+    const layer = SPATIAL_APARTHEID_LEGACY_LAYERS.find(
       (l) => l.id === "nearest-transit",
     );
     expect(layer?.label).toBe("Distance to nearest transit");
@@ -118,7 +118,7 @@ describe("GAUTENG_SPATIAL_LEGACY_LAYERS", () => {
 
   it("matches today's 4 transit line layers exactly", () => {
     const findLayer = (id: string): Layer => {
-      const layer = GAUTENG_SPATIAL_LEGACY_LAYERS.find((l) => l.id === id);
+      const layer = SPATIAL_APARTHEID_LEGACY_LAYERS.find((l) => l.id === id);
       if (!layer) {
         throw new Error(`expected layer ${id}`);
       }
