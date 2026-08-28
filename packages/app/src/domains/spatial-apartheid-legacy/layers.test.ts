@@ -19,10 +19,11 @@ describe("SPATIAL_APARTHEID_LEGACY_LAYERS", () => {
     }
   });
 
-  it("has exactly the 6 layers the current app ships, in order", () => {
+  it("has exactly the 7 layers the current app ships, in order", () => {
     expect(SPATIAL_APARTHEID_LEGACY_LAYERS.map((l) => l.id)).toEqual([
       "townships",
       "nearest-transit",
+      "spatial-burden",
       "rapid-rail",
       "bus-rapid-transit",
       "commuter-rail",
@@ -114,6 +115,43 @@ describe("SPATIAL_APARTHEID_LEGACY_LAYERS", () => {
     expect(style.resolveEmphasis?.({ name: "Mamelodi", id: "1" })).toBe(true);
     expect(style.resolveEmphasis?.({ name: "Not A Real Place" })).toBe(false);
     expect(style.resolveEmphasis?.({ id: "1" })).toBe(false);
+  });
+
+  it("matches today's spatial-burden choropleth exactly", () => {
+    const layer = SPATIAL_APARTHEID_LEGACY_LAYERS.find(
+      (l) => l.id === "spatial-burden",
+    );
+    expect(layer?.label).toBe("Combined spatial burden");
+    expect(layer?.defaultVisible).toBe(false);
+    expect(layer?.dataSource).toEqual([
+      "/data/gauteng/townships.display.v1.geojson",
+    ]);
+    expect(layer?.companionSource).toBe(
+      "/data/gauteng/township-areas.display.v1.geojson",
+    );
+    const style = layer?.style;
+    if (style?.kind !== "choropleth") {
+      throw new Error("expected choropleth style");
+    }
+    expect(style.propertyKey).toBe("spatialBurdenScore");
+    expect(style.buckets).toEqual([
+      { max: 0.25, color: "#E6D9F5", darkColor: "#3D2A5C", label: "Low" },
+      {
+        max: 0.5,
+        color: "#B99FE0",
+        darkColor: "#6B4A94",
+        label: "Moderate",
+      },
+      { max: 0.75, color: "#8659C7", darkColor: "#9B72D6", label: "High" },
+      {
+        max: Number.POSITIVE_INFINITY,
+        color: "#4B1F94",
+        darkColor: "#C9AAFF",
+        label: "Severe",
+      },
+    ]);
+    expect(style.baseOpacity).toBe(0.18);
+    expect(style.emphasisOpacity).toBe(0.78);
   });
 
   it("matches today's 4 transit line layers exactly", () => {

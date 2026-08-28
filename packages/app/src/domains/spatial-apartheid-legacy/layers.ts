@@ -36,11 +36,13 @@ const TOWNSHIP_EMPHASIS_STYLE = {
 } as const;
 
 /**
- * The `spatial-apartheid-legacy` domain's layer catalogue: two choropleth
- * layers (modelled car time, distance to nearest transit) sharing the same
- * township-area data, and one line layer per transit network. `rapid-rail`
- * and `commuter-rail` set `hasPointGeometry: true` since real station/stop
- * Point geometry only exists for those two networks.
+ * The `spatial-apartheid-legacy` domain's layer catalogue: three choropleth
+ * layers (modelled car time, distance to nearest transit, and a combined
+ * spatial-burden score weighting the two together — see
+ * `data-pipeline/src/spatialBurden.ts`) sharing the same township-area data,
+ * and one line layer per transit network. `rapid-rail` and `commuter-rail`
+ * set `hasPointGeometry: true` since real station/stop Point geometry only
+ * exists for those two networks.
  * @remarks `readonly`/`as const`, matching `METROS`/`REGIONS`: Cloudflare
  *   Workers reuse isolates across requests, so an in-place mutation by any
  *   downstream consumer would otherwise leak across unrelated requests for
@@ -112,6 +114,49 @@ export const SPATIAL_APARTHEID_LEGACY_LAYERS: readonly Layer[] = [
           color: "#123F6E",
           darkColor: "#9ED4FF",
           label: "Very far (> 8 km)",
+        },
+      ],
+      ...TOWNSHIP_EMPHASIS_STYLE,
+    },
+  },
+  {
+    id: "spatial-burden",
+    label: "Combined spatial burden",
+    description:
+      "A combined score weighting modelled car time and distance to transit together, to show where both burdens compound.",
+    dataSource: [dataUrl("townships.display.v1.geojson")],
+    companionSource: dataUrl("township-areas.display.v1.geojson"),
+    geometryKind: "choropleth",
+    defaultVisible: false,
+    available: true,
+    interaction: { selectable: true, labelField: "name" },
+    style: {
+      kind: "choropleth",
+      propertyKey: "spatialBurdenScore",
+      buckets: [
+        {
+          max: 0.25,
+          color: "#E6D9F5",
+          darkColor: "#3D2A5C",
+          label: "Low",
+        },
+        {
+          max: 0.5,
+          color: "#B99FE0",
+          darkColor: "#6B4A94",
+          label: "Moderate",
+        },
+        {
+          max: 0.75,
+          color: "#8659C7",
+          darkColor: "#9B72D6",
+          label: "High",
+        },
+        {
+          max: Number.POSITIVE_INFINITY,
+          color: "#4B1F94",
+          darkColor: "#C9AAFF",
+          label: "Severe",
         },
       ],
       ...TOWNSHIP_EMPHASIS_STYLE,

@@ -20,7 +20,11 @@ describe("SPATIAL_APARTHEID_LEGACY_LAYER_GROUPS", () => {
       "Only one overlay can be active at a time.",
     );
     expect(group?.selectionMode).toBe("exclusive");
-    expect(group?.layerIds).toEqual(["townships", "nearest-transit"]);
+    expect(group?.layerIds).toEqual([
+      "townships",
+      "nearest-transit",
+      "spatial-burden",
+    ]);
   });
 
   it("defines the transit-networks independent group matching today's LayerToggles copy", () => {

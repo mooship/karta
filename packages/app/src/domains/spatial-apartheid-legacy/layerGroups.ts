@@ -16,7 +16,7 @@ export const SPATIAL_APARTHEID_LEGACY_LAYER_GROUPS: readonly LayerGroup[] = [
     title: "Accessibility overlays",
     description: "Only one overlay can be active at a time.",
     selectionMode: "exclusive",
-    layerIds: ["townships", "nearest-transit"],
+    layerIds: ["townships", "nearest-transit", "spatial-burden"],
   },
   {
     id: "transit-networks",
