@@ -3,9 +3,9 @@ import { SPATIAL_APARTHEID_LEGACY_LAYERS } from "./layers";
 
 /**
  * Karta's reference domain: South Africa's apartheid-era spatial planning
- * legacy, currently covering Gauteng's metros. A `DomainConfig`
- * (`layers`/`layerGroups`/`story`) plus an `id` — the only field beyond what
- * `DomainConfig` itself requires.
+ * legacy, currently covering Gauteng's metros and City of Cape Town. A
+ * `DomainConfig` (`layers`/`layerGroups`/`story`) plus an `id` — the only
+ * field beyond what `DomainConfig` itself requires.
  */
 export const SPATIAL_APARTHEID_LEGACY_DOMAIN = {
   id: "spatial-apartheid-legacy",

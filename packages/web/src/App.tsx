@@ -67,16 +67,23 @@ const MapView = lazy(async () => {
 /** A Leaflet-style `[[south, west], [north, east]]` bounding rectangle. */
 type LatLngBoundsTuple = [[number, number], [number, number]];
 
-const GAUTENG_BOUNDS: LatLngBoundsTuple = [
-  [-27.15, 27.1],
+/**
+ * A rectangle wide enough to frame both published regions' mapped data
+ * (Gauteng and City of Cape Town) on initial load. The two are far enough
+ * apart that this necessarily starts the map more zoomed out than either
+ * region's own bounds would — there's no per-region viewport logic today,
+ * see `docs/adding-a-region.md`.
+ */
+const MAP_INITIAL_BOUNDS: LatLngBoundsTuple = [
+  [-34.35, 18.3],
   [-25.3, 28.75],
 ];
 
 /**
  * Mainland South Africa's approximate extent, used only to sanity-check
  * location search results (see `isWithinSearchCoverage`) — not the map's
- * initial viewport, which stays framed on Gauteng via `GAUTENG_BOUNDS` since
- * that's the only region with actual layer data today.
+ * initial viewport (`MAP_INITIAL_BOUNDS`), which is already wider than any
+ * single region but narrower than the whole country.
  */
 const SEARCH_COVERAGE_BOUNDS: LatLngBoundsTuple = [
   [-34.84, 16.45],
@@ -99,8 +106,9 @@ const locationSearchProvider = createNominatimGeocoderProvider({
  * Whether `location` falls within `SEARCH_COVERAGE_BOUNDS`.
  * @remarks Nominatim searches the whole world, so a query can resolve to a
  *   place far outside South Africa entirely; flying the map there would just
- *   show an empty basemap with no explanation. The mapped data itself is
- *   Gauteng-only, but the basemap and search cover the whole country.
+ *   show an empty basemap with no explanation. The mapped data itself only
+ *   covers Gauteng and City of Cape Town, but the basemap and search cover
+ *   the whole country.
  */
 function isWithinSearchCoverage(location: LocationSearchResult): boolean {
   const [[south, west], [north, east]] = SEARCH_COVERAGE_BOUNDS;
@@ -920,7 +928,7 @@ export function App() {
           {hydrated && (
             <Suspense fallback={null}>
               <MapView
-                bounds={GAUTENG_BOUNDS}
+                bounds={MAP_INITIAL_BOUNDS}
                 ariaLabel={m.map_aria_label()}
                 areas={townships}
                 areaBoundaries={townshipAreas}
