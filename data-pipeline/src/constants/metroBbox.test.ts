@@ -13,11 +13,12 @@ describe("metroBbox", () => {
     expect(getMetroBbox("mogale-city")).toBe(METRO_BBOX["mogale-city"]);
     expect(getMetroBbox("rand-west-city")).toBe(METRO_BBOX["rand-west-city"]);
     expect(getMetroBbox("merafong-city")).toBe(METRO_BBOX["merafong-city"]);
+    expect(getMetroBbox("cape-town")).toBe(METRO_BBOX["cape-town"]);
   });
 
   it("builds one shared bbox that fully contains every metro bbox", () => {
     expect(getSharedTransitBbox(Object.keys(METRO_BBOX) as MetroId[])).toBe(
-      "-26.92383,27.15634,-25.55,28.86129",
+      "-34.35,18.3,-25.55,28.86129",
     );
   });
 

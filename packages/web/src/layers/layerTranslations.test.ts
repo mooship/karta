@@ -73,6 +73,27 @@ const BRT_LAYER: Layer = {
   },
 };
 
+const SPATIAL_BURDEN_LAYER: Layer = {
+  id: "spatial-burden",
+  label: "Combined spatial burden",
+  description: "English description",
+  dataSource: ["/data/gauteng/townships.geojson"],
+  geometryKind: "choropleth",
+  defaultVisible: false,
+  available: true,
+  style: {
+    kind: "choropleth",
+    propertyKey: "spatialBurdenScore",
+    buckets: [
+      { max: 0.25, color: "#000", label: "Low" },
+      { max: 0.5, color: "#000", label: "Moderate" },
+      { max: 0.75, color: "#000", label: "High" },
+      { max: Number.POSITIVE_INFINITY, color: "#000", label: "Severe" },
+    ],
+    baseOpacity: 0.18,
+  },
+};
+
 const UNKNOWN_CHOROPLETH_LAYER: Layer = {
   id: "some-future-choropleth",
   label: "Some Future Choropleth",
@@ -153,6 +174,23 @@ describe("localizeLayer", () => {
     expect(localized.style.kind).toBe("choropleth");
     if (localized.style.kind === "choropleth") {
       expect(localized.style.buckets.at(-1)?.label).toBe("Extreme");
+    }
+  });
+
+  it("translates the spatial-burden choropleth's label and bucket labels", () => {
+    getLocale.mockReturnValue("af");
+
+    const localized = localizeLayer(SPATIAL_BURDEN_LAYER);
+
+    expect(localized.label).toBe("Gekombineerde ruimtelike las");
+    expect(localized.style.kind).toBe("choropleth");
+    if (localized.style.kind === "choropleth") {
+      expect(localized.style.buckets.map((b) => b.label)).toEqual([
+        "Laag",
+        "Matig",
+        "Hoog",
+        "Ernstig",
+      ]);
     }
   });
 

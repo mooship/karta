@@ -42,5 +42,8 @@ describe("getJobCentersForMetro", () => {
     expect(
       getJobCentersForMetro("merafong-city").map((jobCenter) => jobCenter.id),
     ).toContain("carletonville-cbd");
+    expect(
+      getJobCentersForMetro("cape-town").map((jobCenter) => jobCenter.id),
+    ).toContain("cape-town-cbd");
   });
 });

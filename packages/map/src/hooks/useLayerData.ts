@@ -1,4 +1,9 @@
-import { fetchFeatureCollection, mergeFeatureCollections } from "@karta/core";
+import {
+  fetchFeatureCollection,
+  mergeFeatureCollections,
+  partitionSettled,
+  type SettledPartition,
+} from "@karta/core";
 import type { FeatureCollection } from "geojson";
 import { useEffect, useRef, useState } from "react";
 import { useDomain } from "../context/DomainContext";
@@ -10,6 +15,40 @@ export type LayerDataMap = Partial<Record<string, FeatureCollection>>;
 export interface LayerDataResult {
   data: LayerDataMap;
   failedLayerIds: string[];
+}
+
+/**
+ * Applies one layer's settled `dataSource` fetches to `setData`/
+ * `setFailedLayerIds`: merges whichever sources succeeded (if any), and
+ * marks the layer failed if any source didn't. Merging whatever sources
+ * succeeded, rather than discarding them whenever another configured source
+ * for the same layer fails, is what keeps one region's still-missing data
+ * (see `docs/adding-a-region.md`) from blanking out every other region's
+ * already-published data for the same layer.
+ */
+function applySettledLayerResults(
+  id: string,
+  { fulfilled, rejected }: SettledPartition<FeatureCollection>,
+  setData: (updater: (current: LayerDataMap) => LayerDataMap) => void,
+  setFailedLayerIds: (updater: (current: string[]) => string[]) => void,
+): void {
+  if (fulfilled.length > 0) {
+    setData((current) => ({
+      ...current,
+      [id]: mergeFeatureCollections(fulfilled),
+    }));
+  }
+
+  if (rejected.length > 0) {
+    console.error(`Failed to load layer data for "${id}"`, rejected[0]);
+    setFailedLayerIds((current) =>
+      current.includes(id) ? current : [...current, id],
+    );
+  } else {
+    setFailedLayerIds((current) =>
+      current.includes(id) ? current.filter((f) => f !== id) : current,
+    );
+  }
 }
 
 /**
@@ -58,33 +97,29 @@ export function useLayerData(layerIds: string[]): LayerDataResult {
       const controller = new AbortController();
       controllers.set(requestKey, controller);
 
-      Promise.all(
+      Promise.allSettled(
         definition.dataSource.map((source) =>
           fetchFeatureCollection(source, undefined, controller.signal),
         ),
-      )
-        .then((collections) => {
-          if (!cancelled) {
-            setData((current) => ({
-              ...current,
-              [id]: mergeFeatureCollections(collections),
-            }));
-            setFailedLayerIds((current) =>
-              current.includes(id) ? current.filter((f) => f !== id) : current,
-            );
-          }
-          controllers.delete(requestKey);
-        })
-        .catch((error) => {
+      ).then((results) => {
+        controllers.delete(requestKey);
+        const partition = partitionSettled(results);
+
+        // A source that failed may just not have been published for this
+        // region yet (see `docs/adding-a-region.md`) — retrying it once
+        // it's requested again (e.g. the layer is toggled off and on) is
+        // cheap, and the alternative (never retrying) would leave that
+        // region's data permanently missing even after it ships.
+        if (partition.rejected.length > 0) {
           requested.current.delete(requestKey);
-          controllers.delete(requestKey);
-          if (!cancelled) {
-            console.error(`Failed to load layer data for "${id}"`, error);
-            setFailedLayerIds((current) =>
-              current.includes(id) ? current : [...current, id],
-            );
-          }
-        });
+        }
+
+        if (cancelled) {
+          return;
+        }
+
+        applySettledLayerResults(id, partition, setData, setFailedLayerIds);
+      });
     }
 
     return () => {

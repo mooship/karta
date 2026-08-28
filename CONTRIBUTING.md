@@ -1,7 +1,7 @@
 # Contributing to Karta
 
 Thanks for your interest. Karta is a reusable SDK for public-interest
-geospatial layer platforms; its reference implementation, Gauteng spatial
+geospatial layer platforms; its reference implementation, Spatial apartheid
 legacy, maps the spatial legacy of apartheid-era planning across South
 African cities. Contributions are welcome — to the SDK itself, and to the
 reference app: better data sources, accessibility improvements, and
@@ -50,7 +50,7 @@ workflow.
 
 Data flows in one direction: `data-pipeline` (run manually, offline) → static
 GeoJSON committed to `packages/web/public/data/` → `packages/web`, which only
-fetches those static files at runtime. `packages/app` holds the Gauteng-specific
+fetches those static files at runtime. `packages/app` holds the domain-specific
 types and constants both ends agree on, built on the domain-agnostic model in
 `packages/core`. There are no runtime API calls.
 
@@ -60,9 +60,9 @@ layer model, Leaflet config factory, registry factory, geodata utils),
 `packages/core`, `packages/react`, and `packages/theme`), `packages/react`
 (generic React hooks — dark-mode detection, theme preference),
 `packages/theme` (a typed, compile-time-checked view onto the Material 3
-design tokens), `packages/app` (Gauteng-specific domain data and constants,
+design tokens), `packages/app` (the reference domain's data and constants,
 built on `packages/core`), and `packages/web` (the SSR app that wires the
-other five together for the published `gauteng-spatial-legacy` domain).
+other five together for the published `spatial-apartheid-legacy` domain).
 `.dependency-cruiser.cjs` (run via `npm run depcruise`, part of `npm run lint`)
 enforces that dependency direction mechanically — see CLAUDE.md's SOLID
 convention.
@@ -72,7 +72,7 @@ Two consequences worth knowing before you start:
 - Adding a transit layer usually means one new adapter in
   `data-pipeline/src/adapters/`, wired into a `PipelineSource` entry in that
   region's config (e.g. `data-pipeline/src/regions/gautengPipelineConfig.ts`),
-  one new `Layer` entry in `packages/app/src/domains/gauteng-spatial-legacy/layers.ts`,
+  one new `Layer` entry in `packages/app/src/domains/spatial-apartheid-legacy/layers.ts`,
   and a pipeline re-run. Map rendering code should not need edits.
 - Any new field added to GeoJSON properties must be optional or defaulted in the
   Zod schemas, because a CDN or browser may still be serving the previous payload

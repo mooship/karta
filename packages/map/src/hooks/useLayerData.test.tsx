@@ -387,4 +387,69 @@ describe("useLayerData", () => {
       expect(result.current.data.areas?.features).toHaveLength(2);
     });
   });
+
+  it("still renders the sources that succeed when another configured region source fails", async () => {
+    const consoleError = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
+    vi.mocked(global.fetch).mockImplementation((url) => {
+      if (String(url).includes("/data/other/")) {
+        return Promise.reject(new Error("network"));
+      }
+      return Promise.resolve({
+        ok: true,
+        json: async () => ({
+          type: "FeatureCollection",
+          features: [
+            { type: "Feature", properties: { region: "a" }, geometry: null },
+          ],
+        }),
+      } as Response);
+    });
+
+    const twoSourceDomain: DomainConfig = {
+      layers: [
+        {
+          id: "areas",
+          label: "Coverage level",
+          dataSource: [
+            "/data/example/areas.display.v1.geojson",
+            "/data/other/areas.display.v1.geojson",
+          ],
+          geometryKind: "choropleth",
+          defaultVisible: true,
+          available: true,
+          style: {
+            kind: "choropleth",
+            propertyKey: "value",
+            buckets: [],
+            baseOpacity: 0.18,
+          },
+        },
+      ],
+      layerGroups: [],
+    };
+
+    const { result } = renderHook(() => useLayerData(["areas"]), {
+      wrapper: ({ children }) => (
+        <DomainProvider domain={twoSourceDomain}>{children}</DomainProvider>
+      ),
+    });
+
+    await waitFor(() => {
+      expect(result.current.data.areas?.features).toHaveLength(1);
+    });
+    expect(result.current.data.areas?.features[0]?.properties).toEqual({
+      region: "a",
+    });
+    await waitFor(() => {
+      expect(result.current.failedLayerIds).toEqual(["areas"]);
+    });
+    expect(consoleError).toHaveBeenCalledWith(
+      expect.stringContaining("areas"),
+      expect.any(Error),
+    );
+
+    consoleError.mockRestore();
+  });
 });

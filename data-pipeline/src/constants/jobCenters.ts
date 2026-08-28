@@ -9,7 +9,7 @@ export interface JobCenter {
   metroId?: MetroId;
 }
 
-/** Every selected job centre across all nine Gauteng metros. */
+/** Every selected job centre across all nine Gauteng metros and City of Cape Town. */
 export const JOB_CENTERS = [
   {
     id: "pretoria-cbd",
@@ -416,6 +416,55 @@ export const JOB_CENTERS = [
     lat: -26.351,
     lon: 27.275,
     metroId: "merafong-city",
+  },
+  {
+    id: "cape-town-cbd",
+    name: "Cape Town CBD",
+    lat: -33.9249,
+    lon: 18.4241,
+    metroId: "cape-town",
+  },
+  {
+    id: "bellville",
+    name: "Bellville",
+    lat: -33.9,
+    lon: 18.6333,
+    metroId: "cape-town",
+  },
+  {
+    id: "century-city",
+    name: "Century City",
+    lat: -33.8917,
+    lon: 18.5083,
+    metroId: "cape-town",
+  },
+  {
+    id: "claremont",
+    name: "Claremont",
+    lat: -33.9806,
+    lon: 18.4653,
+    metroId: "cape-town",
+  },
+  {
+    id: "epping-industria",
+    name: "Epping Industria",
+    lat: -33.9342,
+    lon: 18.5436,
+    metroId: "cape-town",
+  },
+  {
+    id: "montague-gardens",
+    name: "Montague Gardens",
+    lat: -33.8611,
+    lon: 18.5214,
+    metroId: "cape-town",
+  },
+  {
+    id: "cape-town-airport",
+    name: "Cape Town International Airport",
+    lat: -33.9694,
+    lon: 18.5972,
+    metroId: "cape-town",
   },
 ] as const satisfies readonly JobCenter[];
 

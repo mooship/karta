@@ -19,6 +19,13 @@ export interface TownshipProperties {
   distanceKm: number | null;
   /** Straight-line distance (km) to the nearest formal transit route, or `null` if it couldn't be computed. */
   nearestTransitKm: number | null;
+  /**
+   * Combined 0–1 "spatial burden" score, weighting `commuteMinutes` and
+   * `nearestTransitKm` together (see `data-pipeline/src/spatialBurden.ts`
+   * for the normalization/weighting). `null` only when both source metrics
+   * are `null`.
+   */
+  spatialBurdenScore: number | null;
 }
 
 /** A recognised township area, as a Polygon/MultiPolygon GeoJSON feature. */

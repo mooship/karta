@@ -17,6 +17,7 @@ export const METRO_BBOX: Record<MetroId, string> = {
   "mogale-city": "-26.21321,27.42522,-25.79592,27.94085",
   "rand-west-city": "-26.61774,27.46589,-26.05110,27.82447",
   "merafong-city": "-26.64947,27.15634,-26.08917,27.62991",
+  "cape-town": "-34.35,18.30,-33.45,18.85",
 };
 
 /** Returns a metro's bounding box string from `METRO_BBOX`. */

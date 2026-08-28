@@ -23,6 +23,7 @@ test.describe("data load error and retry", () => {
 
     await expect(alert).not.toBeVisible();
     await expect(page.locator(MAP_GEOMETRY_SELECTOR).first()).toBeVisible();
-    expect(requestState.requestCount).toBe(2);
+    // One request per configured region (gauteng, western-cape), per attempt.
+    expect(requestState.requestCount).toBe(4);
   });
 });

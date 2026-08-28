@@ -81,21 +81,27 @@ describe("App", () => {
       writable: true,
     });
     useMapUiStore.getState().reset();
-    dataMocks.getTownships.mockReset().mockResolvedValue([
-      {
-        type: "Feature",
-        properties: {
-          id: "A",
-          name: "Mamelodi",
-          commuteMinutes: 20,
-          nearestJobCenter: "Pretoria CBD",
-          distanceKm: null,
-          nearestTransitKm: null,
-          nearestAReYengStopKm: null,
-        },
-        geometry: null,
-      },
-    ]);
+    dataMocks.getTownships.mockReset().mockImplementation((url: string) =>
+      Promise.resolve(
+        url.includes("/gauteng/")
+          ? [
+              {
+                type: "Feature",
+                properties: {
+                  id: "A",
+                  name: "Mamelodi",
+                  commuteMinutes: 20,
+                  nearestJobCenter: "Pretoria CBD",
+                  distanceKm: null,
+                  nearestTransitKm: null,
+                  nearestAReYengStopKm: null,
+                },
+                geometry: null,
+              },
+            ]
+          : [],
+      ),
+    );
     dataMocks.fetchAreas.mockReset().mockResolvedValue({
       type: "FeatureCollection",
       features: [],
@@ -867,7 +873,9 @@ describe("App", () => {
   );
 
   it("shows a data error and retries the validated requests", async () => {
-    dataMocks.getTownships.mockRejectedValueOnce(new Error("invalid data"));
+    dataMocks.getTownships
+      .mockRejectedValueOnce(new Error("invalid data"))
+      .mockRejectedValueOnce(new Error("invalid data"));
     render(<App />);
 
     expect(await screen.findByRole("alert")).toHaveTextContent(
@@ -876,10 +884,49 @@ describe("App", () => {
     fireEvent.click(screen.getByRole("button", { name: "Retry" }));
 
     await waitFor(() =>
-      expect(dataMocks.getTownships).toHaveBeenCalledTimes(2),
+      expect(dataMocks.getTownships).toHaveBeenCalledTimes(4),
     );
     await waitFor(() =>
       expect(screen.queryByRole("alert")).not.toBeInTheDocument(),
     );
+  });
+
+  it("does not show a data error when only one region's township data fails to load", async () => {
+    const consoleError = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
+    dataMocks.getTownships.mockReset().mockImplementation((url: string) =>
+      url.includes("/gauteng/")
+        ? Promise.resolve([
+            {
+              type: "Feature",
+              properties: {
+                id: "A",
+                name: "Mamelodi",
+                commuteMinutes: 20,
+                nearestJobCenter: "Pretoria CBD",
+                distanceKm: null,
+                nearestTransitKm: null,
+              },
+              geometry: null,
+            },
+          ])
+        : Promise.reject(new Error("not published yet")),
+    );
+
+    render(<App />);
+
+    await waitFor(() =>
+      expect(screen.getByTestId("geojson-layer")).toHaveTextContent(
+        "1 features",
+      ),
+    );
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+    expect(consoleError).toHaveBeenCalledWith(
+      "Failed to load region map data",
+      expect.any(Error),
+    );
+
+    consoleError.mockRestore();
   });
 });

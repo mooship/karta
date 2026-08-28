@@ -5,6 +5,7 @@ describe("buildRegionDataUrls", () => {
   it("builds one URL per configured region", () => {
     expect(buildRegionDataUrls("townships.display.v1.geojson")).toEqual([
       "/data/gauteng/townships.display.v1.geojson",
+      "/data/western-cape/townships.display.v1.geojson",
     ]);
   });
 });

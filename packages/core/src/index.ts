@@ -1,3 +1,4 @@
+export * from "./async/partitionSettled";
 export * from "./data/exportFeatureCollection";
 export * from "./data/fetchFeatureCollection";
 export * from "./data/geoJsonSchemas";
