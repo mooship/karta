@@ -1,4 +1,4 @@
-import { GAUTENG_SPATIAL_LEGACY_DOMAIN } from "@karta/app";
+import { SPATIAL_APARTHEID_LEGACY_DOMAIN } from "@karta/app";
 import type { DomainStory, Layer, LayerGroup } from "@karta/core";
 import { createRegistry } from "@karta/core";
 import {
@@ -8,7 +8,7 @@ import {
 } from "./layerTranslations";
 
 /**
- * Wraps `@karta/app`'s English `GAUTENG_SPATIAL_LEGACY_DOMAIN` — safe to
+ * Wraps `@karta/app`'s English `SPATIAL_APARTHEID_LEGACY_DOMAIN` — safe to
  * build once at module scope since it holds only locale-independent
  * structure (ids, data sources, styling, availability). Every getter below
  * applies `packages/web`'s own translation overlay (`layerTranslations.ts`)
@@ -19,9 +19,9 @@ import {
  * module-scope value would leak one request's locale into every other
  * request handled by that isolate.
  */
-const registry = createRegistry(GAUTENG_SPATIAL_LEGACY_DOMAIN);
+const registry = createRegistry(SPATIAL_APARTHEID_LEGACY_DOMAIN);
 
-/** Returns every layer in the `gauteng-spatial-legacy` domain, localized to the current locale. */
+/** Returns every layer in the `spatial-apartheid-legacy` domain, localized to the current locale. */
 export function getLayers(): readonly Layer[] {
   return registry.getLayers().map(localizeLayer);
 }
@@ -32,7 +32,7 @@ export function getLayer(id: string): Layer | undefined {
   return layer ? localizeLayer(layer) : undefined;
 }
 
-/** Returns every layer group in the `gauteng-spatial-legacy` domain, localized to the current locale. */
+/** Returns every layer group in the `spatial-apartheid-legacy` domain, localized to the current locale. */
 export function getLayerGroups(): readonly LayerGroup[] {
   return registry.getLayerGroups().map(localizeLayerGroup);
 }
@@ -61,7 +61,7 @@ export function getLayerStructure(): readonly Layer[] {
   return registry.getLayers();
 }
 
-/** Returns the `gauteng-spatial-legacy` domain's story copy localized to the current locale, or `undefined` if it has none. */
+/** Returns the `spatial-apartheid-legacy` domain's story copy localized to the current locale, or `undefined` if it has none. */
 export function getStory(): DomainStory | undefined {
   return localizeStory(registry.getStory());
 }

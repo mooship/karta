@@ -1,28 +1,46 @@
 import { describe, expect, it } from "vitest";
 import { REGIONS } from "../../constants/regions";
 import type { Layer } from "../../types/genericLayer";
-import { GAUTENG_SPATIAL_LEGACY_LAYERS } from "./layers";
+import { SPATIAL_APARTHEID_LEGACY_LAYERS } from "./layers";
 
-describe("GAUTENG_SPATIAL_LEGACY_LAYERS", () => {
-  it("derives every data URL's region segment from REGIONS' gauteng entry", () => {
-    const gautengRegion = REGIONS.find((region) => region.id === "gauteng");
-    expect(gautengRegion).toBeDefined();
-    for (const layer of GAUTENG_SPATIAL_LEGACY_LAYERS) {
+describe("SPATIAL_APARTHEID_LEGACY_LAYERS", () => {
+  it("derives every data URL's region segment from a REGIONS entry", () => {
+    const regionIds = new Set(REGIONS.map((region) => region.id));
+    for (const layer of SPATIAL_APARTHEID_LEGACY_LAYERS) {
       for (const url of layer.dataSource) {
-        expect(url.startsWith(`/data/${gautengRegion?.id}/`)).toBe(true);
+        const [, , urlRegionId] = url.split("/");
+        expect(regionIds.has(urlRegionId ?? "")).toBe(true);
       }
       if (layer.companionSource) {
-        expect(
-          layer.companionSource.startsWith(`/data/${gautengRegion?.id}/`),
-        ).toBe(true);
+        const [, , urlRegionId] = layer.companionSource.split("/");
+        expect(regionIds.has(urlRegionId ?? "")).toBe(true);
       }
     }
   });
 
-  it("has exactly the 6 layers the current app ships, in order", () => {
-    expect(GAUTENG_SPATIAL_LEGACY_LAYERS.map((l) => l.id)).toEqual([
+  it("fetches bus-rapid-transit and commuter-rail from both configured regions", () => {
+    const findLayer = (id: string): Layer => {
+      const layer = SPATIAL_APARTHEID_LEGACY_LAYERS.find((l) => l.id === id);
+      if (!layer) {
+        throw new Error(`expected layer ${id}`);
+      }
+      return layer;
+    };
+    expect(findLayer("bus-rapid-transit").dataSource).toEqual([
+      "/data/gauteng/bus-rapid-transit.display.v1.geojson",
+      "/data/western-cape/bus-rapid-transit.display.v1.geojson",
+    ]);
+    expect(findLayer("commuter-rail").dataSource).toEqual([
+      "/data/gauteng/commuter-rail.display.v1.geojson",
+      "/data/western-cape/commuter-rail.display.v1.geojson",
+    ]);
+  });
+
+  it("has exactly the 7 layers the current app ships, in order", () => {
+    expect(SPATIAL_APARTHEID_LEGACY_LAYERS.map((l) => l.id)).toEqual([
       "townships",
       "nearest-transit",
+      "spatial-burden",
       "rapid-rail",
       "bus-rapid-transit",
       "commuter-rail",
@@ -31,7 +49,7 @@ describe("GAUTENG_SPATIAL_LEGACY_LAYERS", () => {
   });
 
   it("matches today's townships (commute time) choropleth exactly", () => {
-    const layer = GAUTENG_SPATIAL_LEGACY_LAYERS.find(
+    const layer = SPATIAL_APARTHEID_LEGACY_LAYERS.find(
       (l) => l.id === "townships",
     );
     expect(layer?.label).toBe("Modelled car time");
@@ -70,7 +88,7 @@ describe("GAUTENG_SPATIAL_LEGACY_LAYERS", () => {
   });
 
   it("matches today's nearest-transit choropleth exactly", () => {
-    const layer = GAUTENG_SPATIAL_LEGACY_LAYERS.find(
+    const layer = SPATIAL_APARTHEID_LEGACY_LAYERS.find(
       (l) => l.id === "nearest-transit",
     );
     expect(layer?.label).toBe("Distance to nearest transit");
@@ -116,9 +134,46 @@ describe("GAUTENG_SPATIAL_LEGACY_LAYERS", () => {
     expect(style.resolveEmphasis?.({ id: "1" })).toBe(false);
   });
 
+  it("matches today's spatial-burden choropleth exactly", () => {
+    const layer = SPATIAL_APARTHEID_LEGACY_LAYERS.find(
+      (l) => l.id === "spatial-burden",
+    );
+    expect(layer?.label).toBe("Combined spatial burden");
+    expect(layer?.defaultVisible).toBe(false);
+    expect(layer?.dataSource).toEqual([
+      "/data/gauteng/townships.display.v1.geojson",
+    ]);
+    expect(layer?.companionSource).toBe(
+      "/data/gauteng/township-areas.display.v1.geojson",
+    );
+    const style = layer?.style;
+    if (style?.kind !== "choropleth") {
+      throw new Error("expected choropleth style");
+    }
+    expect(style.propertyKey).toBe("spatialBurdenScore");
+    expect(style.buckets).toEqual([
+      { max: 0.25, color: "#E6D9F5", darkColor: "#3D2A5C", label: "Low" },
+      {
+        max: 0.5,
+        color: "#B99FE0",
+        darkColor: "#6B4A94",
+        label: "Moderate",
+      },
+      { max: 0.75, color: "#8659C7", darkColor: "#9B72D6", label: "High" },
+      {
+        max: Number.POSITIVE_INFINITY,
+        color: "#4B1F94",
+        darkColor: "#C9AAFF",
+        label: "Severe",
+      },
+    ]);
+    expect(style.baseOpacity).toBe(0.18);
+    expect(style.emphasisOpacity).toBe(0.78);
+  });
+
   it("matches today's 4 transit line layers exactly", () => {
     const findLayer = (id: string): Layer => {
-      const layer = GAUTENG_SPATIAL_LEGACY_LAYERS.find((l) => l.id === id);
+      const layer = SPATIAL_APARTHEID_LEGACY_LAYERS.find((l) => l.id === id);
       if (!layer) {
         throw new Error(`expected layer ${id}`);
       }
@@ -150,6 +205,7 @@ describe("GAUTENG_SPATIAL_LEGACY_LAYERS", () => {
             value: "#0072B2",
             label: "Ekurhuleni IRPTN",
           },
+          { match: "MyCiTi", value: "#E69F00", label: "MyCiTi" },
         ],
         fallback: "#009E73",
       },

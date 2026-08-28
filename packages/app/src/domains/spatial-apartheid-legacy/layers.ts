@@ -3,15 +3,34 @@ import type { RegionId } from "../../constants/regions";
 import { getTownshipGroup } from "../../constants/townships";
 
 /**
- * This domain's region, typed against `RegionId` (derived from `REGIONS`)
- * rather than a bare string literal — if `REGIONS`'s `gauteng` entry is ever
- * renamed, this fails typechecking instead of `dataUrl` silently pointing at
- * a directory `data-pipeline` no longer writes.
+ * Region ids this domain's layers pull data from, typed against `RegionId`
+ * (derived from `REGIONS`) rather than bare string literals — if a
+ * `REGIONS` entry is ever renamed, this fails typechecking instead of
+ * `dataUrl`/`multiRegionDataUrls` silently pointing at a directory
+ * `data-pipeline` no longer writes.
  */
 const GAUTENG_REGION_ID: RegionId = "gauteng";
+const WESTERN_CAPE_REGION_ID: RegionId = "western-cape";
 
 function dataUrl(fileName: string): string {
   return `/data/${GAUTENG_REGION_ID}/${fileName}`;
+}
+
+/**
+ * Builds one `dataSource` URL per given region for a transit layer whose
+ * pipeline source is configured for more than one region (currently
+ * `bus-rapid-transit` and `commuter-rail` — see
+ * `data-pipeline/src/regions/gautengPipelineConfig.ts` and
+ * `westernCapePipelineConfig.ts`). `MapView`'s `useLayerData` fetches every
+ * URL in a layer's `dataSource` and merges the results, so listing more than
+ * one region here is what makes a second region's transit features actually
+ * appear on the map — see `docs/adding-a-region.md`.
+ */
+function multiRegionDataUrls(
+  regionIds: readonly RegionId[],
+  fileName: string,
+): string[] {
+  return regionIds.map((regionId) => `/data/${regionId}/${fileName}`);
 }
 
 function resolveTownshipEmphasis(
@@ -36,17 +55,19 @@ const TOWNSHIP_EMPHASIS_STYLE = {
 } as const;
 
 /**
- * The `gauteng-spatial-legacy` domain's layer catalogue: two choropleth
- * layers (modelled car time, distance to nearest transit) sharing the same
- * township-area data, and one line layer per transit network. `rapid-rail`
- * and `commuter-rail` set `hasPointGeometry: true` since real station/stop
- * Point geometry only exists for those two networks.
+ * The `spatial-apartheid-legacy` domain's layer catalogue: three choropleth
+ * layers (modelled car time, distance to nearest transit, and a combined
+ * spatial-burden score weighting the two together — see
+ * `data-pipeline/src/spatialBurden.ts`) sharing the same township-area data,
+ * and one line layer per transit network. `rapid-rail` and `commuter-rail`
+ * set `hasPointGeometry: true` since real station/stop Point geometry only
+ * exists for those two networks.
  * @remarks `readonly`/`as const`, matching `METROS`/`REGIONS`: Cloudflare
  *   Workers reuse isolates across requests, so an in-place mutation by any
  *   downstream consumer would otherwise leak across unrelated requests for
  *   the isolate's lifetime.
  */
-export const GAUTENG_SPATIAL_LEGACY_LAYERS: readonly Layer[] = [
+export const SPATIAL_APARTHEID_LEGACY_LAYERS: readonly Layer[] = [
   {
     id: "townships",
     label: "Modelled car time",
@@ -118,6 +139,49 @@ export const GAUTENG_SPATIAL_LEGACY_LAYERS: readonly Layer[] = [
     },
   },
   {
+    id: "spatial-burden",
+    label: "Combined spatial burden",
+    description:
+      "A combined score weighting modelled car time and distance to transit together, to show where both burdens compound.",
+    dataSource: [dataUrl("townships.display.v1.geojson")],
+    companionSource: dataUrl("township-areas.display.v1.geojson"),
+    geometryKind: "choropleth",
+    defaultVisible: false,
+    available: true,
+    interaction: { selectable: true, labelField: "name" },
+    style: {
+      kind: "choropleth",
+      propertyKey: "spatialBurdenScore",
+      buckets: [
+        {
+          max: 0.25,
+          color: "#E6D9F5",
+          darkColor: "#3D2A5C",
+          label: "Low",
+        },
+        {
+          max: 0.5,
+          color: "#B99FE0",
+          darkColor: "#6B4A94",
+          label: "Moderate",
+        },
+        {
+          max: 0.75,
+          color: "#8659C7",
+          darkColor: "#9B72D6",
+          label: "High",
+        },
+        {
+          max: Number.POSITIVE_INFINITY,
+          color: "#4B1F94",
+          darkColor: "#C9AAFF",
+          label: "Severe",
+        },
+      ],
+      ...TOWNSHIP_EMPHASIS_STYLE,
+    },
+  },
+  {
     id: "rapid-rail",
     label: "Rapid Rail",
     dataSource: [dataUrl("rapid-rail.display.v1.geojson")],
@@ -135,7 +199,10 @@ export const GAUTENG_SPATIAL_LEGACY_LAYERS: readonly Layer[] = [
   {
     id: "bus-rapid-transit",
     label: "Bus Rapid Transit",
-    dataSource: [dataUrl("bus-rapid-transit.display.v1.geojson")],
+    dataSource: multiRegionDataUrls(
+      [GAUTENG_REGION_ID, WESTERN_CAPE_REGION_ID],
+      "bus-rapid-transit.display.v1.geojson",
+    ),
     geometryKind: "line",
     defaultVisible: false,
     available: true,
@@ -155,6 +222,7 @@ export const GAUTENG_SPATIAL_LEGACY_LAYERS: readonly Layer[] = [
             value: "#0072B2",
             label: "Ekurhuleni IRPTN",
           },
+          { match: "MyCiTi", value: "#E69F00", label: "MyCiTi" },
         ],
         fallback: "#009E73",
       },
@@ -163,7 +231,10 @@ export const GAUTENG_SPATIAL_LEGACY_LAYERS: readonly Layer[] = [
   {
     id: "commuter-rail",
     label: "Commuter Rail",
-    dataSource: [dataUrl("commuter-rail.display.v1.geojson")],
+    dataSource: multiRegionDataUrls(
+      [GAUTENG_REGION_ID, WESTERN_CAPE_REGION_ID],
+      "commuter-rail.display.v1.geojson",
+    ),
     geometryKind: "line",
     defaultVisible: false,
     available: true,

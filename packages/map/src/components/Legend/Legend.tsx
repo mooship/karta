@@ -240,7 +240,7 @@ function LegendComponent({
  *   like `MapView` itself, since it renders inside the same panel/bottom-sheet
  *   tree that re-renders on unrelated parent state (drag frames, menu toggles).
  * @example
- * <DomainProvider domain={GAUTENG_SPATIAL_LEGACY_DOMAIN}>
+ * <DomainProvider domain={SPATIAL_APARTHEID_LEGACY_DOMAIN}>
  *   <Legend mode="active" visibleLayerIds={["townships"]} />
  * </DomainProvider>
  */

@@ -3,7 +3,7 @@ export type Domain_Story_BodyInputs = {};
 /**
 * | output |
 * | --- |
-* | "Apartheid law controlled where Black, Coloured and Indian people could live. Black townships were deliberately separated from economic centres, and those dis..." |
+* | "South Africa's Group Areas Act (1950) didn't just segregate where people could live — it engineered distance as policy. Black, Coloured and Indian communitie..." |
 *
 * @param {Domain_Story_BodyInputs} inputs
 * @param {{ locale?: "en" | "af" }} options

@@ -973,6 +973,99 @@ const MERAFONG_CITY_TOWNSHIP_AREA_DEFINITIONS: readonly TownshipAreaDefinitionIn
     },
   ];
 
+// Selected from the City of Cape Town's Census 2011 sub-places (MN_CODE 199).
+// Langa, Nyanga, Gugulethu, Khayelitsha, Mitchells Plain, and Bishop Lavis
+// each have their own distinct Census main place and are included wholesale
+// via `census-main-place`, matching Tshwane/Johannesburg's own primary-area
+// pattern. Manenberg, Bonteheuwel, Heideveld, and Hanover Park are distinct
+// sub-places within the mixed "Athlone" main place (which also covers many
+// non-township suburbs) and so use `named-sub-places`, matching
+// Johannesburg's Klipspruit/Protea South pattern. Elsies River is likewise
+// `named-sub-places`, matching only "Elsies Rivier SP" — its main place's
+// English-spelled "Elsies River Industrial" sub-place is a separate,
+// non-residential area. See docs/data/cape-town-area-classification.md.
+const CAPE_TOWN_TOWNSHIP_AREA_DEFINITIONS: readonly TownshipAreaDefinitionInput[] =
+  [
+    {
+      id: "langa",
+      name: "Langa",
+      selectionBasis: "census-main-place",
+      labelPriority: "primary",
+      censusMainPlaceCodes: ["199027"],
+    },
+    {
+      id: "nyanga",
+      name: "Nyanga",
+      selectionBasis: "census-main-place",
+      labelPriority: "primary",
+      censusMainPlaceCodes: ["199035"],
+    },
+    {
+      id: "gugulethu",
+      name: "Gugulethu",
+      selectionBasis: "census-main-place",
+      labelPriority: "primary",
+      censusMainPlaceCodes: ["199034"],
+    },
+    {
+      id: "khayelitsha",
+      name: "Khayelitsha",
+      selectionBasis: "census-main-place",
+      labelPriority: "primary",
+      censusMainPlaceCodes: ["199043"],
+    },
+    {
+      id: "mitchells-plain",
+      name: "Mitchells Plain",
+      selectionBasis: "census-main-place",
+      labelPriority: "primary",
+      censusMainPlaceCodes: ["199044"],
+    },
+    {
+      id: "bishop-lavis",
+      name: "Bishop Lavis",
+      selectionBasis: "census-main-place",
+      labelPriority: "secondary",
+      censusMainPlaceCodes: ["199040"],
+    },
+    {
+      id: "manenberg",
+      name: "Manenberg",
+      selectionBasis: "named-sub-places",
+      labelPriority: "primary",
+      subPlaceNamePrefixes: ["Manenberg"],
+    },
+    {
+      id: "bonteheuwel",
+      name: "Bonteheuwel",
+      selectionBasis: "named-sub-places",
+      labelPriority: "primary",
+      subPlaceNamePrefixes: ["Bonteheuwel"],
+    },
+    {
+      id: "heideveld",
+      name: "Heideveld",
+      selectionBasis: "named-sub-places",
+      labelPriority: "secondary",
+      subPlaceNamePrefixes: ["Heideveld"],
+    },
+    {
+      id: "hanover-park",
+      name: "Hanover Park",
+      selectionBasis: "named-sub-places",
+      labelPriority: "secondary",
+      subPlaceNamePrefixes: ["Hanover Park"],
+    },
+    {
+      id: "elsies-river",
+      name: "Elsies River",
+      selectionBasis: "named-sub-places",
+      labelPriority: "secondary",
+      subPlaceNamePrefixes: ["Elsies Rivier"],
+      excludedSubPlaceNames: ["Elsies River Industrial"],
+    },
+  ];
+
 /** Pairs each metro's own township area list with its `metroId`, feeding `TOWNSHIP_AREA_DEFINITIONS`. */
 const TOWNSHIP_AREA_DEFINITIONS_BY_METRO: readonly (readonly [
   MetroId,
@@ -987,9 +1080,10 @@ const TOWNSHIP_AREA_DEFINITIONS_BY_METRO: readonly (readonly [
   ["mogale-city", MOGALE_CITY_TOWNSHIP_AREA_DEFINITIONS],
   ["rand-west-city", RAND_WEST_CITY_TOWNSHIP_AREA_DEFINITIONS],
   ["merafong-city", MERAFONG_CITY_TOWNSHIP_AREA_DEFINITIONS],
+  ["cape-town", CAPE_TOWN_TOWNSHIP_AREA_DEFINITIONS],
 ];
 
-/** Every recognised township area across all nine Gauteng metros, flattened from each metro's own list with `metroId` attached. */
+/** Every recognised township area across all nine Gauteng metros and City of Cape Town, flattened from each metro's own list with `metroId` attached. */
 export const TOWNSHIP_AREA_DEFINITIONS: readonly TownshipAreaDefinition[] =
   TOWNSHIP_AREA_DEFINITIONS_BY_METRO.flatMap(([metroId, definitions]) =>
     definitions.map((definition) => ({ ...definition, metroId })),

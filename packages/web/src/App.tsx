@@ -4,6 +4,7 @@ import {
   type DomainStory as DomainStoryContent,
   fetchFeatureCollection,
   mergeFeatureCollections,
+  partitionSettled,
 } from "@karta/core";
 import {
   ControlButton,
@@ -67,16 +68,23 @@ const MapView = lazy(async () => {
 /** A Leaflet-style `[[south, west], [north, east]]` bounding rectangle. */
 type LatLngBoundsTuple = [[number, number], [number, number]];
 
-const GAUTENG_BOUNDS: LatLngBoundsTuple = [
-  [-27.15, 27.1],
+/**
+ * A rectangle wide enough to frame both published regions' mapped data
+ * (Gauteng and City of Cape Town) on initial load. The two are far enough
+ * apart that this necessarily starts the map more zoomed out than either
+ * region's own bounds would — there's no per-region viewport logic today,
+ * see `docs/adding-a-region.md`.
+ */
+const MAP_INITIAL_BOUNDS: LatLngBoundsTuple = [
+  [-34.35, 18.3],
   [-25.3, 28.75],
 ];
 
 /**
  * Mainland South Africa's approximate extent, used only to sanity-check
  * location search results (see `isWithinSearchCoverage`) — not the map's
- * initial viewport, which stays framed on Gauteng via `GAUTENG_BOUNDS` since
- * that's the only region with actual layer data today.
+ * initial viewport (`MAP_INITIAL_BOUNDS`), which is already wider than any
+ * single region but narrower than the whole country.
  */
 const SEARCH_COVERAGE_BOUNDS: LatLngBoundsTuple = [
   [-34.84, 16.45],
@@ -99,8 +107,9 @@ const locationSearchProvider = createNominatimGeocoderProvider({
  * Whether `location` falls within `SEARCH_COVERAGE_BOUNDS`.
  * @remarks Nominatim searches the whole world, so a query can resolve to a
  *   place far outside South Africa entirely; flying the map there would just
- *   show an empty basemap with no explanation. The mapped data itself is
- *   Gauteng-only, but the basemap and search cover the whole country.
+ *   show an empty basemap with no explanation. The mapped data itself only
+ *   covers Gauteng and City of Cape Town, but the basemap and search cover
+ *   the whole country.
  */
 function isWithinSearchCoverage(location: LocationSearchResult): boolean {
   const [[south, west], [north, east]] = SEARCH_COVERAGE_BOUNDS;
@@ -293,7 +302,7 @@ const PanelViewContent = memo(function PanelViewContent({
 /**
  * The reference app's root shell: fetches and merges the Gauteng township
  * choropleth data, wraps the render tree in a `DomainProvider` for
- * `gauteng-spatial-legacy`, and renders the map alongside the desktop/mobile
+ * `spatial-apartheid-legacy`, and renders the map alongside the desktop/mobile
  * info panel and its settings menu.
  * @remarks That township fetch deliberately waits for `MapView`'s `onReady`
  *   (tracked as `mapReady`) rather than starting at mount. Downloading,
@@ -555,20 +564,32 @@ export function App() {
     );
 
     Promise.all([
-      Promise.all(townshipUrls.map((url) => fetchTownships(url))),
-      Promise.all(areaUrls.map((url) => fetchFeatureCollection(url))),
-    ])
-      .then(([townshipsByRegion, areasByRegion]) => {
-        if (!cancelled) {
-          setTownships(townshipsByRegion.flat());
-          setTownshipAreas(mergeFeatureCollections(areasByRegion).features);
-        }
-      })
-      .catch(() => {
-        if (!cancelled) {
-          setDataError(true);
-        }
-      });
+      Promise.allSettled(townshipUrls.map((url) => fetchTownships(url))),
+      Promise.allSettled(areaUrls.map((url) => fetchFeatureCollection(url))),
+    ]).then(([townshipResults, areaResults]) => {
+      if (cancelled) {
+        return;
+      }
+      const townships = partitionSettled(townshipResults);
+      const areas = partitionSettled(areaResults);
+
+      // A region failing to load here (e.g. its data hasn't been published
+      // yet, see docs/adding-a-region.md) shouldn't blank out every other
+      // region's already-working data — only surface the retry banner once
+      // every region's township data (the primary dataset the choropleth
+      // and popups key off; `townshipAreas` is a companion display layer
+      // with no useful properties of its own) failed to load.
+      if (townships.fulfilled.length === 0) {
+        setDataError(true);
+        return;
+      }
+
+      for (const reason of [...townships.rejected, ...areas.rejected]) {
+        console.error("Failed to load region map data", reason);
+      }
+      setTownships(townships.fulfilled.flat());
+      setTownshipAreas(mergeFeatureCollections(areas.fulfilled).features);
+    });
     return () => {
       cancelled = true;
     };
@@ -920,7 +941,7 @@ export function App() {
           {hydrated && (
             <Suspense fallback={null}>
               <MapView
-                bounds={GAUTENG_BOUNDS}
+                bounds={MAP_INITIAL_BOUNDS}
                 ariaLabel={m.map_aria_label()}
                 areas={townships}
                 areaBoundaries={townshipAreas}

@@ -1,7 +1,7 @@
 import type { LayerGroup } from "@karta/core";
 
 /**
- * The `gauteng-spatial-legacy` domain's layer groups: the two accessibility
+ * The `spatial-apartheid-legacy` domain's layer groups: the two accessibility
  * choropleth layers as a mutually-exclusive group (only one shown at a
  * time), and every transit network layer as an independently-toggleable
  * group.
@@ -10,13 +10,13 @@ import type { LayerGroup } from "@karta/core";
  *   downstream consumer would otherwise leak across unrelated requests for
  *   the isolate's lifetime.
  */
-export const GAUTENG_SPATIAL_LEGACY_LAYER_GROUPS: readonly LayerGroup[] = [
+export const SPATIAL_APARTHEID_LEGACY_LAYER_GROUPS: readonly LayerGroup[] = [
   {
     id: "access-to-opportunity",
     title: "Accessibility overlays",
     description: "Only one overlay can be active at a time.",
     selectionMode: "exclusive",
-    layerIds: ["townships", "nearest-transit"],
+    layerIds: ["townships", "nearest-transit", "spatial-burden"],
   },
   {
     id: "transit-networks",

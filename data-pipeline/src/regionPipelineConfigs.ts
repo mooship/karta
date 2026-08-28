@@ -1,9 +1,11 @@
 import type { RegionPipelineConfig } from "./pipelineSource";
 import { GAUTENG_PIPELINE_CONFIG } from "./regions/gautengPipelineConfig";
+import { WESTERN_CAPE_PIPELINE_CONFIG } from "./regions/westernCapePipelineConfig";
 
 /** Every region the data pipeline is configured to produce a dataset for. */
 export const REGION_PIPELINE_CONFIGS: RegionPipelineConfig[] = [
   GAUTENG_PIPELINE_CONFIG,
+  WESTERN_CAPE_PIPELINE_CONFIG,
 ];
 
 /**

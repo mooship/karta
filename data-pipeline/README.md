@@ -16,7 +16,7 @@ Runs a build for every `province`-kind region in `@karta/app`'s `REGIONS` regist
 npm run run -- --region gauteng
 ```
 
-Each region build (`runRegion(regionId)`) loops over the `METROS` tagged with that `regionId` (currently all Gauteng municipalities: Tshwane, Johannesburg, Ekurhuleni, Emfuleni, Midvaal, Lesedi, Mogale City, Rand West City, and Merafong City) to fetch and process each metro's boundaries and job-center routing, then writes a combined output to `packages/web/public/data/<regionId>/`.
+Each region build (`runRegion(regionId)`) loops over the `METROS` tagged with that `regionId` (currently the nine Gauteng municipalities — Tshwane, Johannesburg, Ekurhuleni, Emfuleni, Midvaal, Lesedi, Mogale City, Rand West City, and Merafong City — for `gauteng`, and City of Cape Town for `western-cape`) to fetch and process each metro's boundaries and job-center routing, then writes a combined output to `packages/web/public/data/<regionId>/`.
 
 Each region's output currently includes display-optimized GeoJSON files only:
 `townships.display.v1.geojson`, `township-areas.display.v1.geojson`,
