@@ -17,7 +17,7 @@ Generic map rendering and UI components (React + Leaflet) for Karta, built on `@
 
 - Domain-specific components like a township popup or township browser — those read domain-specific properties (`nearestJobCenter`, `commuteMinutes`, …) that don't exist on a generic `Layer`. Pass a `renderFeaturePopup` callback into `MapView` instead.
 - Domain-specific accessible copy — `MapView` takes a required `ariaLabel` prop rather than a baked-in accessible name, since what the map depicts is domain-specific.
-- Gauteng domain data (`SPATIAL_APARTHEID_LEGACY_DOMAIN`, metros, townships) — see `@karta/app`.
+- The reference domain's data (`SPATIAL_APARTHEID_LEGACY_DOMAIN`, metros, townships) — see `@karta/app`.
 
 ## Styling
 

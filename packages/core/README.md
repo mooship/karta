@@ -1,6 +1,6 @@
 # `@karta/core`
 
-Domain-agnostic layer model and geodata utilities for Karta. Has no dependency on `@karta/app`, `@karta/map`, `@karta/react`, `@karta/web`, or React — the first package extracted towards a reusable SDK for geospatial layer platforms beyond Karta's own Gauteng domain.
+Domain-agnostic layer model and geodata utilities for Karta. Has no dependency on `@karta/app`, `@karta/map`, `@karta/react`, `@karta/web`, or React — the first package extracted towards a reusable SDK for geospatial layer platforms beyond Karta's own reference domain.
 
 ## What belongs here
 
@@ -15,7 +15,7 @@ Every export is JSDoc-documented (TSDoc-compatible).
 ## What doesn't belong here
 
 - React or Leaflet runtime rendering code (see `@karta/map`).
-- Anything specific to the Gauteng domain — job centres, township names, transit operator names, colour choices for a particular map (see `@karta/app`).
+- Anything specific to the reference domain — job centres, township names, transit operator names, colour choices for a particular map (see `@karta/app`).
 - Browser-only hooks like dark-mode/theme detection (see `@karta/react`).
 
 ## Usage
