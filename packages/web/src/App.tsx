@@ -4,6 +4,7 @@ import {
   type DomainStory as DomainStoryContent,
   fetchFeatureCollection,
   mergeFeatureCollections,
+  partitionSettled,
 } from "@karta/core";
 import {
   ControlButton,
@@ -66,13 +67,6 @@ const MapView = lazy(async () => {
 
 /** A Leaflet-style `[[south, west], [north, east]]` bounding rectangle. */
 type LatLngBoundsTuple = [[number, number], [number, number]];
-
-/** Narrows a `PromiseSettledResult` to its fulfilled case. */
-function isFulfilled<T>(
-  result: PromiseSettledResult<T>,
-): result is PromiseFulfilledResult<T> {
-  return result.status === "fulfilled";
-}
 
 /**
  * A rectangle wide enough to frame both published regions' mapped data
@@ -576,8 +570,8 @@ export function App() {
       if (cancelled) {
         return;
       }
-      const townshipsFulfilled = townshipResults.filter(isFulfilled);
-      const areasFulfilled = areaResults.filter(isFulfilled);
+      const townships = partitionSettled(townshipResults);
+      const areas = partitionSettled(areaResults);
 
       // A region failing to load here (e.g. its data hasn't been published
       // yet, see docs/adding-a-region.md) shouldn't blank out every other
@@ -585,21 +579,16 @@ export function App() {
       // every region's township data (the primary dataset the choropleth
       // and popups key off; `townshipAreas` is a companion display layer
       // with no useful properties of its own) failed to load.
-      if (townshipsFulfilled.length === 0) {
+      if (townships.fulfilled.length === 0) {
         setDataError(true);
         return;
       }
 
-      for (const result of [...townshipResults, ...areaResults]) {
-        if (result.status === "rejected") {
-          console.error("Failed to load region map data", result.reason);
-        }
+      for (const reason of [...townships.rejected, ...areas.rejected]) {
+        console.error("Failed to load region map data", reason);
       }
-      setTownships(townshipsFulfilled.flatMap((result) => result.value));
-      setTownshipAreas(
-        mergeFeatureCollections(areasFulfilled.map((result) => result.value))
-          .features,
-      );
+      setTownships(townships.fulfilled.flat());
+      setTownshipAreas(mergeFeatureCollections(areas.fulfilled).features);
     });
     return () => {
       cancelled = true;

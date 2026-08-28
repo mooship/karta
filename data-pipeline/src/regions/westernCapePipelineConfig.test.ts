@@ -1,16 +1,6 @@
 import type { TransitLayerFeatureCollection, TransitStop } from "@karta/app";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-const { statMock, readFileMock } = vi.hoisted(() => ({
-  statMock: vi.fn(),
-  readFileMock: vi.fn(),
-}));
-
-vi.mock("node:fs/promises", () => ({
-  stat: statMock,
-  readFile: readFileMock,
-}));
-
 const { fetchMyCitiRoutesMock, normalizeMyCitiOverpassMock } = vi.hoisted(
   () => ({
     fetchMyCitiRoutesMock: vi.fn(),
@@ -45,11 +35,8 @@ function findSource(layerId: string) {
   return source;
 }
 
-function transitLine(
-  network: string,
-  id = "way/1",
-): TransitLayerFeatureCollection {
-  const stop: TransitStop = { id, name: "Test line", network };
+function transitLine(network: string): TransitLayerFeatureCollection {
+  const stop: TransitStop = { id: "way/1", name: "Test line", network };
   return {
     type: "FeatureCollection",
     features: [
@@ -102,6 +89,11 @@ describe("WESTERN_CAPE_PIPELINE_CONFIG", () => {
   });
 });
 
+// Fetch-failure/fallback mechanics (falls back to last published output,
+// throws when none exists) are createFetchWithPublishedFallback's own
+// behaviour, already covered region-agnostically by
+// fetchWithPublishedFallback.test.ts — these only check that each source
+// wires up the right fetcher/normalizer.
 describe("fetchBusRapidTransit (bus-rapid-transit source)", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -115,27 +107,6 @@ describe("fetchBusRapidTransit (bus-rapid-transit source)", () => {
     const result = await findSource("bus-rapid-transit").fetch();
 
     expect(result).toBe(normalized);
-  });
-
-  it("falls back to the last published output when the fetch fails", async () => {
-    fetchMyCitiRoutesMock.mockRejectedValue(new Error("network down"));
-    statMock.mockResolvedValueOnce(undefined);
-    const fallback = transitLine("MyCiTi");
-    readFileMock.mockResolvedValueOnce(JSON.stringify(fallback));
-
-    const result = await findSource("bus-rapid-transit").fetch();
-
-    expect(result).toEqual(fallback);
-    expect(statMock.mock.calls[0]?.[0]).toContain("western-cape");
-  });
-
-  it("throws when the fetch fails and no fallback output exists", async () => {
-    fetchMyCitiRoutesMock.mockRejectedValue(new Error("network down"));
-    statMock.mockRejectedValue(new Error("ENOENT"));
-
-    await expect(findSource("bus-rapid-transit").fetch()).rejects.toThrow(
-      "Failed to fetch MyCiTi and no fallback output exists",
-    );
   });
 });
 
@@ -154,26 +125,6 @@ describe("fetchCommuterRail (commuter-rail source)", () => {
     expect(result).toBe(normalized);
     expect(fetchPrasaRailMock).toHaveBeenCalledWith(
       expect.stringContaining("18.3"),
-    );
-  });
-
-  it("falls back to the last published output when the fetch fails", async () => {
-    fetchPrasaRailMock.mockRejectedValue(new Error("network down"));
-    statMock.mockResolvedValueOnce(undefined);
-    const fallback = transitLine("PRASA");
-    readFileMock.mockResolvedValueOnce(JSON.stringify(fallback));
-
-    const result = await findSource("commuter-rail").fetch();
-
-    expect(result).toEqual(fallback);
-  });
-
-  it("throws when the fetch fails and no fallback output exists", async () => {
-    fetchPrasaRailMock.mockRejectedValue(new Error("network down"));
-    statMock.mockRejectedValue(new Error("ENOENT"));
-
-    await expect(findSource("commuter-rail").fetch()).rejects.toThrow(
-      "Failed to fetch PRASA rail and no fallback output exists",
     );
   });
 });

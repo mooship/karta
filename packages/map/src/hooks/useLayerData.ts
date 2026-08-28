@@ -1,4 +1,9 @@
-import { fetchFeatureCollection, mergeFeatureCollections } from "@karta/core";
+import {
+  fetchFeatureCollection,
+  mergeFeatureCollections,
+  partitionSettled,
+  type SettledPartition,
+} from "@karta/core";
 import type { FeatureCollection } from "geojson";
 import { useEffect, useRef, useState } from "react";
 import { useDomain } from "../context/DomainContext";
@@ -23,28 +28,19 @@ export interface LayerDataResult {
  */
 function applySettledLayerResults(
   id: string,
-  results: PromiseSettledResult<FeatureCollection>[],
+  { fulfilled, rejected }: SettledPartition<FeatureCollection>,
   setData: (updater: (current: LayerDataMap) => LayerDataMap) => void,
   setFailedLayerIds: (updater: (current: string[]) => string[]) => void,
 ): void {
-  const fulfilled = results.filter(
-    (settled): settled is PromiseFulfilledResult<FeatureCollection> =>
-      settled.status === "fulfilled",
-  );
-  const rejected = results.filter(
-    (settled): settled is PromiseRejectedResult =>
-      settled.status === "rejected",
-  );
-
   if (fulfilled.length > 0) {
     setData((current) => ({
       ...current,
-      [id]: mergeFeatureCollections(fulfilled.map((r) => r.value)),
+      [id]: mergeFeatureCollections(fulfilled),
     }));
   }
 
   if (rejected.length > 0) {
-    console.error(`Failed to load layer data for "${id}"`, rejected[0]?.reason);
+    console.error(`Failed to load layer data for "${id}"`, rejected[0]);
     setFailedLayerIds((current) =>
       current.includes(id) ? current : [...current, id],
     );
@@ -107,13 +103,14 @@ export function useLayerData(layerIds: string[]): LayerDataResult {
         ),
       ).then((results) => {
         controllers.delete(requestKey);
+        const partition = partitionSettled(results);
 
         // A source that failed may just not have been published for this
         // region yet (see `docs/adding-a-region.md`) — retrying it once
         // it's requested again (e.g. the layer is toggled off and on) is
         // cheap, and the alternative (never retrying) would leave that
         // region's data permanently missing even after it ships.
-        if (results.some((result) => result.status === "rejected")) {
+        if (partition.rejected.length > 0) {
           requested.current.delete(requestKey);
         }
 
@@ -121,7 +118,7 @@ export function useLayerData(layerIds: string[]): LayerDataResult {
           return;
         }
 
-        applySettledLayerResults(id, results, setData, setFailedLayerIds);
+        applySettledLayerResults(id, partition, setData, setFailedLayerIds);
       });
     }
 
