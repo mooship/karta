@@ -14,6 +14,7 @@ const townshipPropertiesSchema = z.looseObject({
   nearestJobCenter: z.string(),
   distanceKm: z.nullable(z.number()),
   nearestTransitKm: z.optional(z.nullable(z.number())),
+  spatialBurdenScore: z.optional(z.nullable(z.number())),
 });
 
 /**

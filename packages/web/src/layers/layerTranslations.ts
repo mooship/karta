@@ -38,6 +38,16 @@ const LAYER_TEXT: Record<string, LayerText> = {
       m.bucket_transit_distance_very_far,
     ],
   },
+  "spatial-burden": {
+    label: m.layer_spatial_burden_label,
+    description: m.layer_spatial_burden_description,
+    bucketLabels: [
+      m.bucket_spatial_burden_low,
+      m.bucket_spatial_burden_moderate,
+      m.bucket_spatial_burden_high,
+      m.bucket_spatial_burden_severe,
+    ],
+  },
   "rapid-rail": { label: m.layer_rapid_rail_label },
   "bus-rapid-transit": { label: m.layer_bus_rapid_transit_label },
   "commuter-rail": { label: m.layer_commuter_rail_label },

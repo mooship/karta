@@ -1,6 +1,7 @@
 import type { TownshipFeature } from "@karta/app";
 import type { NormalizedTownship } from "./adapters/boundaries";
 import type { NearestJobCenterResult } from "./osrmClient";
+import { computeSpatialBurdenScore } from "./spatialBurden";
 
 /**
  * Joins each normalized township with its computed drive-time and
@@ -21,6 +22,7 @@ export function joinTownshipData(
       jobCenterId: null,
       jobCenterName: null,
     };
+    const townshipNearestTransitKm = nearestTransitKm[index] ?? null;
     return {
       type: "Feature",
       geometry: township.geometry,
@@ -31,7 +33,11 @@ export function joinTownshipData(
         commuteMinutes: nearest.minutes,
         nearestJobCenter: nearest.jobCenterName ?? "",
         distanceKm: null,
-        nearestTransitKm: nearestTransitKm[index] ?? null,
+        nearestTransitKm: townshipNearestTransitKm,
+        spatialBurdenScore: computeSpatialBurdenScore(
+          nearest.minutes,
+          townshipNearestTransitKm,
+        ),
       },
     };
   });
