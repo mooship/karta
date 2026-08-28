@@ -4,19 +4,36 @@ import type { Layer } from "../../types/genericLayer";
 import { SPATIAL_APARTHEID_LEGACY_LAYERS } from "./layers";
 
 describe("SPATIAL_APARTHEID_LEGACY_LAYERS", () => {
-  it("derives every data URL's region segment from REGIONS' gauteng entry", () => {
-    const gautengRegion = REGIONS.find((region) => region.id === "gauteng");
-    expect(gautengRegion).toBeDefined();
+  it("derives every data URL's region segment from a REGIONS entry", () => {
+    const regionIds = new Set(REGIONS.map((region) => region.id));
     for (const layer of SPATIAL_APARTHEID_LEGACY_LAYERS) {
       for (const url of layer.dataSource) {
-        expect(url.startsWith(`/data/${gautengRegion?.id}/`)).toBe(true);
+        const [, , urlRegionId] = url.split("/");
+        expect(regionIds.has(urlRegionId ?? "")).toBe(true);
       }
       if (layer.companionSource) {
-        expect(
-          layer.companionSource.startsWith(`/data/${gautengRegion?.id}/`),
-        ).toBe(true);
+        const [, , urlRegionId] = layer.companionSource.split("/");
+        expect(regionIds.has(urlRegionId ?? "")).toBe(true);
       }
     }
+  });
+
+  it("fetches bus-rapid-transit and commuter-rail from both configured regions", () => {
+    const findLayer = (id: string): Layer => {
+      const layer = SPATIAL_APARTHEID_LEGACY_LAYERS.find((l) => l.id === id);
+      if (!layer) {
+        throw new Error(`expected layer ${id}`);
+      }
+      return layer;
+    };
+    expect(findLayer("bus-rapid-transit").dataSource).toEqual([
+      "/data/gauteng/bus-rapid-transit.display.v1.geojson",
+      "/data/western-cape/bus-rapid-transit.display.v1.geojson",
+    ]);
+    expect(findLayer("commuter-rail").dataSource).toEqual([
+      "/data/gauteng/commuter-rail.display.v1.geojson",
+      "/data/western-cape/commuter-rail.display.v1.geojson",
+    ]);
   });
 
   it("has exactly the 7 layers the current app ships, in order", () => {

@@ -3,15 +3,34 @@ import type { RegionId } from "../../constants/regions";
 import { getTownshipGroup } from "../../constants/townships";
 
 /**
- * This domain's region, typed against `RegionId` (derived from `REGIONS`)
- * rather than a bare string literal — if `REGIONS`'s `gauteng` entry is ever
- * renamed, this fails typechecking instead of `dataUrl` silently pointing at
- * a directory `data-pipeline` no longer writes.
+ * Region ids this domain's layers pull data from, typed against `RegionId`
+ * (derived from `REGIONS`) rather than bare string literals — if a
+ * `REGIONS` entry is ever renamed, this fails typechecking instead of
+ * `dataUrl`/`multiRegionDataUrls` silently pointing at a directory
+ * `data-pipeline` no longer writes.
  */
 const GAUTENG_REGION_ID: RegionId = "gauteng";
+const WESTERN_CAPE_REGION_ID: RegionId = "western-cape";
 
 function dataUrl(fileName: string): string {
   return `/data/${GAUTENG_REGION_ID}/${fileName}`;
+}
+
+/**
+ * Builds one `dataSource` URL per given region for a transit layer whose
+ * pipeline source is configured for more than one region (currently
+ * `bus-rapid-transit` and `commuter-rail` — see
+ * `data-pipeline/src/regions/gautengPipelineConfig.ts` and
+ * `westernCapePipelineConfig.ts`). `MapView`'s `useLayerData` fetches every
+ * URL in a layer's `dataSource` and merges the results, so listing more than
+ * one region here is what makes a second region's transit features actually
+ * appear on the map — see `docs/adding-a-region.md`.
+ */
+function multiRegionDataUrls(
+  regionIds: readonly RegionId[],
+  fileName: string,
+): string[] {
+  return regionIds.map((regionId) => `/data/${regionId}/${fileName}`);
 }
 
 function resolveTownshipEmphasis(
@@ -180,7 +199,10 @@ export const SPATIAL_APARTHEID_LEGACY_LAYERS: readonly Layer[] = [
   {
     id: "bus-rapid-transit",
     label: "Bus Rapid Transit",
-    dataSource: [dataUrl("bus-rapid-transit.display.v1.geojson")],
+    dataSource: multiRegionDataUrls(
+      [GAUTENG_REGION_ID, WESTERN_CAPE_REGION_ID],
+      "bus-rapid-transit.display.v1.geojson",
+    ),
     geometryKind: "line",
     defaultVisible: false,
     available: true,
@@ -209,7 +231,10 @@ export const SPATIAL_APARTHEID_LEGACY_LAYERS: readonly Layer[] = [
   {
     id: "commuter-rail",
     label: "Commuter Rail",
-    dataSource: [dataUrl("commuter-rail.display.v1.geojson")],
+    dataSource: multiRegionDataUrls(
+      [GAUTENG_REGION_ID, WESTERN_CAPE_REGION_ID],
+      "commuter-rail.display.v1.geojson",
+    ),
     geometryKind: "line",
     defaultVisible: false,
     available: true,
