@@ -9,7 +9,7 @@ import { getLayer, getLayerGroups } from "../../layers/registry";
 import { m } from "../../paraglide/messages.js";
 import * as styles from "./LayerToggles.css";
 
-/** Download filename for one of a layer's `dataSource` URLs, numbering entries past the first. */
+/** Download filename for one of a layer's `dataSource` URLs — suffixed with a 1-based index when the layer has more than one source, so filenames don't collide. */
 function downloadFileName(
   layer: Layer,
   sourceIndex: number,

@@ -1,10 +1,10 @@
 import type { LayerGroup } from "@karta/core";
 
 /**
- * The `spatial-apartheid-legacy` domain's layer groups: the two accessibility
- * choropleth layers as a mutually-exclusive group (only one shown at a
- * time), and every transit network layer as an independently-toggleable
- * group.
+ * The `spatial-apartheid-legacy` domain's layer groups: the three
+ * accessibility choropleth layers as a mutually-exclusive group (only one
+ * shown at a time), and every transit network layer as an
+ * independently-toggleable group.
  * @remarks `readonly`/`as const`, matching `METROS`/`REGIONS`: Cloudflare
  *   Workers reuse isolates across requests, so an in-place mutation by any
  *   downstream consumer would otherwise leak across unrelated requests for

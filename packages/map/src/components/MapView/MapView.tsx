@@ -93,18 +93,38 @@ const GeoJSON = LeafletGeoJSON as ComponentType<
 export interface MapViewProps<
   TProperties extends Record<string, unknown> = Record<string, unknown>,
 > {
+  /**
+   * Initial viewport, as `[[southWestLat, southWestLng], [northEastLat,
+   * northEastLng]]`. Re-applied (via `ResponsiveMapBounds`) whenever the
+   * viewport crosses the mobile/desktop breakpoint, since the two layouts
+   * need different padding to frame the same area around the overlapping
+   * panel; otherwise left alone so a visitor's own pan/zoom isn't fought.
+   */
   bounds: [[number, number], [number, number]];
   /** The accessible name for the map region, e.g. "Map of flood risk near Cape Town". */
   ariaLabel: string;
+  /** Features for the domain's choropleth layer, e.g. one polygon per township/area. Rendered only once a visible layer has `geometryKind: "choropleth"`. */
   areas: Feature[];
+  /** Optional outline polygons rendered as unstyled, unfilled labels-only boundaries (see {@link bindAreaBoundaryLabel}), shown when any visible layer declares `interaction.labelField`. Defaults to `[]`. */
   areaBoundaries?: Feature[];
+  /** Ids of the domain's layers to render, filtered against `getLayers()`'s own `available` flag. */
   visibleLayerIds: string[];
+  /** Which registered basemap to render (see `constants/basemaps.ts`). Defaults to `"street"`. */
   basemap?: Basemap;
+  /** Id of the feature to highlight: fly the map to it and reopen its popup (see `SelectedFeatureHighlight`). `null`/`undefined` for no selection. */
   selectedFeatureId?: string | null;
+  /**
+   * Externally requests the map fly to a searched location, replacing any
+   * prior request. `token` must change (e.g. via `Date.now()`) each time a
+   * new request should apply, mirroring `measurementRequest` below, since two
+   * requests for the same `location` would otherwise be indistinguishable
+   * from a no-op re-render.
+   */
   focusLocationTarget?: {
     token: number;
     location: LocationSearchResult;
   } | null;
+  /** Called with a feature's id when the user clicks/taps a selectable feature on the map. */
   onFeatureSelect?: (featureId: string) => void;
   /**
    * Called with the current set of selectable features (id + accessible
@@ -117,6 +137,7 @@ export interface MapViewProps<
   onSelectableFeaturesChange?: (
     entries: SelectableFeatureSearchEntry[],
   ) => void;
+  /** Renders a selected/clicked feature's popup content from its GeoJSON `properties`. Omit for no popup at all — see {@link bindSelectedFeaturePopup}. */
   renderFeaturePopup?: (properties: TProperties) => ReactNode;
   /** Called with the ids of overlay layers whose data failed to load, whenever that set changes. */
   onLayerDataError?: (failedLayerIds: string[]) => void;
@@ -275,6 +296,12 @@ function getDevicePixelRatio(): number {
   return window.devicePixelRatio;
 }
 
+/**
+ * `fitBounds` padding for the initial/breakpoint-change fly-to, asymmetric on
+ * desktop to leave room for the overlapping info panel (right) and top
+ * toolbar, and symmetric on mobile where that panel is a bottom sheet
+ * instead.
+ */
 function getBoundsOptions(desktop: boolean) {
   return desktop
     ? {
@@ -643,6 +670,16 @@ function AreaLabelVisibility() {
   return null;
 }
 
+/**
+ * Refits the map to `bounds` when the viewport crosses the mobile/desktop
+ * breakpoint, since the two layouts need different `fitBounds` padding (see
+ * {@link getBoundsOptions}) to frame the same area around the overlapping
+ * panel.
+ * @remarks Also calls `invalidateSize` on every resize (debounced to one
+ *   `requestAnimationFrame`), regardless of whether the breakpoint itself
+ *   was crossed, since Leaflet doesn't otherwise notice its container
+ *   changed size.
+ */
 function ResponsiveMapBounds({
   bounds,
 }: {
@@ -681,6 +718,7 @@ function ResponsiveMapBounds({
   return null;
 }
 
+/** Reports the current zoom level on mount and on every `zoomend`. */
 function ZoomStateWatcher({
   onZoomChange,
 }: {
@@ -704,6 +742,12 @@ function ZoomStateWatcher({
   return null;
 }
 
+/**
+ * Flies the map to `focusLocationTarget`'s location whenever it changes: to
+ * its own bounds if the search result carried one (e.g. a place/area), or
+ * else a fixed-size box centred on its lat/lng (a point result has no
+ * inherent extent to fit to).
+ */
 function FocusLocationTarget({
   focusLocationTarget,
 }: {
@@ -745,6 +789,14 @@ function FocusLocationTarget({
   return null;
 }
 
+/**
+ * Binds an area boundary's permanent name tooltip, sized and offset from its
+ * feature properties: `labelPriority: "secondary"` gets the smaller/dimmer
+ * style, a primary label with `subPlaceCount` at or above
+ * {@link MAJOR_PRIMARY_LABEL_MIN_SUBPLACES} gets the "major" style, and
+ * `labelOffset` (when a valid `[x, y]` pair) nudges the tooltip off-centre.
+ * A feature with no string `name` gets no tooltip at all.
+ */
 function bindAreaBoundaryLabel(feature: Feature, layer: Layer) {
   const name = feature.properties?.name;
   const labelPriority = feature.properties?.labelPriority;

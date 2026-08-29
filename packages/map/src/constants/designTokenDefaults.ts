@@ -11,7 +11,7 @@
  * @remarks A host that *has* adopted Karta's design system in full (as
  *   `packages/web`'s `index.css` does) should still declare these
  *   explicitly rather than relying on the fallback matching by coincidence
- *   — see `App.module.css`'s own note on `MOBILE_LAYOUT_CSS_VAR_DEFAULTS`
+ *   — see `App.css.ts`'s own note on `MOBILE_LAYOUT_CSS_VAR_DEFAULTS`
  *   for why.
  */
 export const DESIGN_TOKEN_CSS_VAR_DEFAULTS = {

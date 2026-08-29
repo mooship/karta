@@ -2,7 +2,11 @@ import type { TransitLayerFeatureCollection } from "@karta/app";
 import { fetchOverpass, type OverpassResponse } from "./gautrain";
 import { normalizeWayNodeTransitOverpass } from "./overpassNormalizers";
 
-// Rail ways carry operator=PRASA; stations are tagged network=Metrorail Gauteng (verified 2026-07-28).
+// operator/network matching is a case-insensitive substring regex ("PRASA"/"Metrorail"),
+// not a fixed region name, so this same query matches PRASA/Metrorail tags in any region
+// (e.g. Gauteng's "Metrorail Gauteng" and the Western Cape's "Metrorail Western Cape")
+// — this is why fetchPrasaRail below is reused unmodified by both the Gauteng and
+// Western Cape pipeline configs rather than needing a per-region query.
 function prasaQuery(bbox: string): string {
   return `
 [out:json][timeout:60];
@@ -27,7 +31,11 @@ export function normalizePrasaOverpass(
   return normalizeWayNodeTransitOverpass(raw, "PRASA");
 }
 
-/** Fetches PRASA/Metrorail rail ways and station nodes within `bbox` via Overpass. */
+/**
+ * Fetches PRASA/Metrorail rail ways and station nodes within `bbox` via Overpass.
+ * @remarks Region-agnostic (see `prasaQuery`'s comment) — reused as-is by both the
+ *   Gauteng and Western Cape pipeline configs.
+ */
 export async function fetchPrasaRail(bbox: string): Promise<OverpassResponse> {
   return fetchOverpass(prasaQuery(bbox));
 }
