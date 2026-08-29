@@ -24,18 +24,16 @@ interface TownshipAreaProperties {
  * `TOWNSHIP_AREA_DEFINITIONS` area (via `getTownshipAreaDefinition`) and
  * dissolves each group's polygons into one combined outline per area, for
  * `MapView`'s area-boundary label layer (`companionSource`).
+ * @remarks Groups in one pass over `townships` (each resolved to its area at
+ *   most once) rather than filtering the full `townships` list once per
+ *   `TOWNSHIP_AREA_DEFINITIONS` entry — the definitions list and the
+ *   sub-place list can both run into the hundreds/thousands across Gauteng's
+ *   nine metros, so the previous O(definitions × townships) nested scan cost
+ *   far more than this single O(townships + definitions) pass.
  */
 export function createTownshipAreas(
   townships: NormalizedTownship[],
 ): FeatureCollection<Polygon | MultiPolygon, TownshipAreaProperties> {
-  /**
-   * @remarks Built in one pass over `townships` (each resolved to its area
-   *   at most once) rather than filtering the full `townships` list once per
-   *   `TOWNSHIP_AREA_DEFINITIONS` entry — the definitions list and the
-   *   sub-place list can both run into the hundreds/thousands across
-   *   Gauteng's nine metros, so the previous O(definitions × townships)
-   *   nested scan cost far more than this single O(townships + definitions) pass.
-   */
   const membersByAreaId = new Map<string, NormalizedTownship[]>();
   for (const township of townships) {
     const definitionId = getTownshipAreaDefinition(

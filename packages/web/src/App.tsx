@@ -69,11 +69,12 @@ const MapView = lazy(async () => {
 type LatLngBoundsTuple = [[number, number], [number, number]];
 
 /**
- * A rectangle wide enough to frame both published regions' mapped data
- * (Gauteng and City of Cape Town) on initial load. The two are far enough
- * apart that this necessarily starts the map more zoomed out than either
- * region's own bounds would — there's no per-region viewport logic today,
- * see `docs/adding-a-region.md`.
+ * A rectangle wide enough to frame every configured region's mapped data
+ * (Gauteng and City of Cape Town — see `@karta/app`'s `REGIONS`, though only
+ * Gauteng's pipeline output is actually published as of this writing) on
+ * initial load. The two are far enough apart that this necessarily starts
+ * the map more zoomed out than either region's own bounds would — there's
+ * no per-region viewport logic today, see `docs/adding-a-region.md`.
  */
 const MAP_INITIAL_BOUNDS: LatLngBoundsTuple = [
   [-34.35, 18.3],
@@ -300,10 +301,11 @@ const PanelViewContent = memo(function PanelViewContent({
 });
 
 /**
- * The reference app's root shell: fetches and merges the Gauteng township
- * choropleth data, wraps the render tree in a `DomainProvider` for
- * `spatial-apartheid-legacy`, and renders the map alongside the desktop/mobile
- * info panel and its settings menu.
+ * The reference app's root shell: fetches and merges every configured
+ * region's township choropleth data (via `buildRegionDataUrls`; only
+ * Gauteng's is actually published today), wraps the render tree in a
+ * `DomainProvider` for `spatial-apartheid-legacy`, and renders the map
+ * alongside the desktop/mobile info panel and its settings menu.
  * @remarks That township fetch deliberately waits for `MapView`'s `onReady`
  *   (tracked as `mapReady`) rather than starting at mount. Downloading,
  *   validating and handing Leaflet ~2,500 polygons is seconds of
@@ -323,16 +325,16 @@ const PanelViewContent = memo(function PanelViewContent({
  *   and the `m.panel_tab_*()` calls all read the current request's locale),
  *   and Cloudflare Workers reuse isolates across requests — a module-scope
  *   value would freeze in whichever locale first touched that isolate
- *   instead of reflecting each request's own. `domain` alone is wrapped in
- *   `useMemo` for referential stability across re-renders (matching
- *   `DomainProvider`'s own internal memoization); `panelViews`/`panelLabels`
- *   are cheap enough to recompute every render.
+ *   instead of reflecting each request's own. `domain` and `panelViews` are
+ *   both wrapped in `useMemo` for referential stability across re-renders
+ *   (matching `DomainProvider`'s own internal memoization); `panelLabels` is
+ *   cheap enough to recompute every render.
  *   Also owns the mobile bottom-sheet drag/swipe gesture state (pointer
  *   sampling, velocity-based snap projection) in addition to layout state
  *   from `useMapUiStore`. Swiping down from the sheet's medium height closes
  *   it entirely: `closePanel` plays an exit animation and `finishClose`
  *   (unmounting the panel from the a11y tree) fires from that animation's
- *   `animationend`, so the CSS duration in App.module.css stays the single
+ *   `animationend`, so the CSS duration in App.css.ts stays the single
  *   source of truth — except under `prefers-reduced-motion`/desktop, where
  *   no animation plays and `closePanel` calls `finishClose` immediately.
  *   `useMapModelContextTools` registers this app's layer/search/basemap/theme/
@@ -480,10 +482,9 @@ export function App() {
   /**
    * Memoised (not just `story`/`hasSelectableLayers`-derived inline) so this
    * array keeps one identity across renders unless those inputs themselves
-   * change -- `useCallback` dependencies below (`resolveInitialPanelFocusTarget`)
-   * key off it, and a fresh array literal every render would defeat that
-   * memoisation and re-attach `useDismissableOverlay`'s listeners on every
-   * unrelated render.
+   * change -- `handlePanelToggle`/`handleTabKeyDown` and the tab list render
+   * both index into it directly, and a fresh array literal every render
+   * would otherwise be reallocated for no reason on every unrelated render.
    */
   const panelViews = useMemo<readonly PanelView[]>(() => {
     const views: PanelView[] = ["layers"];
@@ -722,10 +723,11 @@ export function App() {
   });
 
   function handleSheetAnimationEnd(event: AnimationEvent<HTMLElement>) {
-    // CSS Modules hashes @keyframes names, so animationName can't be matched
-    // against a literal here; requiring the event to originate on the panel
-    // itself (not bubble up from a child like .panelViewport's own entrance
-    // animation) is enough, since .panel only ever animates while closing.
+    // vanilla-extract hashes @keyframes names, so animationName can't be
+    // matched against a literal here; requiring the event to originate on
+    // the panel itself (not bubble up from a child like .panelViewport's
+    // own entrance animation) is enough, since .panel only ever animates
+    // while closing.
     if (mobileSheetClosing && event.target === event.currentTarget) {
       finishClose();
     }
