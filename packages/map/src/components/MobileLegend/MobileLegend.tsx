@@ -10,7 +10,9 @@ import * as styles from "./MobileLegend.css";
 interface MobileLegendProps {
   visibleLayerIds: string[];
   suppressed: boolean;
+  /** Whether the host app's own bottom-sheet panel is open, so this trigger's mobile CSS can climb above it instead of being covered. */
   panelOpen: boolean;
+  /** Whether the host panel (when `panelOpen`) is at its larger "full" size rather than "medium", so the trigger climbs the matching extra distance. */
   panelExpanded: boolean;
   /** Visible heading text and open sheet's `aria-label`. Defaults to `"Map legend"`. */
   title?: string;

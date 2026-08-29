@@ -8,7 +8,7 @@ import type { RegionPipelineConfig } from "./pipelineSource";
 import { getRegionPipelineConfig } from "./regionPipelineConfigs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-/** Root directory every region's output is written under and validated from. */
+/** Root directory each region's already-published output directory is read from and validated. */
 export const OUTPUT_ROOT = resolve(__dirname, "../../packages/web/public/data");
 
 /**

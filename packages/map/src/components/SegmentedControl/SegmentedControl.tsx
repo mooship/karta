@@ -2,6 +2,7 @@ import * as styles from "./SegmentedControl.css";
 
 /** A single choice within a `SegmentedControl`. */
 export interface SegmentedControlOption<OptionId extends string> {
+  /** Overrides the option button's `aria-label`. Falls back to `label` when omitted. */
   ariaLabel?: string;
   disabled?: boolean;
   id: OptionId;

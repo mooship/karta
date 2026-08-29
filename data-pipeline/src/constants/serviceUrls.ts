@@ -19,9 +19,9 @@ const PUBLIC_OVERPASS_MIRRORS: readonly string[] = [
  * Overpass API endpoints to try in turn (`fetchOverpass` rotates through
  * these on repeated 429/504 responses, since a single public instance can be
  * temporarily rate-limited while others aren't).
- * @remarks `OVERPASS_URL` overrides to a single URL; `OVERPASS_URLS`
- *   overrides to a comma-separated priority list. Defaults to
- *   `PUBLIC_OVERPASS_MIRRORS` when neither is set.
+ * @remarks Checks `OVERPASS_URLS` first (a comma-separated priority list);
+ *   if unset, falls back to `OVERPASS_URL` (a single URL); defaults to
+ *   `PUBLIC_OVERPASS_MIRRORS` if neither is set.
  */
 export function getOverpassUrls(): readonly string[] {
   const listOverride = process.env.OVERPASS_URLS;
