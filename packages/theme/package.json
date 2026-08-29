@@ -18,7 +18,7 @@
   "devDependencies": {
     "@vanilla-extract/vite-plugin": "^5.2.6",
     "typescript": "^7.0.2",
-    "vite": "^8.2.1",
+    "vite": "^8.2.2",
     "vitest": "^4.1.10"
   }
 }
