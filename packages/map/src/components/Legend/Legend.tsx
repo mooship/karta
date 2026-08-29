@@ -28,7 +28,7 @@ export interface LegendLabels {
   lineAndStationsNote?: string;
   /** Appended to a transit entry that has a route line only. Defaults to `" · route only"`. */
   routeOnlyNote?: string;
-  /** Builds a choropleth section's `aria-label` when `mode="active"`, from that section's own heading text. Defaults to `` (label) => `Active map layers legend: ${label}` ``. */
+  /** Builds a legend section's `aria-label` when `mode="active"`, from that section's own heading text (a choropleth layer's label, or the transit-routes heading). Defaults to `` (label) => `Active map layers legend: ${label}` ``. */
   formatActiveAriaLabel?: (label: string) => string;
 }
 

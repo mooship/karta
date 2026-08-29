@@ -18,9 +18,11 @@ const townshipPropertiesSchema = z.looseObject({
 });
 
 /**
- * Validates a township choropleth `FeatureCollection`, extending
- * `@karta/core`'s generic `featureCollectionSchema` with the specific
- * properties `TownshipProperties` requires (see `@karta/app`).
+ * Validates a township choropleth `FeatureCollection`: `@karta/core`'s
+ * `polygonGeometrySchema`/`multiPolygonGeometrySchema` for geometry, paired
+ * with the `TownshipProperties` shape (see `@karta/app`) rather than
+ * `@karta/core`'s own open-ended `featureCollectionSchema`, since a
+ * township feature's properties are known and worth validating precisely.
  */
 export const townshipFeatureCollectionSchema = z.looseObject({
   type: z.literal("FeatureCollection"),
