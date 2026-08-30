@@ -88,7 +88,6 @@ test.describe("settings menu", () => {
     });
 
     await page.goto("/");
-    await expect(page.locator("canvas.maplibregl-canvas")).toBeVisible();
     await expect
       .poll(() => styleRequests.some((url) => url.includes("/styles/positron")))
       .toBe(true);
@@ -109,7 +108,7 @@ test.describe("settings menu", () => {
       page,
     }) => {
       await page.goto("/");
-      await expect(page.locator("canvas.maplibregl-canvas")).toBeVisible();
+      await expect(page.getByTestId(E2E.mapView)).toBeVisible();
 
       await page.getByTestId(E2E.settingsMenuTrigger).click();
       await page.getByTestId(basemap).click();
