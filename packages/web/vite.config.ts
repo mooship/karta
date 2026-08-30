@@ -65,6 +65,20 @@ export default defineConfig(({ mode }) => {
             }),
           ]),
     ],
+    /**
+     * MapLibre GL constructs its own tile-parsing Web Worker with
+     * `new Worker(url, { type: "module" })` (see `VectorBasemapLayer.tsx`'s
+     * `?worker&url` import of that worker chunk) — Vite's own default worker
+     * output format is `"iife"`, not `"es"`, which mismatches what the
+     * browser is told to expect. Chromium tolerates that mismatch; it's the
+     * suspected cause of the basemap silently failing to render on Safari
+     * specifically, since WebKit's module-worker handling is stricter.
+     * Forcing `"es"` here makes the built worker chunk match the
+     * `type: "module"` MapLibre actually requests.
+     */
+    worker: {
+      format: "es",
+    },
     build: {
       assetsInlineLimit: 0,
       cssCodeSplit: true,
