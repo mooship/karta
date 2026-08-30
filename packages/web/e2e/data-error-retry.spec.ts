@@ -22,7 +22,12 @@ test.describe("data load error and retry", () => {
     await page.getByTestId(E2E.retryDataLoad).click();
 
     await expect(alert).not.toBeVisible();
-    await expect(page.locator(MAP_GEOMETRY_SELECTOR).first()).toBeVisible();
+    // Retrying re-fetches and re-parses both regions' full township datasets
+    // (hundreds of KB combined), which can take longer than the default
+    // 5s timeout under CI's constrained resources.
+    await expect(page.locator(MAP_GEOMETRY_SELECTOR).first()).toBeVisible({
+      timeout: 15_000,
+    });
     // One request per configured region (gauteng, western-cape), per attempt.
     expect(requestState.requestCount).toBe(4);
   });
