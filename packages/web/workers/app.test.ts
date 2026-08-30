@@ -59,7 +59,7 @@ describe("worker fetch handler", () => {
     consoleErrorSpy.mockRestore();
   });
 
-  it("applies SECURITY_HEADERS to the SSR response, since public/_headers doesn't reach it", async () => {
+  it("applies every SECURITY_HEADERS entry except Content-Security-Policy to the SSR response", async () => {
     const { SECURITY_HEADERS } = await import(
       "../src/constants/securityHeaders"
     );
@@ -69,11 +69,27 @@ describe("worker fetch handler", () => {
     const response = await workerModule.default.fetch(request);
 
     for (const [name, value] of Object.entries(SECURITY_HEADERS)) {
+      if (name === "Content-Security-Policy") {
+        continue;
+      }
       expect(response.headers.get(name)).toBe(value);
     }
   });
 
-  it("applies SECURITY_HEADERS even on the 500 fallback response", async () => {
+  it("does not apply Content-Security-Policy to the SSR response", async () => {
+    // CSP is deliberately excluded from the SSR response — see
+    // withSecurityHeaders' own comment in app.ts for why (it breaks React
+    // Router's streaming hydration scripts and React's inline Suspense
+    // fallback style attribute).
+    const workerModule = await import("./app");
+    const request = new Request("https://karta.timothybrits.co.za/");
+
+    const response = await workerModule.default.fetch(request);
+
+    expect(response.headers.get("Content-Security-Policy")).toBeNull();
+  });
+
+  it("applies the non-CSP SECURITY_HEADERS even on the 500 fallback response", async () => {
     const { SECURITY_HEADERS } = await import(
       "../src/constants/securityHeaders"
     );
@@ -84,9 +100,10 @@ describe("worker fetch handler", () => {
 
     const response = await workerModule.default.fetch(request);
 
-    expect(response.headers.get("Content-Security-Policy")).toBe(
-      SECURITY_HEADERS["Content-Security-Policy"],
+    expect(response.headers.get("X-Content-Type-Options")).toBe(
+      SECURITY_HEADERS["X-Content-Type-Options"],
     );
+    expect(response.headers.get("Content-Security-Policy")).toBeNull();
     vi.restoreAllMocks();
   });
 });
