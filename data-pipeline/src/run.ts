@@ -168,7 +168,10 @@ export async function runRegion(
     );
 
     const townshipAreas = createTownshipAreas(allNormalizedTownships);
-    assertNoUnmatchedTownshipAreas(townshipAreas);
+    assertNoUnmatchedTownshipAreas(
+      townshipAreas,
+      metros.map((metro) => metro.id),
+    );
     await writeGeoJsonFile(
       resolve(outputDir, "township-areas.display.v1.geojson"),
       createDisplayPolygons(townshipAreas),
