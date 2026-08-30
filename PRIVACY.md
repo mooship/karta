@@ -35,11 +35,11 @@ any database.
 address, user agent, timestamp) as part of normal operation — see Cloudflare's
 own privacy policy.
 
-**Map tiles and location search:** the basemap tile providers (OpenStreetMap,
-CARTO, Esri) may log tile requests, including IP address, as part of serving
-imagery. CARTO tiles are used for the dark-theme basemap. Location search
-queries are sent to OpenStreetMap's Nominatim geocoding service, which may
-likewise log the query and your IP address. This is standard for any web map.
+**Map tiles and location search:** the basemap tile providers (OpenFreeMap,
+Esri) may log tile requests, including IP address, as part of serving
+imagery. Location search queries are sent to OpenStreetMap's Nominatim
+geocoding service, which may likewise log the query and your IP address. This
+is standard for any web map.
 
 **No location tracking:** the browser's geolocation API is not used, and it is
 disabled at the HTTP-header level via `Permissions-Policy`.

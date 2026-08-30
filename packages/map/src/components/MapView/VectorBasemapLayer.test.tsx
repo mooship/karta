@@ -11,7 +11,13 @@ vi.mock("leaflet", () => ({
 
 vi.mock("@maplibre/maplibre-gl-leaflet", () => ({}));
 
-const fakeMap = { id: "fake-map" };
+const fakeMap = {
+  id: "fake-map",
+  attributionControl: {
+    addAttribution: vi.fn(),
+    removeAttribution: vi.fn(),
+  },
+};
 vi.mock("react-leaflet", () => ({
   useMap: () => fakeMap,
 }));
@@ -55,6 +61,40 @@ describe("VectorBasemapLayer", () => {
       expect(secondLayer.addTo).toHaveBeenCalledWith(fakeMap),
     );
     expect(firstLayer.remove).toHaveBeenCalled();
+  });
+
+  it("adds the given attribution to the map's attribution control and removes it on unmount", async () => {
+    const layer = { addTo: vi.fn(), remove: vi.fn() };
+    layerMocks.maplibreGL.mockReturnValue(layer);
+
+    const { unmount } = render(
+      <VectorBasemapLayer
+        styleUrl="https://example.com/style.json"
+        attribution="Example Credit"
+      />,
+    );
+    await waitFor(() => expect(layer.addTo).toHaveBeenCalled());
+
+    expect(fakeMap.attributionControl.addAttribution).toHaveBeenCalledWith(
+      "Example Credit",
+    );
+    expect(fakeMap.attributionControl.removeAttribution).not.toHaveBeenCalled();
+
+    unmount();
+
+    expect(fakeMap.attributionControl.removeAttribution).toHaveBeenCalledWith(
+      "Example Credit",
+    );
+  });
+
+  it("does not touch the attribution control when no attribution is given", async () => {
+    const layer = { addTo: vi.fn(), remove: vi.fn() };
+    layerMocks.maplibreGL.mockReturnValue(layer);
+
+    render(<VectorBasemapLayer styleUrl="https://example.com/style.json" />);
+    await waitFor(() => expect(layer.addTo).toHaveBeenCalled());
+
+    expect(fakeMap.attributionControl.addAttribution).not.toHaveBeenCalled();
   });
 
   it("removes the layer on unmount", async () => {

@@ -6,7 +6,7 @@
 - **Statistics South Africa** — Census 2011 sub-place boundaries (`SP_SA_2011`), mirrored by the community-maintained [SA-Maps](https://github.com/j-norwood-young/SA-Maps) repository.
 - **City of Tshwane** — A Re Yeng trunk, complementary, and feeder route data from the municipal e-GIS open data service.
 - **OSRM** — modeled car-time matrices computed with the public [Project OSRM](https://project-osrm.org/) demo server.
-- **Basemap tiles** — Positron (light theme) & Dark Matter (dark theme) tiles © OpenStreetMap contributors, [CARTO](https://carto.com/attributions); satellite imagery © Esri, Maxar, Earthstar Geographics; topographic tiles © Esri, HERE, Garmin, and the GIS User Community.
+- **Basemap tiles** — street tiles © OpenStreetMap contributors, served by [OpenFreeMap](https://openfreemap.org); topographic tiles © Esri, HERE, Garmin, USGS, and the GIS User Community; satellite imagery © Esri, Maxar, Earthstar Geographics.
 
 ## Software
 

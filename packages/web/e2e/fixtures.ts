@@ -1,15 +1,26 @@
 import { test as base, expect } from "@playwright/test";
 
-// A 1x1 transparent PNG, served in place of real basemap tile requests so
-// the suite doesn't depend on OpenStreetMap/CARTO/Esri network availability
-// or rate limits.
+// A 1x1 transparent PNG, served in place of real raster basemap tile
+// requests so the suite doesn't depend on OpenStreetMap/Esri network
+// availability or rate limits.
 const TRANSPARENT_PNG = Buffer.from(
   "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=",
   "base64",
 );
 
-const TILE_HOST_PATTERN =
-  /tile\.openstreetmap\.org|basemaps\.cartocdn\.com|server\.arcgisonline\.com/;
+const TILE_HOST_PATTERN = /tile\.openstreetmap\.org|server\.arcgisonline\.com/;
+
+/**
+ * A minimal, valid MapLibre GL style JSON — no sources, no layers — served
+ * in place of the real `street` basemap's OpenFreeMap style requests. This
+ * is enough for MapLibre to initialise and paint an (empty) canvas without
+ * the suite depending on OpenFreeMap's network availability, and avoids
+ * needing to additionally stub vector tile/glyph/sprite requests, since a
+ * style with no sources never requests any.
+ */
+const EMPTY_MAPLIBRE_STYLE = { version: 8, sources: {}, layers: [] };
+
+const OPEN_FREE_MAP_STYLE_PATTERN = /tiles\.openfreemap\.org\/styles\//;
 
 /** Matches a Nominatim place-search request, for tests that override the default geocoder stub below. */
 export const GEOCODER_SEARCH_PATTERN = /nominatim\.openstreetmap\.org\/search/;
@@ -54,6 +65,13 @@ export const test = base.extend({
         status: 200,
         contentType: "image/png",
         body: TRANSPARENT_PNG,
+      }),
+    );
+    await page.route(OPEN_FREE_MAP_STYLE_PATTERN, (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify(EMPTY_MAPLIBRE_STYLE),
       }),
     );
     await page.route(GEOCODER_SEARCH_PATTERN, (route) =>
