@@ -1,4 +1,5 @@
 import { createRequestHandler } from "react-router";
+import { SECURITY_HEADERS } from "../src/constants/securityHeaders";
 import { SITE_URL } from "../src/constants/siteConfig";
 
 const OLD_HOSTNAME = "buffer-zones.timothybrits.co.za";
@@ -42,10 +43,34 @@ export default {
       return Response.redirect(url.toString(), 301);
     }
     try {
-      return await requestHandler(request);
+      return withSecurityHeaders(await requestHandler(request));
     } catch (error) {
       console.error(error);
-      return new Response("Internal Server Error", { status: 500 });
+      return withSecurityHeaders(
+        new Response("Internal Server Error", { status: 500 }),
+      );
     }
   },
 } satisfies ExportedHandler;
+
+/**
+ * Adds this app's `SECURITY_HEADERS` to `response`, without disturbing
+ * headers `response` already set.
+ * @remarks `public/_headers`' own `/*` block covers every response served
+ *   directly from the Workers Static Assets binding, but this Worker's own
+ *   `fetch` handler — every SSR-rendered document, including error
+ *   responses — sits outside that binding entirely, so those headers never
+ *   reach it. See `securityHeaders.ts`'s own comment for the full picture
+ *   and how the two are kept in sync.
+ */
+function withSecurityHeaders(response: Response): Response {
+  const headers = new Headers(response.headers);
+  for (const [name, value] of Object.entries(SECURITY_HEADERS)) {
+    headers.set(name, value);
+  }
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
+  });
+}

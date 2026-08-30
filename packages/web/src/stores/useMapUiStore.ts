@@ -49,8 +49,8 @@ interface MapUiState {
 }
 
 /**
- * The store's default state: every `defaultVisible` layer shown, the street
- * basemap, and no selection. Also the reference point `useMapPermalink` diffs
+ * The store's default state: every `defaultVisible` layer shown, the
+ * Positron basemap, and no selection. Also the reference point `useMapPermalink` diffs
  * against to decide which fields a shareable URL needs to carry.
  */
 export function getDefaultMapUiState() {
@@ -58,7 +58,7 @@ export function getDefaultMapUiState() {
     visibleLayerIds: getLayerStructure()
       .filter((layer) => layer.defaultVisible)
       .map((layer) => layer.id),
-    basemap: "street" as const,
+    basemap: "positron" as const,
     panelOpen: false,
     panelView: "layers" as const,
     selectedFeatureId: null,

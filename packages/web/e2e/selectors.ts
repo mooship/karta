@@ -18,7 +18,9 @@ export const E2E = {
   locationSearchRetry: "location-search-retry",
   locationOutOfCoverage: "location-out-of-coverage",
   basemapOption: {
-    street: "basemap-option-street",
+    positron: "basemap-option-positron",
+    liberty: "basemap-option-liberty",
+    dark: "basemap-option-dark",
     satellite: "basemap-option-satellite",
     topo: "basemap-option-topo",
   },

@@ -30,7 +30,7 @@ vi.mock("@karta/map", async (importOriginal) => {
   return {
     ...actual,
     fetchLocationSearchResults: mapMocks.fetchLocationSearchResults,
-    getRegisteredBasemapIds: () => ["street", "satellite"],
+    getRegisteredBasemapIds: () => ["positron", "satellite"],
   };
 });
 

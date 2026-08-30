@@ -5,7 +5,7 @@ import { BasemapToggle } from "./BasemapToggle";
 describe("BasemapToggle", () => {
   it("calls onChange with the selected basemap", () => {
     const onChange = vi.fn();
-    render(<BasemapToggle basemap="street" onChange={onChange} />);
+    render(<BasemapToggle basemap="positron" onChange={onChange} />);
 
     fireEvent.click(screen.getByTestId("basemap-option-satellite"));
 
@@ -13,9 +13,9 @@ describe("BasemapToggle", () => {
   });
 
   it("marks the active basemap as pressed", () => {
-    render(<BasemapToggle basemap="street" onChange={vi.fn()} />);
+    render(<BasemapToggle basemap="positron" onChange={vi.fn()} />);
 
-    expect(screen.getByTestId("basemap-option-street")).toHaveAttribute(
+    expect(screen.getByTestId("basemap-option-positron")).toHaveAttribute(
       "aria-pressed",
       "true",
     );

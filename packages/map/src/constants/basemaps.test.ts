@@ -30,40 +30,44 @@ describe("basemap registry", () => {
     resetBasemapRegistry();
   });
 
-  it("includes the built-in street, satellite, and topo basemaps by default", () => {
-    expect(getRegisteredBasemapIds()).toEqual(["street", "satellite", "topo"]);
+  it("includes the built-in positron, liberty, dark, satellite, and topo basemaps by default", () => {
+    expect(getRegisteredBasemapIds()).toEqual([
+      "positron",
+      "liberty",
+      "dark",
+      "satellite",
+      "topo",
+    ]);
   });
 
   it("throws when looking up an unregistered basemap", () => {
     expect(() => getBasemapDefinition("unknown")).toThrow(/unknown/i);
   });
 
-  it.each([
-    ["topo", true],
-    ["satellite", undefined],
-  ])(
-    "sets dimInDarkMode to %s for the built-in raster %s basemap",
-    (basemapId, expected) => {
+  it.each(["topo", "satellite"])(
+    "leaves dimInDarkMode unset for the built-in raster %s basemap",
+    (basemapId) => {
       const definition = getBasemapDefinition(basemapId);
       expect(definition.kind).toBe("raster");
-      expect((definition as RasterBasemapDefinition).dimInDarkMode).toBe(
-        expected,
-      );
+      expect(
+        (definition as RasterBasemapDefinition).dimInDarkMode,
+      ).toBeUndefined();
     },
   );
 
-  it("registers the built-in street basemap as a vector (OpenFreeMap) basemap with light/dark styles and attribution", () => {
-    const definition = getBasemapDefinition("street");
-    expect(definition.kind).toBe("vector");
-    const vectorDefinition = definition as VectorBasemapDefinition;
-    expect(vectorDefinition.styleUrl).toMatch(
-      /^https:\/\/tiles\.openfreemap\.org\/styles\//,
-    );
-    expect(vectorDefinition.darkStyleUrl).toMatch(
-      /^https:\/\/tiles\.openfreemap\.org\/styles\//,
-    );
-    expect(vectorDefinition.attribution).toMatch(/OpenStreetMap/);
-  });
+  it.each(["positron", "liberty", "dark"])(
+    "registers the built-in %s basemap as a vector (OpenFreeMap) basemap with no dark-mode auto-swap",
+    (basemapId) => {
+      const definition = getBasemapDefinition(basemapId);
+      expect(definition.kind).toBe("vector");
+      const vectorDefinition = definition as VectorBasemapDefinition;
+      expect(vectorDefinition.styleUrl).toMatch(
+        /^https:\/\/tiles\.openfreemap\.org\/styles\//,
+      );
+      expect(vectorDefinition.darkStyleUrl).toBeUndefined();
+      expect(vectorDefinition.attribution).toMatch(/OpenStreetMap/);
+    },
+  );
 
   it("registers a new basemap that becomes retrievable and listed", () => {
     registerBasemap("custom", CUSTOM_RASTER_BASEMAP);
@@ -73,15 +77,15 @@ describe("basemap registry", () => {
   });
 
   it("overwrites an existing basemap when registered again under the same id", () => {
-    registerBasemap("street", {
+    registerBasemap("positron", {
       kind: "raster",
       label: "Replaced",
-      description: "Replaced street basemap.",
+      description: "Replaced positron basemap.",
       url: "https://example.com/{z}/{x}/{y}.png",
       attribution: "Example",
     });
 
-    expect(getBasemapDefinition("street").label).toBe("Replaced");
+    expect(getBasemapDefinition("positron").label).toBe("Replaced");
   });
 
   it("resetBasemapRegistry restores the built-in defaults", () => {
@@ -89,7 +93,13 @@ describe("basemap registry", () => {
 
     resetBasemapRegistry();
 
-    expect(getRegisteredBasemapIds()).toEqual(["street", "satellite", "topo"]);
+    expect(getRegisteredBasemapIds()).toEqual([
+      "positron",
+      "liberty",
+      "dark",
+      "satellite",
+      "topo",
+    ]);
   });
 });
 
@@ -110,9 +120,12 @@ describe("getBasemapTileSources", () => {
     },
   );
 
-  it("throws for the built-in street basemap, now a vector basemap", () => {
-    expect(() => getBasemapTileSources("street", false)).toThrow(/raster/i);
-  });
+  it.each(["positron", "liberty", "dark"])(
+    "throws for the built-in %s basemap, a vector basemap",
+    (basemapId) => {
+      expect(() => getBasemapTileSources(basemapId, false)).toThrow(/raster/i);
+    },
+  );
 
   it("returns a single source for a raster basemap with no dark or fallback URLs", () => {
     registerBasemap("custom", CUSTOM_RASTER_BASEMAP);
