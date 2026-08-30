@@ -6,7 +6,7 @@ const layerMocks = vi.hoisted(() => ({
 }));
 
 vi.mock("leaflet", () => ({
-  maplibreGL: layerMocks.maplibreGL,
+  default: { maplibreGL: layerMocks.maplibreGL },
 }));
 
 vi.mock("@maplibre/maplibre-gl-leaflet", () => ({}));

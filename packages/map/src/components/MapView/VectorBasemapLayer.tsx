@@ -1,3 +1,4 @@
+import L from "leaflet";
 import { useEffect } from "react";
 import { useMap } from "react-leaflet";
 
@@ -29,8 +30,16 @@ interface VectorBasemapLayerProps {
  * @remarks Must be rendered inside a `MapContainer`. Loads `maplibre-gl` and
  *   `@maplibre/maplibre-gl-leaflet` lazily via dynamic `import()` — `maplibre-gl`
  *   alone is a ~270KB gzipped dependency, and most sessions (on a raster
- *   basemap) never need it. Recreates the MapLibre GL layer whenever
- *   `styleUrl` changes (e.g. switching a light/dark style).
+ *   basemap) never need it. `leaflet` itself is imported statically instead
+ *   of dynamically alongside it: it's already a hard, eagerly-bundled
+ *   dependency of this whole package (react-leaflet requires it regardless),
+ *   so dynamically importing it here bought no bundle-size benefit — worse,
+ *   under Vite's code-splitting it resolved to a *separate* module instance
+ *   from the one already loaded elsewhere, so `@maplibre/maplibre-gl-leaflet`'s
+ *   side-effect patch (`L.maplibreGL = ...`) landed on the wrong object and
+ *   `L.maplibreGL` below was `undefined` for every real user. Recreates the
+ *   MapLibre GL layer whenever `styleUrl` changes (e.g. switching a
+ *   light/dark style).
  */
 export function VectorBasemapLayer({
   styleUrl,
@@ -48,8 +57,8 @@ export function VectorBasemapLayer({
       map.attributionControl.addAttribution(attribution);
     }
 
-    Promise.all([import("@maplibre/maplibre-gl-leaflet"), import("leaflet")])
-      .then(([, L]) => {
+    import("@maplibre/maplibre-gl-leaflet")
+      .then(() => {
         if (cancelled) {
           return;
         }
