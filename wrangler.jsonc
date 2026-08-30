@@ -6,7 +6,14 @@
   "main": "./packages/web/workers/app.ts",
   "workers_dev": true,
   "cache": {
-    "enabled": true,
+    // Temporarily disabled: `cross_version_cache` shares cached responses
+    // across Worker versions, so a deploy alone doesn't invalidate a stale
+    // cached response, and Cloudflare's zone-level purge_cache API doesn't
+    // reach this Worker-internal cache either (it needs an in-Worker
+    // `ctx.cache.purge()` call). Disabling stops Cloudflare from consulting
+    // the stale cache immediately, per Cloudflare's own docs. Re-enable
+    // once confident the current deploy has propagated everywhere.
+    "enabled": false,
     "cross_version_cache": true
   },
   "placement": {
