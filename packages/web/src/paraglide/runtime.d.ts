@@ -102,7 +102,7 @@ export declare let serverAsyncLocalStorage: ParaglideAsyncLocalStorage | undefin
 export declare function getServerAsyncLocalStorage(): ParaglideAsyncLocalStorage | undefined;
 export declare const disableAsyncLocalStorage = false;
 export declare const experimentalMiddlewareLocaleSplitting = false;
-export declare const isServer: any;
+export declare const isServer: boolean;
 /** @type {Locale | undefined} */
 export declare const experimentalStaticLocale: Locale | undefined;
 /**

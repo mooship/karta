@@ -11,6 +11,9 @@
   "workspaces": [
     "packages/*"
   ],
+  "overrides": {
+    "maplibre-gl": "5.24.0"
+  },
   "scripts": {
     "lint": "biome check . && npm run depcruise",
     "depcruise": "depcruise packages/*/src --config .dependency-cruiser.cjs",

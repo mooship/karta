@@ -1,5 +1,5 @@
 import L from "leaflet";
-import maplibreGlWorkerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url";
+import maplibreGlWorkerUrl from "maplibre-gl/dist/maplibre-gl-csp-worker.js?url";
 import { useEffect } from "react";
 import { useMap } from "react-leaflet";
 
@@ -33,15 +33,21 @@ interface VectorBasemapLayerProps {
  * `VectorBasemapLayer`'s effect) reuses the same settled promise instead of
  * re-importing and re-registering the worker URL from scratch.
  * @remarks MapLibre locates its tile-parsing Web Worker via a runtime
- *   `new Worker(new URL(...))` call that Vite can't statically bundle (it
- *   picks the filename with a dev/prod ternary), so that request 404s in
- *   production with no thrown error — confirmed live, nothing renders and
- *   nothing complains. `?worker&url` bundles the worker's full module graph
- *   (including its own sibling `maplibre-gl-shared.mjs` import, which a
- *   plain `?url` import would miss) into one real, hashed chunk URL, which
- *   `setWorkerUrl` then points MapLibre at explicitly. This is coupled to
- *   `maplibre-gl`'s current internal file layout and `setWorkerUrl`'s
- *   existing signature — re-check both on a `maplibre-gl` version bump.
+ *   `new Worker(...)` call whose target `maplibre-gl` itself leaves empty by
+ *   default, so it must be set explicitly for a bundled build to find it.
+ *   `maplibre-gl@6`'s own ESM-only worker (loaded as a `{type: "module"}`
+ *   Worker) rendered fine on Chromium and desktop Safari but silently never
+ *   requested a single tile on real iOS hardware (no thrown error either —
+ *   see maplibre/maplibre-gl-js#8002, a real-device-only regression from the
+ *   v6.0 ESM rewrite, closed upstream as "need more info"/unreproduced).
+ *   Pinning to `maplibre-gl@5` and pointing `setWorkerUrl` at its
+ *   `maplibre-gl-csp-worker.js` build sidesteps that entirely: that file is a
+ *   classic (non-module) script MapLibre has shipped specifically for
+ *   bundler/CSP-strict consumers since long before the v6 rewrite, so the
+ *   worker it creates is a plain classic Worker, never a module Worker. This
+ *   is coupled to `maplibre-gl`'s current internal file layout and
+ *   `setWorkerUrl`'s existing signature — re-check both, and re-verify on
+ *   real iOS hardware, before ever bumping past the v5 line.
  */
 let maplibreLoadPromise:
   | Promise<{
