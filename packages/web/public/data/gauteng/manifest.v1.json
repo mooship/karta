@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-08-06T04:58:31.068Z",
+  "generatedAt": "2026-08-30T07:02:35.613Z",
   "metroIds": [
     "tshwane",
     "johannesburg",
@@ -16,38 +16,38 @@
     {
       "fileName": "townships.display.v1.geojson",
       "featureCount": 2567,
-      "sha256": "ce837af8fa3ad998b0890d4eaf503dc10be81b80b7bd15aaf74e29a77957a91e",
-      "bytes": 2081537
+      "sha256": "358f10a0ba633493792bf1b46253a0564dc466a54e8735554d8414ef7345e60a",
+      "bytes": 2185153
     },
     {
       "fileName": "township-areas.display.v1.geojson",
-      "featureCount": 123,
-      "sha256": "5eacea2cfb1a2b5e2d5a37f64d66216d3569c8d9284d8b963ae441909ce038c7",
-      "bytes": 156764
+      "featureCount": 128,
+      "sha256": "2160b6185c799b8352a543ab5b74317f237cd91f3bcb14ac4f93f50689426fbf",
+      "bytes": 161713
     },
     {
       "fileName": "rapid-rail.display.v1.geojson",
       "featureCount": 293,
-      "sha256": "99aaeb12e26f1a4f747216612bfd4549c1c8430cfcbdb74ba4942ce1a47589c6",
-      "bytes": 92395
+      "sha256": "133149c8140c6ef45efc27cf2702782837d633ad482ebd3acf34e99b6e1b0bec",
+      "bytes": 92374
     },
     {
       "fileName": "commuter-rail.display.v1.geojson",
       "featureCount": 1136,
-      "sha256": "75fc9f98d4f12edec0ce2665a5d9bed57f8edbdda137346cc1c3ba1d4f80168c",
-      "bytes": 496035
+      "sha256": "97912c5f152b9c0b63c4aa0139450712a60ace133dbba635dcef9d9e2d91a356",
+      "bytes": 496050
     },
     {
       "fileName": "bus-rapid-transit.display.v1.geojson",
       "featureCount": 862,
-      "sha256": "00619307bccf1a1534e3e49444004573869bb17f8abeab4836b08ae787a7555d",
-      "bytes": 412042
+      "sha256": "cf5f8549cdce45d30d9725ff5ece56d9166d56fd7e0cea1bf8f0b41ca23ef2f7",
+      "bytes": 412050
     },
     {
       "fileName": "bus.display.v1.geojson",
-      "featureCount": 3661,
-      "sha256": "36bd35baaed921f59da7692321afe7e7e60d303f96830b0ed568aaa0bd5eea24",
-      "bytes": 984184
+      "featureCount": 3659,
+      "sha256": "31befb5ea00e527ed490acff88197fe8f7289a0912e03736276e38daea094693",
+      "bytes": 983171
     }
   ],
   "networkCoverage": {
@@ -56,7 +56,7 @@
     "A Re Yeng": 18,
     "Rea Vaya": 836,
     "Ekurhuleni IRPTN": 8,
-    "Gautrain Bus": 3426,
+    "Gautrain Bus": 3424,
     "Tshwane Bus Services": 235
   }
 }

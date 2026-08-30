@@ -109,15 +109,14 @@ new config in `REGION_PIPELINE_CONFIGS` (`data-pipeline/src/regionPipelineConfig
   layer's `dataSource` array only once its pipeline config actually produces
   that layer's file, or add a new layer entirely if the new region's network
   is distinct enough to warrant its own legend entry.
-- **The map's viewport and search coverage are shared constants, kept in
-  sync by hand.** `App.tsx`'s `MAP_INITIAL_BOUNDS` (initial map framing) and
-  `SEARCH_COVERAGE_BOUNDS` (the "outside South Africa" search guard) are
-  plain hardcoded rectangles, not derived from `REGIONS`. Adding a region
-  whose mapped data falls outside the current `MAP_INITIAL_BOUNDS` means
-  widening that rectangle by hand — two geographically distant regions (as
-  Gauteng and Western Cape are) produce a much more zoomed-out initial view
-  than either region alone would; there's no way around that trade-off
-  without per-region viewport logic, which doesn't exist today.
+- **The map's viewport and search coverage are the same shared constant.**
+  `App.tsx`'s `MAP_INITIAL_BOUNDS` (initial map framing) is set to
+  `SEARCH_COVERAGE_BOUNDS` (the "outside South Africa" search guard) — a
+  plain hardcoded rectangle covering mainland South Africa, not derived from
+  `REGIONS`. The map always opens framing the whole country regardless of
+  which regions have published data, so adding a region whose mapped data
+  falls outside that rectangle only matters if it's outside South Africa
+  entirely; there's no per-region viewport logic today.
 - **Copy is domain-wide, not per-region.** The domain `story`
   (`messages/{locale}.json`'s `domain_story_title`/`domain_story_body`) and
   page title/meta description describe the domain's overall framing, not any

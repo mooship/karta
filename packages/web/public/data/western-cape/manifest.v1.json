@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "generatedAt": "2026-08-30T07:04:17.229Z",
+  "metroIds": [
+    "cape-town"
+  ],
+  "files": [
+    {
+      "fileName": "townships.display.v1.geojson",
+      "featureCount": 927,
+      "sha256": "3287037c21b5deb3ddbdd4bfe25b9f3f84f3be95b2f6db3b5f67192f4cb904f0",
+      "bytes": 697893
+    },
+    {
+      "fileName": "township-areas.display.v1.geojson",
+      "featureCount": 17,
+      "sha256": "3a05ae9531cd40668c5ea725caa3ee1a230b83ebc99c66db0805962a69829b5e",
+      "bytes": 14844
+    },
+    {
+      "fileName": "bus-rapid-transit.display.v1.geojson",
+      "featureCount": 5510,
+      "sha256": "d5406d31a27785488cbde0cf8a3949fe31a11df0572fc22c3880b07a14f7a476",
+      "bytes": 1826053
+    },
+    {
+      "fileName": "commuter-rail.display.v1.geojson",
+      "featureCount": 1042,
+      "sha256": "dba8aae517623c51d599268c7cc08a2bc3c49e06e3c1bbc3907cc80682a08588",
+      "bytes": 459793
+    }
+  ],
+  "networkCoverage": {
+    "MyCiTi": 5510,
+    "PRASA": 1042
+  }
+}

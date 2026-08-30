@@ -90,20 +90,50 @@ describe("assertCompleteNetworkCoverage", () => {
 });
 
 describe("assertNoUnmatchedTownshipAreas", () => {
+  const allMetroIds = [
+    ...new Set(
+      TOWNSHIP_AREA_DEFINITIONS.map((definition) => definition.metroId),
+    ),
+  ];
+
   it("does not throw when every definition has a matched feature", () => {
     const areas = townshipAreasFeatureCollection(
       TOWNSHIP_AREA_DEFINITIONS.map((definition) => definition.id),
     );
 
-    expect(() => assertNoUnmatchedTownshipAreas(areas)).not.toThrow();
+    expect(() =>
+      assertNoUnmatchedTownshipAreas(areas, allMetroIds),
+    ).not.toThrow();
   });
 
   it("throws listing every defined area with no matched feature", () => {
     const areas = townshipAreasFeatureCollection([]);
 
-    expect(() => assertNoUnmatchedTownshipAreas(areas)).toThrow(
+    expect(() => assertNoUnmatchedTownshipAreas(areas, allMetroIds)).toThrow(
       /Township areas with zero matched sub-places:.*atteridgeville/,
     );
+  });
+
+  it("does not throw for a single-region run matching only that region's metros' areas", () => {
+    const tshwaneAreaIds = TOWNSHIP_AREA_DEFINITIONS.filter(
+      (definition) => definition.metroId === "tshwane",
+    ).map((definition) => definition.id);
+    const areas = townshipAreasFeatureCollection(tshwaneAreaIds);
+
+    expect(() =>
+      assertNoUnmatchedTownshipAreas(areas, ["tshwane"]),
+    ).not.toThrow();
+  });
+
+  it("ignores unmatched areas belonging to metros outside the given metroIds", () => {
+    const areas = townshipAreasFeatureCollection([]);
+
+    expect(() => assertNoUnmatchedTownshipAreas(areas, ["cape-town"])).toThrow(
+      /Township areas with zero matched sub-places:.*langa/,
+    );
+    expect(() =>
+      assertNoUnmatchedTownshipAreas(areas, ["cape-town"]),
+    ).not.toThrow(/atteridgeville/);
   });
 });
 

@@ -88,26 +88,37 @@ export function assertMetroSetup(
 }
 
 /**
- * Checks that every `TOWNSHIP_AREA_DEFINITIONS` entry matched at least one
- * sub-place in `areas` (as produced by `createTownshipAreas`).
- * @throws Listing every area id that matched no sub-place. `createTownshipAreas`
- *   itself just omits a zero-match area rather than failing, so without this
- *   check a `subPlaceNamePrefixes`/`censusMainPlaceCodes` typo — or a Census
- *   2011 sub-place that was renamed, merged, or never existed under the
- *   expected name — would silently drop an area from the published map with
- *   zero features and no error. An area known to have no Census 2011
- *   boundary of its own (see `docs/data/*-area-classification.md`'s
- *   "Limitations" sections) should be removed from `TOWNSHIP_AREA_DEFINITIONS`
- *   rather than left in place to fail this check.
+ * Checks that every `TOWNSHIP_AREA_DEFINITIONS` entry for the given
+ * `metroIds` matched at least one sub-place in `areas` (as produced by
+ * `createTownshipAreas`).
+ * @param metroIds - The metros actually processed in this run — e.g. a
+ *   single region's `RegionPipelineConfig.metros`. Scoping to these (rather
+ *   than checking every metro in `TOWNSHIP_AREA_DEFINITIONS`) is what lets a
+ *   single-region run pass: `areas` only ever contains matches from the
+ *   metros that run actually processed, so an unscoped check would always
+ *   flag every other region's areas as unmatched.
+ * @throws Listing every area id (within `metroIds`) that matched no
+ *   sub-place. `createTownshipAreas` itself just omits a zero-match area
+ *   rather than failing, so without this check a
+ *   `subPlaceNamePrefixes`/`censusMainPlaceCodes` typo — or a Census 2011
+ *   sub-place that was renamed, merged, or never existed under the expected
+ *   name — would silently drop an area from the published map with zero
+ *   features and no error. An area known to have no Census 2011 boundary of
+ *   its own (see `docs/data/*-area-classification.md`'s "Limitations"
+ *   sections) should be removed from `TOWNSHIP_AREA_DEFINITIONS` rather than
+ *   left in place to fail this check.
  */
 export function assertNoUnmatchedTownshipAreas(
   areas: FeatureCollection<Geometry, { id: string }>,
+  metroIds: readonly MetroId[],
 ): void {
+  const metroIdSet = new Set(metroIds);
   const matchedIds = new Set(
     areas.features.map((feature) => feature.properties.id),
   );
   const unmatched = TOWNSHIP_AREA_DEFINITIONS.filter(
-    (definition) => !matchedIds.has(definition.id),
+    (definition) =>
+      metroIdSet.has(definition.metroId) && !matchedIds.has(definition.id),
   );
   if (unmatched.length > 0) {
     throw new Error(

@@ -92,6 +92,6 @@ describe("fetchMyCitiRoutes", () => {
 
     expect(result).toEqual(raw);
     const body = fetchMock.mock.calls[0]?.[1]?.body as string;
-    expect(decodeURIComponent(body)).toMatch(/network"~"MyCiTi"/);
+    expect(decodeURIComponent(body)).toMatch(/operator"~"MyCiTi"/);
   });
 });

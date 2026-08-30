@@ -69,28 +69,24 @@ const MapView = lazy(async () => {
 type LatLngBoundsTuple = [[number, number], [number, number]];
 
 /**
- * A rectangle wide enough to frame every configured region's mapped data
- * (Gauteng and City of Cape Town — see `@karta/app`'s `REGIONS`, though only
- * Gauteng's pipeline output is actually published as of this writing) on
- * initial load. The two are far enough apart that this necessarily starts
- * the map more zoomed out than either region's own bounds would — there's
- * no per-region viewport logic today, see `docs/adding-a-region.md`.
- */
-const MAP_INITIAL_BOUNDS: LatLngBoundsTuple = [
-  [-34.35, 18.3],
-  [-25.3, 28.75],
-];
-
-/**
- * Mainland South Africa's approximate extent, used only to sanity-check
- * location search results (see `isWithinSearchCoverage`) — not the map's
- * initial viewport (`MAP_INITIAL_BOUNDS`), which is already wider than any
- * single region but narrower than the whole country.
+ * Mainland South Africa's approximate extent. Used both to sanity-check
+ * location search results (see `isWithinSearchCoverage`) and as the map's
+ * initial viewport (`MAP_INITIAL_BOUNDS`) — the mapped data itself only
+ * covers Gauteng and City of Cape Town (see `@karta/app`'s `REGIONS`), but
+ * the basemap and search cover the whole country, so the map opens framing
+ * all of it rather than just the mapped regions.
  */
 const SEARCH_COVERAGE_BOUNDS: LatLngBoundsTuple = [
   [-34.84, 16.45],
   [-22.13, 32.95],
 ];
+
+/**
+ * The map's initial viewport on load — mainland South Africa's extent, so a
+ * first-time visitor sees the whole country rather than zooming straight in
+ * on whichever region happens to have published data.
+ */
+const MAP_INITIAL_BOUNDS: LatLngBoundsTuple = SEARCH_COVERAGE_BOUNDS;
 
 /**
  * This app's own `LocationSearchControl` provider: Nominatim biased toward
