@@ -83,11 +83,11 @@ export function PrivacyPolicy() {
 
       <h2 className={styles.sectionTitle}>Map tiles and location search</h2>
       <p className={styles.body}>
-        The basemap tile providers — OpenStreetMap, CARTO (used for the
-        dark-theme basemap), and Esri — may log tile requests, including IP
-        address, as part of serving imagery. This is standard for any web map.
-        Typing in the search box sends your query to OpenStreetMap's Nominatim
-        geocoding service, which may likewise log the query and your IP address.
+        The basemap tile providers — OpenFreeMap and Esri — may log tile
+        requests, including IP address, as part of serving imagery. This is
+        standard for any web map. Typing in the search box sends your query to
+        OpenStreetMap's Nominatim geocoding service, which may likewise log the
+        query and your IP address.
       </p>
 
       <h2 className={styles.sectionTitle}>No location tracking</h2>

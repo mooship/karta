@@ -873,20 +873,25 @@ function resolveTransitStopRadius(
   return isDetailZoom ? 4 : 3;
 }
 
-/** The current vector basemap's MapLibre style URL (theme-appropriate, falling back to the light one), or `null` while a raster basemap is active. */
-function resolveVectorStyleUrl(
+/** The current vector basemap's MapLibre style URL and attribution (theme-appropriate, falling back to the light ones), or `null` while a raster basemap is active. */
+function resolveVectorBasemapConfig(
   isVectorBasemap: boolean,
   resolvedDark: boolean,
   basemapDefinition: ReturnType<typeof getBasemapDefinition>,
-): string | null {
+): { styleUrl: string; attribution: string | undefined } | null {
   if (!isVectorBasemap || basemapDefinition.kind !== "vector") {
     return null;
   }
-  return resolveThemedColor(
-    basemapDefinition.styleUrl,
-    basemapDefinition.darkStyleUrl,
-    resolvedDark,
-  );
+  return {
+    styleUrl: resolveThemedColor(
+      basemapDefinition.styleUrl,
+      basemapDefinition.darkStyleUrl,
+      resolvedDark,
+    ),
+    attribution: resolvedDark
+      ? (basemapDefinition.darkAttribution ?? basemapDefinition.attribution)
+      : basemapDefinition.attribution,
+  };
 }
 
 interface RenderVisibleLayerParams {
@@ -1146,7 +1151,7 @@ function MapViewComponent<
     () => (isRasterBasemap ? getBasemapTileSources(basemap, useDarkTiles) : []),
     [isRasterBasemap, basemap, useDarkTiles],
   );
-  const vectorStyleUrl = resolveVectorStyleUrl(
+  const vectorBasemapConfig = resolveVectorBasemapConfig(
     isVectorBasemap,
     resolvedDark,
     basemapDefinition,
@@ -1457,10 +1462,11 @@ function MapViewComponent<
           useRetinaTiles={useRetinaTiles}
           tileEventHandlers={tileEventHandlers}
         />
-        {vectorStyleUrl ? (
+        {vectorBasemapConfig ? (
           <VectorBasemapLayer
-            key={vectorStyleUrl}
-            styleUrl={vectorStyleUrl}
+            key={vectorBasemapConfig.styleUrl}
+            styleUrl={vectorBasemapConfig.styleUrl}
+            attribution={vectorBasemapConfig.attribution}
             onError={(error) => onBasemapError?.(basemap, error)}
           />
         ) : null}

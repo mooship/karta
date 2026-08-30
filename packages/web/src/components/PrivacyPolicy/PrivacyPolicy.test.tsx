@@ -34,7 +34,7 @@ describe("PrivacyPolicy", () => {
     render(<PrivacyPolicy />);
 
     expect(screen.getByText(/OpenStreetMap/)).toBeInTheDocument();
-    expect(screen.getByText(/CARTO/)).toBeInTheDocument();
+    expect(screen.getByText(/Esri/)).toBeInTheDocument();
     expect(screen.getByText(/Nominatim/)).toBeInTheDocument();
   });
 

@@ -34,6 +34,18 @@ export interface VectorBasemapDefinition {
   styleUrl: string;
   /** Style JSON to use instead of `styleUrl` when dark mode is preferred. */
   darkStyleUrl?: string;
+  /**
+   * Attribution HTML added to Leaflet's attribution control while this
+   * basemap is active.
+   * @remarks Unlike a raster basemap's `attribution`, this isn't wired up by
+   *   Leaflet itself — a MapLibre GL style JSON's own `sources` typically
+   *   carry no `attribution` field (OpenFreeMap's don't), so
+   *   `VectorBasemapLayer` adds/removes this text from
+   *   `map.attributionControl` by hand instead.
+   */
+  attribution?: string;
+  /** Attribution to use instead of `attribution` when `darkStyleUrl` is active. Falls back to `attribution` if unset. */
+  darkAttribution?: string;
 }
 
 /** A registered basemap's rendering configuration, raster or vector. */
@@ -49,25 +61,28 @@ export type Basemap = string;
 
 const OPEN_STREET_MAP_ATTRIBUTION =
   "&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors";
-const CARTO_ATTRIBUTION =
-  "&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors &copy; <a href='https://carto.com/attributions'>CARTO</a>";
-const OSM_FALLBACK_URL = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
+const OPEN_FREE_MAP_ATTRIBUTION =
+  "&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors &middot; tiles by <a href='https://openfreemap.org'>OpenFreeMap</a>";
+const OPEN_FREE_MAP_STYLE_BASE = "https://tiles.openfreemap.org/styles";
 
+// CARTO's anonymous basemap tile endpoints (basemaps.cartocdn.com) now
+// return HTTP 200 with a baked-in "API KEY REQUIRED" watermark image rather
+// than an error, for every style (light_all, dark_all, rastertiles/voyager)
+// — so a paid CARTO account is required even for a 200 response, and
+// Leaflet's error-based tile fallback never triggers since the request
+// technically "succeeds". `street` below uses OpenFreeMap's free, key-less,
+// rate-limit-free vector styles instead (MapLibre GL, lazy-loaded — see
+// `VectorBasemapLayer`), a close visual match for CARTO's Positron style
+// this app used before.
 function defaultBasemaps(): Record<string, BasemapDefinition> {
   return {
     street: {
-      kind: "raster",
+      kind: "vector",
       label: "Street",
       description: "Best for place names, streets, and everyday orientation.",
-      url: "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
-      attribution: CARTO_ATTRIBUTION,
-      darkUrl: "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
-      darkAttribution: CARTO_ATTRIBUTION,
-      fallbackUrls: [OSM_FALLBACK_URL],
-      darkFallbackUrls: [
-        "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
-        OSM_FALLBACK_URL,
-      ],
+      styleUrl: `${OPEN_FREE_MAP_STYLE_BASE}/positron`,
+      darkStyleUrl: `${OPEN_FREE_MAP_STYLE_BASE}/dark`,
+      attribution: OPEN_FREE_MAP_ATTRIBUTION,
     },
     satellite: {
       kind: "raster",
@@ -75,15 +90,6 @@ function defaultBasemaps(): Record<string, BasemapDefinition> {
       description: "Imagery context for land use and built form checks.",
       url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
       attribution: "Tiles &copy; Esri, Maxar, Earthstar Geographics",
-    },
-    voyager: {
-      kind: "raster",
-      label: "Voyager",
-      description: "Colourful basemap with bold roads and clear place labels.",
-      url: "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
-      attribution: CARTO_ATTRIBUTION,
-      fallbackUrls: [OSM_FALLBACK_URL],
-      dimInDarkMode: true,
     },
     topo: {
       kind: "raster",

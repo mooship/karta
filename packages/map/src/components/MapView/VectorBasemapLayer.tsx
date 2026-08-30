@@ -5,6 +5,16 @@ interface VectorBasemapLayerProps {
   /** URL of a MapLibre GL style JSON document to render as the basemap. */
   styleUrl: string;
   /**
+   * Attribution HTML to add to Leaflet's attribution control while this
+   * layer is mounted, removed again on unmount/`styleUrl` change.
+   * @remarks A MapLibre style JSON's own `sources` don't necessarily carry
+   *   an `attribution` field (OpenFreeMap's don't), so `maplibre-gl-leaflet`
+   *   has nothing to forward into Leaflet's attribution control on its own
+   *   — this must be supplied by the caller instead, the same way a raster
+   *   `TileLayer`'s `attribution` prop works.
+   */
+  attribution?: string;
+  /**
    * Called if the style/plugin fails to load, the MapLibre layer fails to
    * initialize, or the style JSON itself fails to load once the layer is
    * attached (e.g. the style host is unreachable), so a caller can fall back
@@ -24,6 +34,7 @@ interface VectorBasemapLayerProps {
  */
 export function VectorBasemapLayer({
   styleUrl,
+  attribution,
   onError,
 }: VectorBasemapLayerProps) {
   const map = useMap();
@@ -32,6 +43,10 @@ export function VectorBasemapLayer({
   useEffect(() => {
     let cancelled = false;
     let layer: import("leaflet").MaplibreGL | undefined;
+
+    if (attribution) {
+      map.attributionControl.addAttribution(attribution);
+    }
 
     Promise.all([import("@maplibre/maplibre-gl-leaflet"), import("leaflet")])
       .then(([, L]) => {
@@ -60,8 +75,11 @@ export function VectorBasemapLayer({
     return () => {
       cancelled = true;
       layer?.remove();
+      if (attribution) {
+        map.attributionControl.removeAttribution(attribution);
+      }
     };
-  }, [map, styleUrl]);
+  }, [map, styleUrl, attribution]);
 
   return null;
 }

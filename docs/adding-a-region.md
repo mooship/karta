@@ -109,12 +109,12 @@ new config in `REGION_PIPELINE_CONFIGS` (`data-pipeline/src/regionPipelineConfig
   layer's `dataSource` array only once its pipeline config actually produces
   that layer's file, or add a new layer entirely if the new region's network
   is distinct enough to warrant its own legend entry.
-- **The map's viewport and search coverage are the same shared constant.**
-  `App.tsx`'s `MAP_INITIAL_BOUNDS` (initial map framing) is set to
-  `SEARCH_COVERAGE_BOUNDS` (the "outside South Africa" search guard) — a
-  plain hardcoded rectangle covering mainland South Africa, not derived from
-  `REGIONS`. The map always opens framing the whole country regardless of
-  which regions have published data, so adding a region whose mapped data
+- **The map's viewport and search coverage share one constant.** `App.tsx`'s
+  `SEARCH_COVERAGE_BOUNDS` (the "outside South Africa" search guard) is
+  passed directly as `MapView`'s `bounds` prop too — a plain hardcoded
+  rectangle covering mainland South Africa, not derived from `REGIONS`. The
+  map always opens framing the whole country regardless of which regions
+  have published data, so adding a region whose mapped data
   falls outside that rectangle only matters if it's outside South Africa
   entirely; there's no per-region viewport logic today.
 - **Copy is domain-wide, not per-region.** The domain `story`

@@ -90,11 +90,7 @@ describe("assertCompleteNetworkCoverage", () => {
 });
 
 describe("assertNoUnmatchedTownshipAreas", () => {
-  const allMetroIds = [
-    ...new Set(
-      TOWNSHIP_AREA_DEFINITIONS.map((definition) => definition.metroId),
-    ),
-  ];
+  const allMetroIds = METROS.map((metro) => metro.id);
 
   it("does not throw when every definition has a matched feature", () => {
     const areas = townshipAreasFeatureCollection(

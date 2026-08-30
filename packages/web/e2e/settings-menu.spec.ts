@@ -77,21 +77,28 @@ test.describe("settings menu", () => {
     await expect(page.locator("html")).not.toHaveAttribute("data-theme");
   });
 
-  test("switching to the dark theme also darkens the street map tiles", async ({
+  test("switching to the dark theme requests the street basemap's dark OpenFreeMap style", async ({
     page,
   }) => {
+    const styleRequests: string[] = [];
+    page.on("request", (request) => {
+      if (/tiles\.openfreemap\.org\/styles\//.test(request.url())) {
+        styleRequests.push(request.url());
+      }
+    });
+
     await page.goto("/");
-    await expect(page.locator(".leaflet-tile-pane img").first()).toBeVisible();
-    await expect(
-      page.locator(".leaflet-tile-pane img").first(),
-    ).toHaveAttribute("src", /cartocdn\.com\/light_all/);
+    await expect(page.locator("canvas.maplibregl-canvas")).toBeVisible();
+    await expect
+      .poll(() => styleRequests.some((url) => url.includes("/styles/positron")))
+      .toBe(true);
 
     await page.getByTestId(E2E.settingsMenuTrigger).click();
     await page.getByTestId(E2E.themeOption.dark).click();
 
-    await expect(
-      page.locator(".leaflet-tile-pane img").first(),
-    ).toHaveAttribute("src", /cartocdn\.com\/dark_all/);
+    await expect
+      .poll(() => styleRequests.some((url) => url.includes("/styles/dark")))
+      .toBe(true);
   });
 
   for (const [label, basemap, urlPattern] of [
@@ -102,9 +109,7 @@ test.describe("settings menu", () => {
       page,
     }) => {
       await page.goto("/");
-      await expect(
-        page.locator(".leaflet-tile-pane img").first(),
-      ).toBeVisible();
+      await expect(page.locator("canvas.maplibregl-canvas")).toBeVisible();
 
       await page.getByTestId(E2E.settingsMenuTrigger).click();
       await page.getByTestId(basemap).click();

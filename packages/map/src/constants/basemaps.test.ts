@@ -30,13 +30,8 @@ describe("basemap registry", () => {
     resetBasemapRegistry();
   });
 
-  it("includes the built-in street, satellite, voyager, and topo basemaps by default", () => {
-    expect(getRegisteredBasemapIds()).toEqual([
-      "street",
-      "satellite",
-      "voyager",
-      "topo",
-    ]);
+  it("includes the built-in street, satellite, and topo basemaps by default", () => {
+    expect(getRegisteredBasemapIds()).toEqual(["street", "satellite", "topo"]);
   });
 
   it("throws when looking up an unregistered basemap", () => {
@@ -44,12 +39,10 @@ describe("basemap registry", () => {
   });
 
   it.each([
-    ["voyager", true],
     ["topo", true],
-    ["street", undefined],
     ["satellite", undefined],
   ])(
-    "sets dimInDarkMode to %s for the built-in %s basemap",
+    "sets dimInDarkMode to %s for the built-in raster %s basemap",
     (basemapId, expected) => {
       const definition = getBasemapDefinition(basemapId);
       expect(definition.kind).toBe("raster");
@@ -58,6 +51,19 @@ describe("basemap registry", () => {
       );
     },
   );
+
+  it("registers the built-in street basemap as a vector (OpenFreeMap) basemap with light/dark styles and attribution", () => {
+    const definition = getBasemapDefinition("street");
+    expect(definition.kind).toBe("vector");
+    const vectorDefinition = definition as VectorBasemapDefinition;
+    expect(vectorDefinition.styleUrl).toMatch(
+      /^https:\/\/tiles\.openfreemap\.org\/styles\//,
+    );
+    expect(vectorDefinition.darkStyleUrl).toMatch(
+      /^https:\/\/tiles\.openfreemap\.org\/styles\//,
+    );
+    expect(vectorDefinition.attribution).toMatch(/OpenStreetMap/);
+  });
 
   it("registers a new basemap that becomes retrievable and listed", () => {
     registerBasemap("custom", CUSTOM_RASTER_BASEMAP);
@@ -83,33 +89,13 @@ describe("basemap registry", () => {
 
     resetBasemapRegistry();
 
-    expect(getRegisteredBasemapIds()).toEqual([
-      "street",
-      "satellite",
-      "voyager",
-      "topo",
-    ]);
+    expect(getRegisteredBasemapIds()).toEqual(["street", "satellite", "topo"]);
   });
 });
 
 describe("getBasemapTileSources", () => {
   afterEach(() => {
     resetBasemapRegistry();
-  });
-
-  it("returns the light street source with an OpenStreetMap fallback", () => {
-    const sources = getBasemapTileSources("street", false);
-
-    expect(sources[0]?.url).toMatch(/light_all/);
-    expect(sources.at(-1)?.url).toMatch(/tile\.openstreetmap\.org/);
-  });
-
-  it("returns the dark street source falling back through light then OpenStreetMap", () => {
-    const sources = getBasemapTileSources("street", true);
-
-    expect(sources[0]?.url).toMatch(/dark_all/);
-    expect(sources[1]?.url).toMatch(/light_all/);
-    expect(sources[2]?.url).toMatch(/tile\.openstreetmap\.org/);
   });
 
   it.each([
@@ -124,11 +110,8 @@ describe("getBasemapTileSources", () => {
     },
   );
 
-  it("returns the CARTO Voyager source with an OpenStreetMap fallback", () => {
-    const sources = getBasemapTileSources("voyager", false);
-
-    expect(sources[0]?.url).toMatch(/rastertiles\/voyager/);
-    expect(sources.at(-1)?.url).toMatch(/tile\.openstreetmap\.org/);
+  it("throws for the built-in street basemap, now a vector basemap", () => {
+    expect(() => getBasemapTileSources("street", false)).toThrow(/raster/i);
   });
 
   it("returns a single source for a raster basemap with no dark or fallback URLs", () => {

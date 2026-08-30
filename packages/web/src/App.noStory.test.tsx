@@ -40,6 +40,10 @@ vi.mock("react-leaflet", () => ({
     },
     on: vi.fn(),
     off: vi.fn(),
+    attributionControl: {
+      addAttribution: vi.fn(),
+      removeAttribution: vi.fn(),
+    },
   }),
   useMapEvents: () => ({}),
   Popup: () => null,
@@ -71,8 +75,23 @@ vi.mock("./layers/registry", async (importOriginal) => {
   };
 });
 
+import { registerBasemap } from "@karta/map";
 import { App } from "./App";
 import { useMapUiStore } from "./stores/useMapUiStore";
+
+// The real "street" basemap is now an OpenFreeMap vector basemap
+// (MapLibre GL, dynamically imported real "leaflet"/"maplibre-gl-leaflet"
+// packages) — exercising that real async/WebGL path isn't meaningful in
+// these jsdom unit tests and races awkwardly with tests that unmount before
+// other async work settles, so it's overridden here with a plain raster
+// stub matching react-leaflet's mocked `TileLayer`.
+registerBasemap("street", {
+  kind: "raster",
+  label: "Street",
+  description: "Test-only raster stand-in for the real OpenFreeMap basemap.",
+  url: "https://example.com/{z}/{x}/{y}.png",
+  attribution: "Example",
+});
 
 describe("App with a domain that has no story", () => {
   beforeEach(() => {

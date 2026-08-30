@@ -132,20 +132,18 @@ describe("App map/location callback wiring", () => {
     geocodeMocks.fetchLocationSearchResults.mockReset();
   });
 
-  it("falls back to the street basemap when the map reports a basemap load error", async () => {
-    useMapUiStore.getState().setBasemap("voyager");
+  it("falls back to the topo basemap when the map reports a basemap load error", async () => {
+    useMapUiStore.getState().setBasemap("satellite");
     render(<App />);
 
     await waitFor(() => expect(mapViewMocks.latestProps).toBeDefined());
 
     mapViewMocks.latestProps?.onBasemapError?.(
-      "voyager",
+      "satellite",
       new Error("tiles unreachable"),
     );
 
-    await waitFor(() =>
-      expect(useMapUiStore.getState().basemap).toBe("street"),
-    );
+    await waitFor(() => expect(useMapUiStore.getState().basemap).toBe("topo"));
   });
 
   it("enables MapView's measurement tool", async () => {
