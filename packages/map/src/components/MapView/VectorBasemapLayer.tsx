@@ -1,4 +1,5 @@
 import L from "leaflet";
+import maplibreGlWorkerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url";
 import { useEffect } from "react";
 import { useMap } from "react-leaflet";
 
@@ -40,6 +41,25 @@ interface VectorBasemapLayerProps {
  *   `L.maplibreGL` below was `undefined` for every real user. Recreates the
  *   MapLibre GL layer whenever `styleUrl` changes (e.g. switching a
  *   light/dark style).
+ * @remarks Also confirmed live: MapLibre GL loads its tile-parsing work into
+ *   a Web Worker, whose script it locates at runtime via
+ *   `new Worker(new URL('./maplibre-gl-worker.mjs', import.meta.url))` —
+ *   MapLibre itself picks between a dev/prod filename first, and that
+ *   non-static computation defeats Vite's build-time detection of the
+ *   `new Worker(new URL(...))` pattern, so no worker chunk ever gets
+ *   emitted and that request 404s in production. The canvas, style,
+ *   sprite, and vector tile source all load fine regardless (nothing
+ *   depends on the worker to succeed), so it just silently never renders
+ *   anything, with no thrown error to point at it. A plain `?url` import of
+ *   the raw npm-shipped worker file isn't enough either: that file has its
+ *   own internal `import ... from "./maplibre-gl-shared.mjs"`, a sibling
+ *   file `?url` never copies, so the worker script itself 404s on its own
+ *   dependency once loaded from a different location. `?worker&url` fixes
+ *   both problems together — Vite fully bundles the worker module graph
+ *   (inlining that sibling import rather than requiring it as a separate
+ *   file) and hands back the resulting chunk's real, hashed URL, which
+ *   `setWorkerUrl` below points MapLibre at explicitly, replacing its own
+ *   broken default.
  */
 export function VectorBasemapLayer({
   styleUrl,
@@ -57,11 +77,15 @@ export function VectorBasemapLayer({
       map.attributionControl.addAttribution(attribution);
     }
 
-    import("@maplibre/maplibre-gl-leaflet")
-      .then(() => {
+    Promise.all([
+      import("maplibre-gl"),
+      import("@maplibre/maplibre-gl-leaflet"),
+    ])
+      .then(([{ setWorkerUrl }]) => {
         if (cancelled) {
           return;
         }
+        setWorkerUrl(maplibreGlWorkerUrl);
         layer = L.maplibreGL({ style: styleUrl });
         layer.addTo(map);
         layer.getMaplibreMap().on("error", (event: { error: unknown }) => {

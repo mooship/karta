@@ -3,6 +3,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 const layerMocks = vi.hoisted(() => ({
   maplibreGL: vi.fn(),
+  setWorkerUrl: vi.fn(),
 }));
 
 vi.mock("leaflet", () => ({
@@ -10,6 +11,14 @@ vi.mock("leaflet", () => ({
 }));
 
 vi.mock("@maplibre/maplibre-gl-leaflet", () => ({}));
+
+vi.mock("maplibre-gl", () => ({
+  setWorkerUrl: layerMocks.setWorkerUrl,
+}));
+
+vi.mock("maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url", () => ({
+  default: "mock-maplibre-gl-worker-url",
+}));
 
 const fakeMap = {
   id: "fake-map",
@@ -27,6 +36,19 @@ import { VectorBasemapLayer } from "./VectorBasemapLayer";
 describe("VectorBasemapLayer", () => {
   afterEach(() => {
     vi.clearAllMocks();
+  });
+
+  it("points MapLibre at the bundled worker chunk before creating the layer", async () => {
+    const layer = { addTo: vi.fn(), remove: vi.fn() };
+    layerMocks.maplibreGL.mockReturnValue(layer);
+
+    render(<VectorBasemapLayer styleUrl="https://example.com/style.json" />);
+
+    await waitFor(() => {
+      expect(layerMocks.setWorkerUrl).toHaveBeenCalledWith(
+        "mock-maplibre-gl-worker-url",
+      );
+    });
   });
 
   it("lazily creates a MapLibre GL layer with the given style and adds it to the map", async () => {
