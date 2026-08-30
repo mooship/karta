@@ -12,7 +12,7 @@ describe("useMapUiStore", () => {
     const state = useMapUiStore.getState();
     expect(state).toMatchObject({
       visibleLayerIds: ["townships"],
-      basemap: "street",
+      basemap: "positron",
       panelOpen: false,
       panelView: "layers",
       selectedFeatureId: null,

@@ -77,7 +77,7 @@ test.describe("settings menu", () => {
     await expect(page.locator("html")).not.toHaveAttribute("data-theme");
   });
 
-  test("switching to the dark theme requests the street basemap's dark OpenFreeMap style", async ({
+  test("switching the UI theme does not change the active basemap's style", async ({
     page,
   }) => {
     const styleRequests: string[] = [];
@@ -94,11 +94,40 @@ test.describe("settings menu", () => {
 
     await page.getByTestId(E2E.settingsMenuTrigger).click();
     await page.getByTestId(E2E.themeOption.dark).click();
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
 
-    await expect
-      .poll(() => styleRequests.some((url) => url.includes("/styles/dark")))
-      .toBe(true);
+    // The basemap's own style is independent of the UI chrome theme — no
+    // new OpenFreeMap style request should fire from a theme-only change.
+    expect(styleRequests.every((url) => url.includes("/styles/positron"))).toBe(
+      true,
+    );
   });
+
+  for (const [label, basemap, urlPattern] of [
+    ["liberty", E2E.basemapOption.liberty, /\/styles\/liberty/],
+    ["dark", E2E.basemapOption.dark, /\/styles\/dark/],
+  ] as const) {
+    test(`switches to the ${label} basemap and requests its own OpenFreeMap style`, async ({
+      page,
+    }) => {
+      const styleRequests: string[] = [];
+      page.on("request", (request) => {
+        if (/tiles\.openfreemap\.org\/styles\//.test(request.url())) {
+          styleRequests.push(request.url());
+        }
+      });
+
+      await page.goto("/");
+      await expect(page.getByTestId(E2E.mapView)).toBeVisible();
+
+      await page.getByTestId(E2E.settingsMenuTrigger).click();
+      await page.getByTestId(basemap).click();
+
+      await expect
+        .poll(() => styleRequests.some((url) => urlPattern.test(url)))
+        .toBe(true);
+    });
+  }
 
   for (const [label, basemap, urlPattern] of [
     ["satellite", E2E.basemapOption.satellite, /arcgisonline\.com/],

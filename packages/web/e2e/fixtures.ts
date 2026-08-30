@@ -12,11 +12,12 @@ const TILE_HOST_PATTERN = /tile\.openstreetmap\.org|server\.arcgisonline\.com/;
 
 /**
  * A minimal, valid MapLibre GL style JSON — no sources, no layers — served
- * in place of the real `street` basemap's OpenFreeMap style requests. This
- * is enough for MapLibre to initialise and paint an (empty) canvas without
- * the suite depending on OpenFreeMap's network availability, and avoids
- * needing to additionally stub vector tile/glyph/sprite requests, since a
- * style with no sources never requests any.
+ * in place of the real Positron/Liberty/Dark basemaps' OpenFreeMap style
+ * requests (matched generically by path, so it covers all three). This is
+ * enough for MapLibre to initialise and paint an (empty) canvas without the
+ * suite depending on OpenFreeMap's network availability, and avoids needing
+ * to additionally stub vector tile/glyph/sprite requests, since a style
+ * with no sources never requests any.
  */
 const EMPTY_MAPLIBRE_STYLE = { version: 8, sources: {}, layers: [] };
 

@@ -20,7 +20,7 @@ vi.mock("@karta/map", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@karta/map")>();
   return {
     ...actual,
-    getRegisteredBasemapIds: () => ["street", "satellite"],
+    getRegisteredBasemapIds: () => ["positron", "satellite"],
   };
 });
 
@@ -92,7 +92,7 @@ describe("parseMapPermalink", () => {
 describe("buildMapPermalinkSearch", () => {
   const defaults = {
     visibleLayerIds: ["townships"],
-    basemap: "street",
+    basemap: "positron",
     panelView: "layers" as const,
   };
   const layerOrder = ["townships", "rapid-rail", "bus"];
@@ -101,7 +101,7 @@ describe("buildMapPermalinkSearch", () => {
     const search = buildMapPermalinkSearch(
       {
         visibleLayerIds: ["townships"],
-        basemap: "street",
+        basemap: "positron",
         panelView: "layers",
         selectedFeatureId: null,
       },
@@ -115,7 +115,7 @@ describe("buildMapPermalinkSearch", () => {
     const search = buildMapPermalinkSearch(
       {
         visibleLayerIds: ["bus", "rapid-rail"],
-        basemap: "street",
+        basemap: "positron",
         panelView: "layers",
         selectedFeatureId: null,
       },

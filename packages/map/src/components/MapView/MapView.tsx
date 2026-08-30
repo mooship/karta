@@ -109,7 +109,7 @@ export interface MapViewProps<
   areaBoundaries?: Feature[];
   /** Ids of the domain's layers to render, filtered against `getLayers()`'s own `available` flag. */
   visibleLayerIds: string[];
-  /** Which registered basemap to render (see `constants/basemaps.ts`). Defaults to `"street"`. */
+  /** Which registered basemap to render (see `constants/basemaps.ts`). Defaults to `"positron"`. */
   basemap?: Basemap;
   /** Id of the feature to highlight: fly the map to it and reopen its popup (see `SelectedFeatureHighlight`). `null`/`undefined` for no selection. */
   selectedFeatureId?: string | null;
@@ -1039,7 +1039,7 @@ function MapViewComponent<
   areas,
   areaBoundaries = [],
   visibleLayerIds,
-  basemap = "street",
+  basemap = "positron",
   selectedFeatureId = null,
   focusLocationTarget = null,
   onFeatureSelect,

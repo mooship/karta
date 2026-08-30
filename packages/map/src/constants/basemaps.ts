@@ -54,7 +54,7 @@ export type BasemapDefinition =
   | VectorBasemapDefinition;
 
 /**
- * Identifier of a registered basemap, e.g. `"street"`.
+ * Identifier of a registered basemap, e.g. `"positron"`.
  * @remarks Any string can be registered via `registerBasemap`.
  */
 export type Basemap = string;
@@ -70,18 +70,35 @@ const OPEN_FREE_MAP_STYLE_BASE = "https://tiles.openfreemap.org/styles";
 // than an error, for every style (light_all, dark_all, rastertiles/voyager)
 // — so a paid CARTO account is required even for a 200 response, and
 // Leaflet's error-based tile fallback never triggers since the request
-// technically "succeeds". `street` below uses OpenFreeMap's free, key-less,
-// rate-limit-free vector styles instead (MapLibre GL, lazy-loaded — see
-// `VectorBasemapLayer`), a close visual match for CARTO's Positron style
-// this app used before.
+// technically "succeeds". `positron`/`liberty`/`dark` below use OpenFreeMap's
+// free, key-less, rate-limit-free vector styles instead (MapLibre GL,
+// lazy-loaded — see `VectorBasemapLayer`) as three independently selectable
+// basemaps, rather than one basemap that auto-swaps style with the UI theme
+// the way CARTO's light/dark pair used to — a basemap's own style and the
+// app's light/dark chrome preference are unrelated choices, and `dark` not
+// having a light counterpart (or `topo`/`satellite` not having a dark one)
+// is fine as-is, rather than approximating one with a CSS invert filter.
 function defaultBasemaps(): Record<string, BasemapDefinition> {
   return {
-    street: {
+    positron: {
       kind: "vector",
-      label: "Street",
-      description: "Best for place names, streets, and everyday orientation.",
+      label: "Positron",
+      description: "Muted, minimal basemap for place names and orientation.",
       styleUrl: `${OPEN_FREE_MAP_STYLE_BASE}/positron`,
-      darkStyleUrl: `${OPEN_FREE_MAP_STYLE_BASE}/dark`,
+      attribution: OPEN_FREE_MAP_ATTRIBUTION,
+    },
+    liberty: {
+      kind: "vector",
+      label: "Liberty",
+      description: "Colourful basemap with bold roads and clear place labels.",
+      styleUrl: `${OPEN_FREE_MAP_STYLE_BASE}/liberty`,
+      attribution: OPEN_FREE_MAP_ATTRIBUTION,
+    },
+    dark: {
+      kind: "vector",
+      label: "Dark",
+      description: "Low-glare basemap purpose-built for dark surroundings.",
+      styleUrl: `${OPEN_FREE_MAP_STYLE_BASE}/dark`,
       attribution: OPEN_FREE_MAP_ATTRIBUTION,
     },
     satellite: {
@@ -98,7 +115,6 @@ function defaultBasemaps(): Record<string, BasemapDefinition> {
       url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}",
       attribution:
         "Tiles &copy; Esri &mdash; Esri, HERE, Garmin, and the GIS User Community",
-      dimInDarkMode: true,
     },
   };
 }

@@ -58,4 +58,35 @@ describe("worker fetch handler", () => {
     expect(consoleErrorSpy).toHaveBeenCalledTimes(1);
     consoleErrorSpy.mockRestore();
   });
+
+  it("applies SECURITY_HEADERS to the SSR response, since public/_headers doesn't reach it", async () => {
+    const { SECURITY_HEADERS } = await import(
+      "../src/constants/securityHeaders"
+    );
+    const workerModule = await import("./app");
+    const request = new Request("https://karta.timothybrits.co.za/");
+
+    const response = await workerModule.default.fetch(request);
+
+    for (const [name, value] of Object.entries(SECURITY_HEADERS)) {
+      expect(response.headers.get(name)).toBe(value);
+    }
+  });
+
+  it("applies SECURITY_HEADERS even on the 500 fallback response", async () => {
+    const { SECURITY_HEADERS } = await import(
+      "../src/constants/securityHeaders"
+    );
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    requestHandlerMock.mockRejectedValueOnce(new Error("boom"));
+    const workerModule = await import("./app");
+    const request = new Request("https://karta.timothybrits.co.za/");
+
+    const response = await workerModule.default.fetch(request);
+
+    expect(response.headers.get("Content-Security-Policy")).toBe(
+      SECURITY_HEADERS["Content-Security-Policy"],
+    );
+    vi.restoreAllMocks();
+  });
 });

@@ -266,13 +266,13 @@ const CUSTOM_VECTOR_BASEMAP: VectorBasemapDefinition = {
 
 /**
  * A raster basemap with a dark variant, retina placeholder, and a fallback
- * chain, registered under `"street"` in tests exercising raster-specific
- * mechanics (retina tiles, dark/light source swapping, error fallback,
- * `dimInDarkMode`) — none of the real default basemaps are raster with a
- * `{r}` retina placeholder any more (the built-in `street` is now an
- * OpenFreeMap vector basemap; `satellite`/`topo` are Esri raster basemaps
- * with neither a dark variant nor a `{r}` placeholder in their URL
- * template), so this fixture stands in for what `street` used to be.
+ * chain, registered under `"positron"` (`MapView`'s default basemap) in
+ * tests exercising raster-specific mechanics (retina tiles, dark/light
+ * source swapping, error fallback, `dimInDarkMode`) — none of the real
+ * default basemaps are raster with a `{r}` retina placeholder any more (the
+ * built-ins are OpenFreeMap vector basemaps or Esri raster basemaps with
+ * neither a dark variant nor a `{r}` placeholder in their URL template), so
+ * this fixture stands in for what a raster default basemap used to be.
  */
 const CUSTOM_RASTER_BASEMAP_WITH_FALLBACKS: RasterBasemapDefinition = {
   kind: "raster",
@@ -721,7 +721,7 @@ describe("MapView", () => {
   });
 
   it("renders a tile layer and one GeoJSON layer per visible registry entry", () => {
-    registerBasemap("street", CUSTOM_RASTER_BASEMAP_WITH_FALLBACKS);
+    registerBasemap("positron", CUSTOM_RASTER_BASEMAP_WITH_FALLBACKS);
     render(
       withDomain(
         <MapView
@@ -750,7 +750,7 @@ describe("MapView", () => {
   });
 
   it("enables retina tile loading on high-DPI desktop screens", () => {
-    registerBasemap("street", CUSTOM_RASTER_BASEMAP_WITH_FALLBACKS);
+    registerBasemap("positron", CUSTOM_RASTER_BASEMAP_WITH_FALLBACKS);
     vi.stubGlobal("innerWidth", 1440);
     Object.defineProperty(window, "devicePixelRatio", {
       configurable: true,
@@ -775,7 +775,7 @@ describe("MapView", () => {
   });
 
   it("enables retina tile loading on a high-DPI mobile screen too", () => {
-    registerBasemap("street", CUSTOM_RASTER_BASEMAP_WITH_FALLBACKS);
+    registerBasemap("positron", CUSTOM_RASTER_BASEMAP_WITH_FALLBACKS);
     vi.stubGlobal("innerWidth", 390);
     Object.defineProperty(window, "devicePixelRatio", {
       configurable: true,
@@ -1030,7 +1030,7 @@ describe("MapView", () => {
   });
 
   it("keeps the tile layer's eventHandlers object referentially stable across re-renders", () => {
-    registerBasemap("street", CUSTOM_RASTER_BASEMAP_WITH_FALLBACKS);
+    registerBasemap("positron", CUSTOM_RASTER_BASEMAP_WITH_FALLBACKS);
     const { rerender } = render(
       withDomain(
         <MapView {...DEFAULT_MAP_VIEW_PROPS} areas={[]} visibleLayerIds={[]} />,
@@ -1407,7 +1407,7 @@ describe("MapView", () => {
   );
 
   it("uses a raster basemap's dark tile source when the OS prefers dark mode", () => {
-    registerBasemap("street", CUSTOM_RASTER_BASEMAP_WITH_FALLBACKS);
+    registerBasemap("positron", CUSTOM_RASTER_BASEMAP_WITH_FALLBACKS);
     stubMatchMedia(true);
 
     render(
@@ -1420,7 +1420,7 @@ describe("MapView", () => {
   });
 
   it("uses a raster basemap's light tile source when the OS prefers light mode", () => {
-    registerBasemap("street", CUSTOM_RASTER_BASEMAP_WITH_FALLBACKS);
+    registerBasemap("positron", CUSTOM_RASTER_BASEMAP_WITH_FALLBACKS);
     stubMatchMedia(false);
 
     render(
@@ -1433,7 +1433,7 @@ describe("MapView", () => {
   });
 
   it("falls back to OpenStreetMap when the light raster tiles error", () => {
-    registerBasemap("street", CUSTOM_RASTER_BASEMAP_WITH_FALLBACKS);
+    registerBasemap("positron", CUSTOM_RASTER_BASEMAP_WITH_FALLBACKS);
     stubMatchMedia(false);
 
     render(
@@ -1452,7 +1452,7 @@ describe("MapView", () => {
   });
 
   it("falls back from dark raster tiles before using OpenStreetMap", () => {
-    registerBasemap("street", CUSTOM_RASTER_BASEMAP_WITH_FALLBACKS);
+    registerBasemap("positron", CUSTOM_RASTER_BASEMAP_WITH_FALLBACKS);
     stubMatchMedia(true);
 
     render(
@@ -1492,10 +1492,18 @@ describe("MapView", () => {
   });
 
   it.each([
-    ["topo", true, true],
+    ["custom-dim", true, true],
     ["satellite", true, false],
-    ["topo", false, false],
+    ["custom-dim", false, false],
   ])("%s basemap: dark=%s -> dimmed=%s", (basemap, dark, expectDimmed) => {
+    registerBasemap("custom-dim", {
+      kind: "raster",
+      label: "Custom Dim",
+      description: "A custom raster basemap with dimInDarkMode set.",
+      url: "https://example.com/{z}/{x}/{y}.png",
+      attribution: "Example",
+      dimInDarkMode: true,
+    });
     stubMatchMedia(dark);
 
     render(
@@ -2296,7 +2304,7 @@ describe("MapView", () => {
   });
 
   it("stays on the final tile fallback source when it errors again", () => {
-    registerBasemap("street", CUSTOM_RASTER_BASEMAP_WITH_FALLBACKS);
+    registerBasemap("positron", CUSTOM_RASTER_BASEMAP_WITH_FALLBACKS);
     stubMatchMedia(false);
 
     render(

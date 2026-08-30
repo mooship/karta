@@ -7,7 +7,7 @@ describe("SettingsMenu", () => {
   it("is closed by default and toggles open state from the trigger", () => {
     render(
       <SettingsMenu
-        basemap="street"
+        basemap="positron"
         onBasemapChange={vi.fn()}
         themePreference="system"
         onThemePreferenceChange={vi.fn()}
@@ -29,7 +29,7 @@ describe("SettingsMenu", () => {
   it("labels the menu content as a region, not a menu, since its controls are toggles", () => {
     render(
       <SettingsMenu
-        basemap="street"
+        basemap="positron"
         onBasemapChange={vi.fn()}
         themePreference="system"
         onThemePreferenceChange={vi.fn()}
@@ -47,7 +47,7 @@ describe("SettingsMenu", () => {
   it("closes when clicking outside of the menu container", () => {
     render(
       <SettingsMenu
-        basemap="street"
+        basemap="positron"
         onBasemapChange={vi.fn()}
         themePreference="system"
         onThemePreferenceChange={vi.fn()}
@@ -69,7 +69,7 @@ describe("SettingsMenu", () => {
   it("moves focus to the panel heading when it opens", () => {
     render(
       <SettingsMenu
-        basemap="street"
+        basemap="positron"
         onBasemapChange={vi.fn()}
         themePreference="system"
         onThemePreferenceChange={vi.fn()}
@@ -84,7 +84,7 @@ describe("SettingsMenu", () => {
   it("closes on Escape and restores focus to the trigger", () => {
     render(
       <SettingsMenu
-        basemap="street"
+        basemap="positron"
         onBasemapChange={vi.fn()}
         themePreference="system"
         onThemePreferenceChange={vi.fn()}
@@ -108,7 +108,7 @@ describe("SettingsMenu", () => {
     const onOpenChange = vi.fn();
     render(
       <SettingsMenu
-        basemap="street"
+        basemap="positron"
         onBasemapChange={vi.fn()}
         themePreference="system"
         onThemePreferenceChange={vi.fn()}
@@ -133,7 +133,7 @@ describe("SettingsMenu", () => {
   it("does not close when clicking inside the menu", () => {
     render(
       <SettingsMenu
-        basemap="street"
+        basemap="positron"
         onBasemapChange={vi.fn()}
         themePreference="system"
         onThemePreferenceChange={vi.fn()}
@@ -151,7 +151,7 @@ describe("SettingsMenu", () => {
   it("ignores non-Escape keys while open", () => {
     render(
       <SettingsMenu
-        basemap="street"
+        basemap="positron"
         onBasemapChange={vi.fn()}
         themePreference="system"
         onThemePreferenceChange={vi.fn()}
@@ -171,7 +171,7 @@ describe("SettingsMenu", () => {
 
     render(
       <SettingsMenu
-        basemap="street"
+        basemap="positron"
         onBasemapChange={onBasemapChange}
         themePreference="system"
         onThemePreferenceChange={onThemePreferenceChange}
@@ -189,7 +189,7 @@ describe("SettingsMenu", () => {
   it("renders children after the built-in controls", () => {
     render(
       <SettingsMenu
-        basemap="street"
+        basemap="positron"
         onBasemapChange={vi.fn()}
         themePreference="system"
         onThemePreferenceChange={vi.fn()}
@@ -208,7 +208,7 @@ describe("SettingsMenu", () => {
   it("shows contextual guidance for the active basemap", () => {
     const { rerender } = render(
       <SettingsMenu
-        basemap="street"
+        basemap="positron"
         onBasemapChange={vi.fn()}
         themePreference="system"
         onThemePreferenceChange={vi.fn()}
@@ -217,7 +217,7 @@ describe("SettingsMenu", () => {
 
     fireEvent.click(screen.getByTestId("settings-menu-trigger"));
     expect(screen.getByTestId("settings-basemap-hint")).toHaveTextContent(
-      "Best for place names, streets, and everyday orientation.",
+      "Muted, minimal basemap for place names and orientation.",
     );
 
     rerender(
