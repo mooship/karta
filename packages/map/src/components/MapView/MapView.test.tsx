@@ -14,6 +14,7 @@ const mapMocks = vi.hoisted(() => ({
   fitBounds: vi.fn(),
   invalidateSize: vi.fn(),
   tileErrorHandler: null as null | (() => void),
+  tileLoadHandler: null as null | (() => void),
   tileEventHandlers: [] as unknown[],
   mapContextMenuHandler: null as null | ((event: unknown) => void),
   mapClickHandler: null as null | ((event: unknown) => void),
@@ -38,6 +39,7 @@ const mapMocks = vi.hoisted(() => ({
   >,
   zoom: 9,
   vectorBasemapOnError: null as ((error: unknown) => void) | null,
+  vectorBasemapOnLoad: null as (() => void) | null,
 }));
 
 const geocodeMocks = vi.hoisted(() => ({
@@ -118,10 +120,11 @@ vi.mock("react-leaflet", () => ({
   }: {
     url: string;
     detectRetina?: boolean;
-    eventHandlers?: { tileerror?: () => void };
+    eventHandlers?: { tileerror?: () => void; load?: () => void };
     className?: string;
   }) => {
     mapMocks.tileErrorHandler = eventHandlers?.tileerror ?? null;
+    mapMocks.tileLoadHandler = eventHandlers?.load ?? null;
     mapMocks.tileEventHandlers.push(eventHandlers);
     return (
       <div
@@ -244,11 +247,14 @@ vi.mock("./VectorBasemapLayer", () => ({
   VectorBasemapLayer: ({
     styleUrl,
     onError,
+    onLoad,
   }: {
     styleUrl: string;
     onError?: (error: unknown) => void;
+    onLoad?: () => void;
   }) => {
     mapMocks.vectorBasemapOnError = onError ?? null;
+    mapMocks.vectorBasemapOnLoad = onLoad ?? null;
     return <div data-testid="vector-basemap-layer">{styleUrl}</div>;
   },
 }));
@@ -386,6 +392,7 @@ describe("MapView", () => {
     mapMocks.fitBounds.mockReset();
     mapMocks.invalidateSize.mockReset();
     mapMocks.tileErrorHandler = null;
+    mapMocks.tileLoadHandler = null;
     mapMocks.tileEventHandlers = [];
     mapMocks.mapContextMenuHandler = null;
     mapMocks.mapClickHandler = null;
@@ -393,6 +400,7 @@ describe("MapView", () => {
     mapMocks.geoJsonProps = {};
     mapMocks.zoom = 9;
     mapMocks.vectorBasemapOnError = null;
+    mapMocks.vectorBasemapOnLoad = null;
     popupMocks.renderToStaticMarkup.mockClear();
     geocodeMocks.fetchReverseGeocodeResult.mockReset();
     vi.unstubAllGlobals();
@@ -1153,6 +1161,27 @@ describe("MapView", () => {
     for (const handlers of mapMocks.tileEventHandlers) {
       expect(handlers).toBe(first);
     }
+  });
+
+  it("calls onBasemapReady once the raster tile layer has loaded its tiles", () => {
+    registerBasemap("positron", CUSTOM_RASTER_BASEMAP_WITH_FALLBACKS);
+    const onBasemapReady = vi.fn();
+    render(
+      withDomain(
+        <MapView
+          {...DEFAULT_MAP_VIEW_PROPS}
+          areas={[]}
+          visibleLayerIds={[]}
+          onBasemapReady={onBasemapReady}
+        />,
+      ),
+    );
+
+    expect(onBasemapReady).not.toHaveBeenCalled();
+
+    mapMocks.tileLoadHandler?.();
+
+    expect(onBasemapReady).toHaveBeenCalledTimes(1);
   });
 
   it("does nothing when selectedFeatureId doesn't match any registered feature layer", () => {
@@ -2817,5 +2846,29 @@ describe("MapView", () => {
     mapMocks.vectorBasemapOnError?.(loadError);
 
     expect(onBasemapError).toHaveBeenCalledWith("custom-vector", loadError);
+  });
+
+  it("calls onBasemapReady once the vector basemap layer has loaded", () => {
+    registerBasemap("custom-vector", CUSTOM_VECTOR_BASEMAP);
+    const onBasemapReady = vi.fn();
+    stubMatchMedia(false);
+
+    render(
+      withDomain(
+        <MapView
+          {...DEFAULT_MAP_VIEW_PROPS}
+          areas={[]}
+          visibleLayerIds={[]}
+          basemap="custom-vector"
+          onBasemapReady={onBasemapReady}
+        />,
+      ),
+    );
+
+    expect(onBasemapReady).not.toHaveBeenCalled();
+
+    mapMocks.vectorBasemapOnLoad?.();
+
+    expect(onBasemapReady).toHaveBeenCalledTimes(1);
   });
 });

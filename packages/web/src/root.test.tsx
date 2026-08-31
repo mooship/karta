@@ -53,6 +53,14 @@ describe("root links", () => {
     expect(rels).toContain("preconnect");
   });
 
+  it("preconnects to the default vector basemap's tile host, not just the raster fallbacks", () => {
+    const hrefs = links()
+      .filter((link) => "rel" in link && link.rel === "preconnect")
+      .map((link) => ("href" in link ? link.href : ""));
+
+    expect(hrefs).toContain("https://tiles.openfreemap.org");
+  });
+
   it("leaves the canonical link to each leaf route, since a shared one here would apply to every page", () => {
     const rels = links().map((link) => ("rel" in link ? link.rel : ""));
 
