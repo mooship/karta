@@ -65,10 +65,11 @@ function getStopsByMatch<T>(
  * @param classification - Graduated (numeric range) or categorized (exact match) rules.
  * @param properties - The feature's properties, as passed to a Leaflet `styleFn`.
  * @returns The matching stop's `value`. `classification.fallback` is used
- *   when the property is missing or the wrong type, or (categorized only)
- *   when no stop matches — a graduated value above every stop's `max`
- *   clamps to the highest-`max` stop instead of falling back (see
- *   {@link GraduatedClassification}).
+ *   when the property is missing, the wrong type, or (graduated only) `NaN`/`Infinity` —
+ *   neither is a value any stop's `max` can meaningfully cover — or
+ *   (categorized only) when no stop matches. A graduated value above every
+ *   stop's `max` clamps to the highest-`max` stop instead of falling back
+ *   (see {@link GraduatedClassification}).
  * @example
  * const color = resolveClassification(style.colorClassification, feature.properties);
  */
@@ -79,7 +80,7 @@ export function resolveClassification<T>(
   const raw = properties?.[classification.propertyKey];
 
   if (classification.kind === "graduated") {
-    if (typeof raw !== "number") {
+    if (typeof raw !== "number" || !Number.isFinite(raw)) {
       return classification.fallback;
     }
     const sortedStops = getSortedStops(classification);

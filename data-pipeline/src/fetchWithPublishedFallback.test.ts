@@ -108,6 +108,36 @@ describe("createFetchWithPublishedFallback", () => {
     ).toBe("A");
   });
 
+  it("falls back to the last published output when the fetch resolves with zero features", async () => {
+    const fetchWithPublishedFallback =
+      createFetchWithPublishedFallback("western-cape");
+    statMock.mockResolvedValueOnce(undefined);
+    const fallback = transitLine("MyCiTi");
+    readFileMock.mockResolvedValueOnce(JSON.stringify(fallback));
+
+    const result = await fetchWithPublishedFallback({
+      sourceName: "MyCiTi",
+      fallbackLayerName: "bus-rapid-transit",
+      fetch: async () => ({ type: "FeatureCollection", features: [] }),
+    });
+
+    expect(result).toEqual(fallback);
+  });
+
+  it("throws when the fetch resolves with zero features and no fallback output exists", async () => {
+    const fetchWithPublishedFallback =
+      createFetchWithPublishedFallback("western-cape");
+    statMock.mockRejectedValue(new Error("ENOENT"));
+
+    await expect(
+      fetchWithPublishedFallback({
+        sourceName: "MyCiTi",
+        fallbackLayerName: "bus-rapid-transit",
+        fetch: async () => ({ type: "FeatureCollection", features: [] }),
+      }),
+    ).rejects.toThrow("Failed to fetch MyCiTi and no fallback output exists");
+  });
+
   it("throws when the fetch fails and no fallback output exists", async () => {
     const fetchWithPublishedFallback =
       createFetchWithPublishedFallback("western-cape");

@@ -38,11 +38,13 @@ const DATASET_JSON_LD_BASE = {
   inLanguage: locales,
   spatialCoverage: {
     "@type": "Place",
-    name: "Gauteng, South Africa",
+    name: "Gauteng and Western Cape, South Africa",
   },
   keywords: [
     "apartheid spatial planning",
     "Gauteng",
+    "Western Cape",
+    "Cape Town",
     "township",
     "public transit access",
     "commute time",

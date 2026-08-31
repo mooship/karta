@@ -676,6 +676,42 @@ describe("MapView", () => {
     });
   });
 
+  it("does not re-invoke onReady on a later re-render when the caller passes a fresh inline callback each time", async () => {
+    const onReadySpy = vi.fn();
+
+    const { rerender } = render(
+      withDomain(
+        <MapView
+          {...DEFAULT_MAP_VIEW_PROPS}
+          areas={[]}
+          visibleLayerIds={[]}
+          onReady={() => onReadySpy()}
+        />,
+      ),
+    );
+
+    await waitFor(() => {
+      expect(onReadySpy).toHaveBeenCalledTimes(1);
+    });
+
+    rerender(
+      withDomain(
+        <MapView
+          {...DEFAULT_MAP_VIEW_PROPS}
+          areas={[]}
+          visibleLayerIds={["areas"]}
+          onReady={() => onReadySpy()}
+        />,
+      ),
+    );
+
+    await new Promise((resolve) => {
+      requestAnimationFrame(() => requestAnimationFrame(resolve));
+    });
+
+    expect(onReadySpy).toHaveBeenCalledTimes(1);
+  });
+
   it("does not call onReady if the animation frame still fires after unmount races past cancelAnimationFrame", () => {
     const onReady = vi.fn();
     let scheduledCallback: FrameRequestCallback | null = null;

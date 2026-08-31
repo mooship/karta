@@ -9,11 +9,20 @@ import { useState } from "react";
 import { describe, expect, it, vi } from "vitest";
 import { useSwipeToDismiss } from "./useSwipeToDismiss";
 
-function TestHandle({ enabled = true }: { enabled?: boolean }) {
+function TestHandle({
+  enabled = true,
+  onDismiss,
+}: {
+  enabled?: boolean;
+  onDismiss?: () => void;
+}) {
   const [dismissed, setDismissed] = useState(false);
   const { dragOffsetPx, dragging, onPointerDown } = useSwipeToDismiss({
     enabled,
-    onDismiss: () => setDismissed(true),
+    onDismiss: () => {
+      setDismissed(true);
+      onDismiss?.();
+    },
   });
 
   return (
@@ -180,6 +189,39 @@ describe("useSwipeToDismiss", () => {
     dragHandle(handle, { downY: 100, moveY: 150, upY: 150 });
 
     expect(releaseSpy).not.toHaveBeenCalled();
+  });
+
+  it("removes its window pointer listeners on unmount mid-gesture, so a later pointerup does not call onDismiss", () => {
+    const onDismiss = vi.fn();
+    const { unmount } = render(<TestHandle onDismiss={onDismiss} />);
+    const handle = screen.getByTestId("handle");
+
+    fireEvent.pointerDown(handle, {
+      pointerType: "touch",
+      pointerId: 1,
+      clientY: 100,
+      button: 0,
+    });
+    fireEvent.pointerMove(window, {
+      pointerType: "touch",
+      pointerId: 1,
+      clientY: 150,
+    });
+
+    unmount();
+
+    fireEvent.pointerMove(window, {
+      pointerType: "touch",
+      pointerId: 1,
+      clientY: 200,
+    });
+    fireEvent.pointerUp(window, {
+      pointerType: "touch",
+      pointerId: 1,
+      clientY: 200,
+    });
+
+    expect(onDismiss).not.toHaveBeenCalled();
   });
 
   it("ignores pointer events from a different pointer id", () => {

@@ -17,10 +17,13 @@ const mobileMediaQuery = `screen and (max-width: ${MOBILE_BREAKPOINT_PX}px)`;
 const desktopMediaQuery = `screen and (min-width: ${MOBILE_BREAKPOINT_PX + 1}px)`;
 
 /**
- * The mobile Explore sheet's live drag offset, set per-render via
- * `@vanilla-extract/dynamic`'s `assignInlineVars()` in `App.tsx` (replacing
+ * The mobile Explore sheet's live drag offset, applied imperatively via
+ * `@vanilla-extract/dynamic`'s `setElementVars()` in `App.tsx` (replacing
  * an `as CSSProperties` cast that smuggled the same custom property past
- * React's types).
+ * React's types) — a CSSOM `style.setProperty()` call rather than a React
+ * `style` prop, so the value never appears as a literal attribute in
+ * server-rendered HTML, which this app's `'unsafe-inline'`-free `style-src`
+ * would otherwise refuse to apply once parsed.
  */
 export const panelDragOffset = createVar();
 

@@ -74,6 +74,102 @@ describe("featureCollectionSchema", () => {
     expect(result.success).toBe(false);
   });
 
+  it("rejects a NaN coordinate nested inside a polygon ring", () => {
+    const result = featureCollectionSchema.safeParse({
+      type: "FeatureCollection",
+      features: [
+        polygonFeature([
+          [
+            [28, -25],
+            [Number.NaN, -25],
+            [28.1, -25.1],
+            [28, -25],
+          ],
+        ]),
+      ],
+    });
+
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects an Infinity coordinate nested inside a polygon ring", () => {
+    const result = featureCollectionSchema.safeParse({
+      type: "FeatureCollection",
+      features: [
+        polygonFeature([
+          [
+            [28, -25],
+            [28.1, Number.POSITIVE_INFINITY],
+            [28.1, -25.1],
+            [28, -25],
+          ],
+        ]),
+      ],
+    });
+
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects an out-of-range longitude", () => {
+    const result = featureCollectionSchema.safeParse({
+      type: "FeatureCollection",
+      features: [
+        {
+          type: "Feature",
+          properties: {},
+          geometry: { type: "Point", coordinates: [200, -25] },
+        },
+      ],
+    });
+
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects an out-of-range latitude", () => {
+    const result = featureCollectionSchema.safeParse({
+      type: "FeatureCollection",
+      features: [
+        {
+          type: "Feature",
+          properties: {},
+          geometry: { type: "Point", coordinates: [28, -100] },
+        },
+      ],
+    });
+
+    expect(result.success).toBe(false);
+  });
+
+  it("accepts a valid 2D position", () => {
+    const result = featureCollectionSchema.safeParse({
+      type: "FeatureCollection",
+      features: [
+        {
+          type: "Feature",
+          properties: {},
+          geometry: { type: "Point", coordinates: [28, -25] },
+        },
+      ],
+    });
+
+    expect(result.success).toBe(true);
+  });
+
+  it("accepts a valid 3D position with an elevation outside the -90..90/-180..180 range", () => {
+    const result = featureCollectionSchema.safeParse({
+      type: "FeatureCollection",
+      features: [
+        {
+          type: "Feature",
+          properties: {},
+          geometry: { type: "Point", coordinates: [28, -25, 8848] },
+        },
+      ],
+    });
+
+    expect(result.success).toBe(true);
+  });
+
   it("rejects a non-numeric coordinate nested inside a polygon ring", () => {
     const result = featureCollectionSchema.safeParse({
       type: "FeatureCollection",

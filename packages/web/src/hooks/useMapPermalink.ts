@@ -121,6 +121,14 @@ export interface UseMapPermalinkOptions {
    * has nothing to select until then.
    */
   dataReady: boolean;
+  /**
+   * The feature ids actually present once `dataReady` is `true`, used to
+   * validate a restored `selectedFeatureId` before applying it. A shared
+   * link can name an id that's since been removed or never existed, and
+   * this hook's own contract (see `parseMapPermalink`'s remark) is to drop
+   * anything invalid rather than pass it through unchecked.
+   */
+  knownFeatureIds: ReadonlySet<string>;
 }
 
 /**
@@ -132,7 +140,10 @@ export interface UseMapPermalinkOptions {
  *   toggle or feature click would otherwise spam the back button with a new
  *   history entry.
  */
-export function useMapPermalink({ dataReady }: UseMapPermalinkOptions): void {
+export function useMapPermalink({
+  dataReady,
+  knownFeatureIds,
+}: UseMapPermalinkOptions): void {
   /**
    * The registry's layer ids, in order. Memoized rather than recomputed in
    * every effect below — the domain's layer catalogue is stable for the
@@ -169,9 +180,11 @@ export function useMapPermalink({ dataReady }: UseMapPermalinkOptions): void {
     if (!dataReady || pendingFeatureId.current === undefined) {
       return;
     }
-    useMapUiStore.getState().setSelectedFeatureId(pendingFeatureId.current);
+    if (knownFeatureIds.has(pendingFeatureId.current)) {
+      useMapUiStore.getState().setSelectedFeatureId(pendingFeatureId.current);
+    }
     pendingFeatureId.current = undefined;
-  }, [dataReady]);
+  }, [dataReady, knownFeatureIds]);
 
   const visibleLayerIds = useMapUiStore((state) => state.visibleLayerIds);
   const basemap = useMapUiStore((state) => state.basemap);

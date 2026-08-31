@@ -1,5 +1,6 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { forwardRef, type ReactNode } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const dataMocks = vi.hoisted(() => ({
@@ -53,6 +54,7 @@ vi.mock("./data/fetchTownships", () => ({
 
 import { registerBasemap } from "@karta/map";
 import { App } from "./App";
+import * as appStyles from "./App.css";
 import { useMapUiStore } from "./stores/useMapUiStore";
 
 // The real "positron" basemap is now an OpenFreeMap vector basemap
@@ -580,6 +582,32 @@ describe("App", () => {
     });
 
     expect(panel).toHaveAttribute("data-panel-size", "medium");
+  });
+
+  it("sets the panel's drag-offset CSS custom property once mounted", async () => {
+    const { panel } = await renderMobilePanel();
+    const bareVarName = appStyles.panelDragOffset
+      .toString()
+      .replace(/^var\((--[\w-]+)\)$/, "$1");
+
+    await waitFor(() =>
+      expect(panel.style.getPropertyValue(bareVarName)).toBe("0px"),
+    );
+  });
+
+  it("renders the panel with no SSR-time inline style attribute for the drag offset", () => {
+    // A literal `style="--...:0px"` attribute in the server-rendered HTML
+    // is applied by the browser's HTML parser before any script runs,
+    // which this app's strict style-src (no 'unsafe-inline') refuses. The
+    // live value above is instead applied imperatively via `panelRef`'s
+    // `style.setProperty()` once mounted — a CSSOM mutation CSP does not
+    // restrict — so the element must carry no `style` attribute at all in
+    // the initial server-rendered markup.
+    const markup = renderToStaticMarkup(<App />);
+    const panelMarkup = markup.match(/<aside[^>]*id="map-controls"[^>]*>/)?.[0];
+
+    expect(panelMarkup).toBeDefined();
+    expect(panelMarkup).not.toContain("style=");
   });
 
   it("closes the panel when swiping down from medium height", async () => {
