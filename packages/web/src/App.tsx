@@ -28,7 +28,7 @@ import {
   useIsDesktopViewport,
   useThemePreference,
 } from "@karta/react";
-import { assignInlineVars } from "@vanilla-extract/dynamic";
+import { setElementVars } from "@vanilla-extract/dynamic";
 import clsx from "clsx";
 import type { Feature } from "geojson";
 import { Layers, X } from "lucide-react";
@@ -498,6 +498,16 @@ export function App() {
   const singleViewRef = useRef<HTMLDivElement>(null);
   const suppressNextHandleClickRef = useRef(false);
   const activeSheetPointerIdRef = useRef<number | null>(null);
+  /**
+   * Holds the in-progress sheet-drag gesture's own `cleanup` (in
+   * `handleSheetHandlePointerDown` below) for as long as one is active,
+   * `null` otherwise. That handler attaches its pointermove/up/cancel
+   * listeners directly to `window` rather than inside an effect, so they'd
+   * otherwise outlive an unmount that happens mid-drag; the mount-scoped
+   * effect below reaches that gesture's cleanup through this ref and runs
+   * it on unmount too, mirroring `@karta/map`'s `useSwipeToDismiss`.
+   */
+  const activeSheetGestureCleanupRef = useRef<(() => void) | null>(null);
   const {
     schedule: scheduleSheetDragOffset,
     cancel: cancelScheduledSheetDragOffset,
@@ -601,6 +611,12 @@ export function App() {
     };
   }, [cancelScheduledSheetDragOffset]);
 
+  useEffect(() => {
+    return () => {
+      activeSheetGestureCleanupRef.current?.();
+    };
+  }, []);
+
   const mobileSheetDragDirection =
     mobileSheetDragOffset < -4
       ? "up"
@@ -618,9 +634,23 @@ export function App() {
    * step with the sheet's own slide-out rather than a beat behind it.
    */
   const panelVisuallyOpen = panelOpen && !mobileSheetClosing;
-  const mobilePanelDragStyle = assignInlineVars({
-    [styles.panelDragOffset]: `${mobileSheetDragOffset}px`,
-  });
+  /**
+   * Applies the live drag offset to the panel element imperatively, via
+   * `setElementVars`' `style.setProperty()`, rather than through a React
+   * `style` prop. A `style` prop would render as a literal `style="..."`
+   * attribute in the server-rendered HTML — parsed by the browser before
+   * any script runs, which this app's strict `style-src` (no
+   * `'unsafe-inline'`) refuses. A CSSOM mutation isn't subject to that
+   * restriction, so setting it here, once mounted, keeps the panel
+   * draggable under that CSP with no attribute in the initial markup.
+   */
+  useEffect(() => {
+    if (panelRef.current) {
+      setElementVars(panelRef.current, {
+        [styles.panelDragOffset]: `${mobileSheetDragOffset}px`,
+      });
+    }
+  }, [mobileSheetDragOffset]);
 
   const handleMapReady = useCallback(() => setMapReady(true), []);
 
@@ -669,7 +699,15 @@ export function App() {
     onRequestMeasurement: handleRequestMeasurement,
   });
 
-  useMapPermalink({ dataReady: townships.length > 0 });
+  const townshipFeatureIds = useMemo(
+    () => new Set(townships.map((feature) => feature.properties.id)),
+    [townships],
+  );
+
+  useMapPermalink({
+    dataReady: townships.length > 0,
+    knownFeatureIds: townshipFeatureIds,
+  });
 
   /**
    * Memoised (along with `closePanel` below) so `useDismissableOverlay`'s
@@ -826,6 +864,7 @@ export function App() {
     }
 
     function cleanup() {
+      activeSheetGestureCleanupRef.current = null;
       setMobileSheetDragging(false);
       scheduleSheetDragOffset(0);
       activeSheetPointerIdRef.current = null;
@@ -872,6 +911,7 @@ export function App() {
       cleanup();
     }
 
+    activeSheetGestureCleanupRef.current = cleanup;
     window.addEventListener("pointerup", handlePointerUp);
     window.addEventListener("pointermove", handlePointerMove);
     window.addEventListener("pointercancel", cleanup);
@@ -1057,7 +1097,6 @@ export function App() {
           data-panel-dragging={toBoolAttr(mobileSheetDragging)}
           data-panel-drag-direction={mobileSheetDragDirection}
           data-panel-closing={toBoolAttr(mobileSheetClosing)}
-          style={mobilePanelDragStyle}
           hidden={!panelOpen}
           onAnimationEnd={handleSheetAnimationEnd}
         >

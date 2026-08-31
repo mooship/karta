@@ -1,6 +1,10 @@
 import { renderToReadableStream } from "react-dom/server";
 import type { EntryContext } from "react-router";
 import { ServerRouter } from "react-router";
+import {
+  buildContentSecurityPolicy,
+  generateNonce,
+} from "./constants/securityHeaders";
 import { paraglideMiddleware } from "./paraglide/server.js";
 
 /**
@@ -27,6 +31,20 @@ import { paraglideMiddleware } from "./paraglide/server.js";
  *   the render here (rather than the outer request-matching step too) is
  *   sufficient: `meta()` and `Layout` are the only locale-dependent reads,
  *   and both run during this render.
+ * @remarks Generates one Content-Security-Policy nonce per request and: (1)
+ *   sets it as this response's `Content-Security-Policy` header (via {@link
+ *   buildContentSecurityPolicy}) — setting it here, before rendering, means
+ *   `workers/app.ts`'s `withSecurityHeaders` sees it already present on the
+ *   response and leaves it alone rather than overwriting it with the
+ *   nonce-free static default meant for responses with no render of their
+ *   own; (2) passes it to `renderToReadableStream`'s own `nonce` option, for
+ *   any inline `<script>`/`<style>` React itself injects; and (3) passes it
+ *   as `<ServerRouter>`'s own `nonce` prop, which react-router threads
+ *   through its internal framework context to `<Scripts>`/
+ *   `<ScrollRestoration>` (rendered from `root.tsx`'s `Layout`, further down
+ *   the same tree) and to its own streamed-data transfer script — none of
+ *   which `renderToReadableStream`'s option alone would reach, since they're
+ *   react-router's own components/injected scripts, not React's.
  */
 export default async function handleRequest(
   request: Request,
@@ -35,9 +53,16 @@ export default async function handleRequest(
   routerContext: EntryContext,
 ) {
   return paraglideMiddleware(request, async () => {
+    const nonce = generateNonce();
+    responseHeaders.set(
+      "Content-Security-Policy",
+      buildContentSecurityPolicy(nonce),
+    );
+
     const body = await renderToReadableStream(
-      <ServerRouter context={routerContext} url={request.url} />,
+      <ServerRouter context={routerContext} url={request.url} nonce={nonce} />,
       {
+        nonce,
         signal: request.signal,
         onError(error) {
           console.error(error);

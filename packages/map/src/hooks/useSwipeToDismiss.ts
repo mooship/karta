@@ -1,4 +1,9 @@
-import { type PointerEvent as ReactPointerEvent, useState } from "react";
+import {
+  type PointerEvent as ReactPointerEvent,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { useRafScheduledValue } from "./useRafScheduledValue";
 
 /** Configuration for `useSwipeToDismiss`. */
@@ -43,6 +48,19 @@ export function useSwipeToDismiss({
   const [dragging, setDragging] = useState(false);
   const { schedule: scheduleOffset, cancel: cancelScheduledOffset } =
     useRafScheduledValue(setDragOffsetPx);
+  // Holds the in-progress gesture's own `cleanup` (below) for as long as one
+  // is active, `null` otherwise. `onPointerDown` attaches its pointermove/up/
+  // cancel listeners directly to `window` rather than inside an effect, so
+  // they'd otherwise outlive an unmount that happens mid-drag (e.g. a parent
+  // conditionally unmounting this sheet); this ref lets the mount-scoped
+  // effect below reach that gesture's cleanup and run it on unmount too.
+  const activeGestureCleanupRef = useRef<(() => void) | null>(null);
+
+  useEffect(() => {
+    return () => {
+      activeGestureCleanupRef.current?.();
+    };
+  }, []);
 
   function onPointerDown(event: ReactPointerEvent<HTMLElement>) {
     if (!enabled) {
@@ -71,6 +89,7 @@ export function useSwipeToDismiss({
     }
 
     function cleanup() {
+      activeGestureCleanupRef.current = null;
       cancelScheduledOffset();
       setDragging(false);
       setDragOffsetPx(0);
@@ -93,6 +112,7 @@ export function useSwipeToDismiss({
       }
     }
 
+    activeGestureCleanupRef.current = cleanup;
     window.addEventListener("pointermove", handlePointerMove);
     window.addEventListener("pointerup", handlePointerUp);
     window.addEventListener("pointercancel", cleanup);

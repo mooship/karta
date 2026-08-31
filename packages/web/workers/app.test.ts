@@ -59,7 +59,7 @@ describe("worker fetch handler", () => {
     consoleErrorSpy.mockRestore();
   });
 
-  it("applies every SECURITY_HEADERS entry except Content-Security-Policy to the SSR response", async () => {
+  it("applies every SECURITY_HEADERS entry to the SSR response, including the default Content-Security-Policy", async () => {
     const { SECURITY_HEADERS } = await import(
       "../src/constants/securityHeaders"
     );
@@ -69,27 +69,31 @@ describe("worker fetch handler", () => {
     const response = await workerModule.default.fetch(request);
 
     for (const [name, value] of Object.entries(SECURITY_HEADERS)) {
-      if (name === "Content-Security-Policy") {
-        continue;
-      }
       expect(response.headers.get(name)).toBe(value);
     }
   });
 
-  it("does not apply Content-Security-Policy to the SSR response", async () => {
-    // CSP is deliberately excluded from the SSR response — see
-    // withSecurityHeaders' own comment in app.ts for why (it breaks React
-    // Router's streaming hydration scripts and React's inline Suspense
-    // fallback style attribute).
+  it("preserves a Content-Security-Policy the request handler's response already set, rather than overwriting it", async () => {
+    // entry.server.tsx sets a per-request, nonce-bearing CSP on a real SSR
+    // response before workers/app.ts ever sees it — withSecurityHeaders
+    // must leave that alone instead of replacing it with the nonce-free
+    // static default meant for responses with no CSP of their own.
+    requestHandlerMock.mockResolvedValueOnce(
+      new Response("ok", {
+        headers: { "Content-Security-Policy": "default-src 'nonce-abc123'" },
+      }),
+    );
     const workerModule = await import("./app");
     const request = new Request("https://karta.timothybrits.co.za/");
 
     const response = await workerModule.default.fetch(request);
 
-    expect(response.headers.get("Content-Security-Policy")).toBeNull();
+    expect(response.headers.get("Content-Security-Policy")).toBe(
+      "default-src 'nonce-abc123'",
+    );
   });
 
-  it("applies the non-CSP SECURITY_HEADERS even on the 500 fallback response", async () => {
+  it("applies the full SECURITY_HEADERS, including the default Content-Security-Policy, on the 500 fallback response", async () => {
     const { SECURITY_HEADERS } = await import(
       "../src/constants/securityHeaders"
     );
@@ -103,7 +107,9 @@ describe("worker fetch handler", () => {
     expect(response.headers.get("X-Content-Type-Options")).toBe(
       SECURITY_HEADERS["X-Content-Type-Options"],
     );
-    expect(response.headers.get("Content-Security-Policy")).toBeNull();
+    expect(response.headers.get("Content-Security-Policy")).toBe(
+      SECURITY_HEADERS["Content-Security-Policy"],
+    );
     vi.restoreAllMocks();
   });
 });

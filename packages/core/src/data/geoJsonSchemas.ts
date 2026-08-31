@@ -18,17 +18,29 @@ export function isUnlocatedFeature(
 }
 
 /**
- * Whether `value` is a GeoJSON position: an array of at least two numbers.
+ * Whether `value` is a GeoJSON position: an array of at least two finite
+ * numbers, with longitude and latitude (the first two elements) in RFC
+ * 7946's valid range. A third element (elevation) is finite-checked like
+ * any other coordinate but carries no range constraint, per the spec.
  * @remarks Hand-written rather than expressed as `z.array(z.number())` — see
  *   the note on {@link positionSchema} for why the coordinate interior of a
  *   geometry is validated by plain predicates instead of nested Zod schemas.
+ *   `Number.isFinite` (rather than `typeof === "number"`) is what excludes
+ *   `NaN`/`Infinity`, both of which pass a bare `typeof` check.
  */
 function isPosition(value: unknown): value is Position {
   if (!Array.isArray(value) || value.length < 2) {
     return false;
   }
-  for (const coordinate of value) {
-    if (typeof coordinate !== "number") {
+  for (let index = 0; index < value.length; index++) {
+    const coordinate = value[index];
+    if (!Number.isFinite(coordinate)) {
+      return false;
+    }
+    if (index === 0 && (coordinate < -180 || coordinate > 180)) {
+      return false;
+    }
+    if (index === 1 && (coordinate < -90 || coordinate > 90)) {
       return false;
     }
   }

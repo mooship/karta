@@ -13,3 +13,15 @@ export const CLIENT_ERROR_REPORT_PATH = "/log-error";
  * unbounded text into Workers Logs.
  */
 export const CLIENT_ERROR_REPORT_MAX_FIELD_LENGTH = 2000;
+
+/**
+ * Maximum request body size, in bytes, `routes/log-error.ts` accepts before
+ * even attempting to parse it as JSON.
+ * @remarks A generous bound on top of {@link CLIENT_ERROR_REPORT_MAX_FIELD_LENGTH}:
+ *   three fields at that length, each in the worst case a 3-byte-per-code-unit
+ *   UTF-8 script, comfortably fit well under this with room for JSON
+ *   structure overhead. Checked against the request's `Content-Length`
+ *   header before `request.json()` is called, so an oversized payload is
+ *   rejected without first being buffered into memory in full.
+ */
+export const CLIENT_ERROR_REPORT_MAX_BODY_BYTES = 32 * 1024;

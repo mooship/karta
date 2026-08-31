@@ -12,6 +12,14 @@ import { getTownshipGroup } from "../../constants/townships";
 const GAUTENG_REGION_ID: RegionId = "gauteng";
 const WESTERN_CAPE_REGION_ID: RegionId = "western-cape";
 
+/**
+ * Builds a single Gauteng-only `dataSource` URL.
+ * @remarks Deliberately hardcoded to `GAUTENG_REGION_ID` — reserved for
+ *   layers with no Western Cape source configured (`rapid-rail`, `bus`).
+ *   A layer whose data genuinely is published for every region must use
+ *   `multiRegionDataUrls()` instead, as the three choropleth layers below
+ *   do, or its `dataSource` silently omits every region but Gauteng.
+ */
 function dataUrl(fileName: string): string {
   return `/data/${GAUTENG_REGION_ID}/${fileName}`;
 }
@@ -55,6 +63,22 @@ const TOWNSHIP_EMPHASIS_STYLE = {
 } as const;
 
 /**
+ * Shared `dataSource` for the three choropleth layers below, which all key
+ * off the same per-region township dataset (`commuteMinutes`/
+ * `nearestTransitKm`/`spatialBurdenScore` are just different properties on
+ * the same features).
+ */
+const TOWNSHIP_DISPLAY_DATA_SOURCE = multiRegionDataUrls(
+  [GAUTENG_REGION_ID, WESTERN_CAPE_REGION_ID],
+  "townships.display.v1.geojson",
+);
+
+/** Shared `companionSource` for the three choropleth layers below — see their own `companionSource` field for what it's for. */
+const TOWNSHIP_AREAS_COMPANION_SOURCE = dataUrl(
+  "township-areas.display.v1.geojson",
+);
+
+/**
  * The `spatial-apartheid-legacy` domain's layer catalogue: three choropleth
  * layers (modelled car time, distance to nearest transit, and a combined
  * spatial-burden score weighting the two together — see
@@ -73,8 +97,8 @@ export const SPATIAL_APARTHEID_LEGACY_LAYERS: readonly Layer[] = [
     label: "Modelled car time",
     description:
       "Modelled car drive-time from each recognised township area to its nearest selected job centre.",
-    dataSource: [dataUrl("townships.display.v1.geojson")],
-    companionSource: dataUrl("township-areas.display.v1.geojson"),
+    dataSource: TOWNSHIP_DISPLAY_DATA_SOURCE,
+    companionSource: TOWNSHIP_AREAS_COMPANION_SOURCE,
     geometryKind: "choropleth",
     defaultVisible: true,
     available: true,
@@ -100,8 +124,8 @@ export const SPATIAL_APARTHEID_LEGACY_LAYERS: readonly Layer[] = [
     label: "Distance to nearest transit",
     description:
       "Straight-line distance from each recognised township area to the nearest formal transit route.",
-    dataSource: [dataUrl("townships.display.v1.geojson")],
-    companionSource: dataUrl("township-areas.display.v1.geojson"),
+    dataSource: TOWNSHIP_DISPLAY_DATA_SOURCE,
+    companionSource: TOWNSHIP_AREAS_COMPANION_SOURCE,
     geometryKind: "choropleth",
     defaultVisible: false,
     available: true,
@@ -143,8 +167,8 @@ export const SPATIAL_APARTHEID_LEGACY_LAYERS: readonly Layer[] = [
     label: "Combined spatial burden",
     description:
       "A combined score weighting modelled car time and distance to transit together, to show where both burdens compound.",
-    dataSource: [dataUrl("townships.display.v1.geojson")],
-    companionSource: dataUrl("township-areas.display.v1.geojson"),
+    dataSource: TOWNSHIP_DISPLAY_DATA_SOURCE,
+    companionSource: TOWNSHIP_AREAS_COMPANION_SOURCE,
     geometryKind: "choropleth",
     defaultVisible: false,
     available: true,

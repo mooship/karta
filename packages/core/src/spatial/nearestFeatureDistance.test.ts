@@ -34,6 +34,27 @@ describe("nearestFeatureDistance", () => {
     expect(distance).toBeCloseTo(0, 1);
   });
 
+  it("throws a descriptive error for a LineString with no coordinates", () => {
+    const origin: [number, number] = [28.0, -26.0];
+    const degenerate: LineString = { type: "LineString", coordinates: [] };
+
+    expect(() => nearestFeatureDistance(origin, [degenerate])).toThrow(
+      "LineString must have at least 2 coordinates, got 0",
+    );
+  });
+
+  it("throws a descriptive error for a LineString with a single coordinate", () => {
+    const origin: [number, number] = [28.0, -26.0];
+    const degenerate: LineString = {
+      type: "LineString",
+      coordinates: [[28.0, -26.0]],
+    };
+
+    expect(() => nearestFeatureDistance(origin, [degenerate])).toThrow(
+      "LineString must have at least 2 coordinates, got 1",
+    );
+  });
+
   it("picks the minimum distance across a mix of Point and LineString geometries", () => {
     const origin: [number, number] = [28.0, -26.0];
     const closePoint: Point = { type: "Point", coordinates: [28.0, -26.001] };

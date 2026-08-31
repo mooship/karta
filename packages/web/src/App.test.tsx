@@ -1,5 +1,6 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { forwardRef, type ReactNode } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const dataMocks = vi.hoisted(() => ({
@@ -33,6 +34,7 @@ vi.mock("react-leaflet", () => ({
     attributionControl: {
       addAttribution: vi.fn(),
       removeAttribution: vi.fn(),
+      getContainer: () => document.createElement("div"),
     },
   }),
   useMapEvents: () => ({}),
@@ -53,6 +55,7 @@ vi.mock("./data/fetchTownships", () => ({
 
 import { registerBasemap } from "@karta/map";
 import { App } from "./App";
+import * as appStyles from "./App.css";
 import { useMapUiStore } from "./stores/useMapUiStore";
 
 // The real "positron" basemap is now an OpenFreeMap vector basemap
@@ -77,7 +80,7 @@ async function renderMobilePanel() {
   });
   useMapUiStore.getState().reset();
 
-  const { container } = render(<App />);
+  const { container, unmount } = render(<App />);
   await waitFor(() =>
     expect(screen.getByTestId("geojson-layer")).toBeInTheDocument(),
   );
@@ -85,6 +88,7 @@ async function renderMobilePanel() {
 
   return {
     container,
+    unmount,
     panel: screen.getByTestId("panel-container"),
     handle: screen.getByTestId("panel-sheet-handle"),
   };
@@ -580,6 +584,64 @@ describe("App", () => {
     });
 
     expect(panel).toHaveAttribute("data-panel-size", "medium");
+  });
+
+  it("sets the panel's drag-offset CSS custom property once mounted", async () => {
+    const { panel } = await renderMobilePanel();
+    const bareVarName = appStyles.panelDragOffset
+      .toString()
+      .replace(/^var\((--[\w-]+)\)$/, "$1");
+
+    await waitFor(() =>
+      expect(panel.style.getPropertyValue(bareVarName)).toBe("0px"),
+    );
+  });
+
+  it("removes the sheet drag's window pointer listeners on unmount mid-gesture", async () => {
+    const { handle, unmount } = await renderMobilePanel();
+    const removeEventListenerSpy = vi.spyOn(window, "removeEventListener");
+
+    fireEvent.pointerDown(handle, {
+      pointerType: "touch",
+      pointerId: 21,
+      clientY: 200,
+      button: 0,
+    });
+    fireEvent.pointerMove(window, {
+      pointerType: "touch",
+      pointerId: 21,
+      clientY: 150,
+    });
+
+    unmount();
+
+    expect(removeEventListenerSpy).toHaveBeenCalledWith(
+      "pointerup",
+      expect.any(Function),
+    );
+    expect(removeEventListenerSpy).toHaveBeenCalledWith(
+      "pointermove",
+      expect.any(Function),
+    );
+    expect(removeEventListenerSpy).toHaveBeenCalledWith(
+      "pointercancel",
+      expect.any(Function),
+    );
+  });
+
+  it("renders the panel with no SSR-time inline style attribute for the drag offset", () => {
+    // A literal `style="--...:0px"` attribute in the server-rendered HTML
+    // is applied by the browser's HTML parser before any script runs,
+    // which this app's strict style-src (no 'unsafe-inline') refuses. The
+    // live value above is instead applied imperatively via `panelRef`'s
+    // `style.setProperty()` once mounted — a CSSOM mutation CSP does not
+    // restrict — so the element must carry no `style` attribute at all in
+    // the initial server-rendered markup.
+    const markup = renderToStaticMarkup(<App />);
+    const panelMarkup = markup.match(/<aside[^>]*id="map-controls"[^>]*>/)?.[0];
+
+    expect(panelMarkup).toBeDefined();
+    expect(panelMarkup).not.toContain("style=");
   });
 
   it("closes the panel when swiping down from medium height", async () => {

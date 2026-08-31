@@ -24,6 +24,11 @@ export function nearestFeatureDistance(
   let nearestKm = Number.POSITIVE_INFINITY;
 
   for (const geometry of geometries) {
+    if (geometry.type === "LineString" && geometry.coordinates.length < 2) {
+      throw new Error(
+        `LineString must have at least 2 coordinates, got ${geometry.coordinates.length}`,
+      );
+    }
     const km =
       geometry.type === "Point"
         ? distance(origin_, point(geometry.coordinates), {

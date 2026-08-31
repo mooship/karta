@@ -1,6 +1,13 @@
 import type { ActionFunctionArgs } from "react-router";
 import { z } from "zod";
-import { CLIENT_ERROR_REPORT_MAX_FIELD_LENGTH } from "../constants/clientErrorReporting";
+import {
+  CLIENT_ERROR_REPORT_MAX_BODY_BYTES,
+  CLIENT_ERROR_REPORT_MAX_FIELD_LENGTH,
+} from "../constants/clientErrorReporting";
+import { SITE_URL } from "../constants/siteConfig";
+
+/** This app's own origin, parsed once rather than on every request — see `action`'s Origin check. */
+const SITE_ORIGIN = new URL(SITE_URL).origin;
 
 /**
  * Shape of a client error report POSTed by `clientErrorReporting.ts`. Every
@@ -27,12 +34,32 @@ const clientErrorReportSchema = z.object({
  * @remarks Deliberately stores nothing and returns no body: this app keeps
  *   no server-side database of visitor data (see `PRIVACY.md`), and a
  *   transient log line is the full extent of what this endpoint does.
+ * @remarks `navigator.sendBeacon` — `clientErrorReporting.ts`'s primary send
+ *   path — is exempt from CORS preflight even cross-origin, so an `Origin`
+ *   check is this route's only defence against a third-party page beaconing
+ *   arbitrary text into this app's Workers Logs; a request carrying an
+ *   `Origin` other than this app's own is rejected outright. A request with
+ *   no `Origin` header at all is still accepted, since some same-origin
+ *   `sendBeacon`/`fetch` calls omit it depending on the browser. The
+ *   `Content-Length` check runs before `request.json()` is ever called, so
+ *   an oversized payload is rejected without first buffering it into memory
+ *   in full.
  */
 export async function action({
   request,
 }: ActionFunctionArgs): Promise<Response> {
   if (request.method !== "POST") {
     return new Response(null, { status: 405 });
+  }
+
+  const origin = request.headers.get("Origin");
+  if (origin !== null && origin !== SITE_ORIGIN) {
+    return new Response(null, { status: 403 });
+  }
+
+  const contentLength = Number(request.headers.get("Content-Length"));
+  if (contentLength > CLIENT_ERROR_REPORT_MAX_BODY_BYTES) {
+    return new Response(null, { status: 413 });
   }
 
   try {
