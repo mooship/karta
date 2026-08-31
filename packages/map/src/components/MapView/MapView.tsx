@@ -596,13 +596,19 @@ function SelectedFeatureHighlight<TProperties extends Record<string, unknown>>({
  *   `whenReady` resolves as soon as the map has a view, which is still
  *   before the frame containing it reaches the screen. Deferring by a frame
  *   means whatever the caller starts in response cannot contend with that
- *   first paint.
+ *   first paint. `onReady` is read through {@link useLatestRef} rather than
+ *   listed as an effect dependency: it's a public prop with no stability
+ *   guarantee, and `whenReady` invokes its callback synchronously when the
+ *   map is already loaded, so keying the effect on `onReady` directly would
+ *   re-fire it (and call `onReady` again) on every re-render for a caller
+ *   that passes a fresh inline callback.
  */
 function MapReadyNotifier({ onReady }: { onReady?: () => void }) {
   const map = useMap();
+  const onReadyRef = useLatestRef(onReady);
 
   useEffect(() => {
-    if (!onReady) {
+    if (!onReadyRef.current) {
       return;
     }
     let cancelled = false;
@@ -620,7 +626,7 @@ function MapReadyNotifier({ onReady }: { onReady?: () => void }) {
       frame = requestAnimationFrame(() => {
         frame = null;
         if (!cancelled) {
-          onReady();
+          onReadyRef.current?.();
         }
       });
     });
@@ -630,7 +636,7 @@ function MapReadyNotifier({ onReady }: { onReady?: () => void }) {
         cancelAnimationFrame(frame);
       }
     };
-  }, [map, onReady]);
+  }, [map, onReadyRef]);
 
   return null;
 }

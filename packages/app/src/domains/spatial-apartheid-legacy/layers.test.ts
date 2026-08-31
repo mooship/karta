@@ -36,6 +36,31 @@ describe("SPATIAL_APARTHEID_LEGACY_LAYERS", () => {
     ]);
   });
 
+  it("fetches the townships, nearest-transit, and spatial-burden choropleths from every configured region, not just gauteng", () => {
+    const findLayer = (id: string): Layer => {
+      const layer = SPATIAL_APARTHEID_LEGACY_LAYERS.find((l) => l.id === id);
+      if (!layer) {
+        throw new Error(`expected layer ${id}`);
+      }
+      return layer;
+    };
+    const regionIds = REGIONS.map((region) => region.id);
+    for (const id of ["townships", "nearest-transit", "spatial-burden"]) {
+      const layer = findLayer(id);
+      expect(layer.dataSource).toEqual(
+        regionIds.map(
+          (regionId) => `/data/${regionId}/townships.display.v1.geojson`,
+        ),
+      );
+    }
+    expect(findLayer("townships").companionSource).toBe(
+      "/data/gauteng/township-areas.display.v1.geojson",
+    );
+    expect(findLayer("spatial-burden").companionSource).toBe(
+      "/data/gauteng/township-areas.display.v1.geojson",
+    );
+  });
+
   it("has exactly the 7 layers the current app ships, in order", () => {
     expect(SPATIAL_APARTHEID_LEGACY_LAYERS.map((l) => l.id)).toEqual([
       "townships",
@@ -57,6 +82,7 @@ describe("SPATIAL_APARTHEID_LEGACY_LAYERS", () => {
     expect(layer?.defaultVisible).toBe(true);
     expect(layer?.dataSource).toEqual([
       "/data/gauteng/townships.display.v1.geojson",
+      "/data/western-cape/townships.display.v1.geojson",
     ]);
     expect(layer?.companionSource).toBe(
       "/data/gauteng/township-areas.display.v1.geojson",
@@ -95,6 +121,7 @@ describe("SPATIAL_APARTHEID_LEGACY_LAYERS", () => {
     expect(layer?.defaultVisible).toBe(false);
     expect(layer?.dataSource).toEqual([
       "/data/gauteng/townships.display.v1.geojson",
+      "/data/western-cape/townships.display.v1.geojson",
     ]);
     const style = layer?.style;
     if (style?.kind !== "choropleth") {
@@ -142,6 +169,7 @@ describe("SPATIAL_APARTHEID_LEGACY_LAYERS", () => {
     expect(layer?.defaultVisible).toBe(false);
     expect(layer?.dataSource).toEqual([
       "/data/gauteng/townships.display.v1.geojson",
+      "/data/western-cape/townships.display.v1.geojson",
     ]);
     expect(layer?.companionSource).toBe(
       "/data/gauteng/township-areas.display.v1.geojson",

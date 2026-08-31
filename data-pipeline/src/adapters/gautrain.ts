@@ -133,9 +133,19 @@ function isRetryableOverpassStatus(
   return (status === 504 || status === 429) && attempt < urls.length * 2;
 }
 
-/** Whether a thrown fetch error (as opposed to a non-ok response) is worth retrying on the next mirror. */
+/**
+ * Whether a thrown fetch error (as opposed to a non-ok response) is worth
+ * retrying on the next mirror.
+ * @remarks Includes `SyntaxError`, since a mirror can return HTTP 200 with a
+ *   non-JSON body (e.g. an HTML maintenance page), which makes
+ *   `response.json()` throw rather than surface as a non-ok status.
+ */
 function isRetryableOverpassError(error: unknown): boolean {
-  return isAbortError(error) || error instanceof TypeError;
+  return (
+    isAbortError(error) ||
+    error instanceof TypeError ||
+    error instanceof SyntaxError
+  );
 }
 
 /**
@@ -215,7 +225,9 @@ export async function fetchOverpass(
     }
 
     const body = (await response.json()) as OverpassResponse;
-    await writeJsonCache("overpass", cacheKey, body);
+    if (body.elements.length > 0) {
+      await writeJsonCache("overpass", cacheKey, body);
+    }
     return body;
   } catch (error) {
     return handleOverpassFetchError(error, query, attempt, urls, cached);

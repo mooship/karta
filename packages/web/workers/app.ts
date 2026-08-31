@@ -55,31 +55,26 @@ export default {
 
 /**
  * Adds this app's `SECURITY_HEADERS` to `response`, without disturbing
- * headers `response` already set — except `Content-Security-Policy`, which
- * is deliberately skipped here.
+ * headers `response` already set.
  * @remarks `public/_headers`' own `/*` block covers every response served
  *   directly from the Workers Static Assets binding, but this Worker's own
  *   `fetch` handler — every SSR-rendered document, including error
  *   responses — sits outside that binding entirely, so those headers never
  *   reach it. See `securityHeaders.ts`'s own comment for the full picture
  *   and how the two are kept in sync.
- * @remarks CSP is excluded here specifically, not an oversight: applying
- *   `SECURITY_HEADERS`' `script-src`/`style-src` (no `'unsafe-inline'`, only
- *   one hardcoded script hash for the theme-bootstrap `<script>`) to an
- *   SSR-streamed response also blocks React Router's own inline
- *   hydration/streaming `<script>` tags and React's inline
- *   `style="display:none"` attribute on Suspense fallbacks — neither is
- *   coverable by that one static hash, and CSP hashes don't apply to style
- *   *attributes* at all without the separate `'unsafe-hashes'` keyword
- *   (confirmed live: enabling this broke hydration entirely, blanking the
- *   map). Closing this gap correctly needs a per-request nonce threaded
- *   through `entry.server.tsx`'s `renderToReadableStream` call, which is
- *   share-safe to fix in isolation and verify against a real browser next.
+ * @remarks `Content-Security-Policy` is handled specially: `entry.server.tsx`
+ *   already sets a per-request, nonce-bearing policy on a successful SSR
+ *   response before it reaches here (its nonce allows the streaming/
+ *   hydration `<script>` tags React itself injects, which a static hash
+ *   can't cover since their content isn't static across requests) — so this
+ *   only applies `SECURITY_HEADERS`' nonce-free default CSP to a response
+ *   that doesn't already carry one, e.g. the 500 fallback below, whose
+ *   plain-text body has nothing inline to allow in the first place.
  */
 function withSecurityHeaders(response: Response): Response {
   const headers = new Headers(response.headers);
   for (const [name, value] of Object.entries(SECURITY_HEADERS)) {
-    if (name === "Content-Security-Policy") {
+    if (name === "Content-Security-Policy" && headers.has(name)) {
       continue;
     }
     headers.set(name, value);

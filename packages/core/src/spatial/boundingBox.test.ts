@@ -20,9 +20,32 @@ describe("unionBoundingBoxes", () => {
 
     expect(unionBoundingBoxes([a, b])).toEqual([27.5, -27.0, 28.7, -25.9]);
   });
+
+  it("preserves a single antimeridian-crossing input box unchanged", () => {
+    const crossing: [number, number, number, number] = [170, -10, -170, 10];
+    expect(unionBoundingBoxes([crossing])).toEqual(crossing);
+  });
+
+  it("unions two adjacent boxes wrapping across the antimeridian into a crossing result", () => {
+    const east: [number, number, number, number] = [170, -5, 175, 5];
+    const west: [number, number, number, number] = [-175, -5, -170, 5];
+
+    const union = unionBoundingBoxes([east, west]);
+
+    expect(union[0]).toBeCloseTo(170);
+    expect(union[1]).toBeCloseTo(-5);
+    expect(union[2]).toBeCloseTo(-170);
+    expect(union[3]).toBeCloseTo(5);
+  });
 });
 
 describe("featureCollectionBounds", () => {
+  it("throws when given an empty collection, rather than Turf's Infinity placeholder box", () => {
+    expect(() =>
+      featureCollectionBounds({ type: "FeatureCollection", features: [] }),
+    ).toThrow("At least one feature is required");
+  });
+
   it("returns the bounding box spanning every feature's geometry", () => {
     const collection: FeatureCollection = {
       type: "FeatureCollection",
