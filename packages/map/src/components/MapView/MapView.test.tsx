@@ -52,6 +52,8 @@ vi.mock("react-dom/server", () => ({
   renderToStaticMarkup: popupMocks.renderToStaticMarkup,
 }));
 
+const attributionContainer = document.createElement("div");
+
 const mapInstance = {
   fitBounds: mapMocks.fitBounds,
   invalidateSize: mapMocks.invalidateSize,
@@ -62,6 +64,9 @@ const mapInstance = {
   },
   on: vi.fn(),
   off: vi.fn(),
+  attributionControl: {
+    getContainer: () => attributionContainer,
+  },
 };
 
 function createMockLayer(feature: { properties?: { id?: string } | null }) {
@@ -754,6 +759,40 @@ describe("MapView", () => {
         ),
       ),
     ).not.toThrow();
+  });
+
+  it("collapses the attribution control by default and expands it on click, toggling back on a second click", () => {
+    render(
+      withDomain(
+        <MapView {...DEFAULT_MAP_VIEW_PROPS} areas={[]} visibleLayerIds={[]} />,
+      ),
+    );
+
+    expect(attributionContainer.getAttribute("role")).toBe("button");
+    expect(attributionContainer.getAttribute("aria-expanded")).toBe("false");
+
+    fireEvent.click(attributionContainer);
+    expect(attributionContainer.getAttribute("aria-expanded")).toBe("true");
+
+    fireEvent.click(attributionContainer);
+    expect(attributionContainer.getAttribute("aria-expanded")).toBe("false");
+  });
+
+  it("expands the attribution control on Enter or Space, and ignores other keys", () => {
+    render(
+      withDomain(
+        <MapView {...DEFAULT_MAP_VIEW_PROPS} areas={[]} visibleLayerIds={[]} />,
+      ),
+    );
+
+    fireEvent.keyDown(attributionContainer, { key: "a" });
+    expect(attributionContainer.getAttribute("aria-expanded")).toBe("false");
+
+    fireEvent.keyDown(attributionContainer, { key: "Enter" });
+    expect(attributionContainer.getAttribute("aria-expanded")).toBe("true");
+
+    fireEvent.keyDown(attributionContainer, { key: " " });
+    expect(attributionContainer.getAttribute("aria-expanded")).toBe("false");
   });
 
   it("renders a tile layer and one GeoJSON layer per visible registry entry", () => {

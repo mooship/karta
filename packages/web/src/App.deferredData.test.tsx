@@ -37,6 +37,7 @@ vi.mock("react-leaflet", () => ({
     attributionControl: {
       addAttribution: vi.fn(),
       removeAttribution: vi.fn(),
+      getContainer: () => document.createElement("div"),
     },
   }),
   useMapEvents: () => ({}),

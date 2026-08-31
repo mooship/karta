@@ -641,6 +641,72 @@ function MapReadyNotifier({ onReady }: { onReady?: () => void }) {
   return null;
 }
 
+const ATTRIBUTION_COLLAPSED_LABEL = "Map data attribution, collapsed";
+const ATTRIBUTION_EXPANDED_LABEL = "Map data attribution";
+
+/**
+ * Collapses Leaflet's default attribution control to a small, tappable
+ * indicator by default, expanding to its full text on click/tap or Enter/
+ * Space, and collapsing again the same way.
+ * @remarks The full attribution text — required by this app's tile/style
+ *   providers (OpenStreetMap, OpenFreeMap, Esri) — stays in the DOM and in
+ *   the accessibility tree at all times; only its visible width/overflow
+ *   changes (`styles.attributionExpanded` in `MapView.css.ts`), so
+ *   collapsing it visually never removes the credit it's required to show.
+ *   Listens on the control's own container element, not its inner content —
+ *   Leaflet only replaces that content's `innerHTML` on
+ *   `addAttribution`/`removeAttribution` (e.g. a basemap switch), so a
+ *   listener on the container itself survives that without re-attaching.
+ */
+function CollapsibleAttribution() {
+  const map = useMap();
+
+  useEffect(() => {
+    const container = map.attributionControl.getContainer();
+    /* v8 ignore next 3 -- unreachable: Leaflet always creates this container as part of its default attribution control */
+    if (!container) {
+      return;
+    }
+
+    const setExpanded = (expanded: boolean) => {
+      container.setAttribute("aria-expanded", String(expanded));
+      container.setAttribute(
+        "aria-label",
+        expanded ? ATTRIBUTION_EXPANDED_LABEL : ATTRIBUTION_COLLAPSED_LABEL,
+      );
+      container.classList.toggle(styles.attributionExpanded, expanded);
+    };
+
+    container.setAttribute("role", "button");
+    container.setAttribute("tabindex", "0");
+    setExpanded(false);
+
+    const toggle = () => {
+      setExpanded(container.getAttribute("aria-expanded") !== "true");
+    };
+    const handleClick = () => {
+      toggle();
+    };
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Enter" && event.key !== " ") {
+        return;
+      }
+      event.preventDefault();
+      toggle();
+    };
+
+    container.addEventListener("click", handleClick);
+    container.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      container.removeEventListener("click", handleClick);
+      container.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [map]);
+
+  return null;
+}
+
 function AreaLabelVisibility() {
   const map = useMap();
   const primaryLabelsClass = styles.showPrimaryLabels;
@@ -1502,6 +1568,7 @@ function MapViewComponent<
         />
         <FocusLocationTarget focusLocationTarget={focusLocationTarget} />
         <AreaLabelVisibility />
+        <CollapsibleAttribution />
         <MapReadyNotifier onReady={onReady} />
         <ResponsiveMapBounds bounds={bounds} />
         <ZoomStateWatcher onZoomChange={setMapZoom} />

@@ -34,22 +34,82 @@ export const dimmedTile = style({
 });
 
 /**
- * Combined OSM + basemap-provider attribution text can run long enough to
- * span most of the viewport width and collide with the bottom-left scale
- * control on narrow screens. Cap its width and let it wrap onto a second
- * line instead. Targets Leaflet's own DOM (not this package's), hence
+ * Toggle-marker class for the attribution control's expanded state, added/
+ * removed via `classList.toggle` by `CollapsibleAttribution` in
+ * `MapView.tsx` (not a React `className` prop — Leaflet owns this DOM node
+ * directly). Carries no styles of its own; only the compound selectors
+ * below, combined with `.leaflet-control-attribution`, do.
+ */
+export const attributionExpanded = style({});
+
+/**
+ * Collapses Leaflet's default attribution control — required credit text
+ * for the current basemap's tile/style provider(s) (OpenStreetMap,
+ * OpenFreeMap, Esri), which combined can run long enough to span most of
+ * the viewport width and collide with the bottom-left scale control — to a
+ * small `ⓘ` indicator by default, expanding to full width and wrapping
+ * onto a second line (rather than overflowing) once `attributionExpanded`
+ * is toggled on. Targets Leaflet's own DOM (not this package's), hence
  * globalStyle rather than a scoped class.
+ * @remarks The real attribution text and links stay in the DOM and the
+ *   accessibility tree throughout collapse/expand — only their *visible*
+ *   rendering is suppressed, via `fontSize: 0` on collapse, never
+ *   `display`/`visibility`, which would also hide them from assistive
+ *   technology. Collapsing this visually must never remove the credit
+ *   these providers require in exchange for their tiles/styles.
  */
 globalStyle(".leaflet-control-attribution", {
+  position: "relative",
+  boxSizing: "border-box",
+  minWidth: "1.75rem",
+  minHeight: "1.75rem",
+  maxWidth: "1.75rem",
+  maxHeight: "1.75rem",
+  overflow: "hidden",
+  cursor: "pointer",
+  // Zeroes the real attribution text/links visually — including any bare
+  // text node Leaflet renders directly inside this container, which a
+  // child-element selector (`> *`) can't reach — while leaving them fully
+  // present for assistive technology, which reads DOM text regardless of
+  // font-size.
+  fontSize: 0,
+});
+
+globalStyle(".leaflet-control-attribution::before", {
+  content: '"ⓘ"',
+  position: "absolute",
+  inset: 0,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  fontSize: designTokens.fontSizeMd,
+  fontWeight: 700,
+});
+
+globalStyle(`.leaflet-control-attribution.${attributionExpanded}`, {
+  minWidth: 0,
+  minHeight: 0,
   maxWidth: "min(60vw, 22rem)",
+  maxHeight: "none",
+  overflow: "visible",
   overflowWrap: "break-word",
   whiteSpace: "normal",
+  cursor: "auto",
+  // Restores the ambient font-size (from this control's own DOM parent,
+  // not from the `fontSize: 0` rule above, since that rule targets the
+  // same element rather than an ancestor) now that the real text is meant
+  // to be visible again.
+  fontSize: "inherit",
   "@media": {
     [`screen and (max-width: ${MOBILE_BREAKPOINT_PX}px)`]: {
       maxWidth: "52vw",
       fontSize: designTokens.fontSizeMd,
     },
   },
+});
+
+globalStyle(`.leaflet-control-attribution.${attributionExpanded}::before`, {
+  content: "none",
 });
 
 export const areaLabel = style({
