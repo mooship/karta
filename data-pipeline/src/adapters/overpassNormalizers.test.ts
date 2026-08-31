@@ -32,6 +32,33 @@ describe("normalizeRelationTransitOverpass", () => {
     expect(result.features[0]?.properties.name).toBe("T1");
   });
 
+  it("deduplicates a way shared by two different relations (e.g. a route's forward/backward direction pair)", () => {
+    const sharedWayGeometry = [
+      { lat: -26.257, lon: 27.9 },
+      { lat: -26.204, lon: 28.047 },
+    ];
+    const raw: OverpassResponse = {
+      elements: [
+        {
+          type: "relation",
+          id: 1,
+          tags: { ref: "T1", name: "T1 outbound" },
+          members: [{ type: "way", ref: 100, geometry: sharedWayGeometry }],
+        },
+        {
+          type: "relation",
+          id: 2,
+          tags: { ref: "T1", name: "T1 inbound" },
+          members: [{ type: "way", ref: 100, geometry: sharedWayGeometry }],
+        },
+      ],
+    };
+
+    const result = normalizeRelationTransitOverpass(raw, "Rea Vaya");
+
+    expect(result.features).toHaveLength(1);
+  });
+
   it("skips elements that are not relations", () => {
     const raw: OverpassResponse = {
       elements: [
