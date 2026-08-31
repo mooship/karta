@@ -224,6 +224,60 @@ describe("fetchOverpass", () => {
     expect(result).toEqual({ elements: [] });
   });
 
+  it("does not cache an empty Overpass response, so a later non-retryable failure can't be served that stale empty result", async () => {
+    vi.stubEnv("VITEST", "false");
+    const dir = await mkdtemp(
+      resolve(tmpdir(), "buffer-zones-gautrain-empty-"),
+    );
+    vi.stubEnv("PIPELINE_CACHE_DIR", dir);
+    vi.stubEnv("PIPELINE_CACHE", "");
+
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ elements: [] }),
+      })
+      .mockResolvedValue({ ok: false, status: 403 });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const firstPromise = freshFetchOverpass("query");
+    await vi.advanceTimersByTimeAsync(2000);
+    const firstResult = await firstPromise;
+    expect(firstResult).toEqual({ elements: [] });
+
+    const secondPromise = freshFetchOverpass("query");
+    await vi.advanceTimersByTimeAsync(2000);
+    await expect(secondPromise).rejects.toThrow("Overpass query failed: 403");
+
+    vi.unstubAllEnvs();
+  });
+
+  it("retries on the next mirror when a mirror's body isn't valid JSON (e.g. an HTML maintenance page)", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => {
+          throw new SyntaxError("Unexpected token '<'");
+        },
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ elements: [] }),
+      });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const resultPromise = freshFetchOverpass("query");
+    await vi.advanceTimersByTimeAsync(3000);
+    const result = await resultPromise;
+
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(result).toEqual({ elements: [] });
+    const urlsCalled = fetchMock.mock.calls.map((call) => call[0] as string);
+    expect(new Set(urlsCalled).size).toBe(2);
+  });
+
   it("falls back to a cached response on a non-retryable failure", async () => {
     vi.stubEnv("VITEST", "false");
     const dir = await mkdtemp(resolve(tmpdir(), "buffer-zones-gautrain-"));

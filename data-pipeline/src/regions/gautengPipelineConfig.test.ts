@@ -150,6 +150,12 @@ describe("GAUTENG_PIPELINE_CONFIG", () => {
   it("includes all 9 Gauteng metros", () => {
     expect(GAUTENG_PIPELINE_CONFIG.metros).toHaveLength(9);
   });
+
+  it("requires coverage for every network merged into bus-rapid-transit, including Ekurhuleni IRPTN", () => {
+    expect(GAUTENG_PIPELINE_CONFIG.requiredNetworks).toEqual(
+      expect.arrayContaining(["A Re Yeng", "Rea Vaya", "Ekurhuleni IRPTN"]),
+    );
+  });
 });
 
 describe("fetchRapidRail (rapid-rail source)", () => {

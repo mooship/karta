@@ -75,26 +75,33 @@ export function createFetchWithPublishedFallback(regionId: string) {
     recoverFromFallback = (fallback) => fallback,
   }: FetchWithPublishedFallbackOptions): Promise<TransitLayerFeatureCollection> {
     try {
-      return await fetch();
+      const result = await fetch();
+      if (result.features.length > 0) {
+        return result;
+      }
+      console.error(
+        `Skipping ${sourceName} because the fetch returned no features, falling back to last published output`,
+      );
     } catch (error) {
       console.error(
         `Skipping ${sourceName} due to fetch failure, falling back to last published output`,
         error,
       );
-      const fallback = await readExistingTransitLayer(
-        regionId,
-        fallbackLayerName,
-      );
-      if (!fallback) {
-        throw new Error(
-          `Failed to fetch ${sourceName} and no fallback output exists`,
-        );
-      }
-      const recovered = recoverFromFallback(fallback);
-      if (recovered.features.length === 0) {
-        throw new Error(`Failed to recover ${sourceName} from fallback output`);
-      }
-      return recovered;
     }
+
+    const fallback = await readExistingTransitLayer(
+      regionId,
+      fallbackLayerName,
+    );
+    if (!fallback) {
+      throw new Error(
+        `Failed to fetch ${sourceName} and no fallback output exists`,
+      );
+    }
+    const recovered = recoverFromFallback(fallback);
+    if (recovered.features.length === 0) {
+      throw new Error(`Failed to recover ${sourceName} from fallback output`);
+    }
+    return recovered;
   };
 }

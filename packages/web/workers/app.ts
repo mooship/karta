@@ -54,32 +54,27 @@ export default {
 } satisfies ExportedHandler;
 
 /**
- * Adds this app's `SECURITY_HEADERS` to `response`, without disturbing
- * headers `response` already set — except `Content-Security-Policy`, which
- * is deliberately skipped here.
+ * Adds this app's `SECURITY_HEADERS` to `response`, filling in only the
+ * ones `response` doesn't already set for itself.
  * @remarks `public/_headers`' own `/*` block covers every response served
  *   directly from the Workers Static Assets binding, but this Worker's own
  *   `fetch` handler — every SSR-rendered document, including error
  *   responses — sits outside that binding entirely, so those headers never
  *   reach it. See `securityHeaders.ts`'s own comment for the full picture
  *   and how the two are kept in sync.
- * @remarks CSP is excluded here specifically, not an oversight: applying
- *   `SECURITY_HEADERS`' `script-src`/`style-src` (no `'unsafe-inline'`, only
- *   one hardcoded script hash for the theme-bootstrap `<script>`) to an
- *   SSR-streamed response also blocks React Router's own inline
- *   hydration/streaming `<script>` tags and React's inline
- *   `style="display:none"` attribute on Suspense fallbacks — neither is
- *   coverable by that one static hash, and CSP hashes don't apply to style
- *   *attributes* at all without the separate `'unsafe-hashes'` keyword
- *   (confirmed live: enabling this broke hydration entirely, blanking the
- *   map). Closing this gap correctly needs a per-request nonce threaded
- *   through `entry.server.tsx`'s `renderToReadableStream` call, which is
- *   share-safe to fix in isolation and verify against a real browser next.
+ * @remarks "Already set wins" rather than "always overwrite" specifically so
+ *   `entry.server.tsx`'s per-request, nonce-bearing `Content-Security-Policy`
+ *   (its nonce allows the streaming/hydration `<script>` tags React itself
+ *   injects, which a static hash can't cover since their content isn't
+ *   static across requests) survives reaching here on a successful SSR
+ *   response — this function has no CSP-specific logic of its own; the 500
+ *   fallback below simply has no CSP of its own yet, so it gets
+ *   `SECURITY_HEADERS`' nonce-free default like any other header would.
  */
 function withSecurityHeaders(response: Response): Response {
   const headers = new Headers(response.headers);
   for (const [name, value] of Object.entries(SECURITY_HEADERS)) {
-    if (name === "Content-Security-Policy") {
+    if (headers.has(name)) {
       continue;
     }
     headers.set(name, value);

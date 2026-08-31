@@ -2,7 +2,7 @@ import { MOBILE_BREAKPOINT_PX } from "@karta/react";
 import { mapLabelVars, vars } from "@karta/theme";
 import { globalStyle, style } from "@vanilla-extract/css";
 import { visuallyHidden as sharedVisuallyHidden } from "../../shared.css";
-import { designTokens } from "../../theme/mapTokens";
+import { designTokens, zIndexTokens } from "../../theme/mapTokens";
 
 export const mapWrapper = style({
   position: "absolute",
@@ -34,22 +34,119 @@ export const dimmedTile = style({
 });
 
 /**
- * Combined OSM + basemap-provider attribution text can run long enough to
- * span most of the viewport width and collide with the bottom-left scale
- * control on narrow screens. Cap its width and let it wrap onto a second
- * line instead. Targets Leaflet's own DOM (not this package's), hence
+ * Toggle-marker class for the attribution control's expanded state, added/
+ * removed via `classList.toggle` by `CollapsibleAttribution` in
+ * `MapView.tsx` (not a React `className` prop — Leaflet owns this DOM node
+ * directly). Carries no styles of its own; only the compound selectors
+ * below, combined with `.leaflet-control-attribution`, do.
+ */
+export const attributionExpanded = style({});
+
+/**
+ * Toggle-marker class for Leaflet's shared bottom-right corner container
+ * (`.leaflet-bottom.leaflet-right`, holding both the attribution and zoom
+ * controls), added/removed alongside `attributionExpanded` above. See the
+ * `globalStyle` below for why this needs its own elevated `z-index` rather
+ * than relying on `attributionExpanded`'s own.
+ */
+export const attributionCornerElevated = style({});
+
+/**
+ * Collapses Leaflet's default attribution control — required credit text
+ * for the current basemap's tile/style provider(s) (OpenStreetMap,
+ * OpenFreeMap, Esri), which combined can run long enough to span most of
+ * the viewport width and collide with the bottom-left scale control — to a
+ * small `ⓘ` indicator by default, expanding to full width and wrapping
+ * onto further lines (rather than overflowing) once `attributionExpanded`
+ * is toggled on. Targets Leaflet's own DOM (not this package's), hence
  * globalStyle rather than a scoped class.
+ * @remarks The real attribution text and links stay in the DOM and the
+ *   accessibility tree throughout collapse/expand — only their *visible*
+ *   rendering is suppressed, via `fontSize: 0` on collapse, never
+ *   `display`/`visibility`, which would also hide them from assistive
+ *   technology. Collapsing this visually must never remove the credit
+ *   these providers require in exchange for their tiles/styles.
+ * @remarks `position: absolute` unconditionally, in both states, is
+ *   deliberate: Leaflet stacks every bottom-right control (the zoom
+ *   control included) in one shared, bottom-anchored flow container, so a
+ *   control that's only *sometimes* taken out of that flow shifts its
+ *   siblings the moment it toggles, exactly when it's meant to stop doing
+ *   that. Applying it always instead means this control never contributes
+ *   to that flow's height at all, in either state — the zoom control's
+ *   position is unaffected by anything this one does. An explicit `width`
+ *   (not `max-width`) in the expanded state sidesteps a separate hazard:
+ *   the corner container it's absolutely positioned against is only as
+ *   wide as the zoom control above it, so a shrink-to-fit width here would
+ *   resolve against that narrow box and wrap into an unreadably narrow,
+ *   tall column instead of the wide, few-line box intended.
  */
 globalStyle(".leaflet-control-attribution", {
-  maxWidth: "min(60vw, 22rem)",
+  position: "absolute",
+  right: 0,
+  bottom: 0,
+  boxSizing: "border-box",
+  width: "1.75rem",
+  height: "1.75rem",
+  overflow: "hidden",
+  cursor: "pointer",
+  // Zeroes the real attribution text/links visually — including any bare
+  // text node Leaflet renders directly inside this container, which a
+  // child-element selector (`> *`) can't reach — while leaving them fully
+  // present for assistive technology, which reads DOM text regardless of
+  // font-size.
+  fontSize: 0,
+});
+
+globalStyle(".leaflet-control-attribution::before", {
+  content: '"ⓘ"',
+  position: "absolute",
+  inset: 0,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  fontSize: designTokens.fontSizeMd,
+  fontWeight: 700,
+});
+
+globalStyle(`.leaflet-control-attribution.${attributionExpanded}`, {
+  width: "min(60vw, 22rem)",
+  height: "auto",
+  overflow: "visible",
   overflowWrap: "break-word",
   whiteSpace: "normal",
+  cursor: "auto",
+  // Restores the ambient font-size (from this control's own DOM parent,
+  // not from the `fontSize: 0` rule above, since that rule targets the
+  // same element rather than an ancestor) now that the real text is meant
+  // to be visible again.
+  fontSize: "inherit",
   "@media": {
     [`screen and (max-width: ${MOBILE_BREAKPOINT_PX}px)`]: {
-      maxWidth: "52vw",
+      width: "52vw",
       fontSize: designTokens.fontSizeMd,
     },
   },
+});
+
+globalStyle(`.leaflet-control-attribution.${attributionExpanded}::before`, {
+  content: "none",
+});
+
+/**
+ * Elevates the attribution/zoom corner's stacking context above the shared
+ * floating-control layer (`zIndexTokens.floatingControlZIndex`) while
+ * attribution is expanded, so a host element deliberately raised above
+ * that layer (this app's own "Explore" toggle, for instance) can't sit on
+ * top of attribution text the user just asked to read. `+20` clears a host
+ * element raised the documented `+10` above the shared layer (see
+ * `zIndexTokens.ts`'s own remark) with room to spare; raising only the
+ * corner container, not `.leaflet-control-attribution` itself, is what
+ * actually matters here — a descendant's own `z-index` can't exceed the
+ * stacking level its nearest positioned ancestor established, regardless
+ * of the value given to the descendant.
+ */
+globalStyle(`.leaflet-bottom.leaflet-right.${attributionCornerElevated}`, {
+  zIndex: `calc(${zIndexTokens.floatingControlZIndex} + 20)`,
 });
 
 export const areaLabel = style({

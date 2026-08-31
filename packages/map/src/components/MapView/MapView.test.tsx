@@ -52,6 +52,10 @@ vi.mock("react-dom/server", () => ({
   renderToStaticMarkup: popupMocks.renderToStaticMarkup,
 }));
 
+const attributionContainer = document.createElement("div");
+const attributionCorner = document.createElement("div");
+attributionCorner.appendChild(attributionContainer);
+
 const mapInstance = {
   fitBounds: mapMocks.fitBounds,
   invalidateSize: mapMocks.invalidateSize,
@@ -62,6 +66,9 @@ const mapInstance = {
   },
   on: vi.fn(),
   off: vi.fn(),
+  attributionControl: {
+    getContainer: () => attributionContainer,
+  },
 };
 
 function createMockLayer(feature: { properties?: { id?: string } | null }) {
@@ -256,6 +263,7 @@ import {
 import { DomainProvider } from "../../context/DomainContext";
 import { TEST_DOMAIN } from "../../testFixtures/domain";
 import { MapView, type MapViewProps } from "./MapView";
+import * as styles from "./MapView.css";
 
 const CUSTOM_VECTOR_BASEMAP: VectorBasemapDefinition = {
   kind: "vector",
@@ -676,6 +684,42 @@ describe("MapView", () => {
     });
   });
 
+  it("does not re-invoke onReady on a later re-render when the caller passes a fresh inline callback each time", async () => {
+    const onReadySpy = vi.fn();
+
+    const { rerender } = render(
+      withDomain(
+        <MapView
+          {...DEFAULT_MAP_VIEW_PROPS}
+          areas={[]}
+          visibleLayerIds={[]}
+          onReady={() => onReadySpy()}
+        />,
+      ),
+    );
+
+    await waitFor(() => {
+      expect(onReadySpy).toHaveBeenCalledTimes(1);
+    });
+
+    rerender(
+      withDomain(
+        <MapView
+          {...DEFAULT_MAP_VIEW_PROPS}
+          areas={[]}
+          visibleLayerIds={["areas"]}
+          onReady={() => onReadySpy()}
+        />,
+      ),
+    );
+
+    await new Promise((resolve) => {
+      requestAnimationFrame(() => requestAnimationFrame(resolve));
+    });
+
+    expect(onReadySpy).toHaveBeenCalledTimes(1);
+  });
+
   it("does not call onReady if the animation frame still fires after unmount races past cancelAnimationFrame", () => {
     const onReady = vi.fn();
     let scheduledCallback: FrameRequestCallback | null = null;
@@ -718,6 +762,62 @@ describe("MapView", () => {
         ),
       ),
     ).not.toThrow();
+  });
+
+  it("collapses the attribution control by default and expands it on click, toggling back on a second click", () => {
+    render(
+      withDomain(
+        <MapView {...DEFAULT_MAP_VIEW_PROPS} areas={[]} visibleLayerIds={[]} />,
+      ),
+    );
+
+    expect(attributionContainer.getAttribute("role")).toBe("button");
+    expect(attributionContainer.getAttribute("aria-expanded")).toBe("false");
+
+    fireEvent.click(attributionContainer);
+    expect(attributionContainer.getAttribute("aria-expanded")).toBe("true");
+
+    fireEvent.click(attributionContainer);
+    expect(attributionContainer.getAttribute("aria-expanded")).toBe("false");
+  });
+
+  it("expands the attribution control on Enter or Space, and ignores other keys", () => {
+    render(
+      withDomain(
+        <MapView {...DEFAULT_MAP_VIEW_PROPS} areas={[]} visibleLayerIds={[]} />,
+      ),
+    );
+
+    fireEvent.keyDown(attributionContainer, { key: "a" });
+    expect(attributionContainer.getAttribute("aria-expanded")).toBe("false");
+
+    fireEvent.keyDown(attributionContainer, { key: "Enter" });
+    expect(attributionContainer.getAttribute("aria-expanded")).toBe("true");
+
+    fireEvent.keyDown(attributionContainer, { key: " " });
+    expect(attributionContainer.getAttribute("aria-expanded")).toBe("false");
+  });
+
+  it("elevates the attribution corner's stacking context above a host's floating chrome only while expanded", () => {
+    render(
+      withDomain(
+        <MapView {...DEFAULT_MAP_VIEW_PROPS} areas={[]} visibleLayerIds={[]} />,
+      ),
+    );
+
+    expect(
+      attributionCorner.classList.contains(styles.attributionCornerElevated),
+    ).toBe(false);
+
+    fireEvent.click(attributionContainer);
+    expect(
+      attributionCorner.classList.contains(styles.attributionCornerElevated),
+    ).toBe(true);
+
+    fireEvent.click(attributionContainer);
+    expect(
+      attributionCorner.classList.contains(styles.attributionCornerElevated),
+    ).toBe(false);
   });
 
   it("renders a tile layer and one GeoJSON layer per visible registry entry", () => {

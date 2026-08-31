@@ -52,6 +52,25 @@ describe("resolveClassification", () => {
       ).toBe("#8A93A5");
     });
 
+    it("returns the fallback when the classified value is NaN, rather than the highest-severity stop", () => {
+      expect(
+        resolveClassification(classification, { commuteMinutes: Number.NaN }),
+      ).toBe("#8A93A5");
+    });
+
+    it("returns the fallback when the classified value is Infinity", () => {
+      expect(
+        resolveClassification(classification, {
+          commuteMinutes: Number.POSITIVE_INFINITY,
+        }),
+      ).toBe("#8A93A5");
+      expect(
+        resolveClassification(classification, {
+          commuteMinutes: Number.NEGATIVE_INFINITY,
+        }),
+      ).toBe("#8A93A5");
+    });
+
     it("clamps to the last stop's value when the value exceeds every stop's max", () => {
       const noOverflowStop: GraduatedClassification<string> = {
         kind: "graduated",

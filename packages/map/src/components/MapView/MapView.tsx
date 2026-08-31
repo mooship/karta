@@ -596,13 +596,19 @@ function SelectedFeatureHighlight<TProperties extends Record<string, unknown>>({
  *   `whenReady` resolves as soon as the map has a view, which is still
  *   before the frame containing it reaches the screen. Deferring by a frame
  *   means whatever the caller starts in response cannot contend with that
- *   first paint.
+ *   first paint. `onReady` is read through {@link useLatestRef} rather than
+ *   listed as an effect dependency: it's a public prop with no stability
+ *   guarantee, and `whenReady` invokes its callback synchronously when the
+ *   map is already loaded, so keying the effect on `onReady` directly would
+ *   re-fire it (and call `onReady` again) on every re-render for a caller
+ *   that passes a fresh inline callback.
  */
 function MapReadyNotifier({ onReady }: { onReady?: () => void }) {
   const map = useMap();
+  const onReadyRef = useLatestRef(onReady);
 
   useEffect(() => {
-    if (!onReady) {
+    if (!onReadyRef.current) {
       return;
     }
     let cancelled = false;
@@ -620,7 +626,7 @@ function MapReadyNotifier({ onReady }: { onReady?: () => void }) {
       frame = requestAnimationFrame(() => {
         frame = null;
         if (!cancelled) {
-          onReady();
+          onReadyRef.current?.();
         }
       });
     });
@@ -630,7 +636,85 @@ function MapReadyNotifier({ onReady }: { onReady?: () => void }) {
         cancelAnimationFrame(frame);
       }
     };
-  }, [map, onReady]);
+  }, [map, onReadyRef]);
+
+  return null;
+}
+
+const ATTRIBUTION_COLLAPSED_LABEL = "Map data attribution, collapsed";
+const ATTRIBUTION_EXPANDED_LABEL = "Map data attribution";
+
+/**
+ * Collapses Leaflet's default attribution control to a small, tappable
+ * indicator by default, expanding to its full text on click/tap or Enter/
+ * Space, and collapsing again the same way.
+ * @remarks The full attribution text — required by this app's tile/style
+ *   providers (OpenStreetMap, OpenFreeMap, Esri) — stays in the DOM and in
+ *   the accessibility tree at all times; only its visible width/overflow
+ *   changes (`styles.attributionExpanded` in `MapView.css.ts`), so
+ *   collapsing it visually never removes the credit it's required to show.
+ *   Listens on the control's own container element, not its inner content —
+ *   Leaflet only replaces that content's `innerHTML` on
+ *   `addAttribution`/`removeAttribution` (e.g. a basemap switch), so a
+ *   listener on the container itself survives that without re-attaching.
+ * @remarks Also toggles `styles.attributionCornerElevated` on the control's
+ *   own parent — Leaflet's shared `.leaflet-bottom.leaflet-right` corner
+ *   container, which also holds the zoom control. That parent establishes
+ *   its own stacking context at a fixed `z-index`, capping how high any
+ *   control inside it (this one included) can ever paint relative to a
+ *   host app's own floating chrome outside that context, regardless of
+ *   this control's own `z-index`. Elevating the parent only while expanded
+ *   means a host element deliberately raised above the ordinary floating-
+ *   control layer (e.g. this app's own "Explore" toggle) doesn't clip or
+ *   sit on top of attribution text the user just asked to read.
+ */
+function CollapsibleAttribution() {
+  const map = useMap();
+
+  useEffect(() => {
+    const container = map.attributionControl.getContainer();
+    /* v8 ignore next 3 -- unreachable: Leaflet always creates this container as part of its default attribution control */
+    if (!container) {
+      return;
+    }
+    const corner = container.parentElement;
+
+    const setExpanded = (expanded: boolean) => {
+      container.setAttribute("aria-expanded", String(expanded));
+      container.setAttribute(
+        "aria-label",
+        expanded ? ATTRIBUTION_EXPANDED_LABEL : ATTRIBUTION_COLLAPSED_LABEL,
+      );
+      container.classList.toggle(styles.attributionExpanded, expanded);
+      corner?.classList.toggle(styles.attributionCornerElevated, expanded);
+    };
+
+    container.setAttribute("role", "button");
+    container.setAttribute("tabindex", "0");
+    setExpanded(false);
+
+    const toggle = () => {
+      setExpanded(container.getAttribute("aria-expanded") !== "true");
+    };
+    const handleClick = () => {
+      toggle();
+    };
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Enter" && event.key !== " ") {
+        return;
+      }
+      event.preventDefault();
+      toggle();
+    };
+
+    container.addEventListener("click", handleClick);
+    container.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      container.removeEventListener("click", handleClick);
+      container.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [map]);
 
   return null;
 }
@@ -1496,6 +1580,7 @@ function MapViewComponent<
         />
         <FocusLocationTarget focusLocationTarget={focusLocationTarget} />
         <AreaLabelVisibility />
+        <CollapsibleAttribution />
         <MapReadyNotifier onReady={onReady} />
         <ResponsiveMapBounds bounds={bounds} />
         <ZoomStateWatcher onZoomChange={setMapZoom} />

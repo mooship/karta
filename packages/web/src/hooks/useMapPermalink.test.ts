@@ -157,7 +157,9 @@ describe("useMapPermalink", () => {
   it("applies visible layers, basemap, and panel view from the URL on mount", () => {
     setUrl("?layers=rapid-rail&basemap=satellite&panel=story");
 
-    renderHook(() => useMapPermalink({ dataReady: true }));
+    renderHook(() =>
+      useMapPermalink({ dataReady: true, knownFeatureIds: new Set() }),
+    );
 
     const state = useMapUiStore.getState();
     expect(state.visibleLayerIds).toEqual(["rapid-rail"]);
@@ -169,7 +171,11 @@ describe("useMapPermalink", () => {
     setUrl("?feature=abc123");
 
     const { rerender } = renderHook(
-      ({ dataReady }) => useMapPermalink({ dataReady }),
+      ({ dataReady }) =>
+        useMapPermalink({
+          dataReady,
+          knownFeatureIds: new Set(["abc123"]),
+        }),
       { initialProps: { dataReady: false } },
     );
 
@@ -180,9 +186,28 @@ describe("useMapPermalink", () => {
     expect(useMapUiStore.getState().selectedFeatureId).toBe("abc123");
   });
 
+  it("drops a selectedFeatureId from the URL that isn't in knownFeatureIds", () => {
+    setUrl("?feature=does-not-exist");
+
+    const { rerender } = renderHook(
+      ({ dataReady }) =>
+        useMapPermalink({
+          dataReady,
+          knownFeatureIds: new Set(["abc123"]),
+        }),
+      { initialProps: { dataReady: false } },
+    );
+
+    rerender({ dataReady: true });
+
+    expect(useMapUiStore.getState().selectedFeatureId).toBeNull();
+  });
+
   it("writes non-default state back to the URL without pushing a new history entry", () => {
     const pushStateSpy = vi.spyOn(window.history, "pushState");
-    renderHook(() => useMapPermalink({ dataReady: true }));
+    renderHook(() =>
+      useMapPermalink({ dataReady: true, knownFeatureIds: new Set() }),
+    );
 
     expect(window.location.search).toBe("");
 
@@ -197,7 +222,9 @@ describe("useMapPermalink", () => {
   });
 
   it("reflects the selected feature in the URL once applied", () => {
-    renderHook(() => useMapPermalink({ dataReady: true }));
+    renderHook(() =>
+      useMapPermalink({ dataReady: true, knownFeatureIds: new Set() }),
+    );
 
     act(() => {
       useMapUiStore.getState().setSelectedFeatureId("xyz");

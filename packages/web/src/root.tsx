@@ -93,6 +93,10 @@ export const links: LinksFunction = () => [
  * `"en"` — on the server that's resolved by `paraglideMiddleware` from the
  * request's locale cookie/`Accept-Language` header, and on the client from
  * the same cookie, so the two agree and there's nothing to hydrate around.
+ * `<Scripts>`/`<ScrollRestoration>` need no explicit `nonce` prop here: they
+ * read it themselves from react-router's own framework context, populated
+ * by `entry.server.tsx`'s `<ServerRouter nonce={nonce}>` further up this
+ * same tree.
  */
 export function Layout({ children }: { children: React.ReactNode }) {
   const locale = getLocale();

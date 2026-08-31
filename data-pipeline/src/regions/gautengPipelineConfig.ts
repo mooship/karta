@@ -143,6 +143,7 @@ const REQUIRED_TRANSIT_NETWORKS = [
   "Gautrain Bus",
   "A Re Yeng",
   "Rea Vaya",
+  "Ekurhuleni IRPTN",
   "Tshwane Bus Services",
 ] as const;
 
