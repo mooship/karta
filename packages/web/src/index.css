@@ -339,17 +339,6 @@ body {
   color: var(--md-sys-color-on-surface);
 }
 
-/* Leaflet's own default (`#ddd`) shows through the instant the map
- * container mounts, before any basemap tile/style has actually painted --
- * against this app's own themed surface (especially in dark mode) that
- * read as a flash of the wrong colour once the loading placeholder in
- * `App.css.ts` cleared. Matching it to the placeholder's own gradient end
- * colour means there's nothing to flash between: the container looks the
- * same whether or not tiles have arrived yet. */
-.leaflet-container {
-  background: var(--md-sys-color-surface-container-low);
-}
-
 .leaflet-popup-content-wrapper,
 .leaflet-popup-tip {
   background: var(--md-sys-color-surface-container-high);
