@@ -53,6 +53,8 @@ vi.mock("react-dom/server", () => ({
 }));
 
 const attributionContainer = document.createElement("div");
+const attributionCorner = document.createElement("div");
+attributionCorner.appendChild(attributionContainer);
 
 const mapInstance = {
   fitBounds: mapMocks.fitBounds,
@@ -261,6 +263,7 @@ import {
 import { DomainProvider } from "../../context/DomainContext";
 import { TEST_DOMAIN } from "../../testFixtures/domain";
 import { MapView, type MapViewProps } from "./MapView";
+import * as styles from "./MapView.css";
 
 const CUSTOM_VECTOR_BASEMAP: VectorBasemapDefinition = {
   kind: "vector",
@@ -793,6 +796,28 @@ describe("MapView", () => {
 
     fireEvent.keyDown(attributionContainer, { key: " " });
     expect(attributionContainer.getAttribute("aria-expanded")).toBe("false");
+  });
+
+  it("elevates the attribution corner's stacking context above a host's floating chrome only while expanded", () => {
+    render(
+      withDomain(
+        <MapView {...DEFAULT_MAP_VIEW_PROPS} areas={[]} visibleLayerIds={[]} />,
+      ),
+    );
+
+    expect(
+      attributionCorner.classList.contains(styles.attributionCornerElevated),
+    ).toBe(false);
+
+    fireEvent.click(attributionContainer);
+    expect(
+      attributionCorner.classList.contains(styles.attributionCornerElevated),
+    ).toBe(true);
+
+    fireEvent.click(attributionContainer);
+    expect(
+      attributionCorner.classList.contains(styles.attributionCornerElevated),
+    ).toBe(false);
   });
 
   it("renders a tile layer and one GeoJSON layer per visible registry entry", () => {
