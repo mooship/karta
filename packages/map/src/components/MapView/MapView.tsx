@@ -147,6 +147,19 @@ export interface MapViewProps<
    */
   onBasemapError?: (basemap: Basemap, error: unknown) => void;
   /**
+   * Called once the active basemap has actually painted tiles/style —
+   * raster: the tile layer's `load` event (every tile currently required for
+   * the view has loaded); vector: the underlying MapLibre map's own `load`
+   * event.
+   * @remarks Distinct from `onReady`, which fires as soon as Leaflet itself
+   *   has a view — well before a raster basemap's tiles, or a vector
+   *   basemap's lazily-loaded MapLibre bundle and style, have actually
+   *   rendered anything. A caller holding a full-viewport loading placeholder
+   *   up until the map is genuinely visible (rather than just mounted) should
+   *   wait on this instead of, or as well as, `onReady`.
+   */
+  onBasemapReady?: () => void;
+  /**
    * When `true`, right-clicking (desktop) or long-pressing (mobile) the map
    * opens a small context menu offering to reverse-geocode that point.
    * Defaults to `false`.
@@ -1047,7 +1060,7 @@ function RasterTileLayer({
   tileSourceMode: string;
   tileClassName: string | undefined;
   useRetinaTiles: boolean;
-  tileEventHandlers: { tileerror: () => void };
+  tileEventHandlers: { tileerror: () => void; load: () => void };
 }) {
   if (!isRasterBasemap || !tileSource) {
     return null;
@@ -1131,6 +1144,7 @@ function MapViewComponent<
   renderFeaturePopup,
   onLayerDataError,
   onBasemapError,
+  onBasemapReady,
   locationContextMenu = false,
   locationContextMenuProvider,
   locationContextMenuLabels,
@@ -1254,6 +1268,10 @@ function MapViewComponent<
     tileSources.length - 1,
   );
   const tileSource = tileSources[safeTileSourceIndex] ?? tileSources[0];
+  const onBasemapReadyRef = useLatestRef(onBasemapReady);
+  const handleBasemapReady = useCallback(() => {
+    onBasemapReadyRef.current?.();
+  }, [onBasemapReadyRef]);
   const handleTileError = useCallback(() => {
     setTileSourceState((currentState) => {
       const currentIndex = resolveTileSourceIndex(currentState, tileSourceMode);
@@ -1272,12 +1290,13 @@ function MapViewComponent<
   /**
    * @remarks `@react-leaflet/core`'s event-handler effect keys off this
    *   object's identity, not its contents, so an inline literal here would
-   *   unbind and rebind the tile layer's `tileerror` listener on every
-   *   render even though `handleTileError` itself never changes.
+   *   unbind and rebind the tile layer's `tileerror`/`load` listeners on
+   *   every render even though `handleTileError`/`handleBasemapReady`
+   *   themselves never change.
    */
   const tileEventHandlers = useMemo(
-    () => ({ tileerror: handleTileError }),
-    [handleTileError],
+    () => ({ tileerror: handleTileError, load: handleBasemapReady }),
+    [handleTileError, handleBasemapReady],
   );
   const showAreaLabels = useMemo(
     () =>
@@ -1552,6 +1571,7 @@ function MapViewComponent<
             styleUrl={vectorBasemapConfig.styleUrl}
             attribution={vectorBasemapConfig.attribution}
             onError={(error) => onBasemapError?.(basemap, error)}
+            onLoad={handleBasemapReady}
           />
         ) : null}
         <Pane name={AREA_PANE} style={{ zIndex: 400 }} />

@@ -24,6 +24,12 @@ interface VectorBasemapLayerProps {
    * `console.error` regardless.
    */
   onError?: (error: unknown) => void;
+  /**
+   * Called once the underlying MapLibre map fires its own `load` event
+   * (style and initial tiles rendered), so a caller can tell "layer
+   * attached" apart from "basemap actually visible".
+   */
+  onLoad?: () => void;
 }
 
 /**
@@ -86,10 +92,11 @@ export function VectorBasemapLayer({
   styleUrl,
   attribution,
   onError,
+  onLoad,
 }: VectorBasemapLayerProps) {
   const map = useMap();
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: onError intentionally omitted -- it's a public prop with no stability guarantee, so including it could re-fire this effect (tearing down and recreating the MapLibre layer) on every render for callers that don't memoize it
+  // biome-ignore lint/correctness/useExhaustiveDependencies: onError/onLoad intentionally omitted -- they're public props with no stability guarantee, so including them could re-fire this effect (tearing down and recreating the MapLibre layer) on every render for callers that don't memoize them
   useEffect(() => {
     let cancelled = false;
     let layer: import("leaflet").MaplibreGL | undefined;
@@ -105,13 +112,19 @@ export function VectorBasemapLayer({
         }
         layer = L.maplibreGL({ style: styleUrl });
         layer.addTo(map);
-        layer.getMaplibreMap().on("error", (event: { error: unknown }) => {
+        const maplibreMap = layer.getMaplibreMap();
+        maplibreMap.on("error", (event: { error: unknown }) => {
           console.error(
             `Vector basemap style failed to load: ${styleUrl}`,
             event.error,
           );
           if (!cancelled) {
             onError?.(event.error);
+          }
+        });
+        maplibreMap.on("load", () => {
+          if (!cancelled) {
+            onLoad?.();
           }
         });
       })

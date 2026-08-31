@@ -17,6 +17,8 @@ const mapViewMocks = vi.hoisted(() => ({
   latestProps: undefined as
     | undefined
     | {
+        onReady?: () => void;
+        onBasemapReady?: () => void;
         onBasemapError?: (basemap: string, error: unknown) => void;
         renderFeaturePopup?: (properties: unknown) => ReactNode;
         focusLocationTarget?: unknown;
@@ -144,6 +146,25 @@ describe("App map/location callback wiring", () => {
     );
 
     await waitFor(() => expect(useMapUiStore.getState().basemap).toBe("topo"));
+  });
+
+  it("keeps the loading placeholder visible until both MapView and its basemap report ready", async () => {
+    render(<App />);
+
+    await waitFor(() => expect(mapViewMocks.latestProps).toBeDefined());
+
+    const placeholder = screen.getByText(/loading map/i);
+    expect(placeholder).toHaveAttribute("aria-hidden", "false");
+
+    act(() => {
+      mapViewMocks.latestProps?.onReady?.();
+    });
+    expect(placeholder).toHaveAttribute("aria-hidden", "false");
+
+    act(() => {
+      mapViewMocks.latestProps?.onBasemapReady?.();
+    });
+    expect(placeholder).toHaveAttribute("aria-hidden", "true");
   });
 
   it("enables MapView's measurement tool", async () => {

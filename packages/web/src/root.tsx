@@ -83,6 +83,7 @@ export const links: LinksFunction = () => [
   { rel: "manifest", href: "/site.webmanifest" },
   { rel: "preconnect", href: "https://tile.openstreetmap.org" },
   { rel: "preconnect", href: "https://server.arcgisonline.com" },
+  { rel: "preconnect", href: "https://tiles.openfreemap.org" },
 ];
 
 /**

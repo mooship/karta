@@ -12,7 +12,13 @@ export const mapWrapper = style({
 export const map = style({
   height: "100%",
   width: "100%",
-  background: vars.color.surface,
+  /**
+   * Leaflet's own default (`#ddd`) shows through the instant the map
+   * container mounts, before any basemap tile/style has actually painted --
+   * a themed background here means there's nothing to flash between: the
+   * container looks the same whether or not tiles have arrived yet.
+   */
+  background: vars.color.surfaceContainerLow,
 });
 
 export const visuallyHidden = sharedVisuallyHidden;

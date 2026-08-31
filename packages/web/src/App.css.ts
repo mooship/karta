@@ -129,6 +129,18 @@ export const mapLoading = style({
   fontSize: appVars.fontSize.sm,
   textTransform: "uppercase",
   animation: `${mapLoadingPulse} 1.6s ${vars.motion.easeStandard} infinite`,
+  /**
+   * The fade-out itself must be visible (not an instant swap) -- this
+   * placeholder is held past Leaflet's own mount until the basemap has
+   * actually painted (see `App.tsx`'s `basemapVisuallyReady`), so by the
+   * time it's cleared the real map is typically already filling the frame
+   * behind it; cutting straight to `display: none` there reads as a flash.
+   * `visibility` is given a matching transition-delay so it only takes
+   * effect once the opacity fade has finished, rather than instantly
+   * popping the element out of hit-testing/the accessibility tree the
+   * moment the fade starts.
+   */
+  transition: `opacity ${vars.motion.durationMedium} ${vars.motion.easeStandard}, visibility 0s linear ${vars.motion.durationMedium}`,
   selectors: {
     /**
      * Once the real map has painted over this placeholder, stop rendering
@@ -136,10 +148,12 @@ export const mapLoading = style({
      * forever on a full-viewport layer nobody sees. Safe to do well after
      * paint -- Chrome only excludes an element from Largest Contentful
      * Paint consideration when it's removed from the *DOM*, not when it's
-     * hidden via `display`.
+     * hidden via `visibility`.
      */
     '&[aria-hidden="true"]': {
-      display: "none",
+      opacity: 0,
+      visibility: "hidden",
+      animationPlayState: "paused",
     },
   },
 });
