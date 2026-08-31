@@ -657,6 +657,16 @@ const ATTRIBUTION_EXPANDED_LABEL = "Map data attribution";
  *   Leaflet only replaces that content's `innerHTML` on
  *   `addAttribution`/`removeAttribution` (e.g. a basemap switch), so a
  *   listener on the container itself survives that without re-attaching.
+ * @remarks Also toggles `styles.attributionCornerElevated` on the control's
+ *   own parent — Leaflet's shared `.leaflet-bottom.leaflet-right` corner
+ *   container, which also holds the zoom control. That parent establishes
+ *   its own stacking context at a fixed `z-index`, capping how high any
+ *   control inside it (this one included) can ever paint relative to a
+ *   host app's own floating chrome outside that context, regardless of
+ *   this control's own `z-index`. Elevating the parent only while expanded
+ *   means a host element deliberately raised above the ordinary floating-
+ *   control layer (e.g. this app's own "Explore" toggle) doesn't clip or
+ *   sit on top of attribution text the user just asked to read.
  */
 function CollapsibleAttribution() {
   const map = useMap();
@@ -667,6 +677,7 @@ function CollapsibleAttribution() {
     if (!container) {
       return;
     }
+    const corner = container.parentElement;
 
     const setExpanded = (expanded: boolean) => {
       container.setAttribute("aria-expanded", String(expanded));
@@ -675,6 +686,7 @@ function CollapsibleAttribution() {
         expanded ? ATTRIBUTION_EXPANDED_LABEL : ATTRIBUTION_COLLAPSED_LABEL,
       );
       container.classList.toggle(styles.attributionExpanded, expanded);
+      corner?.classList.toggle(styles.attributionCornerElevated, expanded);
     };
 
     container.setAttribute("role", "button");

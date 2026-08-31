@@ -2,7 +2,7 @@ import { MOBILE_BREAKPOINT_PX } from "@karta/react";
 import { mapLabelVars, vars } from "@karta/theme";
 import { globalStyle, style } from "@vanilla-extract/css";
 import { visuallyHidden as sharedVisuallyHidden } from "../../shared.css";
-import { designTokens } from "../../theme/mapTokens";
+import { designTokens, zIndexTokens } from "../../theme/mapTokens";
 
 export const mapWrapper = style({
   position: "absolute",
@@ -41,6 +41,15 @@ export const dimmedTile = style({
  * below, combined with `.leaflet-control-attribution`, do.
  */
 export const attributionExpanded = style({});
+
+/**
+ * Toggle-marker class for Leaflet's shared bottom-right corner container
+ * (`.leaflet-bottom.leaflet-right`, holding both the attribution and zoom
+ * controls), added/removed alongside `attributionExpanded` above. See the
+ * `globalStyle` below for why this needs its own elevated `z-index` rather
+ * than relying on `attributionExpanded`'s own.
+ */
+export const attributionCornerElevated = style({});
 
 /**
  * Collapses Leaflet's default attribution control — required credit text
@@ -121,6 +130,23 @@ globalStyle(`.leaflet-control-attribution.${attributionExpanded}`, {
 
 globalStyle(`.leaflet-control-attribution.${attributionExpanded}::before`, {
   content: "none",
+});
+
+/**
+ * Elevates the attribution/zoom corner's stacking context above the shared
+ * floating-control layer (`zIndexTokens.floatingControlZIndex`) while
+ * attribution is expanded, so a host element deliberately raised above
+ * that layer (this app's own "Explore" toggle, for instance) can't sit on
+ * top of attribution text the user just asked to read. `+20` clears a host
+ * element raised the documented `+10` above the shared layer (see
+ * `zIndexTokens.ts`'s own remark) with room to spare; raising only the
+ * corner container, not `.leaflet-control-attribution` itself, is what
+ * actually matters here — a descendant's own `z-index` can't exceed the
+ * stacking level its nearest positioned ancestor established, regardless
+ * of the value given to the descendant.
+ */
+globalStyle(`.leaflet-bottom.leaflet-right.${attributionCornerElevated}`, {
+  zIndex: `calc(${zIndexTokens.floatingControlZIndex} + 20)`,
 });
 
 export const areaLabel = style({
