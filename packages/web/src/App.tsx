@@ -360,6 +360,7 @@ const PanelViewContent = memo(function PanelViewContent({
 export function App() {
   const [hydrated, setHydrated] = useState(false);
   const [mapReady, setMapReady] = useState(false);
+  const [basemapVisuallyReady, setBasemapVisuallyReady] = useState(false);
   const [townships, setTownships] = useState<TownshipFeature[]>([]);
   const [townshipAreas, setTownshipAreas] = useState<Feature[]>([]);
   const [dataError, setDataError] = useState(false);
@@ -653,6 +654,10 @@ export function App() {
   }, [mobileSheetDragOffset]);
 
   const handleMapReady = useCallback(() => setMapReady(true), []);
+  const handleBasemapReady = useCallback(
+    () => setBasemapVisuallyReady(true),
+    [],
+  );
 
   /**
    * Renders a selected township's popup markup for `MapView`.
@@ -965,9 +970,17 @@ export function App() {
             full-viewport container paints over this in normal DOM-order
             stacking once it mounts; `aria-hidden` (not removal) keeps
             screen readers from re-announcing "loading" once the real map
-            is ready.
+            is ready. Held past `mapReady` (Leaflet's own mount) until
+            `basemapVisuallyReady` too -- Leaflet reports ready as soon as it
+            has a view, well before a raster basemap's tiles or a vector
+            basemap's lazily-loaded MapLibre bundle/style have actually
+            painted anything, so hiding on `mapReady` alone swapped this
+            placeholder for a blank map that then filled in tile-by-tile.
           */}
-          <output className={styles.mapLoading} aria-hidden={mapReady}>
+          <output
+            className={styles.mapLoading}
+            aria-hidden={mapReady && basemapVisuallyReady}
+          >
             {m.loading_map()}
           </output>
           {hydrated && (
@@ -985,6 +998,7 @@ export function App() {
                 onSelectableFeaturesChange={setSelectableFeatures}
                 onLayerDataError={setFailedLayerIds}
                 onReady={handleMapReady}
+                onBasemapReady={handleBasemapReady}
                 onBasemapError={() => setBasemap("topo")}
                 formatSelectionAnnouncement={formatSelectionAnnouncement}
                 locationContextMenu
