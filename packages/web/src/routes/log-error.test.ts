@@ -1,5 +1,5 @@
 import type { ActionFunctionArgs } from "react-router";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   CLIENT_ERROR_REPORT_MAX_BODY_BYTES,
   CLIENT_ERROR_REPORT_MAX_FIELD_LENGTH,
@@ -43,15 +43,17 @@ const VALID_REPORT = {
 } as const;
 
 describe("/log-error route action", () => {
+  let consoleErrorSpy: ReturnType<typeof vi.spyOn>;
+
+  beforeEach(() => {
+    consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+  });
+
   afterEach(() => {
     vi.restoreAllMocks();
   });
 
   it("logs a valid client error report and responds 204", async () => {
-    const consoleErrorSpy = vi
-      .spyOn(console, "error")
-      .mockImplementation(() => {});
-
     const response = await action(
       makeRequest({
         message: "boom",
@@ -66,10 +68,6 @@ describe("/log-error route action", () => {
   });
 
   it("accepts a report with no stack", async () => {
-    const consoleErrorSpy = vi
-      .spyOn(console, "error")
-      .mockImplementation(() => {});
-
     const response = await action(
       makeRequest({
         message: "boom",
@@ -95,10 +93,6 @@ describe("/log-error route action", () => {
       undefined,
     ],
   ] as const)("rejects %s without logging", async (_case, body, rawBody) => {
-    const consoleErrorSpy = vi
-      .spyOn(console, "error")
-      .mockImplementation(() => {});
-
     const response = await action(makeRequest(body, "POST", rawBody));
 
     expect(response.status).toBe(400);
@@ -112,8 +106,6 @@ describe("/log-error route action", () => {
   });
 
   it("accepts a same-origin request with a matching Origin header", async () => {
-    vi.spyOn(console, "error").mockImplementation(() => {});
-
     const response = await action(
       makeRequest(VALID_REPORT, "POST", undefined, {
         Origin: "https://karta.timothybrits.co.za",
@@ -124,18 +116,12 @@ describe("/log-error route action", () => {
   });
 
   it("accepts a request with no Origin header at all", async () => {
-    vi.spyOn(console, "error").mockImplementation(() => {});
-
     const response = await action(makeRequest(VALID_REPORT));
 
     expect(response.status).toBe(204);
   });
 
   it("rejects a request from a mismatched Origin without logging", async () => {
-    const consoleErrorSpy = vi
-      .spyOn(console, "error")
-      .mockImplementation(() => {});
-
     const response = await action(
       makeRequest(VALID_REPORT, "POST", undefined, {
         Origin: "https://evil.example.com",
@@ -147,10 +133,6 @@ describe("/log-error route action", () => {
   });
 
   it("rejects a request whose Content-Length exceeds the maximum body size, without parsing it", async () => {
-    const consoleErrorSpy = vi
-      .spyOn(console, "error")
-      .mockImplementation(() => {});
-
     const response = await action(
       makeRequest(VALID_REPORT, "POST", undefined, {
         "Content-Length": String(CLIENT_ERROR_REPORT_MAX_BODY_BYTES + 1),
@@ -162,8 +144,6 @@ describe("/log-error route action", () => {
   });
 
   it("accepts a request whose Content-Length is within the maximum body size", async () => {
-    vi.spyOn(console, "error").mockImplementation(() => {});
-
     const response = await action(
       makeRequest(VALID_REPORT, "POST", undefined, {
         "Content-Length": String(CLIENT_ERROR_REPORT_MAX_BODY_BYTES),

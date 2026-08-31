@@ -6,6 +6,9 @@ import {
 } from "../constants/clientErrorReporting";
 import { SITE_URL } from "../constants/siteConfig";
 
+/** This app's own origin, parsed once rather than on every request — see `action`'s Origin check. */
+const SITE_ORIGIN = new URL(SITE_URL).origin;
+
 /**
  * Shape of a client error report POSTed by `clientErrorReporting.ts`. Every
  * string field is bounded by `CLIENT_ERROR_REPORT_MAX_FIELD_LENGTH` so a
@@ -50,7 +53,7 @@ export async function action({
   }
 
   const origin = request.headers.get("Origin");
-  if (origin !== null && origin !== new URL(SITE_URL).origin) {
+  if (origin !== null && origin !== SITE_ORIGIN) {
     return new Response(null, { status: 403 });
   }
 

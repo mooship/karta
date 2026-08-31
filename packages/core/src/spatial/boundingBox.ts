@@ -21,6 +21,23 @@ function normalizeLongitude(longitude: number): number {
   return longitude;
 }
 
+/** `box`'s own unwrapped max longitude: `maxLng + 360` if it already crosses the antimeridian, otherwise `maxLng` as-is. */
+function unwrappedMaxLngOf(box: BBox): number {
+  return isAntimeridianCrossing(box) ? box[2] + 360 : box[2];
+}
+
+/** The result of widening a running `[min, max]` range by a further `[boxMin, boxMax]` pair, plus the resulting width for comparing candidate widenings. */
+function widen(
+  curMin: number,
+  curMax: number,
+  boxMin: number,
+  boxMax: number,
+): { min: number; max: number; width: number } {
+  const min = Math.min(curMin, boxMin);
+  const max = Math.max(curMax, boxMax);
+  return { min, max, width: max - min };
+}
+
 /**
  * Merges multiple bounding boxes into the smallest box containing all of them.
  * @param boxes - Bounding boxes as `[minLng, minLat, maxLng, maxLat]`.
@@ -46,9 +63,7 @@ export function unionBoundingBoxes(boxes: readonly BBox[]): BBox {
   let minLat = first[1];
   let maxLat = first[3];
   let unwrappedMinLng = first[0];
-  let unwrappedMaxLng = isAntimeridianCrossing(first)
-    ? first[2] + 360
-    : first[2];
+  let unwrappedMaxLng = unwrappedMaxLngOf(first);
 
   for (let index = 1; index < boxes.length; index++) {
     const box = boxes[index] as BBox;
@@ -57,25 +72,20 @@ export function unionBoundingBoxes(boxes: readonly BBox[]): BBox {
 
     if (isAntimeridianCrossing(box)) {
       unwrappedMinLng = Math.min(unwrappedMinLng, box[0]);
-      unwrappedMaxLng = Math.max(unwrappedMaxLng, box[2] + 360);
+      unwrappedMaxLng = Math.max(unwrappedMaxLng, unwrappedMaxLngOf(box));
       continue;
     }
 
-    const asIsMin = Math.min(unwrappedMinLng, box[0]);
-    const asIsMax = Math.max(unwrappedMaxLng, box[2]);
-    const asIsWidth = asIsMax - asIsMin;
+    const asIs = widen(unwrappedMinLng, unwrappedMaxLng, box[0], box[2]);
+    const shifted = widen(
+      unwrappedMinLng,
+      unwrappedMaxLng,
+      box[0] + 360,
+      box[2] + 360,
+    );
 
-    const shiftedMin = Math.min(unwrappedMinLng, box[0] + 360);
-    const shiftedMax = Math.max(unwrappedMaxLng, box[2] + 360);
-    const shiftedWidth = shiftedMax - shiftedMin;
-
-    if (shiftedWidth < asIsWidth) {
-      unwrappedMinLng = shiftedMin;
-      unwrappedMaxLng = shiftedMax;
-    } else {
-      unwrappedMinLng = asIsMin;
-      unwrappedMaxLng = asIsMax;
-    }
+    ({ min: unwrappedMinLng, max: unwrappedMaxLng } =
+      shifted.width < asIs.width ? shifted : asIs);
   }
 
   return [

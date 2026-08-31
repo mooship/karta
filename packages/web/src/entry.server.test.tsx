@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const renderToReadableStreamMock = vi.fn(
   async (_element: unknown, _options: unknown) =>
@@ -14,40 +14,50 @@ vi.mock("react-dom/server", () => ({
   renderToReadableStream: renderToReadableStreamMock,
 }));
 
+/**
+ * Runs `handleRequest` once against a fresh request and extracts everything
+ * these tests check: the response itself, the nonce embedded in its CSP
+ * header, and the two places that nonce must also reach — the `nonce`
+ * option `renderToReadableStream` was called with, and the `nonce` prop on
+ * the `<ServerRouter>` element passed to it.
+ */
+async function handleOnce() {
+  const handleRequest = (await import("./entry.server")).default;
+  const response = await handleRequest(
+    new Request("https://karta.timothybrits.co.za/"),
+    200,
+    new Headers(),
+    {} as never,
+  );
+
+  const headerNonce = response.headers
+    .get("Content-Security-Policy")
+    ?.match(/'nonce-([^']+)'/)?.[1];
+  const lastCall =
+    renderToReadableStreamMock.mock.calls[
+      renderToReadableStreamMock.mock.calls.length - 1
+    ];
+  const serverRouterElement = lastCall?.[0] as { props: { nonce?: string } };
+  const renderOptions = lastCall?.[1] as { nonce?: string };
+
+  return { response, headerNonce, renderOptions, serverRouterElement };
+}
+
 describe("entry.server handleRequest", () => {
+  beforeEach(() => {
+    renderToReadableStreamMock.mockClear();
+  });
+
   it("sets a Content-Security-Policy header carrying a nonce", async () => {
-    const handleRequest = (await import("./entry.server")).default;
-    const request = new Request("https://karta.timothybrits.co.za/");
+    const { response } = await handleOnce();
 
-    const response = await handleRequest(
-      request,
-      200,
-      new Headers(),
-      {} as never,
+    expect(response.headers.get("Content-Security-Policy")).toMatch(
+      /'nonce-[^']+'/,
     );
-
-    const csp = response.headers.get("Content-Security-Policy");
-    expect(csp).toMatch(/'nonce-[^']+'/);
   });
 
   it("passes the same nonce to renderToReadableStream's options that it puts in the CSP header", async () => {
-    renderToReadableStreamMock.mockClear();
-    const handleRequest = (await import("./entry.server")).default;
-    const request = new Request("https://karta.timothybrits.co.za/");
-
-    const response = await handleRequest(
-      request,
-      200,
-      new Headers(),
-      {} as never,
-    );
-
-    const headerNonce = response.headers
-      .get("Content-Security-Policy")
-      ?.match(/'nonce-([^']+)'/)?.[1];
-    const renderOptions = renderToReadableStreamMock.mock.calls[0]?.[1] as {
-      nonce?: string;
-    };
+    const { headerNonce, renderOptions } = await handleOnce();
 
     expect(renderOptions.nonce).toBe(headerNonce);
   });
@@ -57,46 +67,15 @@ describe("entry.server handleRequest", () => {
     // itself injects — react-router's <Scripts>/<ScrollRestoration> and its
     // streamed-data transfer script are its own components, reached only
     // via a matching nonce prop passed directly to <ServerRouter>.
-    renderToReadableStreamMock.mockClear();
-    const handleRequest = (await import("./entry.server")).default;
-    const request = new Request("https://karta.timothybrits.co.za/");
-
-    const response = await handleRequest(
-      request,
-      200,
-      new Headers(),
-      {} as never,
-    );
-
-    const headerNonce = response.headers
-      .get("Content-Security-Policy")
-      ?.match(/'nonce-([^']+)'/)?.[1];
-    const serverRouterElement = renderToReadableStreamMock.mock
-      .calls[0]?.[0] as {
-      props: { nonce?: string };
-    };
+    const { headerNonce, serverRouterElement } = await handleOnce();
 
     expect(serverRouterElement.props.nonce).toBe(headerNonce);
   });
 
   it("uses a different nonce for each request", async () => {
-    const handleRequest = (await import("./entry.server")).default;
+    const first = await handleOnce();
+    const second = await handleOnce();
 
-    const firstResponse = await handleRequest(
-      new Request("https://karta.timothybrits.co.za/"),
-      200,
-      new Headers(),
-      {} as never,
-    );
-    const secondResponse = await handleRequest(
-      new Request("https://karta.timothybrits.co.za/"),
-      200,
-      new Headers(),
-      {} as never,
-    );
-
-    expect(firstResponse.headers.get("Content-Security-Policy")).not.toBe(
-      secondResponse.headers.get("Content-Security-Policy"),
-    );
+    expect(first.headerNonce).not.toBe(second.headerNonce);
   });
 });

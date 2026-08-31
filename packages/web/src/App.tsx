@@ -498,6 +498,16 @@ export function App() {
   const singleViewRef = useRef<HTMLDivElement>(null);
   const suppressNextHandleClickRef = useRef(false);
   const activeSheetPointerIdRef = useRef<number | null>(null);
+  /**
+   * Holds the in-progress sheet-drag gesture's own `cleanup` (in
+   * `handleSheetHandlePointerDown` below) for as long as one is active,
+   * `null` otherwise. That handler attaches its pointermove/up/cancel
+   * listeners directly to `window` rather than inside an effect, so they'd
+   * otherwise outlive an unmount that happens mid-drag; the mount-scoped
+   * effect below reaches that gesture's cleanup through this ref and runs
+   * it on unmount too, mirroring `@karta/map`'s `useSwipeToDismiss`.
+   */
+  const activeSheetGestureCleanupRef = useRef<(() => void) | null>(null);
   const {
     schedule: scheduleSheetDragOffset,
     cancel: cancelScheduledSheetDragOffset,
@@ -600,6 +610,12 @@ export function App() {
       cancelScheduledSheetDragOffset();
     };
   }, [cancelScheduledSheetDragOffset]);
+
+  useEffect(() => {
+    return () => {
+      activeSheetGestureCleanupRef.current?.();
+    };
+  }, []);
 
   const mobileSheetDragDirection =
     mobileSheetDragOffset < -4
@@ -848,6 +864,7 @@ export function App() {
     }
 
     function cleanup() {
+      activeSheetGestureCleanupRef.current = null;
       setMobileSheetDragging(false);
       scheduleSheetDragOffset(0);
       activeSheetPointerIdRef.current = null;
@@ -894,6 +911,7 @@ export function App() {
       cleanup();
     }
 
+    activeSheetGestureCleanupRef.current = cleanup;
     window.addEventListener("pointerup", handlePointerUp);
     window.addEventListener("pointermove", handlePointerMove);
     window.addEventListener("pointercancel", cleanup);

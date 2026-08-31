@@ -110,64 +110,28 @@ describe("featureCollectionSchema", () => {
     expect(result.success).toBe(false);
   });
 
-  it("rejects an out-of-range longitude", () => {
+  it.each([
+    ["rejects an out-of-range longitude", [200, -25], false],
+    ["rejects an out-of-range latitude", [28, -100], false],
+    ["accepts a valid 2D position", [28, -25], true],
+    [
+      "accepts a valid 3D position with an elevation outside the -90..90/-180..180 range",
+      [28, -25, 8848],
+      true,
+    ],
+  ] as const)("%s", (_label, coordinates, expectedSuccess) => {
     const result = featureCollectionSchema.safeParse({
       type: "FeatureCollection",
       features: [
         {
           type: "Feature",
           properties: {},
-          geometry: { type: "Point", coordinates: [200, -25] },
+          geometry: { type: "Point", coordinates },
         },
       ],
     });
 
-    expect(result.success).toBe(false);
-  });
-
-  it("rejects an out-of-range latitude", () => {
-    const result = featureCollectionSchema.safeParse({
-      type: "FeatureCollection",
-      features: [
-        {
-          type: "Feature",
-          properties: {},
-          geometry: { type: "Point", coordinates: [28, -100] },
-        },
-      ],
-    });
-
-    expect(result.success).toBe(false);
-  });
-
-  it("accepts a valid 2D position", () => {
-    const result = featureCollectionSchema.safeParse({
-      type: "FeatureCollection",
-      features: [
-        {
-          type: "Feature",
-          properties: {},
-          geometry: { type: "Point", coordinates: [28, -25] },
-        },
-      ],
-    });
-
-    expect(result.success).toBe(true);
-  });
-
-  it("accepts a valid 3D position with an elevation outside the -90..90/-180..180 range", () => {
-    const result = featureCollectionSchema.safeParse({
-      type: "FeatureCollection",
-      features: [
-        {
-          type: "Feature",
-          properties: {},
-          geometry: { type: "Point", coordinates: [28, -25, 8848] },
-        },
-      ],
-    });
-
-    expect(result.success).toBe(true);
+    expect(result.success).toBe(expectedSuccess);
   });
 
   it("rejects a non-numeric coordinate nested inside a polygon ring", () => {

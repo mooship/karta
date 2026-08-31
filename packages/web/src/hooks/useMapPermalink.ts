@@ -33,7 +33,12 @@ export interface ParsedMapPermalink {
  * Parses a shared map link's query string into validated permalink fields.
  * @remarks Unknown layer ids, an unregistered basemap, or an unrecognised
  *   panel view are dropped rather than applied — a link can outlive a
- *   domain's current layer catalogue or a since-removed basemap.
+ *   domain's current layer catalogue or a since-removed basemap. A
+ *   `selectedFeatureId` is returned as-is, unvalidated: unlike the other
+ *   fields, there's no synchronously-known registry to check it against
+ *   here — see `useMapPermalink`'s `knownFeatureIds` option, which applies
+ *   the same "drop anything invalid" contract to it once the map's feature
+ *   data has actually loaded.
  */
 export function parseMapPermalink(
   search: string,

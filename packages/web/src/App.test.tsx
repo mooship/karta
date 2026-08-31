@@ -79,7 +79,7 @@ async function renderMobilePanel() {
   });
   useMapUiStore.getState().reset();
 
-  const { container } = render(<App />);
+  const { container, unmount } = render(<App />);
   await waitFor(() =>
     expect(screen.getByTestId("geojson-layer")).toBeInTheDocument(),
   );
@@ -87,6 +87,7 @@ async function renderMobilePanel() {
 
   return {
     container,
+    unmount,
     panel: screen.getByTestId("panel-container"),
     handle: screen.getByTestId("panel-sheet-handle"),
   };
@@ -592,6 +593,38 @@ describe("App", () => {
 
     await waitFor(() =>
       expect(panel.style.getPropertyValue(bareVarName)).toBe("0px"),
+    );
+  });
+
+  it("removes the sheet drag's window pointer listeners on unmount mid-gesture", async () => {
+    const { handle, unmount } = await renderMobilePanel();
+    const removeEventListenerSpy = vi.spyOn(window, "removeEventListener");
+
+    fireEvent.pointerDown(handle, {
+      pointerType: "touch",
+      pointerId: 21,
+      clientY: 200,
+      button: 0,
+    });
+    fireEvent.pointerMove(window, {
+      pointerType: "touch",
+      pointerId: 21,
+      clientY: 150,
+    });
+
+    unmount();
+
+    expect(removeEventListenerSpy).toHaveBeenCalledWith(
+      "pointerup",
+      expect.any(Function),
+    );
+    expect(removeEventListenerSpy).toHaveBeenCalledWith(
+      "pointermove",
+      expect.any(Function),
+    );
+    expect(removeEventListenerSpy).toHaveBeenCalledWith(
+      "pointercancel",
+      expect.any(Function),
     );
   });
 
