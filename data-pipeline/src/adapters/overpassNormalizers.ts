@@ -25,7 +25,7 @@ export function normalizeRelationTransitOverpass(
       network,
     };
     for (const member of element.members) {
-      const memberId = `${element.id}/${member.ref}`;
+      const memberId = `${member.ref}`;
       if (
         member.type !== "way" ||
         !member.geometry ||
