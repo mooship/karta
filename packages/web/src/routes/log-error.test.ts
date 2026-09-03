@@ -20,11 +20,23 @@ function makeRequest(
   method = "POST",
   rawBody?: string,
   headers?: Record<string, string>,
+  { omitContentLength = false }: { omitContentLength?: boolean } = {},
 ): ActionFunctionArgs {
+  const bodyText =
+    rawBody ?? (body === undefined ? undefined : JSON.stringify(body));
+  const defaultHeaders: Record<string, string> = {
+    "Content-Type": "application/json",
+    ...(omitContentLength || bodyText === undefined
+      ? {}
+      : {
+          "Content-Length": String(new TextEncoder().encode(bodyText).length),
+        }),
+  };
   const headerMap = new Map(
-    Object.entries({ "Content-Type": "application/json", ...headers }).map(
-      ([name, value]) => [name.toLowerCase(), value],
-    ),
+    Object.entries({ ...defaultHeaders, ...headers }).map(([name, value]) => [
+      name.toLowerCase(),
+      value,
+    ]),
   );
   const request = {
     method,
@@ -151,5 +163,48 @@ describe("/log-error route action", () => {
     );
 
     expect(response.status).toBe(204);
+  });
+
+  it("rejects a request with no Content-Length header at all, without parsing it", async () => {
+    const response = await action(
+      makeRequest(VALID_REPORT, "POST", undefined, undefined, {
+        omitContentLength: true,
+      }),
+    );
+
+    expect(response.status).toBe(411);
+    expect(consoleErrorSpy).not.toHaveBeenCalled();
+  });
+
+  it("rejects a request with a non-numeric Content-Length header, without parsing it", async () => {
+    const response = await action(
+      makeRequest(VALID_REPORT, "POST", undefined, {
+        "Content-Length": "not-a-number",
+      }),
+    );
+
+    expect(response.status).toBe(411);
+    expect(consoleErrorSpy).not.toHaveBeenCalled();
+  });
+
+  it("strips control characters from logged fields before writing to Workers Logs", async () => {
+    const response = await action(
+      makeRequest({
+        message: "boom\nFAKE LOG LINE: [client-error] injected",
+        stack: "Error: boom\r\n at foo",
+        url: "https://karta.timothybrits.co.za/\tinjected",
+        source: "error",
+      }),
+    );
+
+    expect(response.status).toBe(204);
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      "[client-error]",
+      expect.objectContaining({
+        message: "boom FAKE LOG LINE: [client-error] injected",
+        stack: "Error: boom   at foo",
+        url: "https://karta.timothybrits.co.za/ injected",
+      }),
+    );
   });
 });

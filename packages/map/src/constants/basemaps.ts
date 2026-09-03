@@ -132,6 +132,16 @@ loadDefaultsInto(registry);
 /**
  * Registers (or overwrites) a basemap definition under `id`, making it
  * available to `BasemapToggle` and `MapView`.
+ * @remarks Mutates `registry`, a plain module-scope `Map` shared by every
+ *   caller in the process — there's no locking around it. Call this once at
+ *   application bootstrap (module load / app initialisation), the same way
+ *   this package's own built-in basemaps are seeded, never conditionally
+ *   inside a per-request code path on a shared-isolate server runtime (e.g.
+ *   Cloudflare Workers, which this SDK's reference app deploys to): two
+ *   concurrent requests both calling `registerBasemap` could race and leave
+ *   the registry holding a mix of either call's basemaps. Nothing in this
+ *   codebase calls `registerBasemap` outside test setup today, so this is a
+ *   forward-looking constraint for SDK consumers rather than a live bug.
  */
 export function registerBasemap(
   id: Basemap,

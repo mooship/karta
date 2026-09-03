@@ -38,10 +38,18 @@ function normalize(value: number | null, max: number): number | null {
  * @remarks Each metric is independently clamped and min-max normalized
  *   against a fixed scale (see `MAX_COMMUTE_MINUTES`/`MAX_TRANSIT_KM`) before
  *   being combined, so the two differently-scaled inputs (minutes vs.
- *   kilometres) contribute comparably. If only one metric is known, its
- *   normalized value is returned directly rather than treating the missing
- *   metric as zero, which would understate burden. Returns `null` only when
- *   both metrics are unknown.
+ *   kilometres) contribute comparably. The two are then combined as a true
+ *   weighted average — the weighted sum of whichever metrics are known,
+ *   divided by the sum of *their* weights — rather than a weighted sum that
+ *   silently assumes `weights` sums to 1; `SpatialBurdenWeights` is
+ *   documented as "relative", so a caller passing e.g. `{0.3, 0.3}` still
+ *   gets a full 0–1 range instead of one capped at 0.6. When only one
+ *   metric is known, dividing by that single metric's own weight cancels
+ *   it out, so the result is just that metric's normalized value — the
+ *   same number the old ad hoc single-metric branch returned, but now as a
+ *   natural consequence of the general formula rather than a special case
+ *   that happened to coincide with it only when weights summed to 1.
+ *   Returns `null` only when both metrics are unknown.
  */
 export function computeSpatialBurdenScore(
   commuteMinutes: number | null,
@@ -51,17 +59,19 @@ export function computeSpatialBurdenScore(
   const normalizedCommute = normalize(commuteMinutes, MAX_COMMUTE_MINUTES);
   const normalizedTransit = normalize(nearestTransitKm, MAX_TRANSIT_KM);
 
-  if (normalizedCommute === null && normalizedTransit === null) {
+  let weightedSum = 0;
+  let weightTotal = 0;
+  if (normalizedCommute !== null) {
+    weightedSum += normalizedCommute * weights.commuteWeight;
+    weightTotal += weights.commuteWeight;
+  }
+  if (normalizedTransit !== null) {
+    weightedSum += normalizedTransit * weights.transitWeight;
+    weightTotal += weights.transitWeight;
+  }
+
+  if (weightTotal === 0) {
     return null;
   }
-  if (normalizedTransit === null) {
-    return normalizedCommute;
-  }
-  if (normalizedCommute === null) {
-    return normalizedTransit;
-  }
-  return (
-    normalizedCommute * weights.commuteWeight +
-    normalizedTransit * weights.transitWeight
-  );
+  return weightedSum / weightTotal;
 }

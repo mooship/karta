@@ -1,16 +1,26 @@
 import type { Layer } from "@karta/core";
-import type { RegionId } from "../../constants/regions";
+import { getProvinceRegionIds, type RegionId } from "../../constants/regions";
 import { getTownshipGroup } from "../../constants/townships";
 
 /**
- * Region ids this domain's layers pull data from, typed against `RegionId`
- * (derived from `REGIONS`) rather than bare string literals — if a
- * `REGIONS` entry is ever renamed, this fails typechecking instead of
- * `dataUrl`/`multiRegionDataUrls` silently pointing at a directory
- * `data-pipeline` no longer writes.
+ * Region id this domain's Gauteng-only layers pull data from, typed against
+ * `RegionId` (derived from `REGIONS`) rather than a bare string literal — if
+ * `REGIONS` is ever renamed, this fails typechecking instead of `dataUrl`
+ * silently pointing at a directory `data-pipeline` no longer writes.
  */
 const GAUTENG_REGION_ID: RegionId = "gauteng";
-const WESTERN_CAPE_REGION_ID: RegionId = "western-cape";
+
+/**
+ * Every province-kind region id configured in `REGIONS`, in registry order.
+ * @remarks Drives the `dataSource` of every layer whose data is published
+ *   per-province (the township/area choropleths, `bus-rapid-transit`,
+ *   `commuter-rail`) — sourced from `getProvinceRegionIds()`
+ *   (`../../constants/regions.ts`) rather than a hand-typed list, so a new
+ *   `kind: "province"` region added to `REGIONS` (see
+ *   `docs/adding-a-region.md`) flows into those layers automatically instead
+ *   of requiring a matching hand-edit here.
+ */
+const PROVINCE_REGION_IDS: readonly RegionId[] = getProvinceRegionIds();
 
 /**
  * Builds a single Gauteng-only `dataSource` URL.
@@ -69,13 +79,8 @@ const TOWNSHIP_EMPHASIS_STYLE = {
  * the same features).
  */
 const TOWNSHIP_DISPLAY_DATA_SOURCE = multiRegionDataUrls(
-  [GAUTENG_REGION_ID, WESTERN_CAPE_REGION_ID],
+  PROVINCE_REGION_IDS,
   "townships.display.v1.geojson",
-);
-
-/** Shared `companionSource` for the three choropleth layers below — see their own `companionSource` field for what it's for. */
-const TOWNSHIP_AREAS_COMPANION_SOURCE = dataUrl(
-  "township-areas.display.v1.geojson",
 );
 
 /**
@@ -98,7 +103,6 @@ export const SPATIAL_APARTHEID_LEGACY_LAYERS: readonly Layer[] = [
     description:
       "Modelled car drive-time from each recognised township area to its nearest selected job centre.",
     dataSource: TOWNSHIP_DISPLAY_DATA_SOURCE,
-    companionSource: TOWNSHIP_AREAS_COMPANION_SOURCE,
     geometryKind: "choropleth",
     defaultVisible: true,
     available: true,
@@ -125,7 +129,6 @@ export const SPATIAL_APARTHEID_LEGACY_LAYERS: readonly Layer[] = [
     description:
       "Straight-line distance from each recognised township area to the nearest formal transit route.",
     dataSource: TOWNSHIP_DISPLAY_DATA_SOURCE,
-    companionSource: TOWNSHIP_AREAS_COMPANION_SOURCE,
     geometryKind: "choropleth",
     defaultVisible: false,
     available: true,
@@ -168,7 +171,6 @@ export const SPATIAL_APARTHEID_LEGACY_LAYERS: readonly Layer[] = [
     description:
       "A combined score weighting modelled car time and distance to transit together, to show where both burdens compound.",
     dataSource: TOWNSHIP_DISPLAY_DATA_SOURCE,
-    companionSource: TOWNSHIP_AREAS_COMPANION_SOURCE,
     geometryKind: "choropleth",
     defaultVisible: false,
     available: true,
@@ -224,7 +226,7 @@ export const SPATIAL_APARTHEID_LEGACY_LAYERS: readonly Layer[] = [
     id: "bus-rapid-transit",
     label: "Bus Rapid Transit",
     dataSource: multiRegionDataUrls(
-      [GAUTENG_REGION_ID, WESTERN_CAPE_REGION_ID],
+      PROVINCE_REGION_IDS,
       "bus-rapid-transit.display.v1.geojson",
     ),
     geometryKind: "line",
@@ -256,7 +258,7 @@ export const SPATIAL_APARTHEID_LEGACY_LAYERS: readonly Layer[] = [
     id: "commuter-rail",
     label: "Commuter Rail",
     dataSource: multiRegionDataUrls(
-      [GAUTENG_REGION_ID, WESTERN_CAPE_REGION_ID],
+      PROVINCE_REGION_IDS,
       "commuter-rail.display.v1.geojson",
     ),
     geometryKind: "line",
