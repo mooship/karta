@@ -65,6 +65,11 @@ vi.mock("@karta/app", async (importOriginal) => {
       { id: "fake-south", label: "Fake South", kind: "province" },
       { id: "fake-custom", label: "Fake Custom", kind: "custom" },
     ],
+    // `getProvinceRegionIds()` computes internally from `@karta/app`'s own
+    // `REGIONS` module binding, not the override above — spreading `actual`
+    // alone would leave it resolving against the real gauteng/western-cape
+    // regions instead of these fakes, so it needs its own override here too.
+    getProvinceRegionIds: () => ["fake-north", "fake-south"],
     TOWNSHIP_AREA_DEFINITIONS: [mocks.fakeArea],
     getTownshipAreaDefinition: (name: string) =>
       name.startsWith("Fakeville") ? mocks.fakeArea : undefined,

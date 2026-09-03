@@ -31,3 +31,20 @@ export const REGIONS: readonly RegionDefinition[] = [
  * belongs to no configured region.
  */
 export type RegionId = (typeof REGIONS)[number]["id"];
+
+/**
+ * The ids of every `kind: "province"` region in `REGIONS`, in registration
+ * order.
+ * @remarks The single source of truth for "every province region" — used
+ *   wherever a multi-region layer/dataset needs to cover all of them
+ *   (`domains/spatial-apartheid-legacy/layers.ts`'s multi-region
+ *   `dataSource`s, `data-pipeline`'s `runAllProvinceRegions`) instead of
+ *   each call site re-filtering `REGIONS` itself, which drifted out of sync
+ *   in the past when a new region was added to `REGIONS` but a hardcoded
+ *   list elsewhere wasn't updated to match.
+ */
+export function getProvinceRegionIds(): readonly RegionId[] {
+  return REGIONS.filter((region) => region.kind === "province").map(
+    (region) => region.id,
+  );
+}

@@ -11,17 +11,22 @@ import type {
  * computed once per object identity rather than on every `styleFn` call —
  * a layer's `Classification` object is a stable reference reused across
  * every feature of that layer.
- * @remarks Checks `cache.has(key)` rather than the cached value's
+ * @remarks Checks the looked-up value against `undefined` rather than its
  *   truthiness, so a falsy `compute()` result (`0`, `""`, `false`) is
- *   correctly treated as a cache hit rather than recomputed every call.
+ *   correctly treated as a cache hit rather than recomputed every call — one
+ *   `WeakMap.get` rather than a `has` followed by a second `get`, since both
+ *   current callers (`sortedStopsCache`/`stopsByMatchCache`) never cache
+ *   `undefined` itself. A future caller whose `V` legitimately includes
+ *   `undefined` as a real cached value would need a sentinel wrapper instead.
  */
 function getOrCompute<K extends object, V>(
   cache: WeakMap<K, V>,
   key: K,
   compute: () => V,
 ): V {
-  if (cache.has(key)) {
-    return cache.get(key) as V;
+  const cached = cache.get(key);
+  if (cached !== undefined) {
+    return cached;
   }
   const computed = compute();
   cache.set(key, computed);

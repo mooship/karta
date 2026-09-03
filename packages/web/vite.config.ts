@@ -58,6 +58,7 @@ export default defineConfig(({ mode }) => {
               project: "./project.inlang",
               outdir: "./src/paraglide",
               strategy: ["cookie", "preferredLanguage", "baseLocale"],
+              isServer: "import.meta.env?.SSR ?? typeof window === 'undefined'",
               emitTsDeclarations: true,
               emitGitIgnore: false,
               emitPrettierIgnore: false,

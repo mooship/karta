@@ -1,5 +1,5 @@
 import type { Layer } from "@karta/core";
-import { REGIONS, type RegionId } from "../../constants/regions";
+import { getProvinceRegionIds, type RegionId } from "../../constants/regions";
 import { getTownshipGroup } from "../../constants/townships";
 
 /**
@@ -14,14 +14,13 @@ const GAUTENG_REGION_ID: RegionId = "gauteng";
  * Every province-kind region id configured in `REGIONS`, in registry order.
  * @remarks Drives the `dataSource` of every layer whose data is published
  *   per-province (the township/area choropleths, `bus-rapid-transit`,
- *   `commuter-rail`) — derived from `REGIONS` rather than a hand-typed list,
- *   so a new `kind: "province"` region added there (see
+ *   `commuter-rail`) — sourced from `getProvinceRegionIds()`
+ *   (`../../constants/regions.ts`) rather than a hand-typed list, so a new
+ *   `kind: "province"` region added to `REGIONS` (see
  *   `docs/adding-a-region.md`) flows into those layers automatically instead
  *   of requiring a matching hand-edit here.
  */
-const PROVINCE_REGION_IDS: readonly RegionId[] = REGIONS.filter(
-  (region) => region.kind === "province",
-).map((region) => region.id);
+const PROVINCE_REGION_IDS: readonly RegionId[] = getProvinceRegionIds();
 
 /**
  * Builds a single Gauteng-only `dataSource` URL.
