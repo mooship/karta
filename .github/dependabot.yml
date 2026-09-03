@@ -1,5 +1,8 @@
 version: 2
 updates:
+  # Security/crypto-relevant deps get a faster, separate weekly PR: the
+  # Cloudflare deploy tool, the SSR framework, the build tool, and the
+  # runtime GeoJSON validation boundary.
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
@@ -8,10 +11,29 @@ updates:
       time: "09:00"
       timezone: "Africa/Johannesburg"
     groups:
+      npm-critical:
+        patterns:
+          - "*"
+    allow:
+      - dependency-name: "wrangler"
+      - dependency-name: "vite"
+      - dependency-name: "react-router"
+      - dependency-name: "zod"
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+      time: "09:00"
+      timezone: "Africa/Johannesburg"
+    groups:
       npm:
         patterns:
           - "*"
     ignore:
+      - dependency-name: "wrangler"
+      - dependency-name: "vite"
+      - dependency-name: "react-router"
+      - dependency-name: "zod"
       # maplibre-gl@6+ rewrote worker loading to be ESM-only and silently
       # breaks vector basemaps on real iOS hardware with no thrown error
       # (maplibre/maplibre-gl-js#8002, unresolved upstream as of pinning).
@@ -20,6 +42,8 @@ updates:
       # upstream and re-verified on real iOS hardware, not just simulators.
       - dependency-name: "maplibre-gl"
         versions: [">=6.0.0"]
+  # data-pipeline parses zip/shapefile data fetched from external sources
+  # (adm-zip, shapefile) -- kept on the faster critical tier too.
   - package-ecosystem: "npm"
     directory: "/data-pipeline"
     schedule:
@@ -28,14 +52,29 @@ updates:
       time: "09:00"
       timezone: "Africa/Johannesburg"
     groups:
-      npm:
+      npm-data-pipeline-critical:
         patterns:
           - "*"
+    allow:
+      - dependency-name: "adm-zip"
+      - dependency-name: "shapefile"
+  - package-ecosystem: "npm"
+    directory: "/data-pipeline"
+    schedule:
+      interval: "monthly"
+      time: "09:00"
+      timezone: "Africa/Johannesburg"
+    groups:
+      npm-data-pipeline:
+        patterns:
+          - "*"
+    ignore:
+      - dependency-name: "adm-zip"
+      - dependency-name: "shapefile"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "weekly"
-      day: "saturday"
+      interval: "monthly"
       time: "09:00"
       timezone: "Africa/Johannesburg"
     groups:
