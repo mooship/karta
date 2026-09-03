@@ -153,8 +153,11 @@ function FeatureBrowserComponent({
  *   reference app's paraglide messages, alongside its own app-level
  *   "Browse" tab heading) can still localise every string this control
  *   renders. Memoized, matching
- *   `LayerToggles`'s own `memo()` wrapper, since it can render hundreds of
- *   rows and shares a parent that re-renders on unrelated UI state (e.g. a
- *   mobile drag-sheet's per-frame updates in the reference app).
+ *   `LayerToggles`'s own `memo()` wrapper, since it can render thousands of
+ *   rows (one per selectable feature, e.g. every township in a region) and
+ *   shares a parent that re-renders on unrelated UI state (e.g. a mobile
+ *   drag-sheet's per-frame updates in the reference app); `styles.list`
+ *   also gives each row's `<li>` `content-visibility: auto` for the same
+ *   reason -- see `FeatureBrowser.css.ts`.
  */
 export const FeatureBrowser = memo(FeatureBrowserComponent);
