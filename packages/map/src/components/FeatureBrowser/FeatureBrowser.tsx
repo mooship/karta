@@ -102,7 +102,7 @@ function FeatureBrowserComponent({
               <h3 className={styles.groupTitle}>{group.label}</h3>
               <ul className={styles.list}>
                 {group.entries.map((entry) => (
-                  <li key={entry.id}>
+                  <li key={entry.id} className={styles.listItem}>
                     <button
                       type="button"
                       className={styles.row}
@@ -153,8 +153,13 @@ function FeatureBrowserComponent({
  *   reference app's paraglide messages, alongside its own app-level
  *   "Browse" tab heading) can still localise every string this control
  *   renders. Memoized, matching
- *   `LayerToggles`'s own `memo()` wrapper, since it can render hundreds of
- *   rows and shares a parent that re-renders on unrelated UI state (e.g. a
- *   mobile drag-sheet's per-frame updates in the reference app).
+ *   `LayerToggles`'s own `memo()` wrapper, since it can render thousands of
+ *   rows (one per selectable feature, e.g. every township in a region) and
+ *   shares a parent that re-renders on unrelated UI state (e.g. a mobile
+ *   drag-sheet's per-frame updates in the reference app); each row's `<li>`
+ *   also carries `styles.listItem`'s `content-visibility: auto` (see
+ *   `FeatureBrowser.css.ts`) so the browser skips layout/style/paint for
+ *   whichever rows are currently scrolled out of view, rather than every
+ *   row costing that work up front.
  */
 export const FeatureBrowser = memo(FeatureBrowserComponent);
