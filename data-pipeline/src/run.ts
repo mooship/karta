@@ -1,14 +1,23 @@
 import { rm } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { REGIONS, type TransitLayerFeatureCollection } from "@karta/app";
+import {
+  type MetroDefinition,
+  type MetroId,
+  REGIONS,
+  type TownshipFeature,
+  type TransitLayerFeatureCollection,
+} from "@karta/app";
+import type { FeatureCollection } from "geojson";
 import {
   fetchMetroBoundariesForMetros,
+  type NormalizedTownship,
   normalizeBoundaries,
 } from "./adapters/boundaries";
 import { pruneCache } from "./cache";
 import { isDirectExecution } from "./cliEntry";
 import { getJobCentersForMetro } from "./constants/jobCenters";
+import { isUsingCustomOsrmEndpoint } from "./constants/serviceUrls";
 import { createDisplayPolygons } from "./displayTownships";
 import { createDisplayTransit } from "./displayTransit";
 import { writeGeoJsonFile } from "./export";
@@ -37,6 +46,7 @@ import { createTownshipAreas } from "./townshipAreas";
 import {
   computeNearestTransitKm,
   flattenTransitGeometries,
+  type TransitDistanceGeometry,
 } from "./transitDistance";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -61,6 +71,85 @@ async function timedStep<T>(
     console.log(`  failed after ${formatDuration(elapsed)}`);
     throw error;
   }
+}
+
+/** One metro's processed output: its `TownshipFeature`s plus the raw normalized townships behind them, for `runRegion` to concatenate in metro order. */
+interface MetroProcessingResult {
+  metroId: string;
+  townshipFeatures: TownshipFeature[];
+  normalizedTownships: NormalizedTownship[];
+}
+
+/**
+ * Computes one metro's drive times, nearest-transit distances, and joined
+ * `TownshipFeature`s.
+ * @remarks `getNearestJobCenter` (network-bound, OSRM) and
+ *   `computeNearestTransitKm` (pure local math, no I/O) have no data
+ *   dependency on each other, so they run via `Promise.all` rather than
+ *   sequential `await`s — the CPU-bound transit-distance pass overlaps
+ *   OSRM's network latency instead of adding on top of it.
+ * @throws If the metro has no job centres configured.
+ */
+async function processMetro(
+  metro: MetroDefinition,
+  rawBoundaries: FeatureCollection,
+  transitGeometries: TransitDistanceGeometry[],
+): Promise<MetroProcessingResult> {
+  console.log(`\n=== ${metro.id} ===`);
+  const townships = normalizeBoundaries(rawBoundaries);
+  console.log(`  ${townships.length} sub-places loaded`);
+
+  const jobCenters = getJobCentersForMetro(metro.id);
+  if (jobCenters.length === 0) {
+    throw new Error(`No job centers configured for ${metro.id}`);
+  }
+
+  const [nearestJobCenters, nearestTransitKm] = await Promise.all([
+    timedStep("Computing drive times", () =>
+      getNearestJobCenter(
+        townships.map((township) => township.centroid),
+        jobCenters,
+      ),
+    ),
+    timedStep("Computing nearest-transit distances", async () =>
+      computeNearestTransitKm(
+        townships.map((township) => township.centroid),
+        transitGeometries,
+      ),
+    ),
+  ]);
+
+  return {
+    metroId: metro.id,
+    townshipFeatures: joinTownshipData(
+      townships,
+      nearestJobCenters,
+      nearestTransitKm,
+    ),
+    normalizedTownships: townships,
+  };
+}
+
+/**
+ * Processes `metros` one at a time, each fully awaited before the next
+ * starts.
+ * @remarks The correct mode against the public OSRM demo server: its
+ *   `BATCH_SIZE`/`BATCH_DELAY_MS` rate-limiting in `osrmClient.ts` assumes
+ *   only one metro's requests are in flight, so this stays the default —
+ *   see `runRegion`'s branch on `isUsingCustomOsrmEndpoint()`.
+ */
+async function processMetrosSequentially(
+  metros: MetroDefinition[],
+  metroBoundaries: Record<MetroId, FeatureCollection>,
+  transitGeometries: TransitDistanceGeometry[],
+): Promise<MetroProcessingResult[]> {
+  const results: MetroProcessingResult[] = [];
+  for (const metro of metros) {
+    results.push(
+      await processMetro(metro, metroBoundaries[metro.id], transitGeometries),
+    );
+  }
+  return results;
 }
 
 /**
@@ -119,40 +208,22 @@ export async function runRegion(
     const allNormalizedTownships = [];
     const metroTownshipCounts: Record<string, number> = {};
 
-    for (const metro of metros) {
-      console.log(`\n=== ${metro.id} ===`);
-      const townships = normalizeBoundaries(metroBoundaries[metro.id]);
-      console.log(`  ${townships.length} sub-places loaded`);
-
-      const jobCenters = getJobCentersForMetro(metro.id);
-      if (jobCenters.length === 0) {
-        throw new Error(`No job centers configured for ${metro.id}`);
-      }
-
-      const nearestJobCenters = await timedStep("Computing drive times", () =>
-        getNearestJobCenter(
-          townships.map((township) => township.centroid),
-          jobCenters,
-        ),
-      );
-
-      const nearestTransitKm = await timedStep(
-        "Computing nearest-transit distances",
-        async () =>
-          computeNearestTransitKm(
-            townships.map((township) => township.centroid),
-            transitGeometries,
+    const metroResults = isUsingCustomOsrmEndpoint()
+      ? await Promise.all(
+          metros.map((metro) =>
+            processMetro(metro, metroBoundaries[metro.id], transitGeometries),
           ),
-      );
+        )
+      : await processMetrosSequentially(
+          metros,
+          metroBoundaries,
+          transitGeometries,
+        );
 
-      const townshipFeatures = joinTownshipData(
-        townships,
-        nearestJobCenters,
-        nearestTransitKm,
-      );
-      allTownships.push(...townshipFeatures);
-      allNormalizedTownships.push(...townships);
-      metroTownshipCounts[metro.id] = townshipFeatures.length;
+    for (const result of metroResults) {
+      allTownships.push(...result.townshipFeatures);
+      allNormalizedTownships.push(...result.normalizedTownships);
+      metroTownshipCounts[result.metroId] = result.townshipFeatures.length;
     }
 
     console.log(`Writing ${regionId} files...`);

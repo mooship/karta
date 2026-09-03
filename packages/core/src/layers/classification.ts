@@ -11,15 +11,17 @@ import type {
  * computed once per object identity rather than on every `styleFn` call —
  * a layer's `Classification` object is a stable reference reused across
  * every feature of that layer.
+ * @remarks Checks `cache.has(key)` rather than the cached value's
+ *   truthiness, so a falsy `compute()` result (`0`, `""`, `false`) is
+ *   correctly treated as a cache hit rather than recomputed every call.
  */
 function getOrCompute<K extends object, V>(
   cache: WeakMap<K, V>,
   key: K,
   compute: () => V,
 ): V {
-  const cached = cache.get(key);
-  if (cached) {
-    return cached;
+  if (cache.has(key)) {
+    return cache.get(key) as V;
   }
   const computed = compute();
   cache.set(key, computed);

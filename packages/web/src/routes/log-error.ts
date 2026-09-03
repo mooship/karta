@@ -43,7 +43,13 @@ const clientErrorReportSchema = z.object({
  *   `sendBeacon`/`fetch` calls omit it depending on the browser. The
  *   `Content-Length` check runs before `request.json()` is ever called, so
  *   an oversized payload is rejected without first buffering it into memory
- *   in full.
+ *   in full — a request with no `Content-Length` at all (e.g. chunked
+ *   transfer-encoding) is rejected too, rather than treated as size `0`,
+ *   since every legitimate sender here (`fetch`/`sendBeacon` with a string
+ *   body) always sets it, and a missing header is otherwise indistinguishable
+ *   from an attempt to bypass the cap. Every logged string field is also
+ *   stripped of control characters ({@link sanitizeForLog}) so a report
+ *   can't forge extra log lines or fields in Workers Logs.
  */
 export async function action({
   request,
@@ -57,16 +63,42 @@ export async function action({
     return new Response(null, { status: 403 });
   }
 
-  const contentLength = Number(request.headers.get("Content-Length"));
+  const contentLengthHeader = request.headers.get("Content-Length");
+  const contentLength = Number(contentLengthHeader);
+  if (
+    contentLengthHeader === null ||
+    !Number.isFinite(contentLength) ||
+    contentLength < 0
+  ) {
+    return new Response(null, { status: 411 });
+  }
   if (contentLength > CLIENT_ERROR_REPORT_MAX_BODY_BYTES) {
     return new Response(null, { status: 413 });
   }
 
   try {
     const report = clientErrorReportSchema.parse(await request.json());
-    console.error("[client-error]", report);
+    console.error("[client-error]", {
+      ...report,
+      message: sanitizeForLog(report.message),
+      stack:
+        report.stack === undefined ? undefined : sanitizeForLog(report.stack),
+      url: sanitizeForLog(report.url),
+    });
     return new Response(null, { status: 204 });
   } catch {
     return new Response(null, { status: 400 });
   }
+}
+
+/**
+ * Strips ASCII control characters (including newlines and carriage returns)
+ * from a client-supplied string before it's written to Workers Logs, so a
+ * malicious report can't inject fake log lines or forge additional fields
+ * that a text-based downstream log consumer would otherwise read as separate
+ * entries.
+ */
+function sanitizeForLog(value: string): string {
+  // biome-ignore lint/suspicious/noControlCharactersInRegex: intentionally matching control characters to strip them
+  return value.replace(/[\x00-\x1f\x7f]/g, " ");
 }

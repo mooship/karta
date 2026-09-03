@@ -415,6 +415,69 @@ describe("runRegion", () => {
     expect(await readdir(root)).toEqual([]);
     expect(mocks.getNearestJobCenter).not.toHaveBeenCalled();
   });
+
+  describe("metro concurrency", () => {
+    /**
+     * Wires `getNearestJobCenter` to record how many calls are in flight at
+     * once, so a test can assert whether metros overlapped without relying
+     * on timing thresholds.
+     */
+    function trackConcurrency() {
+      let inFlight = 0;
+      let maxInFlight = 0;
+      mocks.getNearestJobCenter.mockImplementation(
+        async (centroids: NormalizedTownship["centroid"][]) => {
+          inFlight += 1;
+          maxInFlight = Math.max(maxInFlight, inFlight);
+          await new Promise((resolveDelay) => setTimeout(resolveDelay, 10));
+          inFlight -= 1;
+          return centroids.map(
+            (_, index): NearestJobCenterResult => ({
+              minutes: 10 + index,
+              jobCenterId: "fake-job-center-0",
+              jobCenterName: "Fake Job Centre 0",
+            }),
+          );
+        },
+      );
+      return () => maxInFlight;
+    }
+
+    afterEach(() => {
+      Reflect.deleteProperty(process.env, "OSRM_BASE_URL");
+    });
+
+    it("processes metros sequentially against the default public OSRM endpoint", async () => {
+      const getMaxInFlight = trackConcurrency();
+
+      await runRegion(fakeConfig(), root);
+
+      expect(getMaxInFlight()).toBe(1);
+      expect(mocks.getNearestJobCenter).toHaveBeenCalledTimes(2);
+    });
+
+    it("processes metros concurrently once a custom OSRM_BASE_URL is configured", async () => {
+      process.env.OSRM_BASE_URL = "http://localhost:5000";
+      const getMaxInFlight = trackConcurrency();
+
+      await runRegion(fakeConfig(), root);
+
+      expect(getMaxInFlight()).toBe(2);
+      expect(mocks.getNearestJobCenter).toHaveBeenCalledTimes(2);
+    });
+
+    it("publishes output in configured metro order regardless of which mode processed it", async () => {
+      process.env.OSRM_BASE_URL = "http://localhost:5000";
+      trackConcurrency();
+
+      await runRegion(fakeConfig(), root);
+
+      const manifest = JSON.parse(
+        await readFile(resolve(root, "fake-north", "manifest.v1.json"), "utf8"),
+      ) as { metroIds: string[] };
+      expect(manifest.metroIds).toEqual(["tshwane", "johannesburg"]);
+    });
+  });
 });
 
 describe("runAllProvinceRegions", () => {

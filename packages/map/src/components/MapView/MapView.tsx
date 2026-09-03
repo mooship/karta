@@ -887,6 +887,26 @@ function FocusLocationTarget({
 }
 
 /**
+ * Builds a tooltip content node whose text is set via `textContent` rather
+ * than a string handed to Leaflet's tooltip content option.
+ * @remarks Leaflet's `DivOverlay._updateContent` interprets a `string`
+ *   content value as HTML (`node.innerHTML = content`) with no escaping,
+ *   but appends anything else (an `HTMLElement`, per its `Content` type) as
+ *   a child node instead. `name` here comes straight from fetched GeoJSON
+ *   feature properties — public, sometimes externally-editable data (e.g.
+ *   OSM/Overpass-derived transit names) that a malicious or careless
+ *   contributor could seed with markup — so building a plain element with
+ *   `textContent` keeps any such markup inert, visible text rather than
+ *   letting it execute as HTML. This mirrors {@link bindSelectedFeaturePopup}'s
+ *   `renderToStaticMarkup`-escaped popup path.
+ */
+function buildTooltipLabelContent(name: string): HTMLElement {
+  const content = document.createElement("span");
+  content.textContent = name;
+  return content;
+}
+
+/**
  * Binds an area boundary's permanent name tooltip, sized and offset from its
  * feature properties: `labelPriority: "secondary"` gets the smaller/dimmer
  * style, a primary label with `subPlaceCount` at or above
@@ -914,7 +934,7 @@ function bindAreaBoundaryLabel(feature: Feature, layer: Layer) {
     typeof subPlaceCount === "number" &&
     subPlaceCount >= MAJOR_PRIMARY_LABEL_MIN_SUBPLACES;
 
-  layer.bindTooltip(name, {
+  layer.bindTooltip(buildTooltipLabelContent(name), {
     permanent: true,
     direction: "center",
     ...(offset ? { offset: offset as [number, number] } : {}),

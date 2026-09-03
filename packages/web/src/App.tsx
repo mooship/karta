@@ -554,6 +554,7 @@ export function App() {
       return;
     }
     let cancelled = false;
+    const controller = new AbortController();
     setDataError(false);
     setTownships([]);
     setTownshipAreas([]);
@@ -566,8 +567,14 @@ export function App() {
     );
 
     Promise.all([
-      Promise.allSettled(townshipUrls.map((url) => fetchTownships(url))),
-      Promise.allSettled(areaUrls.map((url) => fetchFeatureCollection(url))),
+      Promise.allSettled(
+        townshipUrls.map((url) => fetchTownships(url, controller.signal)),
+      ),
+      Promise.allSettled(
+        areaUrls.map((url) =>
+          fetchFeatureCollection(url, undefined, controller.signal),
+        ),
+      ),
     ]).then(([townshipResults, areaResults]) => {
       if (cancelled) {
         return;
@@ -594,6 +601,7 @@ export function App() {
     });
     return () => {
       cancelled = true;
+      controller.abort();
     };
   }, [loadAttempt, mapReady]);
 
