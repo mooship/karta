@@ -1,5 +1,5 @@
 import { vars } from "@karta/theme";
-import { style } from "@vanilla-extract/css";
+import { globalStyle, style } from "@vanilla-extract/css";
 import { eyebrowLabel, searchInput, visuallyHidden } from "../../shared.css";
 import { designTokens } from "../../theme/mapTokens";
 
@@ -42,13 +42,18 @@ export const groupTitle = style([
   },
 ]);
 
+/** `row`'s own `minHeight`, reused below so the two stay linked. */
+const ROW_MIN_HEIGHT = "48px";
+/** `list`'s own row `gap`, reused below so the two stay linked. */
+const ROW_GAP = "0.125rem";
+
 export const list = style({
   listStyle: "none",
   margin: 0,
   padding: 0,
   display: "flex",
   flexDirection: "column",
-  gap: "0.125rem",
+  gap: ROW_GAP,
 });
 
 /**
@@ -57,20 +62,24 @@ export const list = style({
  * `FeatureBrowser` can render several thousand rows at once (one per
  * selectable feature across every visible layer, e.g. every township in a
  * region), and only a small fraction are ever on screen. `contain-intrinsic-size`
- * reserves `row`'s own `minHeight` plus `list`'s `gap` so an off-screen row's
- * collapsed box still holds its place in the scroll container -- without it,
- * skipped rows report zero size and the scrollbar/scroll position jump as
- * rows above the viewport are skipped or un-skipped while scrolling.
+ * reserves a row's own height plus `list`'s `gap` so an off-screen row's
+ * collapsed box still holds its place in the scroll container -- without
+ * it, skipped rows report zero size and the scrollbar/scroll position jump
+ * as rows above the viewport are skipped or un-skipped while scrolling.
+ * `globalStyle` (rather than a second class applied per row in the TSX)
+ * targets `list`'s direct `<li>` children directly, since vanilla-extract's
+ * `style()` only allows a selector to target its own class, not a
+ * descendant -- see that function's own error message for why.
  */
-export const listItem = style({
+globalStyle(`${list} > li`, {
   contentVisibility: "auto",
-  containIntrinsicSize: "auto 50px",
+  containIntrinsicSize: `auto calc(${ROW_MIN_HEIGHT} + ${ROW_GAP})`,
 });
 
 export const row = style({
   display: "block",
   width: "100%",
-  minHeight: "48px",
+  minHeight: ROW_MIN_HEIGHT,
   padding: "0.5rem 0.625rem",
   border: 0,
   borderRadius: vars.shape.cornerSmall,
