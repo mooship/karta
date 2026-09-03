@@ -55,6 +55,24 @@ describe("nearestFeatureDistance", () => {
     );
   });
 
+  it("throws a descriptive error for a Point with no coordinates", () => {
+    const origin: [number, number] = [28.0, -26.0];
+    const degenerate: Point = { type: "Point", coordinates: [] as never };
+
+    expect(() => nearestFeatureDistance(origin, [degenerate])).toThrow(
+      "Point must have at least 2 coordinates, got 0",
+    );
+  });
+
+  it("throws a descriptive error for a Point with a single coordinate", () => {
+    const origin: [number, number] = [28.0, -26.0];
+    const degenerate: Point = { type: "Point", coordinates: [28.0] as never };
+
+    expect(() => nearestFeatureDistance(origin, [degenerate])).toThrow(
+      "Point must have at least 2 coordinates, got 1",
+    );
+  });
+
   it("picks the minimum distance across a mix of Point and LineString geometries", () => {
     const origin: [number, number] = [28.0, -26.0];
     const closePoint: Point = { type: "Point", coordinates: [28.0, -26.001] };

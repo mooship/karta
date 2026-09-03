@@ -1010,4 +1010,36 @@ describe("App", () => {
 
     consoleError.mockRestore();
   });
+
+  it("aborts the in-flight township/area requests when the component unmounts", async () => {
+    let capturedTownshipSignal: AbortSignal | undefined;
+    let capturedAreaSignal: AbortSignal | undefined;
+    dataMocks.getTownships
+      .mockReset()
+      .mockImplementation((_url: string, signal?: AbortSignal) => {
+        capturedTownshipSignal = signal;
+        return new Promise(() => {});
+      });
+    dataMocks.fetchAreas
+      .mockReset()
+      .mockImplementation(
+        (_url: string, _schema?: unknown, signal?: AbortSignal) => {
+          capturedAreaSignal = signal;
+          return new Promise(() => {});
+        },
+      );
+
+    const { unmount } = render(<App />);
+
+    await waitFor(() => expect(dataMocks.getTownships).toHaveBeenCalled());
+    expect(capturedTownshipSignal).toBeInstanceOf(AbortSignal);
+    expect(capturedAreaSignal).toBeInstanceOf(AbortSignal);
+    expect(capturedTownshipSignal?.aborted).toBe(false);
+    expect(capturedAreaSignal?.aborted).toBe(false);
+
+    unmount();
+
+    expect(capturedTownshipSignal?.aborted).toBe(true);
+    expect(capturedAreaSignal?.aborted).toBe(true);
+  });
 });

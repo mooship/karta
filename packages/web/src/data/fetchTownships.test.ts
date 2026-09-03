@@ -50,6 +50,22 @@ describe("fetchTownships", () => {
     expect(result).toEqual(geojson.features);
   });
 
+  it("forwards a given AbortSignal through to the underlying fetch call", async () => {
+    const geojson = { type: "FeatureCollection", features: [] };
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({ ok: true, json: async () => geojson }),
+    );
+    const controller = new AbortController();
+
+    await fetchTownships("/data/townships.v1.geojson", controller.signal);
+
+    expect(fetch).toHaveBeenCalledWith(
+      "/data/townships.v1.geojson",
+      expect.objectContaining({ signal: controller.signal }),
+    );
+  });
+
   it("keeps an existing numeric nearestTransitKm value instead of the null fallback", async () => {
     const geojson = {
       type: "FeatureCollection",

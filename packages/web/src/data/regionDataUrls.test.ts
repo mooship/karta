@@ -1,3 +1,4 @@
+import { getProvinceRegionIds } from "@karta/app";
 import { describe, expect, it } from "vitest";
 import { buildRegionDataUrls } from "./regionDataUrls";
 
@@ -7,5 +8,11 @@ describe("buildRegionDataUrls", () => {
       "/data/gauteng/townships.display.v1.geojson",
       "/data/western-cape/townships.display.v1.geojson",
     ]);
+  });
+
+  it("builds exactly one URL per province-kind region in REGIONS", () => {
+    expect(buildRegionDataUrls("townships.display.v1.geojson")).toHaveLength(
+      getProvinceRegionIds().length,
+    );
   });
 });

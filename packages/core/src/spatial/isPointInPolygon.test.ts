@@ -56,4 +56,37 @@ describe("isPointInPolygon", () => {
     };
     expect(isPointInPolygon([28.05, -25.95], feature)).toBe(true);
   });
+
+  it("throws a descriptive error for a point with no coordinates", () => {
+    expect(() => isPointInPolygon([] as never, square)).toThrow(
+      "point must have at least 2 coordinates, got 0",
+    );
+  });
+
+  it("throws a descriptive error for a point with a single coordinate", () => {
+    expect(() => isPointInPolygon([28.0] as never, square)).toThrow(
+      "point must have at least 2 coordinates, got 1",
+    );
+  });
+
+  it("throws a descriptive error for a Polygon with no rings", () => {
+    const degenerate: Polygon = { type: "Polygon", coordinates: [] };
+    expect(() => isPointInPolygon([28.05, -25.95], degenerate)).toThrow(
+      "Polygon must have at least one ring",
+    );
+  });
+
+  it("throws a descriptive error for a Polygon with an empty ring", () => {
+    const degenerate: Polygon = { type: "Polygon", coordinates: [[]] };
+    expect(() => isPointInPolygon([28.05, -25.95], degenerate)).toThrow(
+      "Polygon ring must have at least one coordinate",
+    );
+  });
+
+  it("throws a descriptive error for a MultiPolygon with no polygons", () => {
+    const degenerate: MultiPolygon = { type: "MultiPolygon", coordinates: [] };
+    expect(() => isPointInPolygon([28.05, -25.95], degenerate)).toThrow(
+      "MultiPolygon must have at least one polygon",
+    );
+  });
 });
