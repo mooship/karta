@@ -81,6 +81,94 @@ describe("fetchFeatureCollection", () => {
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 
+  it("deduplicates concurrent in-flight requests for the same URL into a single fetch", async () => {
+    let resolveFetch: (value: {
+      ok: boolean;
+      json: () => Promise<unknown>;
+    }) => void = () => {};
+    const fetchMock = vi.fn().mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          resolveFetch = resolve;
+        }),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    const first = fetchFeatureCollection("/data/concurrent.geojson");
+    const second = fetchFeatureCollection("/data/concurrent.geojson");
+
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+
+    resolveFetch({
+      ok: true,
+      json: async () => ({ type: "FeatureCollection", features: [] }),
+    });
+
+    const [firstResult, secondResult] = await Promise.all([first, second]);
+
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(firstResult).toBe(secondResult);
+  });
+
+  it("fires a fresh fetch for the same URL once the in-flight request has settled", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ type: "FeatureCollection", features: [] }),
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    await fetchFeatureCollection("/data/sequential.geojson");
+    clearFeatureCollectionCache();
+    await fetchFeatureCollection("/data/sequential.geojson");
+
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  it("clearFeatureCollectionCache also drops a never-settled in-flight request, so a later call for the same URL fires a fresh fetch instead of awaiting the abandoned one", async () => {
+    const fetchMock = vi.fn().mockImplementation(() => new Promise(() => {}));
+    vi.stubGlobal("fetch", fetchMock);
+
+    // Deliberately never awaited/settled — simulates a caller unmounting
+    // (or a test ending) before its request resolves, e.g. an aborted
+    // React effect. Left dangling in `inFlight` if clearFeatureCollectionCache
+    // doesn't also clear it.
+    void fetchFeatureCollection("/data/abandoned.geojson");
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+
+    clearFeatureCollectionCache();
+
+    const fetchMock2 = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ type: "FeatureCollection", features: [] }),
+    });
+    vi.stubGlobal("fetch", fetchMock2);
+
+    await expect(
+      fetchFeatureCollection("/data/abandoned.geojson"),
+    ).resolves.toMatchObject({ type: "FeatureCollection" });
+    expect(fetchMock2).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not dedupe a second call once the in-flight request has failed", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockRejectedValueOnce(new TypeError("Failed to fetch"))
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ type: "FeatureCollection", features: [] }),
+      });
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(
+      fetchFeatureCollection("/data/failed-inflight.geojson"),
+    ).rejects.toThrow();
+    await expect(
+      fetchFeatureCollection("/data/failed-inflight.geojson"),
+    ).resolves.toMatchObject({ type: "FeatureCollection" });
+
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
   it("fetches independently for different URLs", async () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,

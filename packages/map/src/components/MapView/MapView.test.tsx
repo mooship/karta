@@ -2367,10 +2367,44 @@ describe("MapView", () => {
       ),
     );
 
-    expect(mapMocks.featureLayers[0]?.bindTooltip).toHaveBeenCalledWith(
-      "Mamelodi",
+    const [tooltipContent, tooltipOptions] =
+      mapMocks.featureLayers[0]?.bindTooltip.mock.calls[0] ?? [];
+    expect(tooltipContent).toBeInstanceOf(HTMLElement);
+    expect((tooltipContent as HTMLElement).textContent).toBe("Mamelodi");
+    expect(tooltipOptions).toEqual(
       expect.objectContaining({ offset: [5, -10] }),
     );
+  });
+
+  it("escapes an area-boundary name into inert text instead of raw HTML", () => {
+    const maliciousName = "<img src=x onerror=alert(1)>";
+    render(
+      withDomain(
+        <MapView
+          {...DEFAULT_MAP_VIEW_PROPS}
+          areas={[]}
+          areaBoundaries={
+            [
+              {
+                type: "Feature",
+                properties: { name: maliciousName },
+                geometry: null,
+              },
+            ] as never
+          }
+          visibleLayerIds={["areas"]}
+        />,
+      ),
+    );
+
+    const [tooltipContent] =
+      mapMocks.featureLayers[0]?.bindTooltip.mock.calls[0] ?? [];
+    expect(typeof tooltipContent).not.toBe("string");
+    expect(tooltipContent).toBeInstanceOf(HTMLElement);
+    const element = tooltipContent as HTMLElement;
+    expect(element.textContent).toBe(maliciousName);
+    expect(element.innerHTML).not.toContain("<img");
+    expect(element.querySelector("img")).toBeNull();
   });
 
   it("uses the secondary label class for a secondary-priority area boundary", () => {
@@ -2396,8 +2430,12 @@ describe("MapView", () => {
       ),
     );
 
-    expect(mapMocks.featureLayers[0]?.bindTooltip).toHaveBeenCalledWith(
+    const [tooltipContent, tooltipOptions] =
+      mapMocks.featureLayers[0]?.bindTooltip.mock.calls[0] ?? [];
+    expect((tooltipContent as HTMLElement).textContent).toBe(
       "Rest of Mamelodi",
+    );
+    expect(tooltipOptions).toEqual(
       expect.objectContaining({
         className: expect.stringContaining("areaLabelSecondary"),
       }),
@@ -2424,8 +2462,10 @@ describe("MapView", () => {
       ),
     );
 
-    expect(mapMocks.featureLayers[0]?.bindTooltip).toHaveBeenCalledWith(
-      "Soweto",
+    const [tooltipContent, tooltipOptions] =
+      mapMocks.featureLayers[0]?.bindTooltip.mock.calls[0] ?? [];
+    expect((tooltipContent as HTMLElement).textContent).toBe("Soweto");
+    expect(tooltipOptions).toEqual(
       expect.objectContaining({
         className: expect.stringContaining("areaLabelMajor"),
       }),

@@ -104,6 +104,19 @@ const lineStringCoordinatesSchema = z.custom<Position[]>(
   (value) => isPositionArray(value, 2),
   { message: "Invalid GeoJSON position array" },
 );
+/**
+ * @remarks Kept distinct from {@link lineStringCoordinatesSchema} rather than
+ *   reused: RFC 7946 places no minimum-length requirement on `MultiPoint`,
+ *   unlike `LineString`'s two-position minimum, so a single-point
+ *   `MultiPoint` is valid GeoJSON and must parse. A minimum of 1 (rejecting
+ *   an empty coordinates array) matches this file's existing convention of
+ *   requiring a non-empty collection — see `isPolygonCoordinates`'s `>= 1`
+ *   ring check and `multiPolygonCoordinatesSchema`'s `>= 1` polygon check.
+ */
+const multiPointCoordinatesSchema = z.custom<Position[]>(
+  (value) => isPositionArray(value, 1),
+  { message: "Invalid GeoJSON position array" },
+);
 const multiLineStringCoordinatesSchema = z.custom<Position[][]>(
   (value) =>
     Array.isArray(value) && value.every((line) => isPositionArray(line, 2)),
@@ -171,7 +184,7 @@ const nonNullGeometrySchema: z.ZodMiniType<unknown> = z.discriminatedUnion(
     z.looseObject({ type: z.literal("Point"), coordinates: positionSchema }),
     z.looseObject({
       type: z.literal("MultiPoint"),
-      coordinates: lineStringCoordinatesSchema,
+      coordinates: multiPointCoordinatesSchema,
     }),
     z.looseObject({
       type: z.literal("LineString"),

@@ -14,7 +14,18 @@
  *   `entry.server.tsx` generates one nonce per request via {@link
  *   generateNonce}, sets it here for the response header, and passes the
  *   same value to `renderToReadableStream`'s own `nonce` option so both
- *   sides agree.
+ *   sides agree. `script-src` deliberately omits `https://ajax.cloudflare.com`
+ *   (Rocket Loader): nothing in this app requests or documents that Speed
+ *   feature, and it isn't a Workers Static Assets/SSR concept this codebase
+ *   controls — if a zone-level Cloudflare setting enables Rocket Loader for
+ *   this domain, it needs its own allowlist entry back, added deliberately
+ *   alongside enabling that setting, not carried here as a standing default.
+ *   `frame-src 'none'` is explicit rather than left to fall back through
+ *   `child-src`/`default-src`: this app never embeds an iframe, matching the
+ *   symmetric `frame-ancestors 'none'` (this app is never embedded either),
+ *   and an explicit value avoids `child-src`'s legacy fallback behaviour
+ *   (covering both framing *and* worker sources) unintentionally narrowing
+ *   `frame-src` to whatever `child-src` allows for workers.
  */
 export function buildContentSecurityPolicy(nonce?: string): string {
   const scriptSources = [
@@ -22,7 +33,6 @@ export function buildContentSecurityPolicy(nonce?: string): string {
     "'sha256-HG8PUaCswII51AFFCizfjxISB0x6tOe/Gqljp1vzDRw='",
     ...(nonce ? [`'nonce-${nonce}'`] : []),
     "https://static.cloudflareinsights.com",
-    "https://ajax.cloudflare.com",
   ];
 
   return [
@@ -33,7 +43,7 @@ export function buildContentSecurityPolicy(nonce?: string): string {
     "font-src 'self'",
     "connect-src 'self' https://cloudflareinsights.com https://static.cloudflareinsights.com https://tile.openstreetmap.org https://server.arcgisonline.com https://nominatim.openstreetmap.org https://tiles.openfreemap.org",
     "worker-src 'self' blob:",
-    "child-src blob:",
+    "frame-src 'none'",
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'none'",

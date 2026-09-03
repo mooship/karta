@@ -1,5 +1,9 @@
 import { afterEach, describe, expect, it } from "vitest";
-import { getOsrmBaseUrl, getOverpassUrls } from "./serviceUrls";
+import {
+  getOsrmBaseUrl,
+  getOverpassUrls,
+  isUsingCustomOsrmEndpoint,
+} from "./serviceUrls";
 
 describe("serviceUrls", () => {
   afterEach(() => {
@@ -15,6 +19,15 @@ describe("serviceUrls", () => {
   it("uses OSRM_BASE_URL when set, e.g. for a local instance", () => {
     process.env.OSRM_BASE_URL = "http://localhost:5000";
     expect(getOsrmBaseUrl()).toBe("http://localhost:5000");
+  });
+
+  it("reports no custom OSRM endpoint by default", () => {
+    expect(isUsingCustomOsrmEndpoint()).toBe(false);
+  });
+
+  it("reports a custom OSRM endpoint once OSRM_BASE_URL is set", () => {
+    process.env.OSRM_BASE_URL = "http://localhost:5000";
+    expect(isUsingCustomOsrmEndpoint()).toBe(true);
   });
 
   it("defaults to multiple public Overpass mirrors", () => {

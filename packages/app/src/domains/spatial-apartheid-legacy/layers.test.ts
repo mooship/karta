@@ -18,6 +18,37 @@ describe("SPATIAL_APARTHEID_LEGACY_LAYERS", () => {
     }
   });
 
+  it("includes every province-kind REGIONS entry in each multi-region layer's dataSource, so a newly added region flows in without touching layers.ts", () => {
+    const provinceRegionIds = REGIONS.filter(
+      (region) => region.kind === "province",
+    ).map((region) => region.id);
+    expect(provinceRegionIds.length).toBeGreaterThan(0);
+
+    const findLayer = (id: string): Layer => {
+      const layer = SPATIAL_APARTHEID_LEGACY_LAYERS.find((l) => l.id === id);
+      if (!layer) {
+        throw new Error(`expected layer ${id}`);
+      }
+      return layer;
+    };
+
+    for (const id of [
+      "townships",
+      "nearest-transit",
+      "spatial-burden",
+      "bus-rapid-transit",
+      "commuter-rail",
+    ]) {
+      const layer = findLayer(id);
+      for (const regionId of provinceRegionIds) {
+        expect(
+          layer.dataSource.some((url) => url.startsWith(`/data/${regionId}/`)),
+        ).toBe(true);
+      }
+      expect(layer.dataSource.length).toBe(provinceRegionIds.length);
+    }
+  });
+
   it("fetches bus-rapid-transit and commuter-rail from both configured regions", () => {
     const findLayer = (id: string): Layer => {
       const layer = SPATIAL_APARTHEID_LEGACY_LAYERS.find((l) => l.id === id);
@@ -53,12 +84,12 @@ describe("SPATIAL_APARTHEID_LEGACY_LAYERS", () => {
         ),
       );
     }
-    expect(findLayer("townships").companionSource).toBe(
-      "/data/gauteng/township-areas.display.v1.geojson",
-    );
-    expect(findLayer("spatial-burden").companionSource).toBe(
-      "/data/gauteng/township-areas.display.v1.geojson",
-    );
+  });
+
+  it("no longer sets companionSource, since nothing in @karta/map's fetch path consumes it and packages/web fetches township-areas itself via buildRegionDataUrls()", () => {
+    for (const layer of SPATIAL_APARTHEID_LEGACY_LAYERS) {
+      expect(layer.companionSource).toBeUndefined();
+    }
   });
 
   it("has exactly the 7 layers the current app ships, in order", () => {
@@ -84,9 +115,7 @@ describe("SPATIAL_APARTHEID_LEGACY_LAYERS", () => {
       "/data/gauteng/townships.display.v1.geojson",
       "/data/western-cape/townships.display.v1.geojson",
     ]);
-    expect(layer?.companionSource).toBe(
-      "/data/gauteng/township-areas.display.v1.geojson",
-    );
+    expect(layer?.companionSource).toBeUndefined();
     expect(layer?.interaction).toEqual({
       selectable: true,
       labelField: "name",
@@ -171,9 +200,7 @@ describe("SPATIAL_APARTHEID_LEGACY_LAYERS", () => {
       "/data/gauteng/townships.display.v1.geojson",
       "/data/western-cape/townships.display.v1.geojson",
     ]);
-    expect(layer?.companionSource).toBe(
-      "/data/gauteng/township-areas.display.v1.geojson",
-    );
+    expect(layer?.companionSource).toBeUndefined();
     const style = layer?.style;
     if (style?.kind !== "choropleth") {
       throw new Error("expected choropleth style");

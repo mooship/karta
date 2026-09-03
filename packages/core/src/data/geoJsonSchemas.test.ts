@@ -206,6 +206,36 @@ describe("featureCollectionSchema", () => {
     expect(result.success).toBe(false);
   });
 
+  it("accepts a single-position MultiPoint, unlike LineString which requires two", () => {
+    const result = featureCollectionSchema.safeParse({
+      type: "FeatureCollection",
+      features: [
+        {
+          type: "Feature",
+          properties: {},
+          geometry: { type: "MultiPoint", coordinates: [[28, -25]] },
+        },
+      ],
+    });
+
+    expect(result.success).toBe(true);
+  });
+
+  it("rejects a MultiPoint with no positions at all", () => {
+    const result = featureCollectionSchema.safeParse({
+      type: "FeatureCollection",
+      features: [
+        {
+          type: "Feature",
+          properties: {},
+          geometry: { type: "MultiPoint", coordinates: [] },
+        },
+      ],
+    });
+
+    expect(result.success).toBe(false);
+  });
+
   it("accepts positions carrying an elevation as a third coordinate", () => {
     const result = featureCollectionSchema.safeParse({
       type: "FeatureCollection",
