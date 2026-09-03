@@ -18,6 +18,7 @@ import {
   MobileLegend,
   type SelectableFeatureSearchEntry,
   SettingsMenu,
+  useAbortController,
   useDismissableOverlay,
   useRafScheduledValue,
 } from "@karta/map";
@@ -518,6 +519,8 @@ export function App() {
     markNotReady: markSheetEntranceNotReady,
     markReadyAfterPaint: markSheetEntranceReadyAfterPaint,
   } = useDeferredReadyAttribute<HTMLDivElement>("data-sheet-entrance-ready");
+  const { next: nextTownshipFetchSignal, abort: abortTownshipFetch } =
+    useAbortController();
 
   /**
    * Opens the desktop sidebar synchronously, in the same commit as
@@ -554,7 +557,7 @@ export function App() {
       return;
     }
     let cancelled = false;
-    const controller = new AbortController();
+    const signal = nextTownshipFetchSignal();
     setDataError(false);
     setTownships([]);
     setTownshipAreas([]);
@@ -568,12 +571,10 @@ export function App() {
 
     Promise.all([
       Promise.allSettled(
-        townshipUrls.map((url) => fetchTownships(url, controller.signal)),
+        townshipUrls.map((url) => fetchTownships(url, signal)),
       ),
       Promise.allSettled(
-        areaUrls.map((url) =>
-          fetchFeatureCollection(url, undefined, controller.signal),
-        ),
+        areaUrls.map((url) => fetchFeatureCollection(url, undefined, signal)),
       ),
     ]).then(([townshipResults, areaResults]) => {
       if (cancelled) {
@@ -601,9 +602,9 @@ export function App() {
     });
     return () => {
       cancelled = true;
-      controller.abort();
+      abortTownshipFetch();
     };
-  }, [loadAttempt, mapReady]);
+  }, [loadAttempt, mapReady, nextTownshipFetchSignal, abortTownshipFetch]);
 
   useEffect(() => {
     if (!panelOpen) {

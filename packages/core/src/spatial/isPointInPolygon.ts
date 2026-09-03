@@ -1,6 +1,7 @@
 import { booleanPointInPolygon } from "@turf/boolean-point-in-polygon";
 import { point as turfPoint } from "@turf/helpers";
 import type { Feature, MultiPolygon, Polygon, Position } from "geojson";
+import { assertValidPosition } from "./assertValidPosition";
 
 /**
  * Tests whether `point` falls within `polygon`.
@@ -17,11 +18,7 @@ export function isPointInPolygon(
   point: Position,
   polygon: Polygon | MultiPolygon | Feature<Polygon | MultiPolygon>,
 ): boolean {
-  if (point.length < 2) {
-    throw new Error(
-      `point must have at least 2 coordinates, got ${point.length}`,
-    );
-  }
+  assertValidPosition(point, "point");
 
   const geometry = polygon.type === "Feature" ? polygon.geometry : polygon;
 

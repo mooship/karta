@@ -2,9 +2,8 @@ import { rm } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
+  getProvinceRegionIds,
   type MetroDefinition,
-  type MetroId,
-  REGIONS,
   type TownshipFeature,
   type TransitLayerFeatureCollection,
 } from "@karta/app";
@@ -131,28 +130,6 @@ async function processMetro(
 }
 
 /**
- * Processes `metros` one at a time, each fully awaited before the next
- * starts.
- * @remarks The correct mode against the public OSRM demo server: its
- *   `BATCH_SIZE`/`BATCH_DELAY_MS` rate-limiting in `osrmClient.ts` assumes
- *   only one metro's requests are in flight, so this stays the default —
- *   see `runRegion`'s branch on `isUsingCustomOsrmEndpoint()`.
- */
-async function processMetrosSequentially(
-  metros: MetroDefinition[],
-  metroBoundaries: Record<MetroId, FeatureCollection>,
-  transitGeometries: TransitDistanceGeometry[],
-): Promise<MetroProcessingResult[]> {
-  const results: MetroProcessingResult[] = [];
-  for (const metro of metros) {
-    results.push(
-      await processMetro(metro, metroBoundaries[metro.id], transitGeometries),
-    );
-  }
-  return results;
-}
-
-/**
  * Builds one region's full dataset — transit sources, per-metro sub-place
  * boundaries, drive times and nearest-transit distances — into a staging
  * directory, then publishes it into `<outputRoot>/<regionId>` only once every
@@ -208,17 +185,32 @@ export async function runRegion(
     const allNormalizedTownships = [];
     const metroTownshipCounts: Record<string, number> = {};
 
-    const metroResults = isUsingCustomOsrmEndpoint()
-      ? await Promise.all(
+    // Sequential (each metro fully awaited before the next starts) is the
+    // correct mode against the public OSRM demo server: its
+    // `BATCH_SIZE`/`BATCH_DELAY_MS` rate-limiting in `osrmClient.ts` assumes
+    // only one metro's requests are in flight at a time. Concurrent
+    // processing only kicks in against a self-hosted instance with no such
+    // limit (`isUsingCustomOsrmEndpoint()`).
+    const metroResults: MetroProcessingResult[] = [];
+    if (isUsingCustomOsrmEndpoint()) {
+      metroResults.push(
+        ...(await Promise.all(
           metros.map((metro) =>
             processMetro(metro, metroBoundaries[metro.id], transitGeometries),
           ),
-        )
-      : await processMetrosSequentially(
-          metros,
-          metroBoundaries,
-          transitGeometries,
+        )),
+      );
+    } else {
+      for (const metro of metros) {
+        metroResults.push(
+          await processMetro(
+            metro,
+            metroBoundaries[metro.id],
+            transitGeometries,
+          ),
         );
+      }
+    }
 
     for (const result of metroResults) {
       allTownships.push(...result.townshipFeatures);
@@ -306,11 +298,7 @@ export async function runRegion(
 export async function runAllProvinceRegions(
   outputRoot = OUTPUT_ROOT,
 ): Promise<void> {
-  const provinceRegionIds = new Set(
-    REGIONS.filter((region) => region.kind === "province").map(
-      (region) => region.id,
-    ),
-  );
+  const provinceRegionIds = new Set(getProvinceRegionIds());
   for (const config of REGION_PIPELINE_CONFIGS) {
     if (!provinceRegionIds.has(config.regionId)) {
       continue;

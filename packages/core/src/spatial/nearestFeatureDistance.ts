@@ -2,6 +2,7 @@ import { distance } from "@turf/distance";
 import { lineString, point } from "@turf/helpers";
 import { pointToLineDistance } from "@turf/point-to-line-distance";
 import type { LineString, Point, Position } from "geojson";
+import { assertValidPosition } from "./assertValidPosition";
 
 /**
  * Finds the straight-line distance (kilometres) from `origin` to the nearest
@@ -27,24 +28,21 @@ export function nearestFeatureDistance(
   let nearestKm = Number.POSITIVE_INFINITY;
 
   for (const geometry of geometries) {
-    if (geometry.type === "Point" && geometry.coordinates.length < 2) {
-      throw new Error(
-        `Point must have at least 2 coordinates, got ${geometry.coordinates.length}`,
-      );
-    }
-    if (geometry.type === "LineString" && geometry.coordinates.length < 2) {
+    const isPoint = geometry.type === "Point";
+    if (isPoint) {
+      assertValidPosition(geometry.coordinates, "Point");
+    } else if (geometry.coordinates.length < 2) {
       throw new Error(
         `LineString must have at least 2 coordinates, got ${geometry.coordinates.length}`,
       );
     }
-    const km =
-      geometry.type === "Point"
-        ? distance(origin_, point(geometry.coordinates), {
-            units: "kilometers",
-          })
-        : pointToLineDistance(origin_, lineString(geometry.coordinates), {
-            units: "kilometers",
-          });
+    const km = isPoint
+      ? distance(origin_, point(geometry.coordinates), {
+          units: "kilometers",
+        })
+      : pointToLineDistance(origin_, lineString(geometry.coordinates), {
+          units: "kilometers",
+        });
     if (km < nearestKm) {
       nearestKm = km;
     }

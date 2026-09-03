@@ -68,6 +68,7 @@ export {
   fetchReverseGeocodeResult,
   nominatimGeocoderProvider,
 } from "./data/locationSearch";
+export { useAbortController } from "./hooks/useAbortController";
 export type { UseDismissableOverlayOptions } from "./hooks/useDismissableOverlay";
 export { useDismissableOverlay } from "./hooks/useDismissableOverlay";
 export type { LayerDataMap, LayerDataResult } from "./hooks/useLayerData";
