@@ -1,11 +1,16 @@
 # Adding a new region
 
 `REGIONS` (`packages/app/src/constants/regions.ts`) is the registry the data
-pipeline and `packages/web` are both written to loop over — today it holds a
-single entry, `gauteng`. This walks through what registering a second region
-actually touches, and is honest about the places that still assume Gauteng's
-shape (Census 2011 sub-places, OSRM car routing, South African transit
-operators) rather than being generic.
+pipeline and `packages/web` are both written to loop over — today it holds
+two entries, `gauteng` and `western-cape`. This walks through what
+registering a further region actually touches, and is honest about the
+places that still assume this domain's South African shape (Census 2011
+sub-places, OSRM car routing, South African transit operators) rather than
+being generic. `western-cape` (`packages/app/src/constants/regions.ts`,
+`data-pipeline/src/regions/westernCapePipelineConfig.ts`) is a real,
+published second region and a useful template for a small one: one metro
+(City of Cape Town), two transit sources (MyCiTi, PRASA rail), reusing the
+existing PRASA adapter as-is.
 
 If what you actually want is a new *dataset* rather than a new geography —
 a different kind of layer, or a domain with no `data-pipeline` source at all
@@ -44,10 +49,10 @@ the new id for free once it's added here.
 ## 2. Give it metros, if it's a province-kind region
 
 `MetroId` (`packages/app/src/constants/metros.ts`) is a **closed string
-union**, hardcoded to the nine current Gauteng municipality ids — it isn't
-derived from `REGIONS`. A new province-kind region with its own
-municipalities needs new ids added to that union too, plus entries in
-`METROS` tagged with the new `regionId`.
+union**, hardcoded to the ten current metro ids (the nine Gauteng
+municipalities plus `cape-town`) — it isn't derived from `REGIONS`. A new
+province-kind region with its own municipalities needs new ids added to
+that union too, plus entries in `METROS` tagged with the new `regionId`.
 
 Each new metro then needs the same setup `data-pipeline/README.md`'s
 "Adding a new metro" section documents in full: a bounding box in
@@ -68,8 +73,12 @@ real pipeline work, not a config-only extension point.
 
 ## 3. Write a `RegionPipelineConfig`
 
-Follow `data-pipeline/src/regions/gautengPipelineConfig.ts` as a template:
-one file exporting a `RegionPipelineConfig` —
+Follow `data-pipeline/src/regions/gautengPipelineConfig.ts` (many metros,
+several transit sources merged per layer) or the smaller
+`westernCapePipelineConfig.ts` (one metro, two transit sources, one of them
+— PRASA rail — reusing the existing `adapters/prasa.ts` fetcher as-is since
+its Overpass query already matches on operator/network regardless of
+region) as a template: one file exporting a `RegionPipelineConfig` —
 
 ```ts
 export interface RegionPipelineConfig {

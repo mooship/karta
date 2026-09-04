@@ -65,8 +65,13 @@ Importing `MapView` (even just its type) from the main `@karta/map` barrel along
 ## Usage
 
 ```tsx
-import { DomainProvider, Legend, MapView } from "@karta/map";
+import { DomainProvider, Legend } from "@karta/map";
 import { SPATIAL_APARTHEID_LEGACY_DOMAIN } from "@karta/app";
+
+const MapView = lazy(async () => {
+  const { MapView } = await import("@karta/map/MapView");
+  return { default: MapView };
+});
 
 <DomainProvider domain={SPATIAL_APARTHEID_LEGACY_DOMAIN}>
   <MapView
@@ -79,3 +84,6 @@ import { SPATIAL_APARTHEID_LEGACY_DOMAIN } from "@karta/app";
   <Legend mode="active" visibleLayerIds={["townships"]} />
 </DomainProvider>;
 ```
+
+`MapView` is imported from the `@karta/map/MapView` subpath, not the main
+barrel — see "`MapView` and code-splitting" above.
