@@ -10,7 +10,7 @@ npm install
 npm run run
 ```
 
-Runs a build for every `province`-kind region in `@karta/app`'s `REGIONS` registry (currently just `gauteng`) via `runAllProvinceRegions()`. To build a single region instead, pass `--region <id>`:
+Runs a build for every `province`-kind region in `@karta/app`'s `REGIONS` registry (currently `gauteng` and `western-cape`) via `runAllProvinceRegions()`. To build a single region instead, pass `--region <id>`:
 
 ```bash
 npm run run -- --region gauteng
@@ -18,10 +18,15 @@ npm run run -- --region gauteng
 
 Each region build (`runRegion(regionId)`) loops over the `METROS` tagged with that `regionId` (currently the nine Gauteng municipalities — Tshwane, Johannesburg, Ekurhuleni, Emfuleni, Midvaal, Lesedi, Mogale City, Rand West City, and Merafong City — for `gauteng`, and City of Cape Town for `western-cape`) to fetch and process each metro's boundaries and job-center routing, then writes a combined output to `packages/web/public/data/<regionId>/`.
 
-Each region's output currently includes display-optimized GeoJSON files only:
-`townships.display.v1.geojson`, `township-areas.display.v1.geojson`,
-`rapid-rail.display.v1.geojson`, `bus-rapid-transit.display.v1.geojson`,
-`commuter-rail.display.v1.geojson`, and `bus.display.v1.geojson`.
+Every region publishes display-optimized GeoJSON files only, always
+including `townships.display.v1.geojson` and `township-areas.display.v1.geojson`,
+plus one file per transit layer its `RegionPipelineConfig.sources` declares.
+`gauteng` produces all four transit layers — `rapid-rail.display.v1.geojson`,
+`bus-rapid-transit.display.v1.geojson`, `commuter-rail.display.v1.geojson`,
+and `bus.display.v1.geojson`. `western-cape` produces only
+`bus-rapid-transit.display.v1.geojson` (MyCiTi) and
+`commuter-rail.display.v1.geojson` (PRASA rail) — it has no equivalent
+source configured for `rapid-rail`/`bus`.
 
 Builds are fail-closed: the pipeline validates all required output files,
 required transit networks, and checksums before publishing. Artifacts are
@@ -64,28 +69,36 @@ see [`docs/adding-a-region.md`](../docs/adding-a-region.md).
 
 ## Adding a new transit operator
 
-Follow `src/adapters/gautrain.ts`, `src/adapters/aReYeng.ts`, or
-`src/adapters/reaVaya.ts` as a template: one adapter file with a
-`fetchX(bbox)` + `normalizeX()` pair, normalizing into the shared
+Follow `src/adapters/gautrain.ts`, `src/adapters/aReYeng.ts`,
+`src/adapters/reaVaya.ts`, `src/adapters/ekurhuleniIrptn.ts`, or
+`src/adapters/myciti.ts` (mirroring `reaVaya.ts`'s Overpass route-relation
+pattern) as a template: one adapter file with a `fetchX(bbox)` +
+`normalizeX()` pair, normalizing into the shared
 `TransitLayerFeatureCollection` shape. Wire the adapter into that region's
-`RegionPipelineConfig` (e.g. `src/regions/gautengPipelineConfig.ts`) as a new
-or merged `PipelineSource` — `{ layerId, fetch, outputFileName }` — and add
-its network name to `requiredNetworks` if every publish must include it.
+`RegionPipelineConfig` (e.g. `src/regions/gautengPipelineConfig.ts` or
+`src/regions/westernCapePipelineConfig.ts`) as a new or merged
+`PipelineSource` — `{ layerId, fetch, outputFileName }` — and add its
+network name to `requiredNetworks` if every publish must include it.
 `run.ts` fetches every `PipelineSource` in `config.sources` automatically;
 it doesn't need editing. Then re-run the pipeline.
 
 Gautrain rail, Gautrain Bus, and PRASA/Metrorail are treated as shared
-networks. A Re Yeng (Tshwane) and Rea Vaya (Johannesburg) are city-specific
-sources that currently contribute to the Gauteng region's `bus-rapid-transit`
-layer. Tshwane Bus Services is a city-specific source that contributes to the
-Gauteng region's `bus` layer alongside Gautrain Bus.
+networks (PRASA's adapter is reused as-is for `western-cape`, since its
+Overpass query already matches on operator/network regardless of region). A
+Re Yeng (Tshwane), Rea Vaya (Johannesburg), and Ekurhuleni IRPTN (fetched
+from the City of Ekurhuleni's own ArcGIS GIS service rather than Overpass)
+are city-specific sources that merge into the Gauteng region's
+`bus-rapid-transit` layer; MyCiTi merges into the Western Cape region's
+`bus-rapid-transit` layer the same way. Tshwane Bus Services is a
+city-specific source that contributes to the Gauteng region's `bus` layer
+alongside Gautrain Bus.
 
-Ekurhuleni, Emfuleni, Midvaal, Lesedi, Mogale City, Rand West City, and
-Merafong City currently contribute boundaries and job-centre routing only:
-OpenStreetMap has no sufficiently complete city-operator route geometry for
-their local bus systems, so no city-specific adapter exists yet. Their
-townships are still covered by the Gauteng-wide Gautrain, Gautrain Bus and
-PRASA/Metrorail layers.
+Emfuleni, Midvaal, Lesedi, Mogale City, Rand West City, and Merafong City
+currently contribute boundaries and job-centre routing only: OpenStreetMap
+has no sufficiently complete city-operator route geometry for their local
+bus systems, so no city-specific adapter exists yet. Their townships are
+still covered by the Gauteng-wide Gautrain, Gautrain Bus and PRASA/Metrorail
+layers.
 
 ## Rate limits
 
