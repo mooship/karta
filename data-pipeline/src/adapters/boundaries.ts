@@ -8,6 +8,7 @@ import type {
   Polygon,
 } from "geojson";
 import * as shapefile from "shapefile";
+import { hashKey, readJsonCache, writeJsonCache } from "../cache";
 
 // Source: Statistics South Africa Census 2011 sub-place boundaries (SP_SA_2011
 // shapefile), mirrored as a zip in the community-maintained "SA-Maps" GitHub
@@ -19,8 +20,11 @@ import * as shapefile from "shapefile";
 // records present with MN_CODE 798) on 2026-07-27 (Tshwane) and 2026-07-29
 // (Johannesburg).
 // https://github.com/j-norwood-young/SA-Maps/raw/master/Subplace.zip
-const BOUNDARY_SOURCE_URL =
+export const BOUNDARY_SOURCE_URL =
   "https://github.com/j-norwood-young/SA-Maps/raw/master/Subplace.zip";
+
+/** How long a cached, parsed national boundary result stays fresh before a run re-fetches it — long, since Census 2011 boundaries are static historical data that never changes between runs. */
+const BOUNDARIES_CACHE_MAX_AGE_MS = 1000 * 60 * 60 * 24 * 30;
 
 const SHP_ENTRY_NAME = "Subplace/SP_SA_2011.shp";
 const DBF_ENTRY_NAME = "Subplace/SP_SA_2011.dbf";
@@ -139,16 +143,49 @@ async function parseSubPlaceZip(zipBuffer: Buffer): Promise<FeatureCollection> {
  *   dataset for several metros (as `fetchMetroBoundariesForMetros` does) can
  *   fetch and parse this multi-megabyte, whole-country shapefile exactly
  *   once and reuse the result, rather than re-downloading and re-parsing
- *   byte-identical data once per metro.
- * @throws If the network fetch fails.
+ *   byte-identical data once per metro. The parsed result is cached to disk
+ *   (see `cache.ts`), since Census 2011 boundaries are static historical
+ *   data — a cache hit skips both the network fetch and the
+ *   zip-extraction/shapefile-parse work entirely, unlike a prior version of
+ *   this function which re-did both on every single call. Falls back to a
+ *   stale cache entry if the live fetch or parse fails, mirroring
+ *   `fetchOverpass`'s/`fetchTable`'s resilience, since this is otherwise the
+ *   pipeline's only external fetch with no retry or mirror rotation of its
+ *   own.
+ * @throws If the network fetch or parse fails and no cached fallback is
+ *   available.
  */
 export async function fetchNationalBoundaries(): Promise<FeatureCollection> {
-  const response = await fetch(BOUNDARY_SOURCE_URL);
-  if (!response.ok) {
-    throw new Error(`Failed to fetch metro boundaries: ${response.status}`);
+  const cacheKey = hashKey(["boundaries", BOUNDARY_SOURCE_URL]);
+  const cached = await readJsonCache<FeatureCollection>(
+    "boundaries",
+    cacheKey,
+    { maxAgeMs: BOUNDARIES_CACHE_MAX_AGE_MS },
+  );
+  if (cached) {
+    return cached;
   }
-  const zipBuffer = Buffer.from(await response.arrayBuffer());
-  return parseSubPlaceZip(zipBuffer);
+
+  try {
+    const response = await fetch(BOUNDARY_SOURCE_URL);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch metro boundaries: ${response.status}`);
+    }
+    const zipBuffer = Buffer.from(await response.arrayBuffer());
+    const parsed = await parseSubPlaceZip(zipBuffer);
+    await writeJsonCache("boundaries", cacheKey, parsed);
+    return parsed;
+  } catch (error) {
+    const stale = await readJsonCache<FeatureCollection>(
+      "boundaries",
+      cacheKey,
+      { allowStale: true },
+    );
+    if (stale) {
+      return stale;
+    }
+    throw error;
+  }
 }
 
 /**

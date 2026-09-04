@@ -1,10 +1,15 @@
+import { mkdtemp, utimes } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { resolve } from "node:path";
 import AdmZip from "adm-zip";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { hashKey, readJsonCache, writeJsonCache } from "../cache";
 
 const shapefileReadMock = vi.hoisted(() => vi.fn());
 vi.mock("shapefile", () => ({ read: shapefileReadMock }));
 
 import {
+  BOUNDARY_SOURCE_URL,
   fetchMetroBoundariesForMetros,
   fetchNationalBoundaries,
   filterFeaturesByMunicipality,
@@ -13,8 +18,29 @@ import {
 
 afterEach(() => {
   vi.unstubAllGlobals();
+  vi.unstubAllEnvs();
   shapefileReadMock.mockReset();
 });
+
+/** Enables real disk caching for a test, mirroring `cache.test.ts`'s setup. */
+async function useRealCacheDir(): Promise<string> {
+  const dir = await mkdtemp(resolve(tmpdir(), "karta-boundaries-cache-"));
+  vi.stubEnv("VITEST", "false");
+  vi.stubEnv("PIPELINE_CACHE_DIR", dir);
+  vi.stubEnv("PIPELINE_CACHE", "");
+  return dir;
+}
+
+function fakeZipBuffer(): ArrayBufferLike {
+  const zip = new AdmZip();
+  zip.addFile("Subplace/SP_SA_2011.shp", Buffer.from("shp bytes"));
+  zip.addFile("Subplace/SP_SA_2011.dbf", Buffer.from("dbf bytes"));
+  const zipBuffer = zip.toBuffer();
+  return zipBuffer.buffer.slice(
+    zipBuffer.byteOffset,
+    zipBuffer.byteOffset + zipBuffer.byteLength,
+  );
+}
 
 describe("normalizeBoundaries", () => {
   it("maps raw sub-place properties to NormalizedTownship and computes a centroid", () => {
@@ -269,6 +295,81 @@ describe("fetchNationalBoundaries", () => {
 
     await expect(fetchNationalBoundaries()).rejects.toThrow(
       "Expected Subplace/SP_SA_2011.shp and Subplace/SP_SA_2011.dbf entries in the boundary zip archive",
+    );
+  });
+});
+
+describe("fetchNationalBoundaries caching", () => {
+  it("returns a cached result without fetching when a fresh cache entry exists", async () => {
+    await useRealCacheDir();
+    const cached = { type: "FeatureCollection" as const, features: [] };
+    await writeJsonCache(
+      "boundaries",
+      hashKey(["boundaries", BOUNDARY_SOURCE_URL]),
+      cached,
+    );
+    const fetchMock = vi.fn();
+    vi.stubGlobal("fetch", fetchMock);
+
+    const result = await fetchNationalBoundaries();
+
+    expect(result).toEqual(cached);
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("fetches, parses, and caches the result on a cache miss", async () => {
+    await useRealCacheDir();
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      arrayBuffer: async () => fakeZipBuffer(),
+    });
+    vi.stubGlobal("fetch", fetchMock);
+    const parsed = {
+      type: "FeatureCollection" as const,
+      features: [
+        {
+          type: "Feature" as const,
+          properties: { SP_CODE: 1, SP_NAME: "Fixture" },
+          geometry: { type: "Polygon" as const, coordinates: [] },
+        },
+      ],
+    };
+    shapefileReadMock.mockResolvedValue(parsed);
+
+    const result = await fetchNationalBoundaries();
+
+    expect(result).toEqual(parsed);
+    const cachedNow = await readJsonCache(
+      "boundaries",
+      hashKey(["boundaries", BOUNDARY_SOURCE_URL]),
+      { allowStale: true },
+    );
+    expect(cachedNow).toEqual(parsed);
+  });
+
+  it("falls back to a stale cached result when the live fetch fails", async () => {
+    const dir = await useRealCacheDir();
+    const stale = { type: "FeatureCollection" as const, features: [] };
+    const cacheKey = hashKey(["boundaries", BOUNDARY_SOURCE_URL]);
+    await writeJsonCache("boundaries", cacheKey, stale);
+    const cachedPath = resolve(dir, "boundaries", `${cacheKey}.json`);
+    const old = new Date(Date.now() - 1000 * 60 * 60 * 24 * 60);
+    await utimes(cachedPath, old, old);
+    const fetchMock = vi.fn().mockResolvedValue({ ok: false, status: 500 });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const result = await fetchNationalBoundaries();
+
+    expect(result).toEqual(stale);
+  });
+
+  it("rethrows the original error when the fetch fails and no cached fallback exists", async () => {
+    await useRealCacheDir();
+    const fetchMock = vi.fn().mockResolvedValue({ ok: false, status: 500 });
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(fetchNationalBoundaries()).rejects.toThrow(
+      "Failed to fetch metro boundaries: 500",
     );
   });
 });

@@ -91,4 +91,61 @@ describe("nearestFeatureDistance", () => {
       1,
     );
   });
+
+  it("still finds the true nearest across a mix of near/far LineStrings and a Point, regardless of array order", () => {
+    const origin: [number, number] = [28.0, -26.0];
+    const nearLine: LineString = {
+      type: "LineString",
+      coordinates: [
+        [28.0, -25.995],
+        [28.05, -25.995],
+      ],
+    };
+    const midPoint: Point = { type: "Point", coordinates: [28.0, -25.99] };
+    const farLine: LineString = {
+      type: "LineString",
+      coordinates: [
+        [30.0, -30.0],
+        [30.1, -30.0],
+      ],
+    };
+
+    expect(
+      nearestFeatureDistance(origin, [farLine, midPoint, nearLine]),
+    ).toBeCloseTo(0.555, 1);
+    expect(
+      nearestFeatureDistance(origin, [nearLine, midPoint, farLine]),
+    ).toBeCloseTo(0.555, 1);
+  });
+
+  it("does not skip a LineString whose bounding box is much larger than its actual footprint, even when its far corner would appear farther than the current best", () => {
+    const origin: [number, number] = [28.0, -26.0];
+    // A Point close enough to establish a small "current best" before the
+    // long LineString below is checked.
+    const establishedNearby: Point = {
+      type: "Point",
+      coordinates: [28.5, -26.0],
+    };
+    // Starts ~5km west of the origin's longitude but stretches ~1300km east,
+    // so its bounding box's far corner is much farther than
+    // `establishedNearby` even though the line's actual nearest point (its
+    // western end) is much closer. A pre-filter that measures against the
+    // wrong bbox corner (rather than clamping per-axis) would wrongly skip
+    // this geometry and miss the true minimum.
+    const wideBoundingBoxLine: LineString = {
+      type: "LineString",
+      coordinates: [
+        [27.95, -26.001],
+        [40.0, -26.001],
+      ],
+    };
+
+    const distance = nearestFeatureDistance(origin, [
+      establishedNearby,
+      wideBoundingBoxLine,
+    ]);
+
+    expect(distance).not.toBeNull();
+    expect(distance).toBeLessThan(10);
+  });
 });
