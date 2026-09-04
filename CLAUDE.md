@@ -2,7 +2,7 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository — the codebase's architecture and conventions below — plus operating rules, under "Delegating to sub-agents" and "Dynamic workflows", for how Claude itself should delegate and orchestrate work while doing so.
 
-## What this is
+## About
 
 Karta is a reusable SDK for building public-interest geospatial layer platforms: a domain-agnostic layer model, generic map rendering, React hooks, and a typed design-token contract (`@karta/core`, `@karta/map`, `@karta/react`, `@karta/theme`) that any dataset can be wired into. `packages/app` and `packages/web` are the SDK's reference implementation, not the product — a real, published SSR app on Cloudflare Workers (no accounts, no tracking beyond cookieless page views) that proves the SDK out end-to-end. That implementation's one domain, `spatial-apartheid-legacy`, maps apartheid-era spatial planning legacy across South African metros using one combined regional map layer: recognized township areas, formal transit routes, modeled car drive-time to selected job centers, and a combined spatial-burden score weighting the two together. That domain's data currently covers two regions: `gauteng` (all nine Gauteng municipalities, including Tshwane/Pretoria and Johannesburg) and `western-cape` (City of Cape Town) — both regions' pipeline output is generated and published under `packages/web/public/data/`.
 
@@ -51,6 +51,11 @@ npm run cache:clean                # remove the whole data-pipeline/.cache direc
 The pipeline calls public third-party APIs by default (`router.project-osrm.org` for drive-time; an Overpass mirror rotation for transit — see `data-pipeline/README.md`'s "Rate limits" section). `OSRM_BASE_URL`/`OVERPASS_URL`/`OVERPASS_URLS` (read only by `src/constants/serviceUrls.ts`) point the pipeline at self-hosted instances instead (`data-pipeline/docker-compose.yml`) for heavy iteration without those rate limits. `PIPELINE_CACHE=0` disables the local response cache; `PIPELINE_CACHE_DIR` relocates it.
 
 Pre-commit (lefthook) runs biome (auto-fix staged files), dependency-cruiser (`npm run depcruise`), and the full vitest suite — expect all three to run on every commit. It does **not** run typecheck, the Paraglide freshness check, or coverage thresholds; those are CI-only, so a commit passing pre-commit can still fail CI.
+
+## Safety
+
+- **Never deploy `packages/web` to Cloudflare Workers production without explicit permission from the user.** Always ask first and wait for confirmation.
+- **Never run the full data pipeline (`npm run run` in `data-pipeline/`) or publish its output to `packages/web/public/data/` without asking first.** It calls third-party rate-limited APIs (OSRM, Overpass) and overwrites committed region data. `npm run validate` (re-checks already-published output against its manifest, no network calls) is always safe to run unprompted.
 
 ## Architecture
 
