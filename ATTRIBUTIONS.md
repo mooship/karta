@@ -2,9 +2,10 @@
 
 ## Data
 
-- **OpenStreetMap** — © OpenStreetMap contributors, [ODbL](https://opendatacommons.org/licenses/odbl/). Gautrain rail, Gautrain Bus, and PRASA geometry is derived from OSM via the Overpass API.
+- **OpenStreetMap** — © OpenStreetMap contributors, [ODbL](https://opendatacommons.org/licenses/odbl/). Gautrain rail, Gautrain Bus, PRASA, Rea Vaya, Tshwane Bus Services, and MyCiTi geometry is derived from OSM via the Overpass API.
 - **Statistics South Africa** — Census 2011 sub-place boundaries (`SP_SA_2011`), mirrored by the community-maintained [SA-Maps](https://github.com/j-norwood-young/SA-Maps) repository.
 - **City of Tshwane** — A Re Yeng trunk, complementary, and feeder route data from the municipal e-GIS open data service.
+- **City of Ekurhuleni** — Ekurhuleni IRPTN route data from the municipal GIS service.
 - **OSRM** — modeled car-time matrices computed with the public [Project OSRM](https://project-osrm.org/) demo server.
 - **Basemap tiles** — Positron/Liberty/Dark basemap tiles © OpenStreetMap contributors, served by [OpenFreeMap](https://openfreemap.org); topographic tiles © Esri, HERE, Garmin, USGS, and the GIS User Community; satellite imagery © Esri, Maxar, Earthstar Geographics.
 
