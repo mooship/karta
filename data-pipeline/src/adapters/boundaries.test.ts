@@ -376,17 +376,9 @@ describe("fetchNationalBoundaries caching", () => {
 
 describe("fetchMetroBoundariesForMetros", () => {
   it("fetches and parses the national boundary zip exactly once for multiple metros", async () => {
-    const zip = new AdmZip();
-    zip.addFile("Subplace/SP_SA_2011.shp", Buffer.from("shp bytes"));
-    zip.addFile("Subplace/SP_SA_2011.dbf", Buffer.from("dbf bytes"));
-    const zipBuffer = zip.toBuffer();
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
-      arrayBuffer: async () =>
-        zipBuffer.buffer.slice(
-          zipBuffer.byteOffset,
-          zipBuffer.byteOffset + zipBuffer.byteLength,
-        ),
+      arrayBuffer: async () => fakeZipBuffer(),
     });
     vi.stubGlobal("fetch", fetchMock);
     shapefileReadMock.mockResolvedValue({
