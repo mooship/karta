@@ -7,8 +7,10 @@ African cities. Contributions are welcome — to the SDK itself, and to the
 reference app: better data sources, accessibility improvements, and
 corrections to how areas are classified or described.
 
-Please read [`README.md`](README.md) first for what the project is, what v1
-deliberately does not claim, and where the documentation lives.
+Please read [`README.md`](README.md) first for what the project is and where
+the documentation lives, and
+[`docs/domains/spatial-apartheid-legacy.md`](docs/domains/spatial-apartheid-legacy.md)
+for what the reference domain's data can — and can't yet — establish.
 
 This project follows [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md). By
 participating, you agree to uphold those standards.
@@ -114,9 +116,11 @@ meaning rather than its code:
   reproducible.
 - Changes to which areas count as included township areas belong in
   `packages/app/src/constants/townships.ts`, and the reasoning belongs in
-  [`docs/data/tshwane-area-classification.md`](docs/data/tshwane-area-classification.md)
-  and/or [`docs/data/johannesburg-area-classification.md`](docs/data/johannesburg-area-classification.md).
-- Don't overstate what the data supports. Keep copy within the limits the README
+  that metro's `docs/data/<metro>-area-classification.md` doc — see
+  [`docs/domains/spatial-apartheid-legacy.md`](docs/domains/spatial-apartheid-legacy.md#area-classification-by-metro)
+  for the full list, one per metro across both published regions.
+- Don't overstate what the data supports. Keep copy within the limits
+  [`docs/domains/spatial-apartheid-legacy.md`](docs/domains/spatial-apartheid-legacy.md)
   already sets out.
 - Never contribute personally identifying or household-level data.
 
