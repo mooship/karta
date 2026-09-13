@@ -21,10 +21,10 @@
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.0.1",
     "@types/react": "^19.2.17",
-    "@types/react-dom": "^19.2.3",
-    "happy-dom": "^20.12.2",
+    "@types/react-dom": "^19.2.7",
+    "happy-dom": "^20.14.0",
     "react-dom": "^19.2.8",
     "typescript": "^7.0.2",
-    "vitest": "^4.1.10"
+    "vitest": "^5.0.0"
   }
 }
