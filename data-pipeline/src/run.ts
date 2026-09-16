@@ -287,7 +287,7 @@ export async function runRegion(
 }
 
 /**
- * `npm run run`'s default entry point: builds and publishes every configured
+ * `pnpm run run`'s default entry point: builds and publishes every configured
  * region whose `REGIONS` entry is a province, in registration order.
  * @param outputRoot - Root directory each region is published under, passed
  *   straight through to `runRegion`; defaults to `OUTPUT_ROOT`.
@@ -308,7 +308,7 @@ export async function runAllProvinceRegions(
   }
 }
 
-/* v8 ignore start -- exercised via `npm run run`, not unit tests: runs the real pipeline against live external services */
+/* v8 ignore start -- exercised via `pnpm run run`, not unit tests: runs the real pipeline against live external services */
 if (isDirectExecution(process.argv, import.meta.url)) {
   const regionArgIndex = process.argv.indexOf("--region");
   const requestedRegionId =

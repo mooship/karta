@@ -18,25 +18,25 @@ participating, you agree to uphold those standards.
 ## Getting set up
 
 ```bash
-npm install
-npm run test        # Vitest across the npm workspaces under packages/*, plus data-pipeline
-npm run test:coverage # same scope, with a coverage report
-npm run typecheck   # tsc --noEmit for @karta/core, @karta/app, @karta/theme, @karta/map, @karta/react + web build + data-pipeline typecheck
-npm run lint        # biome check . && dependency-cruiser (architecture boundaries between packages, see .dependency-cruiser.cjs)
-npm run format      # biome format --write .
-npm run dev --workspace @karta/web
+pnpm install
+pnpm run test        # Vitest across the pnpm workspaces under packages/*, plus data-pipeline
+pnpm run test:coverage # same scope, with a coverage report
+pnpm run typecheck   # tsc --noEmit for @karta/core, @karta/app, @karta/theme, @karta/map, @karta/react + web build + data-pipeline typecheck
+pnpm run lint        # biome check . && dependency-cruiser (architecture boundaries between packages, see .dependency-cruiser.cjs)
+pnpm run format      # biome format --write .
+pnpm --filter @karta/web run dev
 ```
 
-Run a single test file with `npx vitest run path/to/file.test.ts`.
+Run a single test file with `pnpm exec vitest run path/to/file.test.ts`.
 
-`data-pipeline/` is a standalone project rather than an npm workspace, so it has
+`data-pipeline/` is a standalone project rather than a pnpm workspace, so it has
 its own install step:
 
 ```bash
 cd data-pipeline
-npm install
-npm run run       # full pipeline: boundaries, transit, OSRM routing, join, write output
-npm run display   # legacy helper: rebuilds compact display files for per-metro source directories when present
+pnpm install
+pnpm run run       # full pipeline: boundaries, transit, OSRM routing, join, write output
+pnpm run display   # legacy helper: rebuilds compact display files for per-metro source directories when present
 ```
 
 See [`data-pipeline/README.md`](data-pipeline/README.md) before running the full
@@ -65,7 +65,7 @@ layer model, Leaflet config factory, registry factory, geodata utils),
 design tokens), `packages/app` (the reference domain's data and constants,
 built on `packages/core`), and `packages/web` (the SSR app that wires the
 other five together for the published `spatial-apartheid-legacy` domain).
-`.dependency-cruiser.cjs` (run via `npm run depcruise`, part of `npm run lint`)
+`.dependency-cruiser.cjs` (run via `pnpm run depcruise`, part of `pnpm run lint`)
 enforces that dependency direction mechanically — see CLAUDE.md's SOLID
 convention.
 
@@ -131,8 +131,8 @@ meaning rather than its code:
 - Keep each pull request to one logical change.
 - Describe what changed and why. If it's a visual change, include a screenshot in
   both light and dark themes.
-- Make sure `npm run lint`, `npm run typecheck`, `npm run test`, and
-  `npm run build` all pass locally.
+- Make sure `pnpm run lint`, `pnpm run typecheck`, `pnpm run test`, and
+  `pnpm run build` all pass locally.
 - If you regenerated pipeline output, say which command you ran and why the data
   diff is what it is.
 

@@ -19,13 +19,13 @@
 
 ## Stack
 
-React + TypeScript SSR app (React Router framework mode on Vite, `react-leaflet`, Zustand, Zod, vanilla-extract) split into six npm workspace packages — `@karta/core`, `@karta/map`, `@karta/react`, `@karta/theme`, `@karta/app`, and `@karta/web` — plus a Node/TypeScript offline data pipeline (public OSRM for routing, Overpass API + open data portals for transit, no Docker/GDAL required), and Cloudflare Workers for edge rendering and asset delivery. No accounts and no tracking beyond cookieless page views.
+React + TypeScript SSR app (React Router framework mode on Vite, `react-leaflet`, Zustand, Zod, vanilla-extract) split into six pnpm workspace packages — `@karta/core`, `@karta/map`, `@karta/react`, `@karta/theme`, `@karta/app`, and `@karta/web` — plus a Node/TypeScript offline data pipeline (public OSRM for routing, Overpass API + open data portals for transit, no Docker/GDAL required), and Cloudflare Workers for edge rendering and asset delivery. No accounts and no tracking beyond cookieless page views.
 
 ## Contributing
 
 ```bash
-npm install
-npm run dev --workspace @karta/web
+pnpm install
+pnpm --filter @karta/web run dev
 ```
 
 [`CONTRIBUTING.md`](CONTRIBUTING.md) covers the full setup, the project conventions, and how to propose data changes. [`SECURITY.md`](SECURITY.md) covers reporting a suspected vulnerability privately.

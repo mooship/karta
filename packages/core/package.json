@@ -23,11 +23,11 @@
     "@turf/length": "^7.1.0",
     "@turf/meta": "^7.1.0",
     "@turf/point-to-line-distance": "^7.1.0",
+    "@types/leaflet": "^1.9.22",
     "proj4": "^2.22.0",
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@types/geojson": "^7946.0.14",
-    "@types/leaflet": "^1.9.22"
+    "@types/geojson": "^7946.0.14"
   }
 }
