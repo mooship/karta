@@ -8,24 +8,20 @@
   "engines": {
     "node": ">=22"
   },
-  "workspaces": [
-    "packages/*"
-  ],
-  "overrides": {
-    "maplibre-gl": "5.24.0"
-  },
+  "packageManager": "pnpm@10.33.0",
   "scripts": {
-    "lint": "biome check . && npm run depcruise",
+    "lint": "biome check . && pnpm run depcruise",
     "depcruise": "depcruise packages/*/src --config .dependency-cruiser.cjs",
     "format": "biome format --write .",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
-    "test:e2e": "npm run test:e2e --workspace @karta/web",
-    "typecheck": "npm run typecheck --workspace @karta/core && npm run typecheck --workspace @karta/app && npm run typecheck --workspace @karta/theme && npm run typecheck --workspace @karta/map && npm run typecheck --workspace @karta/react && npm run build --workspace @karta/web && npm run typecheck --prefix data-pipeline",
-    "build": "npm run build --workspaces --if-present"
+    "test:e2e": "pnpm --filter @karta/web run test:e2e",
+    "typecheck": "pnpm --filter @karta/core run typecheck && pnpm --filter @karta/app run typecheck && pnpm --filter @karta/theme run typecheck && pnpm --filter @karta/map run typecheck && pnpm --filter @karta/react run typecheck && pnpm --filter @karta/web run build && pnpm --dir data-pipeline run typecheck",
+    "build": "pnpm -r run build"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.12",
+    "@inlang/plugin-message-format": "^4.4.4",
     "@swc/core": "^1.16.2",
     "@vitest/coverage-v8": "^5.0.0",
     "dependency-cruiser": "^18.2.0",
@@ -35,5 +31,16 @@
     "typescript": "^7.0.2",
     "vitest": "^5.0.0",
     "wrangler": "^4.130.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "maplibre-gl": "5.24.0"
+    },
+    "onlyBuiltDependencies": [
+      "@swc/core",
+      "esbuild",
+      "lefthook",
+      "workerd"
+    ]
   }
 }
