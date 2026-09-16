@@ -3,7 +3,7 @@
  * used by `root.tsx`'s `meta()`, from a small self-contained HTML template.
  *
  * @remarks
- * Run with `npm run generate:og-image --workspace @karta/web` after brand
+ * Run with `pnpm --filter @karta/web run generate:og-image` after brand
  * copy or colours change. There's no image-generation library in the
  * dependency tree (no `sharp`/`satori`/`resvg`), but `@playwright/test`'s
  * bundled Chromium already is — this reuses it as a one-shot HTML-to-PNG
