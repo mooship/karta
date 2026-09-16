@@ -138,8 +138,8 @@ new config in `REGION_PIPELINE_CONFIGS` (`data-pipeline/src/regionPipelineConfig
 
 ```bash
 cd data-pipeline
-npm run run -- --region <id>
-npm run validate
+pnpm run run -- --region <id>
+pnpm run validate
 ```
 
 Builds are fail-closed: `runRegion` validates required output files, required
