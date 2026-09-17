@@ -1,23 +1,32 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "karta",
-  "compatibility_date": "2026-07-27",
+  "compatibility_date": "2026-09-08",
   "compatibility_flags": ["nodejs_compat"],
   "main": "./packages/web/workers/app.ts",
   "workers_dev": true,
+  "cache": {
+    "enabled": true,
+    "cross_version_cache": true
+  },
   "placement": {
     "mode": "smart"
   },
   "assets": {
-    "directory": "./packages/web/build/client"
+    "directory": "./packages/web/build/client",
+    "binding": "ASSETS"
   },
   "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1,
     "logs": {
       "enabled": true,
-      "invocation_logs": true
+      "invocation_logs": true,
+      "head_sampling_rate": 1
     },
     "traces": {
-      "enabled": true
+      "enabled": true,
+      "head_sampling_rate": 1
     }
   }
 }
