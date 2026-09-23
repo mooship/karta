@@ -1,3 +1,8 @@
+/**
+ * `data-testid` values used across the Playwright suite, mirroring the
+ * `data-testid` attributes rendered by the app's own components — keeping
+ * them in one place means a renamed test id only needs updating here.
+ */
 export const E2E = {
   panelToggle: "panel-toggle",
   panelContainer: "panel-container",

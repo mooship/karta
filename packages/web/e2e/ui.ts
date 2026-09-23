@@ -1,6 +1,11 @@
 import { expect, type Page } from "@playwright/test";
 import { E2E } from "./selectors";
 
+/**
+ * Opens the info panel if it's closed (it's closed by default on mobile
+ * viewports), so tests can reach controls inside it without special-casing
+ * viewport size.
+ */
 export async function ensurePanelOpen(page: Page) {
   const panelToggle = page.getByTestId(E2E.panelToggle);
   await expect(panelToggle).toBeVisible();
