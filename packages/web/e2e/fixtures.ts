@@ -55,6 +55,12 @@ export const GEOCODER_REVERSE_RESULT = {
   lon: "27.94",
 };
 
+/**
+ * Playwright's `test`, extended to stub every third-party network request
+ * (basemap tiles, OpenFreeMap vector styles, Nominatim search/reverse-geocode)
+ * on every page, so the suite runs deterministically without depending on
+ * those services' availability or rate limits.
+ */
 export const test = base.extend({
   baseURL: [
     process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:4173",
