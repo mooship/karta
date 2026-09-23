@@ -10,16 +10,18 @@ import type {
 import * as shapefile from "shapefile";
 import { hashKey, readJsonCache, writeJsonCache } from "../cache";
 
-// Source: Statistics South Africa Census 2011 sub-place boundaries (SP_SA_2011
-// shapefile), mirrored as a zip in the community-maintained "SA-Maps" GitHub
-// repository (chosen because statssa.gov.za does not expose a direct,
-// scriptable download link; Adrian Frith's public repos were checked and do
-// not host a ready-made sub-place boundary GeoJSON/shapefile for Tshwane).
-// Verified working (HTTP 200, valid zip containing SP_SA_2011.shp/.dbf/.shx,
-// City of Tshwane records present with MN_CODE 799, City of Johannesburg
-// records present with MN_CODE 798) on 2026-07-27 (Tshwane) and 2026-07-29
-// (Johannesburg).
-// https://github.com/j-norwood-young/SA-Maps/raw/master/Subplace.zip
+/**
+ * Source: Statistics South Africa Census 2011 sub-place boundaries
+ * (SP_SA_2011 shapefile), mirrored as a zip in the community-maintained
+ * "SA-Maps" GitHub repository (chosen because statssa.gov.za does not
+ * expose a direct, scriptable download link; Adrian Frith's public repos
+ * were checked and do not host a ready-made sub-place boundary
+ * GeoJSON/shapefile for Tshwane).
+ * @remarks Verified working (HTTP 200, valid zip containing
+ *   SP_SA_2011.shp/.dbf/.shx, City of Tshwane records present with
+ *   MN_CODE 799, City of Johannesburg records present with MN_CODE 798) on
+ *   2026-07-27 (Tshwane) and 2026-07-29 (Johannesburg).
+ */
 export const BOUNDARY_SOURCE_URL =
   "https://github.com/j-norwood-young/SA-Maps/raw/master/Subplace.zip";
 
