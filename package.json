@@ -20,17 +20,17 @@
     "build": "pnpm -r run build"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.5.12",
+    "@biomejs/biome": "^2.5.14",
     "@inlang/plugin-message-format": "^4.4.4",
     "@swc/core": "^1.16.2",
     "@vitest/coverage-v8": "^5.0.1",
-    "dependency-cruiser": "^18.3.1",
+    "dependency-cruiser": "^18.4.0",
     "lefthook": "^2.1.14",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
     "typescript": "^7.0.2",
     "vitest": "^5.0.1",
-    "wrangler": "^4.132.0"
+    "wrangler": "^4.136.3"
   },
   "pnpm": {
     "overrides": {
