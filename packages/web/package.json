@@ -46,7 +46,7 @@
     "happy-dom": "^20.14.5",
     "tsx": "^4.19.2",
     "typescript": "^7.0.2",
-    "vite": "^8.3.0",
+    "vite": "^8.3.3",
     "vitest": "^5.0.1"
   },
   "dependencies": {
