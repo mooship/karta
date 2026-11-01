@@ -1,5 +1,5 @@
 /**
- * Enforces the SDK package dependency direction documented in CLAUDE.md's
+ * Enforces the SDK package dependency direction documented in AGENTS.md's
  * "Architecture" section: `packages/core`, `packages/react`, and
  * `packages/theme` are dependency-free foundations, `packages/map` builds on
  * `core`/`react`/`theme` only, and `packages/app` builds on `core` only --

@@ -66,7 +66,7 @@ design tokens), `packages/app` (the reference domain's data and constants,
 built on `packages/core`), and `packages/web` (the SSR app that wires the
 other five together for the published `spatial-apartheid-legacy` domain).
 `.dependency-cruiser.cjs` (run via `npm run depcruise`, part of `npm run lint`)
-enforces that dependency direction mechanically — see CLAUDE.md's SOLID
+enforces that dependency direction mechanically — see AGENTS.md's SOLID
 convention.
 
 Two consequences worth knowing before you start:
