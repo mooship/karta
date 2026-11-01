@@ -1,7 +1,5 @@
 # Karta Plan B: Web Rendering Refactor Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
-
 **Goal:** Migrate `packages/web` off the closed-union `LayerId`/hardcoded `LayerDefinition` model onto the generic `Layer`/`LayerGroup` types and `GAUTENG_SPATIAL_LEGACY_DOMAIN` data from Plan A, removing every hardcoded township/transit special-case from rendering, styling, state, and copy — with zero user-visible behaviour change.
 
 **Architecture:** `registry.ts` becomes a thin accessor over `GAUTENG_SPATIAL_LEGACY_DOMAIN`. `createLayerConfig.ts` becomes a pure function of `Layer.style` (buckets + an optional emphasis hook supplied by the domain layer, never a name-based lookup in core code). `useMapUiStore.ts` derives exclusivity from `LayerGroup.selectionMode`. `MapView.tsx`/`LayerToggles.tsx`/`Legend.tsx` dispatch on `geometryKind`/`interaction`/`style` instead of literal ids.
@@ -10,7 +8,7 @@
 
 ## Global Constraints
 
-- Plan A (`docs/superpowers/plans/2026-07-31-karta-plan-a-shared-generic-types.md`) must be complete and merged before starting — this plan imports `GAUTENG_SPATIAL_LEGACY_DOMAIN`, `Layer`, `LayerGroup` from `@buffer-zones/shared`.
+- Plan A (`docs/plans/2026-07-31-karta-plan-a-shared-generic-types.md`) must be complete and merged before starting — this plan imports `GAUTENG_SPATIAL_LEGACY_DOMAIN`, `Layer`, `LayerGroup` from `@buffer-zones/shared`.
 - TDD: write/update the failing test before implementation code (CLAUDE.md).
 - British English in all user-facing copy (CLAUDE.md).
 - Biome `useBlockStatements: error` — brace every `if` (CLAUDE.md).

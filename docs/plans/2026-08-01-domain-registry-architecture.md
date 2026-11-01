@@ -1,7 +1,5 @@
 # Domain Registry & Routing Architecture Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
-
 **Goal:** Replace the hardcoded single-domain wiring (`layers/registry.ts`, `App.tsx`, `useMapUiStore.ts`, routing) with a domain registry and a `/d/:domainId` route, so a second domain can be added without touching `packages/web` core code.
 
 **Architecture:** `packages/shared` gains a `Domain` type and a `DOMAINS` registry (`getDomain(domainId)`). `packages/web`'s `registry.ts`, `useLayerData`, and `useMapUiStore` become domain-parameterized rather than importing `GAUTENG_SPATIAL_LEGACY_DOMAIN` directly. React Router (framework mode, v8) gets a `/d/:domainId` route; `/` redirects to the default domain.

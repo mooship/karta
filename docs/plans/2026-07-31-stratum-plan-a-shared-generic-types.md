@@ -1,7 +1,5 @@
 # Karta Plan A: Shared Generic Layer/LayerGroup Types Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
-
 **Goal:** Add a generic, config-driven `Layer`/`LayerGroup` type system to `packages/shared`, and express the current 6 township/transit layers as data in a new `gauteng-spatial-legacy` domain package — additively, without touching `packages/web` or `data-pipeline`, so the whole repo stays green after every commit in this plan.
 
 **Architecture:** New types live in `packages/shared/src/types/genericLayer.ts` alongside (not replacing) the existing `packages/shared/src/types/layer.ts`. The domain package (`packages/shared/src/domains/gauteng-spatial-legacy/`) is pure data built from the new types, snapshot-tested against today's hardcoded values in `packages/web` so Plan B has a verified source of truth to migrate to. Plan B later deletes the old `layer.ts` types and rewires `packages/web` onto this package; Plan C rewires `data-pipeline`.
@@ -15,7 +13,7 @@
 - British English spelling/grammar in all user-facing copy strings (CLAUDE.md) — applies to every `label`/`description` string added here.
 - Biome `useBlockStatements: error` — always brace `if` statements (CLAUDE.md).
 - Every commit in this plan must leave `npm run test` and `npm run typecheck` green across the whole repo (lefthook runs the full vitest suite on every commit) — this plan is strictly additive to avoid breaking `packages/web`/`data-pipeline`, which still import the old `LayerId`/`LayerDefinition`/`LayerStyle` from `packages/shared/src/types/layer.ts` unchanged.
-- Design source of truth: `docs/superpowers/specs/2026-07-31-karta-generic-layer-platform-design.md` (§3 Core abstractions). Note: this plan uses distinct names (`Layer`, `LayerGroup`, `ChoroplethLayerStyle`, etc.) instead of the spec's `LayerDefinition`/`LayerGroupDefinition` to avoid colliding with the still-live old types of the same name in `layer.ts` — Plan B renames/collapses these once the old types are deleted.
+- Design source of truth: `docs/specs/2026-07-31-karta-generic-layer-platform-design.md` (§3 Core abstractions). Note: this plan uses distinct names (`Layer`, `LayerGroup`, `ChoroplethLayerStyle`, etc.) instead of the spec's `LayerDefinition`/`LayerGroupDefinition` to avoid colliding with the still-live old types of the same name in `layer.ts` — Plan B renames/collapses these once the old types are deleted.
 
 ---
 

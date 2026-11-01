@@ -1,7 +1,5 @@
 # Karta Plan C: Data Pipeline Orchestration Refactor Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
-
 **Goal:** Remove literal metro-id branching from `data-pipeline/src/run.ts`'s orchestration by introducing a `PipelineSource`/`RegionPipelineConfig` registry, so a new region/domain can be added by registering a config object, touching zero lines in `run.ts`. Derive `outputManifest.ts`'s `REQUIRED_TRANSIT_NETWORKS`/`OUTPUT_LAYER_RULES` from that same config instead of maintaining them as separate hardcoded lists.
 
 **Architecture:** The per-metro branching that decides which transit-operator adapter(s) feed a given output layer (today `if (metro.id === "tshwane") { ... }` etc. at `run.ts:361-406`) moves into a Gauteng-specific `RegionPipelineConfig.sources` array, each entry a named async `fetch()` that internally does whatever per-metro branching that specific layer's data requires. Generic mechanics that already apply uniformly across all 9 metros (boundary fetch/normalize, OSRM job-center routing, the township join) are untouched — they were never metro-id-branched to begin with.

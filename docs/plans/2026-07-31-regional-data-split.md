@@ -1,7 +1,5 @@
 # Regional data split Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
-
 **Goal:** Replace the single hardcoded `/data/national/` output with a `REGIONS`-driven model so each province (or future national/custom-scoped dataset) has its own independently-buildable output directory, while the web app still renders everything merged into one map.
 
 **Architecture:** Add a `REGIONS` registry to `packages/shared` (id + kind: `province`/`national`/`custom`). `data-pipeline` gains a `runRegion(regionId)` that builds one region's directory (metros filtered by `regionId`), replacing the old single `runNational()`. The web app's layer registry and township fetching build one URL per region (currently just `gauteng`) and merge the resulting `FeatureCollection`s client-side — no new UI.

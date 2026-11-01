@@ -1,7 +1,5 @@
 # Karta Plan D: Rebrand Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
-
 **Goal:** Rename the product from "Buffer Zones" to "Karta" across package metadata, deploy config, and documentation, deploying at the interim domain `karta.timothybrits.co.za` while keeping `buffer-zones.timothybrits.co.za` alive as a 301 redirect to the new domain.
 
 **Architecture:** `wrangler.jsonc` gets a second `routes` entry for the old domain, both pointing at the same worker; `packages/web/workers/app.ts` gains a hostname check that 301-redirects any request arriving on the old hostname to the new one, preserving path and query string. Package names (`buffer-zones` → `karta`, `@buffer-zones/*` → `@karta/*`) are renamed mechanically across `package.json` files and every import site. Documentation (`README.md`, `CLAUDE.md`, `.github/copilot-instructions.md`, `CONTRIBUTING.md`, etc.) is swept for the old name.

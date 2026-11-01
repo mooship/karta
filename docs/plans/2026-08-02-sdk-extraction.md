@@ -1,7 +1,5 @@
 # SDK Extraction Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
-
 **Goal:** Extract domain-agnostic code from `packages/web` and `packages/shared` into three new publishable packages (`@karta/core`, `@karta/map`, `@karta/react`), rename `packages/shared` to `packages/app`, and update all import paths — with identical runtime behaviour throughout.
 
 **Architecture:** Re-export stubs keep `packages/web` building and passing tests throughout Tasks 1–4; Task 5 is the final clean-up. Each task ends with `npm run test` green and a git commit. New packages are discovered automatically by the root vitest `projects: ["packages/*"]` glob.
