@@ -23,3 +23,6 @@ blob-report/
 playwright/.cache/
 packages/web/project.inlang/*
 !packages/web/project.inlang/settings.json
+
+# Cloudflare API token
+.env.cloudflare
