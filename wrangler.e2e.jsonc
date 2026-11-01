@@ -5,13 +5,6 @@
   "compatibility_flags": ["nodejs_compat"],
   "main": "./packages/web/workers/app.ts",
   "workers_dev": true,
-  "cache": {
-    "enabled": true,
-    "cross_version_cache": true
-  },
-  "placement": {
-    "mode": "smart"
-  },
   "assets": {
     "directory": "./packages/web/build/client",
     "binding": "ASSETS"
