@@ -1,7 +1,5 @@
-.claude/*
-!.claude/skills/
-.claude/skills/*
-!.claude/skills/apple-design.md
+.claude/settings.local.json
+.claude/worktrees/
 node_modules
 dist
 packages/web/build/
