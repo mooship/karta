@@ -5,13 +5,7 @@ import { getLocale, experimentalStaticLocale } from '../runtime.js';
 
 /** @typedef {{}} Layer_Failed_BadgeInputs */
 
-const en_layer_failed_badge = /** @type {(inputs: Layer_Failed_BadgeInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Failed to load — toggle off and on to retry`)
-};
 
-const af_layer_failed_badge = /** @type {(inputs: Layer_Failed_BadgeInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Kon nie laai nie — skakel af en aan om weer te probeer`)
-};
 
 /**
 * | output |
@@ -23,7 +17,8 @@ const af_layer_failed_badge = /** @type {(inputs: Layer_Failed_BadgeInputs) => L
 * @returns {LocalizedString}
 */
 export const layer_failed_badge = /** @type {((inputs?: Layer_Failed_BadgeInputs, options?: { locale?: "en" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Layer_Failed_BadgeInputs, { locale?: "en" | "af" }, {}>} */ ((inputs = {}, options = {}) => {
+	void inputs;
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "af") return af_layer_failed_badge(inputs)
-	return en_layer_failed_badge(inputs)
+	if (locale === "af") return /** @type {LocalizedString} */ ("Kon nie laai nie — skakel af en aan om weer te probeer")
+	return /** @type {LocalizedString} */ ("Failed to load — toggle off and on to retry")
 });

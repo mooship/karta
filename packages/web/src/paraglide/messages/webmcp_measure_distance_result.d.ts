@@ -3,6 +3,8 @@ export type Webmcp_Measure_Distance_ResultInputs = {
     locations: NonNullable<unknown>;
     result: NonNullable<unknown>;
 };
+/** @typedef {import('../runtime.js').LocalizedString} LocalizedString */
+/** @typedef {{ locations: NonNullable<unknown>, result: NonNullable<unknown> }} Webmcp_Measure_Distance_ResultInputs */
 /**
 * | output |
 * | --- |

@@ -5,13 +5,7 @@ import { getLocale, experimentalStaticLocale } from '../runtime.js';
 
 /** @typedef {{}} Domain_Story_TitleInputs */
 
-const en_domain_story_title = /** @type {(inputs: Domain_Story_TitleInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Why this map exists`)
-};
 
-const af_domain_story_title = /** @type {(inputs: Domain_Story_TitleInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Waarom hierdie kaart bestaan`)
-};
 
 /**
 * | output |
@@ -23,7 +17,8 @@ const af_domain_story_title = /** @type {(inputs: Domain_Story_TitleInputs) => L
 * @returns {LocalizedString}
 */
 export const domain_story_title = /** @type {((inputs?: Domain_Story_TitleInputs, options?: { locale?: "en" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Domain_Story_TitleInputs, { locale?: "en" | "af" }, {}>} */ ((inputs = {}, options = {}) => {
+	void inputs;
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "af") return af_domain_story_title(inputs)
-	return en_domain_story_title(inputs)
+	if (locale === "af") return /** @type {LocalizedString} */ ("Waarom hierdie kaart bestaan")
+	return /** @type {LocalizedString} */ ("Why this map exists")
 });

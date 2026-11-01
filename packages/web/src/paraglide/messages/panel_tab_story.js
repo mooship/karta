@@ -5,13 +5,7 @@ import { getLocale, experimentalStaticLocale } from '../runtime.js';
 
 /** @typedef {{}} Panel_Tab_StoryInputs */
 
-const en_panel_tab_story = /** @type {(inputs: Panel_Tab_StoryInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Story`)
-};
 
-const af_panel_tab_story = /** @type {(inputs: Panel_Tab_StoryInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Verhaal`)
-};
 
 /**
 * | output |
@@ -23,7 +17,8 @@ const af_panel_tab_story = /** @type {(inputs: Panel_Tab_StoryInputs) => Localiz
 * @returns {LocalizedString}
 */
 export const panel_tab_story = /** @type {((inputs?: Panel_Tab_StoryInputs, options?: { locale?: "en" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Panel_Tab_StoryInputs, { locale?: "en" | "af" }, {}>} */ ((inputs = {}, options = {}) => {
+	void inputs;
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "af") return af_panel_tab_story(inputs)
-	return en_panel_tab_story(inputs)
+	if (locale === "af") return /** @type {LocalizedString} */ ("Verhaal")
+	return /** @type {LocalizedString} */ ("Story")
 });

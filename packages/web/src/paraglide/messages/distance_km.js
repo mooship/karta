@@ -5,13 +5,7 @@ import { getLocale, experimentalStaticLocale } from '../runtime.js';
 
 /** @typedef {{ value: NonNullable<unknown> }} Distance_KmInputs */
 
-const en_distance_km = /** @type {(inputs: Distance_KmInputs) => LocalizedString} */ (i) => {
-	return /** @type {LocalizedString} */ (`${i?.value} km`)
-};
 
-const af_distance_km = /** @type {(inputs: Distance_KmInputs) => LocalizedString} */ (i) => {
-	return /** @type {LocalizedString} */ (`${i?.value} km`)
-};
 
 /**
 * | output |
@@ -22,8 +16,8 @@ const af_distance_km = /** @type {(inputs: Distance_KmInputs) => LocalizedString
 * @param {{ locale?: "en" | "af" }} options
 * @returns {LocalizedString}
 */
-export const distance_km = /** @type {((inputs: Distance_KmInputs, options?: { locale?: "en" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Distance_KmInputs, { locale?: "en" | "af" }, {}>} */ ((inputs, options = {}) => {
+export const distance_km = /** @type {((inputs: Distance_KmInputs, options?: { locale?: "en" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Distance_KmInputs, { locale?: "en" | "af" }, {}>} */ ((i, options = {}) => {
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "af") return af_distance_km(inputs)
-	return en_distance_km(inputs)
+	if (locale === "af") return /** @type {LocalizedString} */ (`${i?.value} km`)
+	return /** @type {LocalizedString} */ (`${i?.value} km`)
 });

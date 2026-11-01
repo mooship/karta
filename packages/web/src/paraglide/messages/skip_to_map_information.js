@@ -5,13 +5,7 @@ import { getLocale, experimentalStaticLocale } from '../runtime.js';
 
 /** @typedef {{}} Skip_To_Map_InformationInputs */
 
-const en_skip_to_map_information = /** @type {(inputs: Skip_To_Map_InformationInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Skip to map information`)
-};
 
-const af_skip_to_map_information = /** @type {(inputs: Skip_To_Map_InformationInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Spring na kaartinligting`)
-};
 
 /**
 * | output |
@@ -23,7 +17,8 @@ const af_skip_to_map_information = /** @type {(inputs: Skip_To_Map_InformationIn
 * @returns {LocalizedString}
 */
 export const skip_to_map_information = /** @type {((inputs?: Skip_To_Map_InformationInputs, options?: { locale?: "en" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Skip_To_Map_InformationInputs, { locale?: "en" | "af" }, {}>} */ ((inputs = {}, options = {}) => {
+	void inputs;
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "af") return af_skip_to_map_information(inputs)
-	return en_skip_to_map_information(inputs)
+	if (locale === "af") return /** @type {LocalizedString} */ ("Spring na kaartinligting")
+	return /** @type {LocalizedString} */ ("Skip to map information")
 });

@@ -5,13 +5,7 @@ import { getLocale, experimentalStaticLocale } from '../runtime.js';
 
 /** @typedef {{}} Location_Context_Menu_FailedInputs */
 
-const en_location_context_menu_failed = /** @type {(inputs: Location_Context_Menu_FailedInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Couldn't look up this address.`)
-};
 
-const af_location_context_menu_failed = /** @type {(inputs: Location_Context_Menu_FailedInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Kon nie hierdie adres opsoek nie.`)
-};
 
 /**
 * | output |
@@ -23,7 +17,8 @@ const af_location_context_menu_failed = /** @type {(inputs: Location_Context_Men
 * @returns {LocalizedString}
 */
 export const location_context_menu_failed = /** @type {((inputs?: Location_Context_Menu_FailedInputs, options?: { locale?: "en" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Location_Context_Menu_FailedInputs, { locale?: "en" | "af" }, {}>} */ ((inputs = {}, options = {}) => {
+	void inputs;
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "af") return af_location_context_menu_failed(inputs)
-	return en_location_context_menu_failed(inputs)
+	if (locale === "af") return /** @type {LocalizedString} */ ("Kon nie hierdie adres opsoek nie.")
+	return /** @type {LocalizedString} */ ("Couldn't look up this address.")
 });

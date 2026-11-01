@@ -5,13 +5,7 @@ import { getLocale, experimentalStaticLocale } from '../runtime.js';
 
 /** @typedef {{}} Legend_Transit_Colors_Aria_LabelInputs */
 
-const en_legend_transit_colors_aria_label = /** @type {(inputs: Legend_Transit_Colors_Aria_LabelInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Transit route colours`)
-};
 
-const af_legend_transit_colors_aria_label = /** @type {(inputs: Legend_Transit_Colors_Aria_LabelInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Vervoerroetekleure`)
-};
 
 /**
 * | output |
@@ -23,7 +17,8 @@ const af_legend_transit_colors_aria_label = /** @type {(inputs: Legend_Transit_C
 * @returns {LocalizedString}
 */
 export const legend_transit_colors_aria_label = /** @type {((inputs?: Legend_Transit_Colors_Aria_LabelInputs, options?: { locale?: "en" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Legend_Transit_Colors_Aria_LabelInputs, { locale?: "en" | "af" }, {}>} */ ((inputs = {}, options = {}) => {
+	void inputs;
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "af") return af_legend_transit_colors_aria_label(inputs)
-	return en_legend_transit_colors_aria_label(inputs)
+	if (locale === "af") return /** @type {LocalizedString} */ ("Vervoerroetekleure")
+	return /** @type {LocalizedString} */ ("Transit route colours")
 });

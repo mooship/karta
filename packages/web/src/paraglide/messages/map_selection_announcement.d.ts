@@ -2,6 +2,8 @@ export type LocalizedString = import('../runtime.js').LocalizedString;
 export type Map_Selection_AnnouncementInputs = {
     label: NonNullable<unknown>;
 };
+/** @typedef {import('../runtime.js').LocalizedString} LocalizedString */
+/** @typedef {{ label: NonNullable<unknown> }} Map_Selection_AnnouncementInputs */
 /**
 * | output |
 * | --- |

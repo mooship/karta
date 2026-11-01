@@ -2,6 +2,8 @@ export type LocalizedString = import('../runtime.js').LocalizedString;
 export type Location_Out_Of_CoverageInputs = {
     location: NonNullable<unknown>;
 };
+/** @typedef {import('../runtime.js').LocalizedString} LocalizedString */
+/** @typedef {{ location: NonNullable<unknown> }} Location_Out_Of_CoverageInputs */
 /**
 * | output |
 * | --- |

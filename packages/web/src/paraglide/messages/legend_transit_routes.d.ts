@@ -1,5 +1,7 @@
 export type LocalizedString = import('../runtime.js').LocalizedString;
 export type Legend_Transit_RoutesInputs = {};
+/** @typedef {import('../runtime.js').LocalizedString} LocalizedString */
+/** @typedef {{}} Legend_Transit_RoutesInputs */
 /**
 * | output |
 * | --- |

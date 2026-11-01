@@ -1,5 +1,7 @@
 export type LocalizedString = import('../runtime.js').LocalizedString;
 export type Layer_Group_Access_To_Opportunity_TitleInputs = {};
+/** @typedef {import('../runtime.js').LocalizedString} LocalizedString */
+/** @typedef {{}} Layer_Group_Access_To_Opportunity_TitleInputs */
 /**
 * | output |
 * | --- |

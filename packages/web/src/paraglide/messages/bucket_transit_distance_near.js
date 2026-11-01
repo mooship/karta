@@ -5,13 +5,7 @@ import { getLocale, experimentalStaticLocale } from '../runtime.js';
 
 /** @typedef {{}} Bucket_Transit_Distance_NearInputs */
 
-const en_bucket_transit_distance_near = /** @type {(inputs: Bucket_Transit_Distance_NearInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Near (≤ 1 km)`)
-};
 
-const af_bucket_transit_distance_near = /** @type {(inputs: Bucket_Transit_Distance_NearInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Naby (≤ 1 km)`)
-};
 
 /**
 * | output |
@@ -23,7 +17,8 @@ const af_bucket_transit_distance_near = /** @type {(inputs: Bucket_Transit_Dista
 * @returns {LocalizedString}
 */
 export const bucket_transit_distance_near = /** @type {((inputs?: Bucket_Transit_Distance_NearInputs, options?: { locale?: "en" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Bucket_Transit_Distance_NearInputs, { locale?: "en" | "af" }, {}>} */ ((inputs = {}, options = {}) => {
+	void inputs;
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "af") return af_bucket_transit_distance_near(inputs)
-	return en_bucket_transit_distance_near(inputs)
+	if (locale === "af") return /** @type {LocalizedString} */ ("Naby (≤ 1 km)")
+	return /** @type {LocalizedString} */ ("Near (≤ 1 km)")
 });

@@ -5,13 +5,7 @@ import { getLocale, experimentalStaticLocale } from '../runtime.js';
 
 /** @typedef {{}} Legend_EmptyInputs */
 
-const en_legend_empty = /** @type {(inputs: Legend_EmptyInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Turn on layers to view their legend.`)
-};
 
-const af_legend_empty = /** @type {(inputs: Legend_EmptyInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Skakel lae aan om die legende te sien.`)
-};
 
 /**
 * | output |
@@ -23,7 +17,8 @@ const af_legend_empty = /** @type {(inputs: Legend_EmptyInputs) => LocalizedStri
 * @returns {LocalizedString}
 */
 export const legend_empty = /** @type {((inputs?: Legend_EmptyInputs, options?: { locale?: "en" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Legend_EmptyInputs, { locale?: "en" | "af" }, {}>} */ ((inputs = {}, options = {}) => {
+	void inputs;
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "af") return af_legend_empty(inputs)
-	return en_legend_empty(inputs)
+	if (locale === "af") return /** @type {LocalizedString} */ ("Skakel lae aan om die legende te sien.")
+	return /** @type {LocalizedString} */ ("Turn on layers to view their legend.")
 });

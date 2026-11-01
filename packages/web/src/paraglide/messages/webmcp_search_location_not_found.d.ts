@@ -2,6 +2,8 @@ export type LocalizedString = import('../runtime.js').LocalizedString;
 export type Webmcp_Search_Location_Not_FoundInputs = {
     query: NonNullable<unknown>;
 };
+/** @typedef {import('../runtime.js').LocalizedString} LocalizedString */
+/** @typedef {{ query: NonNullable<unknown> }} Webmcp_Search_Location_Not_FoundInputs */
 /**
 * | output |
 * | --- |

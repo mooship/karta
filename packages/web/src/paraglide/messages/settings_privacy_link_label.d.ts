@@ -1,5 +1,7 @@
 export type LocalizedString = import('../runtime.js').LocalizedString;
 export type Settings_Privacy_Link_LabelInputs = {};
+/** @typedef {import('../runtime.js').LocalizedString} LocalizedString */
+/** @typedef {{}} Settings_Privacy_Link_LabelInputs */
 /**
 * | output |
 * | --- |

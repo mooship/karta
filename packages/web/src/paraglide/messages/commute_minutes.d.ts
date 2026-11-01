@@ -2,6 +2,8 @@ export type LocalizedString = import('../runtime.js').LocalizedString;
 export type Commute_MinutesInputs = {
     minutes: NonNullable<unknown>;
 };
+/** @typedef {import('../runtime.js').LocalizedString} LocalizedString */
+/** @typedef {{ minutes: NonNullable<unknown> }} Commute_MinutesInputs */
 /**
 * | output |
 * | --- |

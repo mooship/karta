@@ -1,5 +1,7 @@
 export type LocalizedString = import('../runtime.js').LocalizedString;
 export type Township_Popup_Transit_DistanceInputs = {};
+/** @typedef {import('../runtime.js').LocalizedString} LocalizedString */
+/** @typedef {{}} Township_Popup_Transit_DistanceInputs */
 /**
 * | output |
 * | --- |

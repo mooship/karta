@@ -2,6 +2,8 @@ export type LocalizedString = import('../runtime.js').LocalizedString;
 export type Legend_Active_Aria_LabelInputs = {
     label: NonNullable<unknown>;
 };
+/** @typedef {import('../runtime.js').LocalizedString} LocalizedString */
+/** @typedef {{ label: NonNullable<unknown> }} Legend_Active_Aria_LabelInputs */
 /**
 * | output |
 * | --- |

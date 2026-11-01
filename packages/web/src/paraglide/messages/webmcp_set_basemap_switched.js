@@ -5,13 +5,7 @@ import { getLocale, experimentalStaticLocale } from '../runtime.js';
 
 /** @typedef {{ basemap: NonNullable<unknown> }} Webmcp_Set_Basemap_SwitchedInputs */
 
-const en_webmcp_set_basemap_switched = /** @type {(inputs: Webmcp_Set_Basemap_SwitchedInputs) => LocalizedString} */ (i) => {
-	return /** @type {LocalizedString} */ (`Basemap switched to "${i?.basemap}".`)
-};
 
-const af_webmcp_set_basemap_switched = /** @type {(inputs: Webmcp_Set_Basemap_SwitchedInputs) => LocalizedString} */ (i) => {
-	return /** @type {LocalizedString} */ (`Basiskaart verander na "${i?.basemap}".`)
-};
 
 /**
 * | output |
@@ -22,8 +16,8 @@ const af_webmcp_set_basemap_switched = /** @type {(inputs: Webmcp_Set_Basemap_Sw
 * @param {{ locale?: "en" | "af" }} options
 * @returns {LocalizedString}
 */
-export const webmcp_set_basemap_switched = /** @type {((inputs: Webmcp_Set_Basemap_SwitchedInputs, options?: { locale?: "en" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Webmcp_Set_Basemap_SwitchedInputs, { locale?: "en" | "af" }, {}>} */ ((inputs, options = {}) => {
+export const webmcp_set_basemap_switched = /** @type {((inputs: Webmcp_Set_Basemap_SwitchedInputs, options?: { locale?: "en" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Webmcp_Set_Basemap_SwitchedInputs, { locale?: "en" | "af" }, {}>} */ ((i, options = {}) => {
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "af") return af_webmcp_set_basemap_switched(inputs)
-	return en_webmcp_set_basemap_switched(inputs)
+	if (locale === "af") return /** @type {LocalizedString} */ (`Basiskaart verander na "${i?.basemap}".`)
+	return /** @type {LocalizedString} */ (`Basemap switched to "${i?.basemap}".`)
 });

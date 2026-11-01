@@ -5,13 +5,7 @@ import { getLocale, experimentalStaticLocale } from '../runtime.js';
 
 /** @typedef {{}} Township_Popup_DistanceInputs */
 
-const en_township_popup_distance = /** @type {(inputs: Township_Popup_DistanceInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Distance`)
-};
 
-const af_township_popup_distance = /** @type {(inputs: Township_Popup_DistanceInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Afstand`)
-};
 
 /**
 * | output |
@@ -23,7 +17,8 @@ const af_township_popup_distance = /** @type {(inputs: Township_Popup_DistanceIn
 * @returns {LocalizedString}
 */
 export const township_popup_distance = /** @type {((inputs?: Township_Popup_DistanceInputs, options?: { locale?: "en" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Township_Popup_DistanceInputs, { locale?: "en" | "af" }, {}>} */ ((inputs = {}, options = {}) => {
+	void inputs;
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "af") return af_township_popup_distance(inputs)
-	return en_township_popup_distance(inputs)
+	if (locale === "af") return /** @type {LocalizedString} */ ("Afstand")
+	return /** @type {LocalizedString} */ ("Distance")
 });

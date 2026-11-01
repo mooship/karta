@@ -5,13 +5,7 @@ import { getLocale, experimentalStaticLocale } from '../runtime.js';
 
 /** @typedef {{}} Loading_MapInputs */
 
-const en_loading_map = /** @type {(inputs: Loading_MapInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Loading map`)
-};
 
-const af_loading_map = /** @type {(inputs: Loading_MapInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Kaart laai tans`)
-};
 
 /**
 * | output |
@@ -23,7 +17,8 @@ const af_loading_map = /** @type {(inputs: Loading_MapInputs) => LocalizedString
 * @returns {LocalizedString}
 */
 export const loading_map = /** @type {((inputs?: Loading_MapInputs, options?: { locale?: "en" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Loading_MapInputs, { locale?: "en" | "af" }, {}>} */ ((inputs = {}, options = {}) => {
+	void inputs;
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "af") return af_loading_map(inputs)
-	return en_loading_map(inputs)
+	if (locale === "af") return /** @type {LocalizedString} */ ("Kaart laai tans")
+	return /** @type {LocalizedString} */ ("Loading map")
 });

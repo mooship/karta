@@ -5,13 +5,7 @@ import { getLocale, experimentalStaticLocale } from '../runtime.js';
 
 /** @typedef {{}} Search_SearchingInputs */
 
-const en_search_searching = /** @type {(inputs: Search_SearchingInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Searching places...`)
-};
 
-const af_search_searching = /** @type {(inputs: Search_SearchingInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Deursoek plekke...`)
-};
 
 /**
 * | output |
@@ -23,7 +17,8 @@ const af_search_searching = /** @type {(inputs: Search_SearchingInputs) => Local
 * @returns {LocalizedString}
 */
 export const search_searching = /** @type {((inputs?: Search_SearchingInputs, options?: { locale?: "en" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Search_SearchingInputs, { locale?: "en" | "af" }, {}>} */ ((inputs = {}, options = {}) => {
+	void inputs;
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "af") return af_search_searching(inputs)
-	return en_search_searching(inputs)
+	if (locale === "af") return /** @type {LocalizedString} */ ("Deursoek plekke...")
+	return /** @type {LocalizedString} */ ("Searching places...")
 });

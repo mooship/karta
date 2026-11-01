@@ -1,5 +1,7 @@
 export type LocalizedString = import('../runtime.js').LocalizedString;
 export type Skip_To_Map_InformationInputs = {};
+/** @typedef {import('../runtime.js').LocalizedString} LocalizedString */
+/** @typedef {{}} Skip_To_Map_InformationInputs */
 /**
 * | output |
 * | --- |

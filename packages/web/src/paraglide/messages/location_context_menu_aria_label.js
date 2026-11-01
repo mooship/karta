@@ -5,13 +5,7 @@ import { getLocale, experimentalStaticLocale } from '../runtime.js';
 
 /** @typedef {{}} Location_Context_Menu_Aria_LabelInputs */
 
-const en_location_context_menu_aria_label = /** @type {(inputs: Location_Context_Menu_Aria_LabelInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Map location actions`)
-};
 
-const af_location_context_menu_aria_label = /** @type {(inputs: Location_Context_Menu_Aria_LabelInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Kaartligging-aksies`)
-};
 
 /**
 * | output |
@@ -23,7 +17,8 @@ const af_location_context_menu_aria_label = /** @type {(inputs: Location_Context
 * @returns {LocalizedString}
 */
 export const location_context_menu_aria_label = /** @type {((inputs?: Location_Context_Menu_Aria_LabelInputs, options?: { locale?: "en" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Location_Context_Menu_Aria_LabelInputs, { locale?: "en" | "af" }, {}>} */ ((inputs = {}, options = {}) => {
+	void inputs;
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "af") return af_location_context_menu_aria_label(inputs)
-	return en_location_context_menu_aria_label(inputs)
+	if (locale === "af") return /** @type {LocalizedString} */ ("Kaartligging-aksies")
+	return /** @type {LocalizedString} */ ("Map location actions")
 });

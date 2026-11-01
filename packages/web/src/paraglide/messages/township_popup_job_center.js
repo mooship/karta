@@ -5,13 +5,7 @@ import { getLocale, experimentalStaticLocale } from '../runtime.js';
 
 /** @typedef {{}} Township_Popup_Job_CenterInputs */
 
-const en_township_popup_job_center = /** @type {(inputs: Township_Popup_Job_CenterInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Nearest job centre`)
-};
 
-const af_township_popup_job_center = /** @type {(inputs: Township_Popup_Job_CenterInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Naaste werksentrum`)
-};
 
 /**
 * | output |
@@ -23,7 +17,8 @@ const af_township_popup_job_center = /** @type {(inputs: Township_Popup_Job_Cent
 * @returns {LocalizedString}
 */
 export const township_popup_job_center = /** @type {((inputs?: Township_Popup_Job_CenterInputs, options?: { locale?: "en" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Township_Popup_Job_CenterInputs, { locale?: "en" | "af" }, {}>} */ ((inputs = {}, options = {}) => {
+	void inputs;
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "af") return af_township_popup_job_center(inputs)
-	return en_township_popup_job_center(inputs)
+	if (locale === "af") return /** @type {LocalizedString} */ ("Naaste werksentrum")
+	return /** @type {LocalizedString} */ ("Nearest job centre")
 });

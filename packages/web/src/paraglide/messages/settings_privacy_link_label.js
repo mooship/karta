@@ -5,13 +5,7 @@ import { getLocale, experimentalStaticLocale } from '../runtime.js';
 
 /** @typedef {{}} Settings_Privacy_Link_LabelInputs */
 
-const en_settings_privacy_link_label = /** @type {(inputs: Settings_Privacy_Link_LabelInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Privacy policy`)
-};
 
-const af_settings_privacy_link_label = /** @type {(inputs: Settings_Privacy_Link_LabelInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Privaatheidsbeleid`)
-};
 
 /**
 * | output |
@@ -23,7 +17,8 @@ const af_settings_privacy_link_label = /** @type {(inputs: Settings_Privacy_Link
 * @returns {LocalizedString}
 */
 export const settings_privacy_link_label = /** @type {((inputs?: Settings_Privacy_Link_LabelInputs, options?: { locale?: "en" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Settings_Privacy_Link_LabelInputs, { locale?: "en" | "af" }, {}>} */ ((inputs = {}, options = {}) => {
+	void inputs;
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "af") return af_settings_privacy_link_label(inputs)
-	return en_settings_privacy_link_label(inputs)
+	if (locale === "af") return /** @type {LocalizedString} */ ("Privaatheidsbeleid")
+	return /** @type {LocalizedString} */ ("Privacy policy")
 });

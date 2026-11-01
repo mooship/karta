@@ -2,6 +2,8 @@ export type LocalizedString = import('../runtime.js').LocalizedString;
 export type Webmcp_Toggle_Layer_UnavailableInputs = {
     label: NonNullable<unknown>;
 };
+/** @typedef {import('../runtime.js').LocalizedString} LocalizedString */
+/** @typedef {{ label: NonNullable<unknown> }} Webmcp_Toggle_Layer_UnavailableInputs */
 /**
 * | output |
 * | --- |

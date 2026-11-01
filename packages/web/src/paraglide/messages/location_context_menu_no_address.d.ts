@@ -1,5 +1,7 @@
 export type LocalizedString = import('../runtime.js').LocalizedString;
 export type Location_Context_Menu_No_AddressInputs = {};
+/** @typedef {import('../runtime.js').LocalizedString} LocalizedString */
+/** @typedef {{}} Location_Context_Menu_No_AddressInputs */
 /**
 * | output |
 * | --- |

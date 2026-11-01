@@ -5,13 +5,7 @@ import { getLocale, experimentalStaticLocale } from '../runtime.js';
 
 /** @typedef {{}} Measurement_Back_To_MapInputs */
 
-const en_measurement_back_to_map = /** @type {(inputs: Measurement_Back_To_MapInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Back to map`)
-};
 
-const af_measurement_back_to_map = /** @type {(inputs: Measurement_Back_To_MapInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Terug na kaart`)
-};
 
 /**
 * | output |
@@ -23,7 +17,8 @@ const af_measurement_back_to_map = /** @type {(inputs: Measurement_Back_To_MapIn
 * @returns {LocalizedString}
 */
 export const measurement_back_to_map = /** @type {((inputs?: Measurement_Back_To_MapInputs, options?: { locale?: "en" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Measurement_Back_To_MapInputs, { locale?: "en" | "af" }, {}>} */ ((inputs = {}, options = {}) => {
+	void inputs;
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "af") return af_measurement_back_to_map(inputs)
-	return en_measurement_back_to_map(inputs)
+	if (locale === "af") return /** @type {LocalizedString} */ ("Terug na kaart")
+	return /** @type {LocalizedString} */ ("Back to map")
 });

@@ -5,13 +5,7 @@ import { getLocale, experimentalStaticLocale } from '../runtime.js';
 
 /** @typedef {{}} Township_Popup_Car_TimeInputs */
 
-const en_township_popup_car_time = /** @type {(inputs: Township_Popup_Car_TimeInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Modelled car time`)
-};
 
-const af_township_popup_car_time = /** @type {(inputs: Township_Popup_Car_TimeInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Gemodelleerde motortyd`)
-};
 
 /**
 * | output |
@@ -23,7 +17,8 @@ const af_township_popup_car_time = /** @type {(inputs: Township_Popup_Car_TimeIn
 * @returns {LocalizedString}
 */
 export const township_popup_car_time = /** @type {((inputs?: Township_Popup_Car_TimeInputs, options?: { locale?: "en" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Township_Popup_Car_TimeInputs, { locale?: "en" | "af" }, {}>} */ ((inputs = {}, options = {}) => {
+	void inputs;
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "af") return af_township_popup_car_time(inputs)
-	return en_township_popup_car_time(inputs)
+	if (locale === "af") return /** @type {LocalizedString} */ ("Gemodelleerde motortyd")
+	return /** @type {LocalizedString} */ ("Modelled car time")
 });

@@ -5,13 +5,7 @@ import { getLocale, experimentalStaticLocale } from '../runtime.js';
 
 /** @typedef {{}} App_TitleInputs */
 
-const en_app_title = /** @type {(inputs: App_TitleInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Karta`)
-};
 
-const af_app_title = /** @type {(inputs: App_TitleInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Karta`)
-};
 
 /**
 * | output |
@@ -23,7 +17,8 @@ const af_app_title = /** @type {(inputs: App_TitleInputs) => LocalizedString} */
 * @returns {LocalizedString}
 */
 export const app_title = /** @type {((inputs?: App_TitleInputs, options?: { locale?: "en" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<App_TitleInputs, { locale?: "en" | "af" }, {}>} */ ((inputs = {}, options = {}) => {
+	void inputs;
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "af") return af_app_title(inputs)
-	return en_app_title(inputs)
+	if (locale === "af") return /** @type {LocalizedString} */ ("Karta")
+	return /** @type {LocalizedString} */ ("Karta")
 });

@@ -5,13 +5,7 @@ import { getLocale, experimentalStaticLocale } from '../runtime.js';
 
 /** @typedef {{}} Language_Toggle_LabelInputs */
 
-const en_language_toggle_label = /** @type {(inputs: Language_Toggle_LabelInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Language`)
-};
 
-const af_language_toggle_label = /** @type {(inputs: Language_Toggle_LabelInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Taal`)
-};
 
 /**
 * | output |
@@ -23,7 +17,8 @@ const af_language_toggle_label = /** @type {(inputs: Language_Toggle_LabelInputs
 * @returns {LocalizedString}
 */
 export const language_toggle_label = /** @type {((inputs?: Language_Toggle_LabelInputs, options?: { locale?: "en" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Language_Toggle_LabelInputs, { locale?: "en" | "af" }, {}>} */ ((inputs = {}, options = {}) => {
+	void inputs;
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "af") return af_language_toggle_label(inputs)
-	return en_language_toggle_label(inputs)
+	if (locale === "af") return /** @type {LocalizedString} */ ("Taal")
+	return /** @type {LocalizedString} */ ("Language")
 });

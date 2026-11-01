@@ -2,6 +2,8 @@ export type LocalizedString = import('../runtime.js').LocalizedString;
 export type Webmcp_Search_Location_Flew_ToInputs = {
     location: NonNullable<unknown>;
 };
+/** @typedef {import('../runtime.js').LocalizedString} LocalizedString */
+/** @typedef {{ location: NonNullable<unknown> }} Webmcp_Search_Location_Flew_ToInputs */
 /**
 * | output |
 * | --- |
