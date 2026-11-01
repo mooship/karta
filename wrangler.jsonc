@@ -4,7 +4,8 @@
   "compatibility_date": "2026-09-08",
   "compatibility_flags": ["nodejs_compat"],
   "main": "./packages/web/workers/app.ts",
-  "workers_dev": true,
+  "workers_dev": false,
+  "preview_urls": true,
   "cache": {
     // `cross_version_cache` shares cached responses across Worker versions
     // (no cold cache on every deploy), at the cost that a deploy doesn't
