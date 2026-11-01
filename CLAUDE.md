@@ -1,5 +1,9 @@
 @AGENTS.md
 
+## Playwright agents
+
+The Playwright planner, generator and healer agents are in `.claude/agents/`. Plans go in `specs/` and generated tests in `packages/web/e2e/`, starting from `packages/web/e2e/seed.spec.ts`. They use the Playwright test MCP server in `.mcp.json`, which passes `--config packages/web/playwright.config.ts` and runs it with `cmd /c` for Windows; on macOS or Linux use `"command": "npx"` with the same arguments.
+
 ## Delegating to sub-agents
 
 Model tiers for any delegated work — both `Agent` tool calls and `agent()` calls inside a Workflow script. Set the `model` parameter explicitly on every call; never omit it, since omission silently inherits the session's model.

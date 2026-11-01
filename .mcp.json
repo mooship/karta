@@ -1,5 +1,16 @@
 {
   "mcpServers": {
+    "playwright-test": {
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "playwright",
+        "run-test-mcp-server",
+        "--config",
+        "packages/web/playwright.config.ts"
+      ]
+    },
     "cloudflare-api": {
       "url": "https://mcp.cloudflare.com/mcp"
     }
