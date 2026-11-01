@@ -5,13 +5,7 @@ import { getLocale, experimentalStaticLocale } from '../runtime.js';
 
 /** @typedef {{ theme: NonNullable<unknown> }} Webmcp_Set_Theme_SwitchedInputs */
 
-const en_webmcp_set_theme_switched = /** @type {(inputs: Webmcp_Set_Theme_SwitchedInputs) => LocalizedString} */ (i) => {
-	return /** @type {LocalizedString} */ (`Theme switched to "${i?.theme}".`)
-};
 
-const af_webmcp_set_theme_switched = /** @type {(inputs: Webmcp_Set_Theme_SwitchedInputs) => LocalizedString} */ (i) => {
-	return /** @type {LocalizedString} */ (`Tema verander na "${i?.theme}".`)
-};
 
 /**
 * | output |
@@ -22,8 +16,8 @@ const af_webmcp_set_theme_switched = /** @type {(inputs: Webmcp_Set_Theme_Switch
 * @param {{ locale?: "en" | "af" }} options
 * @returns {LocalizedString}
 */
-export const webmcp_set_theme_switched = /** @type {((inputs: Webmcp_Set_Theme_SwitchedInputs, options?: { locale?: "en" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Webmcp_Set_Theme_SwitchedInputs, { locale?: "en" | "af" }, {}>} */ ((inputs, options = {}) => {
+export const webmcp_set_theme_switched = /** @type {((inputs: Webmcp_Set_Theme_SwitchedInputs, options?: { locale?: "en" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Webmcp_Set_Theme_SwitchedInputs, { locale?: "en" | "af" }, {}>} */ ((i, options = {}) => {
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "af") return af_webmcp_set_theme_switched(inputs)
-	return en_webmcp_set_theme_switched(inputs)
+	if (locale === "af") return /** @type {LocalizedString} */ (`Tema verander na "${i?.theme}".`)
+	return /** @type {LocalizedString} */ (`Theme switched to "${i?.theme}".`)
 });

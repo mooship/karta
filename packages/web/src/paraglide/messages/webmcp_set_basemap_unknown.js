@@ -5,13 +5,7 @@ import { getLocale, experimentalStaticLocale } from '../runtime.js';
 
 /** @typedef {{ basemap: NonNullable<unknown> }} Webmcp_Set_Basemap_UnknownInputs */
 
-const en_webmcp_set_basemap_unknown = /** @type {(inputs: Webmcp_Set_Basemap_UnknownInputs) => LocalizedString} */ (i) => {
-	return /** @type {LocalizedString} */ (`Unknown basemap "${i?.basemap}".`)
-};
 
-const af_webmcp_set_basemap_unknown = /** @type {(inputs: Webmcp_Set_Basemap_UnknownInputs) => LocalizedString} */ (i) => {
-	return /** @type {LocalizedString} */ (`Onbekende basiskaart "${i?.basemap}".`)
-};
 
 /**
 * | output |
@@ -22,8 +16,8 @@ const af_webmcp_set_basemap_unknown = /** @type {(inputs: Webmcp_Set_Basemap_Unk
 * @param {{ locale?: "en" | "af" }} options
 * @returns {LocalizedString}
 */
-export const webmcp_set_basemap_unknown = /** @type {((inputs: Webmcp_Set_Basemap_UnknownInputs, options?: { locale?: "en" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Webmcp_Set_Basemap_UnknownInputs, { locale?: "en" | "af" }, {}>} */ ((inputs, options = {}) => {
+export const webmcp_set_basemap_unknown = /** @type {((inputs: Webmcp_Set_Basemap_UnknownInputs, options?: { locale?: "en" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Webmcp_Set_Basemap_UnknownInputs, { locale?: "en" | "af" }, {}>} */ ((i, options = {}) => {
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "af") return af_webmcp_set_basemap_unknown(inputs)
-	return en_webmcp_set_basemap_unknown(inputs)
+	if (locale === "af") return /** @type {LocalizedString} */ (`Onbekende basiskaart "${i?.basemap}".`)
+	return /** @type {LocalizedString} */ (`Unknown basemap "${i?.basemap}".`)
 });

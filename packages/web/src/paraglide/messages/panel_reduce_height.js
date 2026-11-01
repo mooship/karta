@@ -5,13 +5,7 @@ import { getLocale, experimentalStaticLocale } from '../runtime.js';
 
 /** @typedef {{}} Panel_Reduce_HeightInputs */
 
-const en_panel_reduce_height = /** @type {(inputs: Panel_Reduce_HeightInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Reduce panel height`)
-};
 
-const af_panel_reduce_height = /** @type {(inputs: Panel_Reduce_HeightInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Verklein paneelhoogte`)
-};
 
 /**
 * | output |
@@ -23,7 +17,8 @@ const af_panel_reduce_height = /** @type {(inputs: Panel_Reduce_HeightInputs) =>
 * @returns {LocalizedString}
 */
 export const panel_reduce_height = /** @type {((inputs?: Panel_Reduce_HeightInputs, options?: { locale?: "en" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Panel_Reduce_HeightInputs, { locale?: "en" | "af" }, {}>} */ ((inputs = {}, options = {}) => {
+	void inputs;
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "af") return af_panel_reduce_height(inputs)
-	return en_panel_reduce_height(inputs)
+	if (locale === "af") return /** @type {LocalizedString} */ ("Verklein paneelhoogte")
+	return /** @type {LocalizedString} */ ("Reduce panel height")
 });

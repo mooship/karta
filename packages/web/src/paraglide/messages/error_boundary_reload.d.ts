@@ -1,5 +1,7 @@
 export type LocalizedString = import('../runtime.js').LocalizedString;
 export type Error_Boundary_ReloadInputs = {};
+/** @typedef {import('../runtime.js').LocalizedString} LocalizedString */
+/** @typedef {{}} Error_Boundary_ReloadInputs */
 /**
 * | output |
 * | --- |

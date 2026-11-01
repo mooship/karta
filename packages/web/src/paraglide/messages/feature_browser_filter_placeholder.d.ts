@@ -1,5 +1,7 @@
 export type LocalizedString = import('../runtime.js').LocalizedString;
 export type Feature_Browser_Filter_PlaceholderInputs = {};
+/** @typedef {import('../runtime.js').LocalizedString} LocalizedString */
+/** @typedef {{}} Feature_Browser_Filter_PlaceholderInputs */
 /**
 * | output |
 * | --- |

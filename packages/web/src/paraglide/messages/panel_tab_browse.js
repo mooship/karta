@@ -5,13 +5,7 @@ import { getLocale, experimentalStaticLocale } from '../runtime.js';
 
 /** @typedef {{}} Panel_Tab_BrowseInputs */
 
-const en_panel_tab_browse = /** @type {(inputs: Panel_Tab_BrowseInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Browse`)
-};
 
-const af_panel_tab_browse = /** @type {(inputs: Panel_Tab_BrowseInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Blaai`)
-};
 
 /**
 * | output |
@@ -23,7 +17,8 @@ const af_panel_tab_browse = /** @type {(inputs: Panel_Tab_BrowseInputs) => Local
 * @returns {LocalizedString}
 */
 export const panel_tab_browse = /** @type {((inputs?: Panel_Tab_BrowseInputs, options?: { locale?: "en" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Panel_Tab_BrowseInputs, { locale?: "en" | "af" }, {}>} */ ((inputs = {}, options = {}) => {
+	void inputs;
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "af") return af_panel_tab_browse(inputs)
-	return en_panel_tab_browse(inputs)
+	if (locale === "af") return /** @type {LocalizedString} */ ("Blaai")
+	return /** @type {LocalizedString} */ ("Browse")
 });

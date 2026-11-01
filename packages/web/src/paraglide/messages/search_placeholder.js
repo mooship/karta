@@ -5,13 +5,7 @@ import { getLocale, experimentalStaticLocale } from '../runtime.js';
 
 /** @typedef {{}} Search_PlaceholderInputs */
 
-const en_search_placeholder = /** @type {(inputs: Search_PlaceholderInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Search town, suburb or station`)
-};
 
-const af_search_placeholder = /** @type {(inputs: Search_PlaceholderInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Soek dorp, voorstad of stasie`)
-};
 
 /**
 * | output |
@@ -23,7 +17,8 @@ const af_search_placeholder = /** @type {(inputs: Search_PlaceholderInputs) => L
 * @returns {LocalizedString}
 */
 export const search_placeholder = /** @type {((inputs?: Search_PlaceholderInputs, options?: { locale?: "en" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Search_PlaceholderInputs, { locale?: "en" | "af" }, {}>} */ ((inputs = {}, options = {}) => {
+	void inputs;
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "af") return af_search_placeholder(inputs)
-	return en_search_placeholder(inputs)
+	if (locale === "af") return /** @type {LocalizedString} */ ("Soek dorp, voorstad of stasie")
+	return /** @type {LocalizedString} */ ("Search town, suburb or station")
 });

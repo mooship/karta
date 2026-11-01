@@ -1,5 +1,7 @@
 export type LocalizedString = import('../runtime.js').LocalizedString;
 export type App_HeadingInputs = {};
+/** @typedef {import('../runtime.js').LocalizedString} LocalizedString */
+/** @typedef {{}} App_HeadingInputs */
 /**
 * | output |
 * | --- |

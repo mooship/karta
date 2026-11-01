@@ -1,5 +1,7 @@
 export type LocalizedString = import('../runtime.js').LocalizedString;
 export type Webmcp_Search_Location_DescriptionInputs = {};
+/** @typedef {import('../runtime.js').LocalizedString} LocalizedString */
+/** @typedef {{}} Webmcp_Search_Location_DescriptionInputs */
 /**
 * | output |
 * | --- |

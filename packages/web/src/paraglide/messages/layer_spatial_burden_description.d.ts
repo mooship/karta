@@ -1,5 +1,7 @@
 export type LocalizedString = import('../runtime.js').LocalizedString;
 export type Layer_Spatial_Burden_DescriptionInputs = {};
+/** @typedef {import('../runtime.js').LocalizedString} LocalizedString */
+/** @typedef {{}} Layer_Spatial_Burden_DescriptionInputs */
 /**
 * | output |
 * | --- |

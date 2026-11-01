@@ -5,13 +5,7 @@ import { getLocale, experimentalStaticLocale } from '../runtime.js';
 
 /** @typedef {{}} Panel_Toggle_ExploreInputs */
 
-const en_panel_toggle_explore = /** @type {(inputs: Panel_Toggle_ExploreInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Explore`)
-};
 
-const af_panel_toggle_explore = /** @type {(inputs: Panel_Toggle_ExploreInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Verken`)
-};
 
 /**
 * | output |
@@ -23,7 +17,8 @@ const af_panel_toggle_explore = /** @type {(inputs: Panel_Toggle_ExploreInputs) 
 * @returns {LocalizedString}
 */
 export const panel_toggle_explore = /** @type {((inputs?: Panel_Toggle_ExploreInputs, options?: { locale?: "en" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Panel_Toggle_ExploreInputs, { locale?: "en" | "af" }, {}>} */ ((inputs = {}, options = {}) => {
+	void inputs;
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "af") return af_panel_toggle_explore(inputs)
-	return en_panel_toggle_explore(inputs)
+	if (locale === "af") return /** @type {LocalizedString} */ ("Verken")
+	return /** @type {LocalizedString} */ ("Explore")
 });

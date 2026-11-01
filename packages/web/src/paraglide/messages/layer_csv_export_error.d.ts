@@ -1,5 +1,7 @@
 export type LocalizedString = import('../runtime.js').LocalizedString;
 export type Layer_Csv_Export_ErrorInputs = {};
+/** @typedef {import('../runtime.js').LocalizedString} LocalizedString */
+/** @typedef {{}} Layer_Csv_Export_ErrorInputs */
 /**
 * | output |
 * | --- |

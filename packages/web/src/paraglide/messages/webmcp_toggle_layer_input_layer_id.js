@@ -5,13 +5,7 @@ import { getLocale, experimentalStaticLocale } from '../runtime.js';
 
 /** @typedef {{}} Webmcp_Toggle_Layer_Input_Layer_IdInputs */
 
-const en_webmcp_toggle_layer_input_layer_id = /** @type {(inputs: Webmcp_Toggle_Layer_Input_Layer_IdInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`The layer's id, as returned by list-map-layers.`)
-};
 
-const af_webmcp_toggle_layer_input_layer_id = /** @type {(inputs: Webmcp_Toggle_Layer_Input_Layer_IdInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Die laag se id, soos deur list-map-layers teruggegee.`)
-};
 
 /**
 * | output |
@@ -23,7 +17,8 @@ const af_webmcp_toggle_layer_input_layer_id = /** @type {(inputs: Webmcp_Toggle_
 * @returns {LocalizedString}
 */
 export const webmcp_toggle_layer_input_layer_id = /** @type {((inputs?: Webmcp_Toggle_Layer_Input_Layer_IdInputs, options?: { locale?: "en" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Webmcp_Toggle_Layer_Input_Layer_IdInputs, { locale?: "en" | "af" }, {}>} */ ((inputs = {}, options = {}) => {
+	void inputs;
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "af") return af_webmcp_toggle_layer_input_layer_id(inputs)
-	return en_webmcp_toggle_layer_input_layer_id(inputs)
+	if (locale === "af") return /** @type {LocalizedString} */ ("Die laag se id, soos deur list-map-layers teruggegee.")
+	return /** @type {LocalizedString} */ ("The layer's id, as returned by list-map-layers.")
 });

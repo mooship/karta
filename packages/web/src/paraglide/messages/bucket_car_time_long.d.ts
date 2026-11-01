@@ -1,5 +1,7 @@
 export type LocalizedString = import('../runtime.js').LocalizedString;
 export type Bucket_Car_Time_LongInputs = {};
+/** @typedef {import('../runtime.js').LocalizedString} LocalizedString */
+/** @typedef {{}} Bucket_Car_Time_LongInputs */
 /**
 * | output |
 * | --- |

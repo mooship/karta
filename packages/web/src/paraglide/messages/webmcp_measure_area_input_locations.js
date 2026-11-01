@@ -5,13 +5,7 @@ import { getLocale, experimentalStaticLocale } from '../runtime.js';
 
 /** @typedef {{}} Webmcp_Measure_Area_Input_LocationsInputs */
 
-const en_webmcp_measure_area_input_locations = /** @type {(inputs: Webmcp_Measure_Area_Input_LocationsInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Place names forming the area's outline, in order, e.g. ["Sandton", "Soweto", "Midrand"].`)
-};
 
-const af_webmcp_measure_area_input_locations = /** @type {(inputs: Webmcp_Measure_Area_Input_LocationsInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Pleknname wat die area se buitelyn vorm, in volgorde, bv. ["Sandton", "Soweto", "Midrand"].`)
-};
 
 /**
 * | output |
@@ -23,7 +17,8 @@ const af_webmcp_measure_area_input_locations = /** @type {(inputs: Webmcp_Measur
 * @returns {LocalizedString}
 */
 export const webmcp_measure_area_input_locations = /** @type {((inputs?: Webmcp_Measure_Area_Input_LocationsInputs, options?: { locale?: "en" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Webmcp_Measure_Area_Input_LocationsInputs, { locale?: "en" | "af" }, {}>} */ ((inputs = {}, options = {}) => {
+	void inputs;
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "af") return af_webmcp_measure_area_input_locations(inputs)
-	return en_webmcp_measure_area_input_locations(inputs)
+	if (locale === "af") return /** @type {LocalizedString} */ ("Pleknname wat die area se buitelyn vorm, in volgorde, bv. [\"Sandton\", \"Soweto\", \"Midrand\"].")
+	return /** @type {LocalizedString} */ ("Place names forming the area's outline, in order, e.g. [\"Sandton\", \"Soweto\", \"Midrand\"].")
 });

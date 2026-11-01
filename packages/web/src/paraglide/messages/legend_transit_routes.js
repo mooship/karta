@@ -5,13 +5,7 @@ import { getLocale, experimentalStaticLocale } from '../runtime.js';
 
 /** @typedef {{}} Legend_Transit_RoutesInputs */
 
-const en_legend_transit_routes = /** @type {(inputs: Legend_Transit_RoutesInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Transit routes`)
-};
 
-const af_legend_transit_routes = /** @type {(inputs: Legend_Transit_RoutesInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Vervoerroetes`)
-};
 
 /**
 * | output |
@@ -23,7 +17,8 @@ const af_legend_transit_routes = /** @type {(inputs: Legend_Transit_RoutesInputs
 * @returns {LocalizedString}
 */
 export const legend_transit_routes = /** @type {((inputs?: Legend_Transit_RoutesInputs, options?: { locale?: "en" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Legend_Transit_RoutesInputs, { locale?: "en" | "af" }, {}>} */ ((inputs = {}, options = {}) => {
+	void inputs;
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "af") return af_legend_transit_routes(inputs)
-	return en_legend_transit_routes(inputs)
+	if (locale === "af") return /** @type {LocalizedString} */ ("Vervoerroetes")
+	return /** @type {LocalizedString} */ ("Transit routes")
 });

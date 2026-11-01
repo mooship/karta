@@ -5,13 +5,7 @@ import { getLocale, experimentalStaticLocale } from '../runtime.js';
 
 /** @typedef {{}} Legend_TitleInputs */
 
-const en_legend_title = /** @type {(inputs: Legend_TitleInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Map legend`)
-};
 
-const af_legend_title = /** @type {(inputs: Legend_TitleInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Kaartlegende`)
-};
 
 /**
 * | output |
@@ -23,7 +17,8 @@ const af_legend_title = /** @type {(inputs: Legend_TitleInputs) => LocalizedStri
 * @returns {LocalizedString}
 */
 export const legend_title = /** @type {((inputs?: Legend_TitleInputs, options?: { locale?: "en" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Legend_TitleInputs, { locale?: "en" | "af" }, {}>} */ ((inputs = {}, options = {}) => {
+	void inputs;
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "af") return af_legend_title(inputs)
-	return en_legend_title(inputs)
+	if (locale === "af") return /** @type {LocalizedString} */ ("Kaartlegende")
+	return /** @type {LocalizedString} */ ("Map legend")
 });

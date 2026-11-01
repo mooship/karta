@@ -1,5 +1,7 @@
 export type LocalizedString = import('../runtime.js').LocalizedString;
 export type Layer_Nearest_Transit_LabelInputs = {};
+/** @typedef {import('../runtime.js').LocalizedString} LocalizedString */
+/** @typedef {{}} Layer_Nearest_Transit_LabelInputs */
 /**
 * | output |
 * | --- |

@@ -1,5 +1,7 @@
 export type LocalizedString = import('../runtime.js').LocalizedString;
 export type Webmcp_Layer_State_VisibleInputs = {};
+/** @typedef {import('../runtime.js').LocalizedString} LocalizedString */
+/** @typedef {{}} Webmcp_Layer_State_VisibleInputs */
 /**
 * | output |
 * | --- |

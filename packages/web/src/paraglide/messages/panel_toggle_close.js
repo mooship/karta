@@ -5,13 +5,7 @@ import { getLocale, experimentalStaticLocale } from '../runtime.js';
 
 /** @typedef {{}} Panel_Toggle_CloseInputs */
 
-const en_panel_toggle_close = /** @type {(inputs: Panel_Toggle_CloseInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Close`)
-};
 
-const af_panel_toggle_close = /** @type {(inputs: Panel_Toggle_CloseInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Sluit`)
-};
 
 /**
 * | output |
@@ -23,7 +17,8 @@ const af_panel_toggle_close = /** @type {(inputs: Panel_Toggle_CloseInputs) => L
 * @returns {LocalizedString}
 */
 export const panel_toggle_close = /** @type {((inputs?: Panel_Toggle_CloseInputs, options?: { locale?: "en" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Panel_Toggle_CloseInputs, { locale?: "en" | "af" }, {}>} */ ((inputs = {}, options = {}) => {
+	void inputs;
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "af") return af_panel_toggle_close(inputs)
-	return en_panel_toggle_close(inputs)
+	if (locale === "af") return /** @type {LocalizedString} */ ("Sluit")
+	return /** @type {LocalizedString} */ ("Close")
 });

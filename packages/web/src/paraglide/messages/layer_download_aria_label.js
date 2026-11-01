@@ -5,13 +5,7 @@ import { getLocale, experimentalStaticLocale } from '../runtime.js';
 
 /** @typedef {{ label: NonNullable<unknown> }} Layer_Download_Aria_LabelInputs */
 
-const en_layer_download_aria_label = /** @type {(inputs: Layer_Download_Aria_LabelInputs) => LocalizedString} */ (i) => {
-	return /** @type {LocalizedString} */ (`Download ${i?.label} data (GeoJSON)`)
-};
 
-const af_layer_download_aria_label = /** @type {(inputs: Layer_Download_Aria_LabelInputs) => LocalizedString} */ (i) => {
-	return /** @type {LocalizedString} */ (`Laai ${i?.label}-data af (GeoJSON)`)
-};
 
 /**
 * | output |
@@ -22,8 +16,8 @@ const af_layer_download_aria_label = /** @type {(inputs: Layer_Download_Aria_Lab
 * @param {{ locale?: "en" | "af" }} options
 * @returns {LocalizedString}
 */
-export const layer_download_aria_label = /** @type {((inputs: Layer_Download_Aria_LabelInputs, options?: { locale?: "en" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Layer_Download_Aria_LabelInputs, { locale?: "en" | "af" }, {}>} */ ((inputs, options = {}) => {
+export const layer_download_aria_label = /** @type {((inputs: Layer_Download_Aria_LabelInputs, options?: { locale?: "en" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Layer_Download_Aria_LabelInputs, { locale?: "en" | "af" }, {}>} */ ((i, options = {}) => {
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "af") return af_layer_download_aria_label(inputs)
-	return en_layer_download_aria_label(inputs)
+	if (locale === "af") return /** @type {LocalizedString} */ (`Laai ${i?.label}-data af (GeoJSON)`)
+	return /** @type {LocalizedString} */ (`Download ${i?.label} data (GeoJSON)`)
 });

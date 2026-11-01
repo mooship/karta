@@ -1,5 +1,7 @@
 export type LocalizedString = import('../runtime.js').LocalizedString;
 export type Panel_Toggle_CloseInputs = {};
+/** @typedef {import('../runtime.js').LocalizedString} LocalizedString */
+/** @typedef {{}} Panel_Toggle_CloseInputs */
 /**
 * | output |
 * | --- |

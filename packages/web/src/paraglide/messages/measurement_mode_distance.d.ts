@@ -1,5 +1,7 @@
 export type LocalizedString = import('../runtime.js').LocalizedString;
 export type Measurement_Mode_DistanceInputs = {};
+/** @typedef {import('../runtime.js').LocalizedString} LocalizedString */
+/** @typedef {{}} Measurement_Mode_DistanceInputs */
 /**
 * | output |
 * | --- |

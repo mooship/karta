@@ -1,5 +1,7 @@
 export type LocalizedString = import('../runtime.js').LocalizedString;
 export type Layer_Rapid_Rail_LabelInputs = {};
+/** @typedef {import('../runtime.js').LocalizedString} LocalizedString */
+/** @typedef {{}} Layer_Rapid_Rail_LabelInputs */
 /**
 * | output |
 * | --- |

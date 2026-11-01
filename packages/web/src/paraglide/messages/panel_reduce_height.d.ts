@@ -1,5 +1,7 @@
 export type LocalizedString = import('../runtime.js').LocalizedString;
 export type Panel_Reduce_HeightInputs = {};
+/** @typedef {import('../runtime.js').LocalizedString} LocalizedString */
+/** @typedef {{}} Panel_Reduce_HeightInputs */
 /**
 * | output |
 * | --- |

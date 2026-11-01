@@ -5,13 +5,7 @@ import { getLocale, experimentalStaticLocale } from '../runtime.js';
 
 /** @typedef {{}} Map_Aria_LabelInputs */
 
-const en_map_aria_label = /** @type {(inputs: Map_Aria_LabelInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Map of South African township access to job centres`)
-};
 
-const af_map_aria_label = /** @type {(inputs: Map_Aria_LabelInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Kaart van Suid-Afrikaanse lokasies se toegang tot werksentrums`)
-};
 
 /**
 * | output |
@@ -23,7 +17,8 @@ const af_map_aria_label = /** @type {(inputs: Map_Aria_LabelInputs) => Localized
 * @returns {LocalizedString}
 */
 export const map_aria_label = /** @type {((inputs?: Map_Aria_LabelInputs, options?: { locale?: "en" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Map_Aria_LabelInputs, { locale?: "en" | "af" }, {}>} */ ((inputs = {}, options = {}) => {
+	void inputs;
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "af") return af_map_aria_label(inputs)
-	return en_map_aria_label(inputs)
+	if (locale === "af") return /** @type {LocalizedString} */ ("Kaart van Suid-Afrikaanse lokasies se toegang tot werksentrums")
+	return /** @type {LocalizedString} */ ("Map of South African township access to job centres")
 });

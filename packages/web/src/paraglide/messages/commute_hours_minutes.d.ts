@@ -3,6 +3,8 @@ export type Commute_Hours_MinutesInputs = {
     hours: NonNullable<unknown>;
     minutes: NonNullable<unknown>;
 };
+/** @typedef {import('../runtime.js').LocalizedString} LocalizedString */
+/** @typedef {{ hours: NonNullable<unknown>, minutes: NonNullable<unknown> }} Commute_Hours_MinutesInputs */
 /**
 * | output |
 * | --- |

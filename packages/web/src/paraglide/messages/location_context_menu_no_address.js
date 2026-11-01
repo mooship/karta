@@ -5,13 +5,7 @@ import { getLocale, experimentalStaticLocale } from '../runtime.js';
 
 /** @typedef {{}} Location_Context_Menu_No_AddressInputs */
 
-const en_location_context_menu_no_address = /** @type {(inputs: Location_Context_Menu_No_AddressInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`No address found here.`)
-};
 
-const af_location_context_menu_no_address = /** @type {(inputs: Location_Context_Menu_No_AddressInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Geen adres hier gevind nie.`)
-};
 
 /**
 * | output |
@@ -23,7 +17,8 @@ const af_location_context_menu_no_address = /** @type {(inputs: Location_Context
 * @returns {LocalizedString}
 */
 export const location_context_menu_no_address = /** @type {((inputs?: Location_Context_Menu_No_AddressInputs, options?: { locale?: "en" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Location_Context_Menu_No_AddressInputs, { locale?: "en" | "af" }, {}>} */ ((inputs = {}, options = {}) => {
+	void inputs;
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "af") return af_location_context_menu_no_address(inputs)
-	return en_location_context_menu_no_address(inputs)
+	if (locale === "af") return /** @type {LocalizedString} */ ("Geen adres hier gevind nie.")
+	return /** @type {LocalizedString} */ ("No address found here.")
 });

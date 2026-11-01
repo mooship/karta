@@ -5,13 +5,7 @@ import { getLocale, experimentalStaticLocale } from '../runtime.js';
 
 /** @typedef {{}} Bucket_Spatial_Burden_LowInputs */
 
-const en_bucket_spatial_burden_low = /** @type {(inputs: Bucket_Spatial_Burden_LowInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Low`)
-};
 
-const af_bucket_spatial_burden_low = /** @type {(inputs: Bucket_Spatial_Burden_LowInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Laag`)
-};
 
 /**
 * | output |
@@ -23,7 +17,8 @@ const af_bucket_spatial_burden_low = /** @type {(inputs: Bucket_Spatial_Burden_L
 * @returns {LocalizedString}
 */
 export const bucket_spatial_burden_low = /** @type {((inputs?: Bucket_Spatial_Burden_LowInputs, options?: { locale?: "en" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Bucket_Spatial_Burden_LowInputs, { locale?: "en" | "af" }, {}>} */ ((inputs = {}, options = {}) => {
+	void inputs;
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "af") return af_bucket_spatial_burden_low(inputs)
-	return en_bucket_spatial_burden_low(inputs)
+	if (locale === "af") return /** @type {LocalizedString} */ ("Laag")
+	return /** @type {LocalizedString} */ ("Low")
 });

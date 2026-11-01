@@ -1,5 +1,7 @@
 export type LocalizedString = import('../runtime.js').LocalizedString;
 export type Webmcp_Measure_Area_DescriptionInputs = {};
+/** @typedef {import('../runtime.js').LocalizedString} LocalizedString */
+/** @typedef {{}} Webmcp_Measure_Area_DescriptionInputs */
 /**
 * | output |
 * | --- |

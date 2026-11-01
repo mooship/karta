@@ -5,13 +5,7 @@ import { getLocale, experimentalStaticLocale } from '../runtime.js';
 
 /** @typedef {{}} Feature_Browser_Filter_PlaceholderInputs */
 
-const en_feature_browser_filter_placeholder = /** @type {(inputs: Feature_Browser_Filter_PlaceholderInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Search by name`)
-};
 
-const af_feature_browser_filter_placeholder = /** @type {(inputs: Feature_Browser_Filter_PlaceholderInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Soek volgens naam`)
-};
 
 /**
 * | output |
@@ -23,7 +17,8 @@ const af_feature_browser_filter_placeholder = /** @type {(inputs: Feature_Browse
 * @returns {LocalizedString}
 */
 export const feature_browser_filter_placeholder = /** @type {((inputs?: Feature_Browser_Filter_PlaceholderInputs, options?: { locale?: "en" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Feature_Browser_Filter_PlaceholderInputs, { locale?: "en" | "af" }, {}>} */ ((inputs = {}, options = {}) => {
+	void inputs;
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "af") return af_feature_browser_filter_placeholder(inputs)
-	return en_feature_browser_filter_placeholder(inputs)
+	if (locale === "af") return /** @type {LocalizedString} */ ("Soek volgens naam")
+	return /** @type {LocalizedString} */ ("Search by name")
 });

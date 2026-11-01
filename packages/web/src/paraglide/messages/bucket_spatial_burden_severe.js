@@ -5,13 +5,7 @@ import { getLocale, experimentalStaticLocale } from '../runtime.js';
 
 /** @typedef {{}} Bucket_Spatial_Burden_SevereInputs */
 
-const en_bucket_spatial_burden_severe = /** @type {(inputs: Bucket_Spatial_Burden_SevereInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Severe`)
-};
 
-const af_bucket_spatial_burden_severe = /** @type {(inputs: Bucket_Spatial_Burden_SevereInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Ernstig`)
-};
 
 /**
 * | output |
@@ -23,7 +17,8 @@ const af_bucket_spatial_burden_severe = /** @type {(inputs: Bucket_Spatial_Burde
 * @returns {LocalizedString}
 */
 export const bucket_spatial_burden_severe = /** @type {((inputs?: Bucket_Spatial_Burden_SevereInputs, options?: { locale?: "en" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Bucket_Spatial_Burden_SevereInputs, { locale?: "en" | "af" }, {}>} */ ((inputs = {}, options = {}) => {
+	void inputs;
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "af") return af_bucket_spatial_burden_severe(inputs)
-	return en_bucket_spatial_burden_severe(inputs)
+	if (locale === "af") return /** @type {LocalizedString} */ ("Ernstig")
+	return /** @type {LocalizedString} */ ("Severe")
 });

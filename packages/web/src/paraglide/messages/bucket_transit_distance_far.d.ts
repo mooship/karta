@@ -1,5 +1,7 @@
 export type LocalizedString = import('../runtime.js').LocalizedString;
 export type Bucket_Transit_Distance_FarInputs = {};
+/** @typedef {import('../runtime.js').LocalizedString} LocalizedString */
+/** @typedef {{}} Bucket_Transit_Distance_FarInputs */
 /**
 * | output |
 * | --- |

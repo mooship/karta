@@ -1,5 +1,7 @@
 export type LocalizedString = import('../runtime.js').LocalizedString;
 export type Bucket_Spatial_Burden_SevereInputs = {};
+/** @typedef {import('../runtime.js').LocalizedString} LocalizedString */
+/** @typedef {{}} Bucket_Spatial_Burden_SevereInputs */
 /**
 * | output |
 * | --- |
