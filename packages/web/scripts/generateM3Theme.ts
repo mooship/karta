@@ -4,7 +4,7 @@
  * palette algorithm (the same engine Material You / Android theming uses).
  *
  * @remarks
- * Run with `pnpm --filter @karta/web run generate:theme` after changing
+ * Run with `npm run generate:theme -w @karta/web` after changing
  * `SEED_COLOR_HEX` below. The script owns the `/* GENERATED M3 TOKENS *\/`
  * block in `index.css` end to end — hand edits inside that block are
  * overwritten on the next run, so any change to Karta's brand colour must

@@ -15,6 +15,6 @@
     "@karta/core": "file:../core"
   },
   "devDependencies": {
-    "@types/geojson": "^7946.0.14"
+    "@types/geojson": "7946.0.16"
   }
 }

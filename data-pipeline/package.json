@@ -8,7 +8,6 @@
   "engines": {
     "node": ">=22"
   },
-  "packageManager": "pnpm@10.33.0",
   "scripts": {
     "cache:clean": "tsx src/cleanCache.ts --all",
     "cache:prune": "tsx src/cleanCache.ts",
@@ -21,29 +20,27 @@
   "dependencies": {
     "@karta/app": "file:../packages/app",
     "@karta/core": "file:../packages/core",
-    "@turf/turf": "^7.4.0",
-    "adm-zip": "^0.6.1",
-    "shapefile": "^0.6.6",
-    "topojson-client": "^3.1.0",
-    "topojson-server": "^3.0.1",
-    "topojson-simplify": "^3.0.3"
+    "@turf/turf": "7.4.0",
+    "adm-zip": "0.6.1",
+    "shapefile": "0.6.6",
+    "topojson-client": "3.1.0",
+    "topojson-server": "3.0.1",
+    "topojson-simplify": "3.0.3"
   },
   "devDependencies": {
-    "@types/adm-zip": "^0.6.0",
-    "@types/geojson": "^7946.0.14",
-    "@types/node": "^26.6.5",
-    "@types/shapefile": "^0.6.4",
-    "@types/topojson-client": "^3.1.5",
-    "@types/topojson-server": "^3.0.4",
-    "@types/topojson-simplify": "^3.0.3",
-    "@types/topojson-specification": "^1.0.5",
-    "tsx": "^4.23.15",
-    "typescript": "^7.0.2",
-    "vitest": "^5.0.5"
+    "@types/adm-zip": "0.6.0",
+    "@types/geojson": "7946.0.16",
+    "@types/node": "26.6.5",
+    "@types/shapefile": "0.6.4",
+    "@types/topojson-client": "3.1.5",
+    "@types/topojson-server": "3.0.4",
+    "@types/topojson-simplify": "3.0.3",
+    "@types/topojson-specification": "1.0.5",
+    "tsx": "4.23.15",
+    "typescript": "7.0.2",
+    "vitest": "5.0.5"
   },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "esbuild"
-    ]
+  "allowScripts": {
+    "esbuild": true
   }
 }

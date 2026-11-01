@@ -58,7 +58,7 @@ silently ship a locale with no name in the language picker.
 ## 4. Compile
 
 ```bash
-pnpm --filter @karta/web run messages:compile
+npm run messages:compile -w @karta/web
 ```
 
 This regenerates `packages/web/src/paraglide/` (the `m.*` message
@@ -88,6 +88,6 @@ Paraglide messages are up to date" step
 ## 6. Verify
 
 ```bash
-pnpm --filter @karta/web run test   # localeParity.test.ts, LanguageToggle.test.tsx
-pnpm --filter @karta/web run dev    # pick the new locale from the settings menu
+npm run test -w @karta/web    # localeParity.test.ts, LanguageToggle.test.tsx
+npm run dev -w @karta/web     # pick the new locale from the settings menu
 ```

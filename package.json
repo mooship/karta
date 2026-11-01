@@ -8,39 +8,40 @@
   "engines": {
     "node": ">=22"
   },
-  "packageManager": "pnpm@10.33.0",
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
-    "lint": "biome check . && pnpm run depcruise",
+    "lint": "biome check . && npm run depcruise",
     "depcruise": "depcruise packages/*/src --config .dependency-cruiser.cjs",
     "format": "biome format --write .",
+    "prepare": "lefthook install --force",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
-    "test:e2e": "pnpm --filter @karta/web run test:e2e",
-    "typecheck": "pnpm --filter @karta/core run typecheck && pnpm --filter @karta/app run typecheck && pnpm --filter @karta/theme run typecheck && pnpm --filter @karta/map run typecheck && pnpm --filter @karta/react run typecheck && pnpm --filter @karta/web run build && pnpm --dir data-pipeline run typecheck",
-    "build": "pnpm -r run build"
+    "test:e2e": "npm run test:e2e -w @karta/web",
+    "typecheck": "npm run typecheck -w @karta/core && npm run typecheck -w @karta/app && npm run typecheck -w @karta/theme && npm run typecheck -w @karta/map && npm run typecheck -w @karta/react && npm run build -w @karta/web && npm run typecheck --prefix data-pipeline",
+    "build": "npm run build --workspaces --if-present"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.5.12",
-    "@inlang/plugin-message-format": "^4.4.4",
-    "@swc/core": "^1.16.2",
-    "@vitest/coverage-v8": "^5.0.1",
-    "dependency-cruiser": "^18.3.1",
-    "lefthook": "^2.1.14",
-    "react": "^19.3.0",
-    "react-dom": "^19.3.0",
-    "typescript": "^7.0.2",
-    "vitest": "^5.0.1",
-    "wrangler": "^4.155.0"
+    "@biomejs/biome": "2.5.12",
+    "@inlang/plugin-message-format": "4.4.4",
+    "@swc/core": "1.16.2",
+    "@vitest/coverage-v8": "5.0.1",
+    "dependency-cruiser": "18.3.1",
+    "lefthook": "2.1.14",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "typescript": "7.0.2",
+    "vitest": "5.0.1",
+    "wrangler": "4.155.0"
   },
-  "pnpm": {
-    "overrides": {
-      "maplibre-gl": "5.24.0"
-    },
-    "onlyBuiltDependencies": [
-      "@swc/core",
-      "esbuild",
-      "lefthook",
-      "workerd"
-    ]
+  "overrides": {
+    "maplibre-gl": "5.24.0"
+  },
+  "allowScripts": {
+    "@swc/core": true,
+    "esbuild": true,
+    "lefthook": true,
+    "workerd": true
   }
 }

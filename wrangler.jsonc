@@ -41,6 +41,6 @@
     { "pattern": "buffer-zones.timothybrits.co.za", "custom_domain": true }
   ],
   "build": {
-    "command": "pnpm run build"
+    "command": "npm run build"
   }
 }
