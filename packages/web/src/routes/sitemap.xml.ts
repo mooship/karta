@@ -3,7 +3,7 @@ import { staticTextResponse } from "./staticTextResponse";
 
 /**
  * Every page this site wants indexed, kept in step with `routes.ts` by
- * hand — there are only two routes today, so an abstraction deriving this
+ * hand; there are only two routes today, so an abstraction deriving this
  * from the route config would add indirection with nothing to reuse it.
  */
 const SITEMAP_XML_BODY = `<?xml version="1.0" encoding="UTF-8"?>

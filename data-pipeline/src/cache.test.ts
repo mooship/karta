@@ -25,7 +25,7 @@ describe("cache", () => {
   beforeEach(async () => {
     dir = await mkdtemp(resolve(tmpdir(), "buffer-zones-cache-"));
     // cacheEnabled() short-circuits to disabled whenever VITEST=true, which
-    // vitest sets globally -- override it so the real I/O paths run.
+    // vitest sets globally; override it so the real I/O paths run.
     vi.stubEnv("VITEST", "false");
     vi.stubEnv("PIPELINE_CACHE_DIR", dir);
     vi.stubEnv("PIPELINE_CACHE", "");

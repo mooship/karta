@@ -78,7 +78,7 @@ describe("computeSpatialBurdenScore", () => {
 
   it("still reduces to the plain normalized value when only one metric is known, since averaging over a single weighted term cancels its own weight", () => {
     // Before and after the fix this stays 0.5: reweighting a lone metric by
-    // its own weight and then dividing by that same weight is a no-op — the
+    // its own weight and then dividing by that same weight is a no-op; the
     // earlier "unscaled" behaviour was already the correct weighted average
     // for a single data point, just arrived at without the general formula.
     expect(computeSpatialBurdenScore(45, null)).toBeCloseTo(0.5);

@@ -25,7 +25,7 @@ async function fetchBusRapidTransit(): Promise<TransitLayerFeatureCollection> {
 async function fetchCommuterRail(): Promise<TransitLayerFeatureCollection> {
   // PRASA's Overpass query already matches on operator/network regardless of
   // region (see prasa.ts), so this reuses it as-is rather than a new
-  // adapter — just scoped to Cape Town's bbox instead of Gauteng's.
+  // adapter; just scoped to Cape Town's bbox instead of Gauteng's.
   const bbox = getMetroBbox("cape-town");
   return fetchWithPublishedFallback({
     sourceName: "PRASA rail",

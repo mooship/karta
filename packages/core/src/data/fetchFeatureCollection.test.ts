@@ -128,7 +128,7 @@ describe("fetchFeatureCollection", () => {
     const fetchMock = vi.fn().mockImplementation(() => new Promise(() => {}));
     vi.stubGlobal("fetch", fetchMock);
 
-    // Deliberately never awaited/settled — simulates a caller unmounting
+    // Deliberately never awaited/settled; simulates a caller unmounting
     // (or a test ending) before its request resolves, e.g. an aborted
     // React effect. Left dangling in `inFlight` if clearFeatureCollectionCache
     // doesn't also clear it.

@@ -21,7 +21,7 @@ export function isUsingCustomOsrmEndpoint(): boolean {
 }
 
 // overpass-api.de alone rate-limits/times out under sustained use, so it's
-// listed last -- the other two mirrors are tried first on failure.
+// listed last; the other two mirrors are tried first on failure.
 const PUBLIC_OVERPASS_MIRRORS: readonly string[] = [
   "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
   "https://overpass.private.coffee/api/interpreter",

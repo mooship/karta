@@ -3,9 +3,9 @@
  * can all throw synchronously (Safari private-mode edge cases, a sandboxed
  * iframe without `allow-same-origin`, a strict privacy extension), so every
  * call is caught and degrades to a no-op/`null` rather than crashing the
- * caller -- including a caller running at module-evaluation time, where an
+ * caller; including a caller running at module-evaluation time, where an
  * uncaught throw would fail the whole import.
- * @remarks Internal to `@karta/react`, not part of its public API -- any
+ * @remarks Internal to `@karta/react`, not part of its public API; any
  *   hook in this package that reads or writes `localStorage` should go
  *   through this instead of wrapping its own call sites in try/catch.
  */
@@ -21,14 +21,14 @@ export const safeStorage = {
     try {
       localStorage.setItem(key, value);
     } catch {
-      // Storage blocked or unavailable -- see the module doc comment above.
+      // Storage blocked or unavailable; see the module doc comment above.
     }
   },
   remove(key: string): void {
     try {
       localStorage.removeItem(key);
     } catch {
-      // Storage blocked or unavailable -- see the module doc comment above.
+      // Storage blocked or unavailable; see the module doc comment above.
     }
   },
 };

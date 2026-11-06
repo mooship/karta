@@ -27,7 +27,7 @@ export interface RegionPipelineConfig {
   /**
    * Transit network names (as they appear in a feature's `network`
    * property) every published build of this region must have at least one
-   * feature for -- see `countTransitNetworks`/`assertCompleteNetworkCoverage`.
+   * feature for; see `countTransitNetworks`/`assertCompleteNetworkCoverage`.
    */
   requiredNetworks: readonly string[];
 }

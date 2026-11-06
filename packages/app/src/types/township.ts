@@ -12,7 +12,7 @@ export interface TownshipProperties {
   nearestJobCenter: string;
   /**
    * Straight-line distance (km) to `nearestJobCenter`.
-   * @remarks Currently always `null` — the data pipeline only computes
+   * @remarks Currently always `null`; the data pipeline only computes
    *   `commuteMinutes` today, though `TownshipPopup` already renders this
    *   field when present.
    */

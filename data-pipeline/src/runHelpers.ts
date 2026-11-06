@@ -67,7 +67,7 @@ export function findJobCenterCountMismatch(
  * configured job centres, catching a `constants/metros.ts` edit that wasn't
  * kept in sync with `constants/jobCenters.ts`.
  * @param metros - The metros to check, e.g. a single region's
- *   `RegionPipelineConfig.metros` — never the global `METROS` list, so a
+ *   `RegionPipelineConfig.metros`; never the global `METROS` list, so a
  *   drift in a still-under-construction, unrelated region's metro doesn't
  *   fail an otherwise-valid region's run.
  * @throws On the first mismatch found.
@@ -91,7 +91,7 @@ export function assertMetroSetup(
  * Checks that every `TOWNSHIP_AREA_DEFINITIONS` entry for the given
  * `metroIds` matched at least one sub-place in `areas` (as produced by
  * `createTownshipAreas`).
- * @param metroIds - The metros actually processed in this run — e.g. a
+ * @param metroIds - The metros actually processed in this run; e.g. a
  *   single region's `RegionPipelineConfig.metros`. Scoping to these (rather
  *   than checking every metro in `TOWNSHIP_AREA_DEFINITIONS`) is what lets a
  *   single-region run pass: `areas` only ever contains matches from the
@@ -100,9 +100,9 @@ export function assertMetroSetup(
  * @throws Listing every area id (within `metroIds`) that matched no
  *   sub-place. `createTownshipAreas` itself just omits a zero-match area
  *   rather than failing, so without this check a
- *   `subPlaceNamePrefixes`/`censusMainPlaceCodes` typo — or a Census 2011
+ *   `subPlaceNamePrefixes`/`censusMainPlaceCodes` typo (or a Census 2011
  *   sub-place that was renamed, merged, or never existed under the expected
- *   name — would silently drop an area from the published map with zero
+ *   name) would silently drop an area from the published map with zero
  *   features and no error. An area known to have no Census 2011 boundary of
  *   its own (see `docs/data/*-area-classification.md`'s "Limitations"
  *   sections) should be removed from `TOWNSHIP_AREA_DEFINITIONS` rather than

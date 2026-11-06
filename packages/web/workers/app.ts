@@ -19,7 +19,7 @@ const requestHandler = createRequestHandler(
  *   inside `entry.server.tsx`, not here, even though this file is also a
  *   valid place to call it. This file is bundled by wrangler (esbuild)
  *   directly from source, while `../build/server/index.js` is a separate
- *   artifact already bundled by Vite — two different bundlers, so
+ *   artifact already bundled by Vite; two different bundlers, so
  *   `paraglide/runtime.js` (and its module-scope AsyncLocalStorage) ends up
  *   duplicated rather than shared between them. Wrapping here would resolve
  *   the locale into a copy of that state the render never reads from,
@@ -27,7 +27,7 @@ const requestHandler = createRequestHandler(
  *   `baseLocale`. `entry.server.tsx` shares Vite's single build graph with
  *   `root.tsx`, so wrapping there is what actually reaches `getLocale()`.
  * @remarks The `try`/`catch` around `requestHandler` is a last-resort net,
- *   not the primary error path — `entry.server.tsx`'s `onError` and
+ *   not the primary error path; `entry.server.tsx`'s `onError` and
  *   `root.tsx`'s `ErrorBoundary` catch render/loader/action errors and log
  *   them via `console.error` before this ever sees them. This only fires
  *   for a failure outside that render lifecycle entirely (e.g. the dynamic
@@ -58,8 +58,8 @@ export default {
  * ones `response` doesn't already set for itself.
  * @remarks `public/_headers`' own `/*` block covers every response served
  *   directly from the Workers Static Assets binding, but this Worker's own
- *   `fetch` handler — every SSR-rendered document, including error
- *   responses — sits outside that binding entirely, so those headers never
+ *   `fetch` handler (every SSR-rendered document, including error
+ *   responses) sits outside that binding entirely, so those headers never
  *   reach it. See `securityHeaders.ts`'s own comment for the full picture
  *   and how the two are kept in sync.
  * @remarks "Already set wins" rather than "always overwrite" specifically so
@@ -67,7 +67,7 @@ export default {
  *   (its nonce allows the streaming/hydration `<script>` tags React itself
  *   injects, which a static hash can't cover since their content isn't
  *   static across requests) survives reaching here on a successful SSR
- *   response — this function has no CSP-specific logic of its own; the 500
+ *   response; this function has no CSP-specific logic of its own; the 500
  *   fallback below simply has no CSP of its own yet, so it gets
  *   `SECURITY_HEADERS`' nonce-free default like any other header would.
  */

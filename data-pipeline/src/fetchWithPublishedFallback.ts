@@ -58,7 +58,7 @@ export interface FetchWithPublishedFallbackOptions {
  * `regions/westernCapePipelineConfig.ts`) doesn't need to thread `regionId`
  * through every source's fetch wrapper by hand.
  * @remarks Extracted out of `gautengPipelineConfig.ts` once a second region
- *   needed the identical fallback-on-fetch-failure behaviour — see that
+ *   needed the identical fallback-on-fetch-failure behaviour; see that
  *   file's history for the original single-region version.
  */
 export function createFetchWithPublishedFallback(regionId: string) {

@@ -24,7 +24,7 @@ import * as styles from "./root.css";
  * and sets `data-theme` before first paint, avoiding a flash of the wrong
  * theme. Inlined (rather than an external `/theme-bootstrap.js` file) so it
  * runs without an extra render-blocking network request; the exact source
- * below is hashed into `_headers`' `Content-Security-Policy` `script-src` —
+ * below is hashed into `_headers`' `Content-Security-Policy` `script-src`;
  * changing this string requires recomputing that hash (see `_headers`).
  */
 const THEME_BOOTSTRAP_SCRIPT = `(() => {
@@ -39,7 +39,7 @@ const THEME_BOOTSTRAP_SCRIPT = `(() => {
  * Open Graph, Twitter card, and `Dataset` JSON-LD structured data, all
  * derived by `buildPageMeta` from this route's own title/description/URL.
  * @remarks Runs per request rather than once at module scope, like
- *   `layers/registry.ts`'s getters — `buildPageMeta`'s `getLocale()` call
+ *   `layers/registry.ts`'s getters; `buildPageMeta`'s `getLocale()` call
  *   and every `m.*()` call below must reflect the current request's locale,
  *   not whichever locale first touched this Cloudflare Workers isolate.
  */
@@ -59,7 +59,7 @@ export const meta: MetaFunction = () =>
  *   `defaultVisible` layer's. Nothing can consume that data until the map
  *   bundle has downloaded, hydrated, and mounted Leaflet, so a `preload`
  *   only puts hundreds of kilobytes of it on the wire *alongside* the very
- *   scripts and stylesheets that gate the map's first paint — measured via
+ *   scripts and stylesheets that gate the map's first paint; measured via
  *   Lighthouse, preloading the default choropleth (~600KB compressed) cost
  *   ~0.9s of LCP and ~1.7s of Speed Index under throttled mobile
  *   conditions, because it starved the render-critical requests of
@@ -90,7 +90,7 @@ export const links: LinksFunction = () => [
  * wrapping every route. Sets the pre-hydration `theme-color` meta tags and
  * inlines `THEME_BOOTSTRAP_SCRIPT` to apply the stored theme before paint.
  * `lang`/`dir` read `getLocale()`/`getTextDirection()` rather than a fixed
- * `"en"` — on the server that's resolved by `paraglideMiddleware` from the
+ * `"en"`; on the server that's resolved by `paraglideMiddleware` from the
  * request's locale cookie/`Accept-Language` header, and on the client from
  * the same cookie, so the two agree and there's nothing to hydrate around.
  * `<Scripts>`/`<ScrollRestoration>` need no explicit `nonce` prop here: they
@@ -115,7 +115,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
           media="(prefers-color-scheme: dark)"
         />
         <script
-          // biome-ignore lint/security/noDangerouslySetInnerHtml: static, module-scope literal — see THEME_BOOTSTRAP_SCRIPT
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: static, module-scope literal; see THEME_BOOTSTRAP_SCRIPT
           dangerouslySetInnerHTML={{ __html: THEME_BOOTSTRAP_SCRIPT }}
         />
         <Meta />

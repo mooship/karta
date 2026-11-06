@@ -48,7 +48,7 @@ export const visuallyHidden = style({
 
 /**
  * Text-input chrome shared by `LocationSearchControl`'s place/feature
- * search box and `FeatureBrowser`'s filter box -- each composes this and
+ * search box and `FeatureBrowser`'s filter box; each composes this and
  * adds only its own padding (the search box reserves room for its clear
  * button; the filter box doesn't need one) plus any input-specific
  * touches.

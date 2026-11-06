@@ -11,8 +11,8 @@ interface VectorBasemapLayerProps {
    * layer is mounted, removed again on unmount/`styleUrl` change.
    * @remarks A MapLibre style JSON's own `sources` don't necessarily carry
    *   an `attribution` field (OpenFreeMap's don't), so `maplibre-gl-leaflet`
-   *   has nothing to forward into Leaflet's attribution control on its own
-   *   — this must be supplied by the caller instead, the same way a raster
+   *   has nothing to forward into Leaflet's attribution control on its own;
+   * this must be supplied by the caller instead, the same way a raster
    *   `TileLayer`'s `attribution` prop works.
    */
   attribution?: string;
@@ -43,7 +43,7 @@ interface VectorBasemapLayerProps {
  *   default, so it must be set explicitly for a bundled build to find it.
  *   `maplibre-gl@6`'s own ESM-only worker (loaded as a `{type: "module"}`
  *   Worker) rendered fine on Chromium and desktop Safari but silently never
- *   requested a single tile on real iOS hardware (no thrown error either —
+ *   requested a single tile on real iOS hardware (no thrown error either;
  *   see maplibre/maplibre-gl-js#8002, a real-device-only regression from the
  *   v6.0 ESM rewrite, closed upstream as "need more info"/unreproduced).
  *   Pinning to `maplibre-gl@5` and pointing `setWorkerUrl` at its
@@ -52,7 +52,7 @@ interface VectorBasemapLayerProps {
  *   bundler/CSP-strict consumers since long before the v6 rewrite, so the
  *   worker it creates is a plain classic Worker, never a module Worker. This
  *   is coupled to `maplibre-gl`'s current internal file layout and
- *   `setWorkerUrl`'s existing signature — re-check both, and re-verify on
+ *   `setWorkerUrl`'s existing signature; re-check both, and re-verify on
  *   real iOS hardware, before ever bumping past the v5 line.
  */
 let maplibreLoadPromise:
@@ -75,12 +75,12 @@ function loadMaplibre() {
 /**
  * Renders a MapLibre GL vector-tile basemap as a Leaflet layer.
  * @remarks Must be rendered inside a `MapContainer`. Loads `maplibre-gl` and
- *   `@maplibre/maplibre-gl-leaflet` lazily (see `loadMaplibre`) — `maplibre-gl`
+ *   `@maplibre/maplibre-gl-leaflet` lazily (see `loadMaplibre`); `maplibre-gl`
  *   alone is a ~270KB gzipped dependency, and most sessions (on a raster
  *   basemap) never need it. `leaflet` itself is imported statically instead
  *   of dynamically alongside it: it's already a hard, eagerly-bundled
  *   dependency of this whole package (react-leaflet requires it regardless),
- *   so dynamically importing it here bought no bundle-size benefit — worse,
+ *   so dynamically importing it here bought no bundle-size benefit; worse,
  *   under Vite's code-splitting it resolved to a *separate* module instance
  *   from the one already loaded elsewhere, so `@maplibre/maplibre-gl-leaflet`'s
  *   side-effect patch (`L.maplibreGL = ...`) landed on the wrong object and
@@ -96,7 +96,7 @@ export function VectorBasemapLayer({
 }: VectorBasemapLayerProps) {
   const map = useMap();
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: onError/onLoad intentionally omitted -- they're public props with no stability guarantee, so including them could re-fire this effect (tearing down and recreating the MapLibre layer) on every render for callers that don't memoize them
+  // biome-ignore lint/correctness/useExhaustiveDependencies: onError/onLoad intentionally omitted; they're public props with no stability guarantee, so including them could re-fire this effect (tearing down and recreating the MapLibre layer) on every render for callers that don't memoize them
   useEffect(() => {
     let cancelled = false;
     let layer: import("leaflet").MaplibreGL | undefined;

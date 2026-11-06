@@ -22,7 +22,7 @@ const MINIMUM_TRIANGLE_WEIGHT = 1e-7;
 /**
  * Builds a simplified, coordinate-truncated copy of a township polygon
  * collection for display, via a topology-preserving simplify (so shared
- * borders between adjacent townships stay aligned — a per-feature simplify
+ * borders between adjacent townships stay aligned; a per-feature simplify
  * would drift them apart) followed by coordinate truncation to
  * `GEOJSON_COORDINATE_PRECISION`.
  */

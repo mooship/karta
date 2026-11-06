@@ -5,8 +5,8 @@ import { expect } from "vitest";
  * Asserts every layer id a domain's layer groups reference actually exists
  * in that domain's own layer list.
  * @remarks Shared across every domain's `layerGroups.test.ts` so this
- *   invariant — easy to violate silently when a layer is renamed or removed
- *   without updating the group that still points at it — is checked
+ *   invariant (easy to violate silently when a layer is renamed or removed
+ *   without updating the group that still points at it) is checked
  *   identically for every domain, current and future, rather than
  *   hand-copied per domain's test file.
  */

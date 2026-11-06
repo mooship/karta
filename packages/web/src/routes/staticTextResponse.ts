@@ -1,6 +1,6 @@
 /**
  * Shared cache policy for the generated static-content routes
- * (`robots.txt`, `sitemap.xml`, `llms.txt`) — their bodies are computed
+ * (`robots.txt`, `sitemap.xml`, `llms.txt`); their bodies are computed
  * once at module scope and never vary per request.
  */
 const STATIC_ROUTE_CACHE_CONTROL = "public, max-age=3600";

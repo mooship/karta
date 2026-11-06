@@ -106,7 +106,7 @@ export function useLayerData(layerIds: string[]): LayerDataResult {
         const partition = partitionSettled(results);
 
         // A source that failed may just not have been published for this
-        // region yet (see `docs/adding-a-region.md`) — retrying it once
+        // region yet (see `docs/adding-a-region.md`); retrying it once
         // it's requested again (e.g. the layer is toggled off and on) is
         // cheap, and the alternative (never retrying) would leave that
         // region's data permanently missing even after it ships.

@@ -244,7 +244,7 @@ describe("useLayerData", () => {
 
     rerender({ ids: [] });
     // Toggling the layer off (above) now prunes it from failedLayerIds
-    // immediately, rather than waiting for a retry -- see the "clears a
+    // immediately, rather than waiting for a retry; see the "clears a
     // failed layer id" test above. Re-requesting it here starts a fresh
     // fetch, which this test expects to fail again and be re-added.
     expect(result.current.failedLayerIds).toEqual([]);
@@ -283,7 +283,7 @@ describe("useLayerData", () => {
 
     // Adds "bus" alongside "rail" (never removing "rail" from the requested
     // ids, unlike the toggle-off/on tests above, which clear failedLayerIds
-    // early via a different code path) -- "rail"'s own requestKey was
+    // early via a different code path); "rail"'s own requestKey was
     // dropped from the internal `requested` set on its earlier failure, so
     // this re-triggers its fetch, and this time it succeeds.
     rerender({ ids: ["rail", "bus"] });

@@ -18,7 +18,7 @@ export const Z_INDEX_CSS_VAR_DEFAULTS = {
   /**
    * Shared stacking layer for a host's own peer floating map controls (a
    * search box, a settings button) and this package's own (legend,
-   * measurement tool) — so they interleave correctly regardless of which
+   * measurement tool); so they interleave correctly regardless of which
    * package renders which one.
    */
   "--floating-control-z-index": "1240",

@@ -66,7 +66,7 @@ vi.mock("@karta/app", async (importOriginal) => {
       { id: "fake-custom", label: "Fake Custom", kind: "custom" },
     ],
     // `getProvinceRegionIds()` computes internally from `@karta/app`'s own
-    // `REGIONS` module binding, not the override above — spreading `actual`
+    // `REGIONS` module binding, not the override above; spreading `actual`
     // alone would leave it resolving against the real gauteng/western-cape
     // regions instead of these fakes, so it needs its own override here too.
     getProvinceRegionIds: () => ["fake-north", "fake-south"],

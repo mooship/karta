@@ -8,12 +8,12 @@ import type {
  * Returns the cached value for `key`, computing and storing it via `compute`
  * on first access. Shared by `getSortedStops`/`getStopsByMatch` so each
  * derived-from-a-`Classification` value (graduated or categorized) is
- * computed once per object identity rather than on every `styleFn` call —
+ * computed once per object identity rather than on every `styleFn` call;
  * a layer's `Classification` object is a stable reference reused across
  * every feature of that layer.
  * @remarks Checks the looked-up value against `undefined` rather than its
  *   truthiness, so a falsy `compute()` result (`0`, `""`, `false`) is
- *   correctly treated as a cache hit rather than recomputed every call — one
+ *   correctly treated as a cache hit rather than recomputed every call; one
  *   `WeakMap.get` rather than a `has` followed by a second `get`, since both
  *   current callers (`sortedStopsCache`/`stopsByMatchCache`) never cache
  *   `undefined` itself. A future caller whose `V` legitimately includes
@@ -53,7 +53,7 @@ function getStopsByMatch<T>(
   return getOrCompute(stopsByMatchCache, classification, () => {
     /**
      * @remarks Built with an explicit `has` guard, rather than `new Map(stops.map(...))`,
-     *   so an (unexpected) duplicate `match` value keeps the first stop's value —
+     *   so an (unexpected) duplicate `match` value keeps the first stop's value;
      *   matching `Array.find`'s first-match semantics exactly rather than the
      *   last-write-wins behaviour a plain `Map` construction from pairs would give.
      */
@@ -72,8 +72,8 @@ function getStopsByMatch<T>(
  * @param classification - Graduated (numeric range) or categorized (exact match) rules.
  * @param properties - The feature's properties, as passed to a Leaflet `styleFn`.
  * @returns The matching stop's `value`. `classification.fallback` is used
- *   when the property is missing, the wrong type, or (graduated only) `NaN`/`Infinity` —
- *   neither is a value any stop's `max` can meaningfully cover — or
+ *   when the property is missing, the wrong type, or (graduated only) `NaN`/`Infinity`
+ * (neither is a value any stop's `max` can meaningfully cover) or
  *   (categorized only) when no stop matches. A graduated value above every
  *   stop's `max` clamps to the highest-`max` stop instead of falling back
  *   (see {@link GraduatedClassification}).

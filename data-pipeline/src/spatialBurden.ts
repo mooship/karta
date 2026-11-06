@@ -39,13 +39,13 @@ function normalize(value: number | null, max: number): number | null {
  *   against a fixed scale (see `MAX_COMMUTE_MINUTES`/`MAX_TRANSIT_KM`) before
  *   being combined, so the two differently-scaled inputs (minutes vs.
  *   kilometres) contribute comparably. The two are then combined as a true
- *   weighted average — the weighted sum of whichever metrics are known,
- *   divided by the sum of *their* weights — rather than a weighted sum that
+ *   weighted average (the weighted sum of whichever metrics are known,
+ *   divided by the sum of *their* weights) rather than a weighted sum that
  *   silently assumes `weights` sums to 1; `SpatialBurdenWeights` is
  *   documented as "relative", so a caller passing e.g. `{0.3, 0.3}` still
  *   gets a full 0–1 range instead of one capped at 0.6. When only one
  *   metric is known, dividing by that single metric's own weight cancels
- *   it out, so the result is just that metric's normalized value — the
+ *   it out, so the result is just that metric's normalized value; the
  *   same number the old ad hoc single-metric branch returned, but now as a
  *   natural consequence of the general formula rather than a special case
  *   that happened to coincide with it only when weights summed to 1.

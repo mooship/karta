@@ -25,7 +25,7 @@ import { hashKey, readJsonCache, writeJsonCache } from "../cache";
 export const BOUNDARY_SOURCE_URL =
   "https://github.com/j-norwood-young/SA-Maps/raw/master/Subplace.zip";
 
-/** How long a cached, parsed national boundary result stays fresh before a run re-fetches it — long, since Census 2011 boundaries are static historical data that never changes between runs. */
+/** How long a cached, parsed national boundary result stays fresh before a run re-fetches it; long, since Census 2011 boundaries are static historical data that never changes between runs. */
 const BOUNDARIES_CACHE_MAX_AGE_MS = 1000 * 60 * 60 * 24 * 30;
 
 const SHP_ENTRY_NAME = "Subplace/SP_SA_2011.shp";
@@ -118,7 +118,7 @@ export function filterFeaturesByMunicipality(
  * parses it into an unfiltered, national GeoJSON FeatureCollection. I/O-bound
  * (zip extraction + shapefile parsing); the only caller is
  * `fetchNationalBoundaries`, which additionally fetches the zip over the
- * network — kept as its own function so that fetch and parse stay separately
+ * network; kept as its own function so that fetch and parse stay separately
  * testable.
  */
 async function parseSubPlaceZip(zipBuffer: Buffer): Promise<FeatureCollection> {
@@ -147,7 +147,7 @@ async function parseSubPlaceZip(zipBuffer: Buffer): Promise<FeatureCollection> {
  *   once and reuse the result, rather than re-downloading and re-parsing
  *   byte-identical data once per metro. The parsed result is cached to disk
  *   (see `cache.ts`), since Census 2011 boundaries are static historical
- *   data — a cache hit skips both the network fetch and the
+ *   data; a cache hit skips both the network fetch and the
  *   zip-extraction/shapefile-parse work entirely, unlike a prior version of
  *   this function which re-did both on every single call. Falls back to a
  *   stale cache entry if the live fetch or parse fails, mirroring
@@ -195,7 +195,7 @@ export async function fetchNationalBoundaries(): Promise<FeatureCollection> {
  * filters it down to each of `metroIds`' sub-place features.
  * @remarks Fetching and parsing the whole-country zip once and filtering
  *   the result per metro (rather than re-fetching and re-parsing it once per
- *   metro) is why this takes every metro at once instead of one at a time —
+ *   metro) is why this takes every metro at once instead of one at a time;
  *   `runRegion` in `src/run.ts` calls this once for a region's every metro.
  * @throws If the network fetch fails.
  */

@@ -60,7 +60,7 @@ import { useMapUiStore } from "./stores/useMapUiStore";
 
 // The real "positron" basemap is now an OpenFreeMap vector basemap
 // (MapLibre GL, dynamically imported real "leaflet"/"maplibre-gl-leaflet"
-// packages) — exercising that real async/WebGL path isn't meaningful in
+// packages); exercising that real async/WebGL path isn't meaningful in
 // these jsdom unit tests and races awkwardly with tests that unmount before
 // other async work settles, so it's overridden here with a plain raster
 // stub matching react-leaflet's mocked `TileLayer`.
@@ -644,8 +644,8 @@ describe("App", () => {
     // is applied by the browser's HTML parser before any script runs,
     // which this app's strict style-src (no 'unsafe-inline') refuses. The
     // live value above is instead applied imperatively via `panelRef`'s
-    // `style.setProperty()` once mounted — a CSSOM mutation CSP does not
-    // restrict — so the element must carry no `style` attribute at all in
+    // `style.setProperty()` once mounted (a CSSOM mutation CSP does not
+    // restrict) so the element must carry no `style` attribute at all in
     // the initial server-rendered markup.
     const markup = renderToStaticMarkup(<App />);
     const panelMarkup = markup.match(/<aside[^>]*id="map-controls"[^>]*>/)?.[0];
@@ -946,7 +946,7 @@ describe("App", () => {
 
       const { unmount } = render(<App />);
       // The fetch only starts once the map reports itself ready, so wait for
-      // it to be in flight before unmounting — otherwise this asserts
+      // it to be in flight before unmounting; otherwise this asserts
       // nothing about a settling request.
       await waitFor(() => expect(dataMocks.getTownships).toHaveBeenCalled());
       unmount();

@@ -19,7 +19,7 @@ export interface DeferredReadyAttribute<T extends Element> {
  * content revealed for the first time) has settled.
  * @param attribute - The attribute name to toggle, e.g. `"data-sheet-entrance-ready"`.
  * @remarks A CSS `animation`'s clock is anchored to when it's associated
- *   with the element, not to when it's first painted -- if synchronous work
+ *   with the element, not to when it's first painted; if synchronous work
  *   triggered in the same commit delays that first paint, the animation can
  *   appear to have already raced ahead of where a user expects it to be by
  *   the time it's actually visible. Two `requestAnimationFrame` calls, not
@@ -27,7 +27,7 @@ export interface DeferredReadyAttribute<T extends Element> {
  *   committed this render's own layout; the second one only runs once a
  *   real frame has already been painted. Mutates the DOM attribute directly
  *   rather than through React state, since a paired CSS rule is the only
- *   consumer -- funnelling it through `useState` would re-render the whole
+ *   consumer; funnelling it through `useState` would re-render the whole
  *   tree for a value nothing else branches on. Cancels any pending frame(s)
  *   on unmount, so a `markReadyAfterPaint` chain still in flight when the
  *   component unmounts doesn't call `setAttribute` on a ref whose element is

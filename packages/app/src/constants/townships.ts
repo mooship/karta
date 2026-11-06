@@ -13,7 +13,7 @@ export type TownshipAreaSelectionBasis =
  * How eagerly this area's map label is revealed while zooming in.
  * @remarks A large `"primary"` area (many sub-places) shows its label
  *   immediately; smaller `"primary"` areas reveal at a medium zoom, and
- *   `"secondary"` areas only at a closer zoom still — see
+ *   `"secondary"` areas only at a closer zoom still; see
  *   `PRIMARY_LABEL_REVEAL_ZOOM`/`SECONDARY_LABEL_REVEAL_ZOOM` in
  *   `@karta/map`'s `MapView`.
  */
@@ -981,7 +981,7 @@ const MERAFONG_CITY_TOWNSHIP_AREA_DEFINITIONS: readonly TownshipAreaDefinitionIn
 // sub-places within the mixed "Athlone" main place (which also covers many
 // non-township suburbs) and so use `named-sub-places`, matching
 // Johannesburg's Klipspruit/Protea South pattern. Elsies River is likewise
-// `named-sub-places`, matching only "Elsies Rivier SP" — its main place's
+// `named-sub-places`, matching only "Elsies Rivier SP"; its main place's
 // English-spelled "Elsies River Industrial" sub-place is a separate,
 // non-residential area. See docs/data/cape-town-area-classification.md.
 const CAPE_TOWN_TOWNSHIP_AREA_DEFINITIONS: readonly TownshipAreaDefinitionInput[] =
@@ -1163,8 +1163,8 @@ function resolveTownshipAreaDefinition(
  *   more than one area's name/prefix matches.
  * @returns The matching area, or `undefined` if none matches.
  * @remarks Results are memoised. The answer depends only on module-level
- *   constants, and map rendering asks it the same question repeatedly — once
- *   per sub-place feature per style pass, thousands of features at a time —
+ *   constants, and map rendering asks it the same question repeatedly (once
+ *   per sub-place feature per style pass, thousands of features at a time)
  *   so recomputing three scans of every area definition each time is pure
  *   main-thread cost while the map is drawing. The cache is bounded in
  *   practice by the number of distinct sub-place names in the published

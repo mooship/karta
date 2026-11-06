@@ -63,7 +63,7 @@ test.describe("responsive panel", () => {
 
     // On mobile, `.panelTrigger` sets `--control-button-extra-transition`
     // unconditionally (gated by the viewport media query, not
-    // `data-panel-open` -- the transition must already be active before
+    // `data-panel-open`; the transition must already be active before
     // `bottom` changes, not applied reactively afterwards).
     // ControlButton's own `.button` style appends that custom property to
     // its base transition list, so the trigger's *computed* `transition`

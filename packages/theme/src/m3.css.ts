@@ -84,5 +84,5 @@ export const vars = createGlobalThemeContract({
   },
 });
 
-/** The shape of {@link vars} — every M3 token path this contract declares. */
+/** The shape of {@link vars}; every M3 token path this contract declares. */
 export type M3Vars = typeof vars;

@@ -297,7 +297,7 @@ const CUSTOM_VECTOR_BASEMAP: VectorBasemapDefinition = {
  * A raster basemap with a dark variant, retina placeholder, and a fallback
  * chain, registered under `"positron"` (`MapView`'s default basemap) in
  * tests exercising raster-specific mechanics (retina tiles, dark/light
- * source swapping, error fallback, `dimInDarkMode`) — none of the real
+ * source swapping, error fallback, `dimInDarkMode`); none of the real
  * default basemaps are raster with a `{r}` retina placeholder any more (the
  * built-ins are OpenFreeMap vector basemaps or Esri raster basemaps with
  * neither a dark variant nor a `{r}` placeholder in their URL template), so
@@ -750,7 +750,7 @@ describe("MapView", () => {
       scheduledCallback = callback;
       return 1;
     });
-    // A no-op, unlike the real cancelAnimationFrame -- simulates the frame
+    // A no-op, unlike the real cancelAnimationFrame; simulates the frame
     // still firing despite the cleanup below having already asked to cancel
     // it, so `cancelled` is what has to stop onReady from firing, not the
     // cancellation call itself.

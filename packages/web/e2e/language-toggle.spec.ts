@@ -49,7 +49,7 @@ test.describe("language toggle", () => {
   }) => {
     // Pre-set the locale cookie (as setLocale()'s reload would have already
     // done) before the very first navigation, then read the *raw* response
-    // body -- not the live DOM, which client-side hydration could silently
+    // body; not the live DOM, which client-side hydration could silently
     // repair even if the server got the locale wrong.
     await page.context().addCookies([
       {

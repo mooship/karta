@@ -8,7 +8,7 @@ import { townshipFeatureCollectionSchema } from "./geoJsonSchemas";
  * @remarks A feature that already carries the field is passed through
  *   as-is rather than rebuilt. The published data sets it on every
  *   feature, so cloning each one to write back a value it already had cost
- *   two throwaway objects per feature — thousands of allocations, and the
+ *   two throwaway objects per feature; thousands of allocations, and the
  *   garbage collection that follows, on the main thread while the map is
  *   trying to become interactive.
  * @param signal - Optional `AbortSignal`, forwarded to the underlying fetch

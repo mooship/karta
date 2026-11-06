@@ -36,7 +36,7 @@ export const groupTitle = style([
     padding: "0 0.625rem",
     color: vars.color.onSurfaceVariant,
     // Not part of @karta/map's own documented DESIGN_TOKEN_CSS_VAR_DEFAULTS
-    // contract (unlike the sm/md/base font-size tokens) -- matches the
+    // contract (unlike the sm/md/base font-size tokens); matches the
     // original .module.css reference exactly.
     fontSize: "var(--font-size-xs, 0.6875rem)",
   },
@@ -58,18 +58,18 @@ export const list = style({
 
 /**
  * `content-visibility: auto` lets the browser skip layout/style/paint work
- * for a row scrolled out of view, without any hand-rolled windowing --
+ * for a row scrolled out of view, without any hand-rolled windowing;
  * `FeatureBrowser` can render several thousand rows at once (one per
  * selectable feature across every visible layer, e.g. every township in a
  * region), and only a small fraction are ever on screen. `contain-intrinsic-size`
  * reserves a row's own height plus `list`'s `gap` so an off-screen row's
- * collapsed box still holds its place in the scroll container -- without
+ * collapsed box still holds its place in the scroll container; without
  * it, skipped rows report zero size and the scrollbar/scroll position jump
  * as rows above the viewport are skipped or un-skipped while scrolling.
  * `globalStyle` (rather than a second class applied per row in the TSX)
  * targets `list`'s direct `<li>` children directly, since vanilla-extract's
  * `style()` only allows a selector to target its own class, not a
- * descendant -- see that function's own error message for why.
+ * descendant; see that function's own error message for why.
  */
 globalStyle(`${list} > li`, {
   contentVisibility: "auto",

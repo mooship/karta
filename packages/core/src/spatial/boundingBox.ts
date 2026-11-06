@@ -46,7 +46,7 @@ function widen(
  *   (`minLng > maxLng`) is unwrapped into a continuous longitude space
  *   (`maxLng + 360`) before merging, and a non-crossing box is merged in
  *   whichever of its as-is or +360-shifted form yields the narrower running
- *   union — the standard trick for treating longitude as a circle rather
+ *   union; the standard trick for treating longitude as a circle rather
  *   than a line, so two boxes that sit just either side of ±180° (e.g.
  *   `[170, …, 175, …]` and `[-175, …, -170, …]`) union to a sensible
  *   crossing box (`[170, …, -170, …]`) instead of the naive, globe-spanning
@@ -100,7 +100,7 @@ export function unionBoundingBoxes(boxes: readonly BBox[]): BBox {
  * Computes the bounding box spanning every feature in `collection`.
  * @param collection - The collection to measure.
  * @returns `[minLng, minLat, maxLng, maxLat]`.
- * @throws If `collection` has no features — otherwise Turf's `bbox` silently
+ * @throws If `collection` has no features; otherwise Turf's `bbox` silently
  *   returns `[Infinity, Infinity, -Infinity, -Infinity]`, matching
  *   {@link unionBoundingBoxes}'s own throw for empty input.
  */

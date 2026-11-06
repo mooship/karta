@@ -14,7 +14,7 @@ import {
 /**
  * Builds `var(name, default)` for a token name/default pair, the single
  * place that pairing is constructed so a `.css.ts` file can never reference
- * one of this package's bespoke tokens and forget its documented fallback —
+ * one of this package's bespoke tokens and forget its documented fallback;
  * the exact failure `designTokenDefaults.test.ts`/`zIndexTokens.test.ts`/
  * `mobileLayoutTokens.test.ts` guard against for `.module.css` files.
  */
@@ -35,8 +35,8 @@ const mobileLayoutTokenVar = (name: MobileLayoutCssVar) =>
   cssVarWithFallback(name, MOBILE_LAYOUT_CSS_VAR_DEFAULTS);
 
 /**
- * Typed `var(--name, default)` accessors for {@link DESIGN_TOKEN_CSS_VAR_DEFAULTS}
- * — `@karta/map`'s own bespoke typography/spacing/control-sizing contract,
+ * Typed `var(--name, default)` accessors for {@link DESIGN_TOKEN_CSS_VAR_DEFAULTS};
+ * `@karta/map`'s own bespoke typography/spacing/control-sizing contract,
  * not part of the M3 spec (see `packages/theme` for that). A `.css.ts` file
  * should reach these tokens only through this object, never by hand-typing
  * `var(--name, ...)` itself, so the fallback can never drift from the

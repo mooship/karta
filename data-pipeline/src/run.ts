@@ -85,7 +85,7 @@ interface MetroProcessingResult {
  * @remarks `getNearestJobCenter` (network-bound, OSRM) and
  *   `computeNearestTransitKm` (pure local math, no I/O) have no data
  *   dependency on each other, so they run via `Promise.all` rather than
- *   sequential `await`s — the CPU-bound transit-distance pass overlaps
+ *   sequential `await`s; the CPU-bound transit-distance pass overlaps
  *   OSRM's network latency instead of adding on top of it.
  * @throws If the metro has no job centres configured.
  */
@@ -130,15 +130,15 @@ async function processMetro(
 }
 
 /**
- * Builds one region's full dataset — transit sources, per-metro sub-place
- * boundaries, drive times and nearest-transit distances — into a staging
+ * Builds one region's full dataset (transit sources, per-metro sub-place
+ * boundaries, drive times and nearest-transit distances) into a staging
  * directory, then publishes it into `<outputRoot>/<regionId>` only once every
  * output file has been written, manifested and validated.
  * @param outputRoot - Root directory to stage and publish under; defaults to
  *   the published `packages/web/public/data`. Overridden by tests so a run
  *   never touches the real published dataset.
  * @throws If the region is misconfigured, any step fails, or the built output
- *   fails validation — in which case the staged directory is deleted and the
+ *   fails validation; in which case the staged directory is deleted and the
  *   previously published dataset is left exactly as it was.
  */
 export async function runRegion(
@@ -291,7 +291,7 @@ export async function runRegion(
  * region whose `REGIONS` entry is a province, in registration order.
  * @param outputRoot - Root directory each region is published under, passed
  *   straight through to `runRegion`; defaults to `OUTPUT_ROOT`.
- * @remarks Deliberately sequential and fail-fast — a region that throws
+ * @remarks Deliberately sequential and fail-fast; a region that throws
  *   aborts the whole run, leaving every later region unbuilt rather than
  *   publishing a partial set of regions from a run that already failed.
  */

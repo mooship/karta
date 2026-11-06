@@ -35,7 +35,7 @@ export function flattenTransitGeometries(
  * @remarks Pure transform. Uses the real station/stop `Point` where one was
  *   fetched (Gautrain rail, PRASA), and falls back to the nearest point
  *   along the route `LineString` where only route geometry is available
- *   (Gautrain Bus, A Re Yeng) — never a fabricated or averaged number.
+ *   (Gautrain Bus, A Re Yeng); never a fabricated or averaged number.
  *   Returns `null` for every centroid if `geometries` is empty. Takes the
  *   already-flattened geometry array (see `flattenTransitGeometries`)
  *   rather than raw collections, so a caller processing multiple metros'

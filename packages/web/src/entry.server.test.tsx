@@ -17,7 +17,7 @@ vi.mock("react-dom/server", () => ({
 /**
  * Runs `handleRequest` once against a fresh request and extracts everything
  * these tests check: the response itself, the nonce embedded in its CSP
- * header, and the two places that nonce must also reach — the `nonce`
+ * header, and the two places that nonce must also reach; the `nonce`
  * option `renderToReadableStream` was called with, and the `nonce` prop on
  * the `<ServerRouter>` element passed to it.
  */
@@ -64,7 +64,7 @@ describe("entry.server handleRequest", () => {
 
   it("passes the same nonce as <ServerRouter>'s own nonce prop, which react-router threads to Scripts/ScrollRestoration/its streamed-data script", async () => {
     // renderToReadableStream's own `nonce` option only covers scripts React
-    // itself injects — react-router's <Scripts>/<ScrollRestoration> and its
+    // itself injects; react-router's <Scripts>/<ScrollRestoration> and its
     // streamed-data transfer script are its own components, reached only
     // via a matching nonce prop passed directly to <ServerRouter>.
     const { headerNonce, serverRouterElement } = await handleOnce();

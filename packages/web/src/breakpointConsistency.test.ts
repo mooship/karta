@@ -8,15 +8,15 @@ import { describe, expect, it } from "vitest";
  * value across this app's own `index.css`/`.css.ts` files, alongside the
  * file it came from.
  * @remarks `packages/web` has zero `.module.css` files left (the CSS
- *   Modules -> vanilla-extract migration is complete) -- this scan now
+ *   Modules -> vanilla-extract migration is complete); this scan now
  *   covers only `index.css` (out of scope for that migration; it stays
  *   plain CSS) and `.css.ts` files. CSS custom properties can't be
  *   referenced inside a media query condition, so `index.css` stays
  *   literal pixel values rather than `var(...)` references to
  *   `MOBILE_BREAKPOINT_PX` (App.tsx's own single source of truth,
- *   re-exported from `@karta/react`) — this scan is what actually guards
+ *   re-exported from `@karta/react`); this scan is what actually guards
  *   against it silently drifting from that constant instead of a code
- *   comment alone. A `.css.ts` file has no such excuse — it's real
+ *   comment alone. A `.css.ts` file has no such excuse; it's real
  *   TypeScript, so it should build its breakpoint from
  *   `MOBILE_BREAKPOINT_PX` directly (see the test below) rather than a
  *   literal, and so should never show up in this scan at all.

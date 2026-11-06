@@ -3,7 +3,7 @@ import settings from "../project.inlang/settings.json";
 
 /**
  * Every `messages/{locale}.json` file, discovered by glob rather than a
- * hand-maintained import list — a new locale file with no matching entry
+ * hand-maintained import list; a new locale file with no matching entry
  * here was exactly the kind of thing that slipped through when this suite
  * imported each locale by name: isiXhosa's addition updated this list, but
  * Afrikaans's initially didn't, and nothing caught it until reviewed by eye.
@@ -30,7 +30,7 @@ function placeholders(value: string): string[] {
 
 const baseMessages = LOCALES.en;
 if (!baseMessages) {
-  throw new Error("messages/en.json is missing — cannot establish a baseline");
+  throw new Error("messages/en.json is missing, so there is no a baseline");
 }
 const baseKeys = Object.keys(baseMessages).filter((key) => key !== "$schema");
 

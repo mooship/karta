@@ -82,11 +82,11 @@ export const row = style({
 });
 
 /**
- * 40ms per row, capped after four -- the same stagger rhythm as
+ * 40ms per row, capped after four; the same stagger rhythm as
  * @karta/map's Legend (Legend.css.ts's `entry` rules), so cascading lists
  * read as one motion language across the app rather than two independently
  * hand-tuned timings. Ancestor-qualified (`.list .row`, not just `.row`)
- * matching the original -- `row` only ever renders inside `list` today, but
+ * matching the original; `row` only ever renders inside `list` today, but
  * the qualifier is preserved rather than dropped as part of this migration.
  */
 globalStyle(`.${list} .${row}:nth-child(2)`, { animationDelay: "40ms" });
@@ -97,7 +97,7 @@ globalStyle(`.${list} .${row}:nth-child(n + 5)`, { animationDelay: "160ms" });
 /**
  * `display: contents` drops this label's own box so its children keep
  * participating directly in `.row`'s flex layout, exactly as when the
- * label wrapped the whole row -- while still scoping the label's native
+ * label wrapped the whole row; while still scoping the label's native
  * click-to-toggle behaviour to just these children, not the download link
  * rendered as `.row`'s other child.
  */
@@ -182,7 +182,7 @@ export const badgeError = style({
 
 /**
  * Groups every dataSource's download link + CSV button pair and pushes the
- * whole group to the row's right edge with a single `marginLeft: "auto"` --
+ * whole group to the row's right edge with a single `marginLeft: "auto"`;
  * applying that to each `.download` icon individually (the previous
  * approach) split the row's free space between every auto margin instead,
  * scattering the icons across the row rather than clustering them.

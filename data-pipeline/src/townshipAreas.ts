@@ -26,7 +26,7 @@ interface TownshipAreaProperties {
  * `MapView`'s area-boundary label layer (`companionSource`).
  * @remarks Groups in one pass over `townships` (each resolved to its area at
  *   most once) rather than filtering the full `townships` list once per
- *   `TOWNSHIP_AREA_DEFINITIONS` entry — the definitions list and the
+ *   `TOWNSHIP_AREA_DEFINITIONS` entry; the definitions list and the
  *   sub-place list can both run into the hundreds/thousands across Gauteng's
  *   nine metros, so the previous O(definitions × townships) nested scan cost
  *   far more than this single O(townships + definitions) pass.

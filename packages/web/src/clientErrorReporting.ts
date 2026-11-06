@@ -22,11 +22,11 @@ function truncate(value: string): string {
 
 /**
  * Reports an uncaught error or unhandled rejection to `/log-error`, so it
- * reaches Cloudflare Workers Logs. Prefers `navigator.sendBeacon` — it
+ * reaches Cloudflare Workers Logs. Prefers `navigator.sendBeacon`; it
  * queues the send and returns immediately without blocking or being
  * cancelled by page unload, which matters since some of what this reports
  * (an error during navigation, say) can happen moments before the page
- * disappears — falling back to a `fetch` with `keepalive: true` for the
+ * disappears; falling back to a `fetch` with `keepalive: true` for the
  * rare environment without `sendBeacon`.
  * @remarks Never throws: a failure here must not itself become a second
  *   uncaught error that re-enters `installClientErrorReporting()`'s
@@ -62,7 +62,7 @@ export function reportClientError(
       }).catch(() => {});
     }
   } catch {
-    // Reporting must never itself throw — see the `@remarks` above.
+    // Reporting must never itself throw; see the `@remarks` above.
   }
 }
 
@@ -72,8 +72,8 @@ export function reportClientError(
  * left by this app's existing server-side error logging (`root.tsx`'s
  * `ErrorBoundary`, `entry.server.tsx`'s `onError`): a client-side JS
  * exception that never touches a React render or the server at all.
- * @remarks Registered without the capture flag, so — matching
- *   `window.onerror`'s own behaviour — this only ever observes script
+ * @remarks Registered without the capture flag, so (matching
+ *   `window.onerror`'s own behaviour) this only ever observes script
  *   errors, not resource-load failures (a 404'd tile image, say); those
  *   don't bubble to `window` and would otherwise flood this with noise
  *   unrelated to an actual code fault.

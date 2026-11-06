@@ -4,7 +4,7 @@
 // environment: happy-dom's fetch shim doesn't correctly honour a real
 // `Access-Control-Allow-Origin: *` response header (confirmed via curl that
 // OpenFreeMap sends one), and throws a same-origin-policy error on every
-// cross-origin request regardless — a test-environment limitation, not a
+// cross-origin request regardless; a test-environment limitation, not a
 // real CORS failure a browser would hit.
 import { describe, expect, it } from "vitest";
 import {
@@ -32,12 +32,12 @@ function resolveSampleTileUrl(template: string): string {
  * @remarks This exists because the CARTO incident this project's basemaps
  *   moved away from (see `basemaps.ts`'s own comment) couldn't have been
  *   caught by a mocked unit test: CARTO's anonymous endpoints kept returning
- *   HTTP 200 with a plausible, correctly-typed, correctly-sized PNG — a
+ *   HTTP 200 with a plausible, correctly-typed, correctly-sized PNG; a
  *   provider silently swapping in a "pay us" watermark image at the pixel
  *   level isn't something an automated check can detect without an image
  *   diff or OCR pass, neither of which this suite attempts. What it does
- *   check — a real HTTP round trip returning the right status, content
- *   type, and structurally valid body — would catch the much more common
+ *   check (a real HTTP round trip returning the right status, content
+ *   type, and structurally valid body) would catch the much more common
  *   failure modes: a provider dropping free/anonymous access entirely
  *   (4xx/5xx, an HTML error/paywall page in place of the expected body, a
  *   redirect to a signup flow), a typo'd or dead URL, or a style JSON that

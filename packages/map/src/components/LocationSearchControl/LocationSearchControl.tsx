@@ -20,8 +20,8 @@ import * as styles from "./LocationSearchControl.css";
  * One selectable map feature's search-index entry: its id, accessible label,
  * and the id of the layer it came from.
  * @remarks `layerId` is unused by this component (it matches on `label`
- *   alone) but is carried through so another consumer -- e.g. a feature
- *   browser grouping results by layer -- doesn't need a second, parallel
+ *   alone) but is carried through so another consumer; e.g. a feature
+ *   browser grouping results by layer; doesn't need a second, parallel
  *   index over the same features just to know which layer each belongs to.
  */
 export interface SelectableFeatureSearchEntry {
@@ -33,7 +33,7 @@ export interface SelectableFeatureSearchEntry {
 /**
  * Case-insensitive substring match of `query` against `feature.label`.
  * @remarks Shared by this component's own feature search and by
- *   `FeatureBrowser`'s filter box -- both need the identical "does this
+ *   `FeatureBrowser`'s filter box; both need the identical "does this
  *   query match this feature's label" check, just under different
  *   surrounding policy (this component also gates on a minimum query length
  *   and caps the result count; `FeatureBrowser` does neither), so only the
@@ -120,8 +120,8 @@ function resultOptionId(combined: CombinedResult): string {
  *   a result via click, Enter, or keyboard arrow navigation followed by
  *   Enter, depending on which kind of result they chose. Feature results
  *   are matched with a plain case-insensitive substring scan re-run on
- *   every keystroke -- cheap even for a few thousand entries, and avoids
- *   indexing data that might never be searched -- and always listed ahead
+ *   every keystroke (cheap even for a few thousand entries, and avoids
+ *   indexing data that might never be searched) and always listed ahead
  *   of place results, since they resolve instantly (no debounce, no
  *   network) and represent the map's own content. This is also this
  *   package's only keyboard/screen-reader route to selecting a map feature
@@ -133,7 +133,7 @@ function resultOptionId(combined: CombinedResult): string {
  *   `searchingLabel`, `noResultsLabel`, `unavailableMessage`, `retryLabel`,
  *   plus the existing `placeholder`) is an overridable prop defaulting to
  *   English,
- *   the same pattern `placeholder` already used -- this package can't
+ *   the same pattern `placeholder` already used; this package can't
  *   depend on an app-specific message catalogue, but a caller with one
  *   (like the reference app's paraglide messages) can still localise every
  *   string this control renders.
@@ -204,7 +204,7 @@ export function LocationSearchControl({
     }
   }
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: provider intentionally omitted -- it's a public prop with no stability guarantee, so including it could re-fire this effect on every render for callers that don't memoize it
+  // biome-ignore lint/correctness/useExhaustiveDependencies: provider intentionally omitted; it's a public prop with no stability guarantee, so including it could re-fire this effect on every render for callers that don't memoize it
   useEffect(() => {
     if (justSelectedRef.current) {
       // handleCombinedResultSelect sets query to the picked result's own
@@ -237,7 +237,7 @@ export function LocationSearchControl({
   function handleRetry() {
     // The retry button only renders while `searchFailed` is true, which
     // requires a prior successful `runSearch` call with a long-enough query
-    // -- any edit to the input clears the error and unmounts this button --
+    // -- any edit to the input clears the error and unmounts this button;
     // so `query` is always already long enough by the time this runs.
     runSearch(query.trim());
   }
@@ -293,7 +293,7 @@ export function LocationSearchControl({
 
   /**
    * Sets `query` to the picked result's own label either way, rather than
-   * clearing it (as the earlier, separate feature-search box used to) --
+   * clearing it (as the earlier, separate feature-search box used to);
    * consistent behaviour across both result kinds matters more here than
    * matching either predecessor's own choice, since a visitor shouldn't
    * have to learn that selecting looks different depending on which kind
@@ -305,7 +305,7 @@ export function LocationSearchControl({
     // If the picked result's label is textually identical to what's already
     // typed, setQuery below is a no-op as far as React state is concerned,
     // so the debounced-search effect (keyed on `query`) never re-runs to
-    // clear this flag -- it would otherwise stay stuck `true` and silently
+    // clear this flag; it would otherwise stay stuck `true` and silently
     // swallow the next real search the user types.
     justSelectedRef.current = query !== selectedLabel;
     if (combined.kind === "feature") {

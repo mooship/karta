@@ -29,7 +29,7 @@ export interface UseDismissableOverlayOptions {
    * Defaults to `true`. Set `false` for an overlay that also behaves as a
    * persistent, non-popover panel in some layout (e.g. an always-open
    * desktop sidebar) where dismissing it just because the user clicked
-   * elsewhere on the page — the map, say — would fight normal use; Escape
+   * elsewhere on the page (the map, say) would fight normal use; Escape
    * still closes it either way.
    */
   dismissOnOutsideClick?: boolean;
@@ -43,7 +43,7 @@ export interface UseDismissableOverlayOptions {
  * when the overlay opens.
  * @remarks When more than one overlay using this hook is open at once (e.g.
  *   a persistent desktop panel with a popover like `SettingsMenu` opened on
- *   top of it), Escape only closes the one opened most recently — otherwise
+ *   top of it), Escape only closes the one opened most recently; otherwise
  *   every open overlay's own document-level listener would react to the
  *   same keypress, each fighting to move focus to its own trigger.
  */

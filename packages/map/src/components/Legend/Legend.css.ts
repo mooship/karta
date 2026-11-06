@@ -50,7 +50,7 @@ const legendEntryIn = keyframes({
 });
 
 /**
- * 40ms per entry, capped after four -- @karta/web's LayerToggles (a
+ * 40ms per entry, capped after four; @karta/web's LayerToggles (a
  * consumer, not a dependency of this package) mirrors this same rhythm for
  * its own list rows, so keep the two in step if either changes.
  */
@@ -60,7 +60,7 @@ export const entry = style({
   gap: "0.625rem",
   /**
    * Runs once per entry as it mounts (a fresh key entering the DOM, whether
-   * on first render or when toggling a layer adds a new legend section) --
+   * on first render or when toggling a layer adds a new legend section);
    * existing entries don't replay this on unrelated re-renders since their
    * DOM node persists. Each list's own stagger restarts from its first
    * child (nth-child counts among `.entry`'s own siblings under whichever

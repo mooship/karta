@@ -103,7 +103,7 @@ describe("LocationSearchControl", () => {
     );
     // Selecting a result whose label is textually identical to the already-typed
     // query means setQuery(result.label) doesn't change React state, so the
-    // debounced-search effect never re-runs to clear justSelectedRef here --
+    // debounced-search effect never re-runs to clear justSelectedRef here;
     // it must be cleared some other way, or the next real keystroke below gets
     // silently swallowed by the still-true flag.
     expect(input).toHaveValue("Soweto");

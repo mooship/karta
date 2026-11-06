@@ -141,7 +141,7 @@ describe("useThemePreference theme-color meta sync", () => {
     localStorage.setItem("test-theme", "dark");
     const { initTheme, useThemePreference } = await importFreshModule();
     // Module-level code has already run with the default storage key by this
-    // point (it can't have read "test-theme" yet) — initTheme must re-read.
+    // point (it can't have read "test-theme" yet); initTheme must re-read.
     initTheme({ storageKey: "test-theme", colors: TEST_COLORS });
 
     const { renderHook } = await import("@testing-library/react");

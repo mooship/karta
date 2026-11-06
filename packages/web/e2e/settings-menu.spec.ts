@@ -96,7 +96,7 @@ test.describe("settings menu", () => {
     await page.getByTestId(E2E.themeOption.dark).click();
     await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
 
-    // The basemap's own style is independent of the UI chrome theme — no
+    // The basemap's own style is independent of the UI chrome theme; no
     // new OpenFreeMap style request should fire from a theme-only change.
     expect(styleRequests.every((url) => url.includes("/styles/positron"))).toBe(
       true,

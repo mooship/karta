@@ -92,7 +92,7 @@ describe("WESTERN_CAPE_PIPELINE_CONFIG", () => {
 // Fetch-failure/fallback mechanics (falls back to last published output,
 // throws when none exists) are createFetchWithPublishedFallback's own
 // behaviour, already covered region-agnostically by
-// fetchWithPublishedFallback.test.ts — these only check that each source
+// fetchWithPublishedFallback.test.ts; these only check that each source
 // wires up the right fetcher/normalizer.
 describe("fetchBusRapidTransit (bus-rapid-transit source)", () => {
   beforeEach(() => {

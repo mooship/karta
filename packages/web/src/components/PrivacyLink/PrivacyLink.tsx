@@ -4,7 +4,7 @@ import * as styles from "./PrivacyLink.css";
 /**
  * A plain link to the site's `/privacy` page, rendered inside
  * `SettingsMenu`'s `children` slot alongside `LanguageToggle`.
- * @remarks A real `<a>` rather than a React Router `<Link>` — leaving the
+ * @remarks A real `<a>` rather than a React Router `<Link>`; leaving the
  *   map app for a separate static content page is a full navigation with
  *   nothing to preserve client-side, so there's no reason to pull the
  *   router into this app-shell component's dependency graph for it.

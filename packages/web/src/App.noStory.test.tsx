@@ -12,7 +12,7 @@ const dataMocks = vi.hoisted(() => ({
  * A mutable knob the `./layers/registry` mock below reads on every
  * `getLayers()` call, so a single hoisted `vi.mock` factory (unlike the
  * factory itself, which only runs once) can serve both scenarios this file
- * covers -- toggled per test rather than duplicating the module mocks and
+ * covers; toggled per test rather than duplicating the module mocks and
  * fixture data in a second file.
  */
 const registryOverrides = vi.hoisted(() => ({ stripInteraction: false }));
@@ -82,7 +82,7 @@ import { useMapUiStore } from "./stores/useMapUiStore";
 
 // The real "positron" basemap is now an OpenFreeMap vector basemap
 // (MapLibre GL, dynamically imported real "leaflet"/"maplibre-gl-leaflet"
-// packages) — exercising that real async/WebGL path isn't meaningful in
+// packages); exercising that real async/WebGL path isn't meaningful in
 // these jsdom unit tests and races awkwardly with tests that unmount before
 // other async work settles, so it's overridden here with a plain raster
 // stub matching react-leaflet's mocked `TileLayer`.

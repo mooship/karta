@@ -21,7 +21,7 @@ function csvField(value: unknown): string {
  * property key seen across the collection (missing keys fill in as empty
  * fields), plus trailing `centroid_lon`/`centroid_lat` columns giving every
  * feature a plottable location regardless of its geometry type. A feature
- * with `geometry: null` (see {@link isUnlocatedFeature} — `reprojectFeatureCollection`
+ * with `geometry: null` (see {@link isUnlocatedFeature}; `reprojectFeatureCollection`
  * makes the same allowance elsewhere in this package) has no centroid to
  * compute, so its `centroid_lon`/`centroid_lat` fields are left blank rather
  * than thrown on.

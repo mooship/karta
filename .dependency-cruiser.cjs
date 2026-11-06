@@ -2,7 +2,7 @@
  * Enforces the SDK package dependency direction documented in AGENTS.md's
  * "Architecture" section: `packages/core`, `packages/react`, and
  * `packages/theme` are dependency-free foundations, `packages/map` builds on
- * `core`/`react`/`theme` only, and `packages/app` builds on `core` only --
+ * `core`/`react`/`theme` only, and `packages/app` builds on `core` only;
  * none of the five may reach into `packages/web` (the reference app) or
  * "downstream" of themselves.
  * Run via `npm run depcruise`; wired into CI as part of `npm run lint`.

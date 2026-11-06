@@ -36,8 +36,8 @@ const LLMS_TXT_BODY = `${[
  * @remarks Reads `getLayers()`/`getStory()` from `layers/registry.ts`
  *   (rather than `@karta/app`'s domain directly) for parity with the rest
  *   of the app's copy, but this route runs outside `paraglideMiddleware`'s
- *   locale context — a resource route with no default export short-circuits
- *   before `entry.server.tsx` — so every read here resolves to the base
+ *   locale context (a resource route with no default export short-circuits
+ *   before `entry.server.tsx`) so every read here resolves to the base
  *   locale (English), which is the intended, single, canonical file for
  *   this route regardless of requester locale. `LLMS_TXT_BODY` is computed
  *   once at module scope rather than per request, since nothing about it

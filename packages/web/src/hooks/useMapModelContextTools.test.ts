@@ -183,7 +183,7 @@ describe("useMapModelContextTools", () => {
     const text = await textOf(tool.execute({}));
 
     expect(text).toContain(
-      "townships: Modelled car time — Drive time to job centres. (visible)",
+      "townships: Modelled car time: Drive time to job centres. (visible)",
     );
     expect(text).toContain("roads: Roads (hidden)");
     expect(text).not.toContain("unavailable-layer");

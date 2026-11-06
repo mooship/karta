@@ -65,7 +65,7 @@ const LINE_PATH_DEFAULTS = {
  * machinery as line/point classifications, instead of a separate
  * implementation of the same sort-by-max/find/fallback lookup.
  * @param fallbackColor - Already-resolved swatch/fill colour for a feature
- *   with no bucketed value (see `resolveThemedColor`) -- resolved once by
+ *   with no bucketed value (see `resolveThemedColor`); resolved once by
  *   the caller rather than threading both `noDataColor` and
  *   `darkNoDataColor` through here just to resolve them per call.
  * @param dark - When `true`, prefers each bucket's `darkColor` over `color`,

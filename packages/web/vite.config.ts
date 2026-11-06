@@ -31,7 +31,7 @@ export default defineConfig(({ mode }) => {
             /**
              * Recompiles `messages/{locale}.json` into `src/paraglide/` on
              * every `dev`/`build` (and `react-router typegen`, which also
-             * spins up this Vite pipeline) — that checked-in output is the
+             * spins up this Vite pipeline); that checked-in output is the
              * source of truth `vitest` reads from, so these options must stay
              * identical to `messages:compile`'s CLI flags: a mismatch here
              * regenerates the committed output without `.d.ts` files or with a
@@ -42,12 +42,12 @@ export default defineConfig(({ mode }) => {
              * (`preferredLanguage`), falling back to English; a manual pick
              * from `LanguageToggle` persists in a first-party `PARAGLIDE_LOCALE`
              * cookie so the *next* request's SSR render, not just the client,
-             * reflects it — `localStorage` alone can't do that (it isn't sent
+             * reflects it; `localStorage` alone can't do that (it isn't sent
              * with the request), which would otherwise render the wrong
              * locale's text server-side and produce a real hydration mismatch
              * on the very next load, not just a cosmetic flash. This is a
-             * single-purpose functional cookie storing a language code only —
-             * nothing identifying, nothing shared across origins — so it
+             * single-purpose functional cookie storing a language code only
+             * (nothing identifying, nothing shared across origins) so it
              * doesn't reintroduce the tracking this app otherwise avoids.
              * Deliberately no `"url"` strategy: this app has one route, so
              * locale-prefixed paths would add routing/redirect machinery
@@ -73,9 +73,9 @@ export default defineConfig(({ mode }) => {
        * `maplibre-gl` (the vector-basemap renderer `VectorBasemapLayer`
        * dynamically imports) is ~270KB gzipped on its own and dwarfs Vite's
        * default 500kB warning threshold no matter how it's split. It's
-       * already isolated into its own async chunk — never part of the
+       * already isolated into its own async chunk (never part of the
        * initial bundle, and never fetched at all unless a caller registers a
-       * vector-kind basemap (this app doesn't) — so raise the limit past its
+       * vector-kind basemap (this app doesn't)) so raise the limit past its
        * known size rather than let an expected, already-lazy chunk mask
        * warnings about future eagerly-loaded bloat.
        */

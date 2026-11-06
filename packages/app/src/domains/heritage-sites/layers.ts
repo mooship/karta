@@ -5,10 +5,10 @@ import type { Layer } from "@karta/core";
  * publicly documented anti-apartheid and democracy heritage sites spanning
  * multiple South African provinces, hand-authored rather than produced by
  * `data-pipeline` (unlike `spatial-apartheid-legacy`, there is no fetcher or
- * routing step behind this data — see the domain's `index.ts` for why).
+ * routing step behind this data; see the domain's `index.ts` for why).
  * Exercises `PointLayerStyle` with a `categorized` `colorClassification`,
- * a style path `spatial-apartheid-legacy` never uses, and — being national
- * rather than province-scoped — shows that neither `Layer` nor
+ * a style path `spatial-apartheid-legacy` never uses, and (being national
+ * rather than province-scoped) shows that neither `Layer` nor
  * `DomainConfig` has any notion of region or metro baked in.
  * @remarks `readonly`/`as const`, matching `METROS`/`REGIONS`: Cloudflare
  *   Workers reuse isolates across requests, so an in-place mutation by any

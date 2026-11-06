@@ -61,7 +61,7 @@ export function isModelContextSupported(): boolean {
  * @param definition - The tool to register, or `null` to skip registration
  *   (e.g. a tool that only makes sense when some optional data is present).
  * @remarks A no-op, including in SSR, wherever `document.modelContext` is
- *   unsupported or denied by Permissions-Policy — `registerTool` can reject
+ *   unsupported or denied by Permissions-Policy; `registerTool` can reject
  *   asynchronously (e.g. a Permissions-Policy denial delivered as a promise)
  *   or throw synchronously (e.g. a spec-validation error on a malformed
  *   `inputSchema`), and both are caught the same way: never re-thrown into
@@ -81,7 +81,7 @@ export function useModelContextTool<TInput = unknown>(
 ): void {
   const executeRef = useLatestRef(definition?.execute);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: definition?.name is a re-registration trigger; description/inputSchema are intentionally captured from this closure at registration time rather than kept live, so `definition` itself isn't a live dependency here -- only `execute` is (via executeRef)
+  // biome-ignore lint/correctness/useExhaustiveDependencies: definition?.name is a re-registration trigger; description/inputSchema are intentionally captured from this closure at registration time rather than kept live, so `definition` itself isn't a live dependency here; only `execute` is (via executeRef)
   useEffect(() => {
     const currentDefinition = definition;
     const modelContext = document.modelContext;

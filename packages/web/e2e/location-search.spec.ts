@@ -63,7 +63,7 @@ test.describe("location search", () => {
     // setQuery(result.label) after a selection is itself a query change, which
     // would otherwise re-arm the debounced search effect and reopen the
     // dropdown around it firing a moment after selection (see
-    // LocationSearchControl's `justSelectedRef` guard) -- waiting out the
+    // LocationSearchControl's `justSelectedRef` guard); waiting out the
     // debounce window is the only way to prove that doesn't happen.
     await page.waitForTimeout(500);
 

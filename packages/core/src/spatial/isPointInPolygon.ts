@@ -9,8 +9,8 @@ import { assertValidPosition } from "./assertValidPosition";
  * @param polygon - A `Polygon`/`MultiPolygon` geometry, or a `Feature` wrapping one.
  * @returns `true` if `point` is inside (or on the boundary of) `polygon`.
  * @remarks Throws a descriptive `Error` for a degenerate `point` (fewer than
- *   2 coordinates) or `polygon` (no rings, an empty ring, or — for a
- *   `MultiPolygon` — no constituent polygons) rather than letting Turf fail
+ *   2 coordinates) or `polygon` (no rings, an empty ring, or (for a
+ *   `MultiPolygon`) no constituent polygons) rather than letting Turf fail
  *   with an opaque low-level message (e.g. "Cannot read properties of
  *   undefined").
  */

@@ -14,7 +14,7 @@ export const map = style({
   width: "100%",
   /**
    * Leaflet's own default (`#ddd`) shows through the instant the map
-   * container mounts, before any basemap tile/style has actually painted --
+   * container mounts, before any basemap tile/style has actually painted;
    * a themed background here means there's nothing to flash between: the
    * container looks the same whether or not tiles have arrived yet.
    */
@@ -39,7 +39,7 @@ export const dimmedTile = style({
 /**
  * Toggle-marker class for the attribution control's expanded state, added/
  * removed via `classList.toggle` by `CollapsibleAttribution` in
- * `MapView.tsx` (not a React `className` prop — Leaflet owns this DOM node
+ * `MapView.tsx` (not a React `className` prop; Leaflet owns this DOM node
  * directly). Carries no styles of its own; only the compound selectors
  * below, combined with `.leaflet-control-attribution`, do.
  */
@@ -55,16 +55,16 @@ export const attributionExpanded = style({});
 export const attributionCornerElevated = style({});
 
 /**
- * Collapses Leaflet's default attribution control — required credit text
+ * Collapses Leaflet's default attribution control; required credit text
  * for the current basemap's tile/style provider(s) (OpenStreetMap,
  * OpenFreeMap, Esri), which combined can run long enough to span most of
- * the viewport width and collide with the bottom-left scale control — to a
+ * the viewport width and collide with the bottom-left scale control; to a
  * small `ⓘ` indicator by default, expanding to full width and wrapping
  * onto further lines (rather than overflowing) once `attributionExpanded`
  * is toggled on. Targets Leaflet's own DOM (not this package's), hence
  * globalStyle rather than a scoped class.
  * @remarks The real attribution text and links stay in the DOM and the
- *   accessibility tree throughout collapse/expand — only their *visible*
+ *   accessibility tree throughout collapse/expand; only their *visible*
  *   rendering is suppressed, via `fontSize: 0` on collapse, never
  *   `display`/`visibility`, which would also hide them from assistive
  *   technology. Collapsing this visually must never remove the credit
@@ -75,7 +75,7 @@ export const attributionCornerElevated = style({});
  *   control that's only *sometimes* taken out of that flow shifts its
  *   siblings the moment it toggles, exactly when it's meant to stop doing
  *   that. Applying it always instead means this control never contributes
- *   to that flow's height at all, in either state — the zoom control's
+ *   to that flow's height at all, in either state; the zoom control's
  *   position is unaffected by anything this one does. An explicit `width`
  *   (not `max-width`) in the expanded state sidesteps a separate hazard:
  *   the corner container it's absolutely positioned against is only as
@@ -92,9 +92,9 @@ globalStyle(".leaflet-control-attribution", {
   height: "1.75rem",
   overflow: "hidden",
   cursor: "pointer",
-  // Zeroes the real attribution text/links visually — including any bare
+  // Zeroes the real attribution text/links visually (including any bare
   // text node Leaflet renders directly inside this container, which a
-  // child-element selector (`> *`) can't reach — while leaving them fully
+  // child-element selector (`> *`) can't reach) while leaving them fully
   // present for assistive technology, which reads DOM text regardless of
   // font-size.
   fontSize: 0,
@@ -144,7 +144,7 @@ globalStyle(`.leaflet-control-attribution.${attributionExpanded}::before`, {
  * element raised the documented `+10` above the shared layer (see
  * `zIndexTokens.ts`'s own remark) with room to spare; raising only the
  * corner container, not `.leaflet-control-attribution` itself, is what
- * actually matters here — a descendant's own `z-index` can't exceed the
+ * actually matters here; a descendant's own `z-index` can't exceed the
  * stacking level its nearest positioned ancestor established, regardless
  * of the value given to the descendant.
  */
@@ -188,7 +188,7 @@ export const areaLabelSecondary = style({
 
 /**
  * Marker classes toggled directly on the Leaflet map container's DOM
- * element (via `classList.toggle`, not a React `className` prop -- see
+ * element (via `classList.toggle`, not a React `className` prop; see
  * `AreaLabelVisibility` in `MapView.tsx`), so they carry no styling of
  * their own; only the compound selectors below, targeting a label that's a
  * descendant of one of these, do.

@@ -17,7 +17,7 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   // The `wrangler dev` preview server backing `webServer` below is a single
-  // local process, not Cloudflare's real distributed edge — running many
+  // local process, not Cloudflare's real distributed edge; running many
   // basemap-switching tests concurrently (each spinning up its own MapLibre
   // GL instance, which fetches its own worker script) has been observed to
   // overwhelm it under CI, crashing the server mid-run ("Connection reset by

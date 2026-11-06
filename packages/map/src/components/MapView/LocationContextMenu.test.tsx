@@ -40,7 +40,7 @@ vi.mock("react-leaflet", () => ({
     children: ReactNode;
     eventHandlers?: { remove?: () => void };
   }) => (
-    // biome-ignore lint/a11y/noStaticElementInteractions: test-only stand-in for react-leaflet's real Popup, which closes on Escape (via Leaflet's own closeOnEscapeKey) independently of any click -- this mirrors that non-click dismissal path
+    // biome-ignore lint/a11y/noStaticElementInteractions: test-only stand-in for react-leaflet's real Popup, which closes on Escape (via Leaflet's own closeOnEscapeKey) independently of any click; this mirrors that non-click dismissal path
     <div
       data-testid="map-context-menu"
       onKeyDown={(event) => {
@@ -89,7 +89,7 @@ function closeMenu() {
 
 /**
  * Renders the menu, starts a lookup, then reopens it elsewhere and starts a
- * second lookup that resolves to "Second place" -- the sequence shared by
+ * second lookup that resolves to "Second place"; the sequence shared by
  * every test exercising what happens to the first (now superseded) lookup.
  */
 async function renderAndSupersedeLookup() {
@@ -480,7 +480,7 @@ describe("LocationContextMenu", () => {
     render(<LocationContextMenu />);
     openMenu({ lat: -26.2, lng: 28.0 }, { clientX: 100, clientY: 200 });
 
-    // Closes the popup via Escape, not a click -- unlike closeMenu()'s click
+    // Closes the popup via Escape, not a click; unlike closeMenu()'s click
     // on the mock's own "Close" button, this doesn't itself run through (and
     // disarm) the document-level click guard, so the guard is still armed
     // for the click dispatched below, and menuContentRef.current is now null

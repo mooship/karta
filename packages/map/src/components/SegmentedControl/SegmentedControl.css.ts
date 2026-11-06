@@ -40,9 +40,9 @@ export const option = style({
       background: vars.state.hover,
     },
     /**
-     * Replays whenever this attribute selector starts matching -- i.e.
+     * Replays whenever this attribute selector starts matching; i.e.
      * every time a click actually changes the selected option, not on
-     * unrelated re-renders -- giving the newly-picked option a small
+     * unrelated re-renders; giving the newly-picked option a small
      * settle-in pop rather than an instant colour swap.
      */
     '&[aria-pressed="true"]': {

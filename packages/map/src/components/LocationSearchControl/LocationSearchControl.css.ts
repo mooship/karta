@@ -51,7 +51,7 @@ export const input = style([
 ]);
 
 /**
- * Sized to meet the design system's touch-target floor -- with `.input` at
+ * Sized to meet the design system's touch-target floor; with `.input` at
  * the same height, this now matches it exactly rather than poking out
  * above/below, so `right` only needs to clear the input's own rounded
  * border rather than also room for a taller button.
@@ -126,7 +126,7 @@ export const resultButton = style({
 /**
  * A feature result (select it on the map) and a place result (fly to it)
  * do meaningfully different things when chosen, so each option is marked
- * with a small icon rather than relying on a visual grouping/heading --
+ * with a small icon rather than relying on a visual grouping/heading;
  * keeps the whole list a single flat ARIA listbox instead of nested groups.
  */
 export const resultIcon = style({

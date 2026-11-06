@@ -134,7 +134,7 @@
    * `--space-2`/`--space-3`, `--font-size-sm`/`-md`/`-base`, `--control-height`/
    * `-gap`/`-padding`, and `--drag-handle-*` below are part of `@karta/map`'s
    * design-token contract (see the note on `--font-body` above); `--space-1`/
-   * `-4`, `--font-size-xs`/`-lg`, and `--control-height-compact` aren't --
+   * `-4`, `--font-size-xs`/`-lg`, and `--control-height-compact` aren't;
    * no `@karta/map` component reads them, they're this app's own.
    */
   --space-1: 0.25rem;

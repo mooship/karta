@@ -42,7 +42,7 @@ function parseGlobalHeadersBlock(fileContent: string): Record<string, string> {
 }
 
 /**
- * Guards against `public/_headers` and `SECURITY_HEADERS` drifting apart —
+ * Guards against `public/_headers` and `SECURITY_HEADERS` drifting apart;
  * see `securityHeaders.ts`'s own comment for why both exist. `_headers`
  * covers static asset responses; `SECURITY_HEADERS` is applied by hand in
  * `workers/app.ts` for this app's SSR-rendered responses, which `_headers`
@@ -93,7 +93,7 @@ describe("generateNonce", () => {
   });
 
   it("is safe to embed directly inside a CSP directive's single-quoted nonce source", () => {
-    // A CSP nonce source is written as 'nonce-<value>' — a raw single quote
+    // A CSP nonce source is written as 'nonce-<value>'; a raw single quote
     // or semicolon in the generated value would either break out of that
     // token or terminate the directive early.
     expect(generateNonce()).not.toMatch(/[';]/);

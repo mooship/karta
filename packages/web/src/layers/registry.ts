@@ -8,13 +8,13 @@ import {
 } from "./layerTranslations";
 
 /**
- * Wraps `@karta/app`'s English `SPATIAL_APARTHEID_LEGACY_DOMAIN` — safe to
+ * Wraps `@karta/app`'s English `SPATIAL_APARTHEID_LEGACY_DOMAIN`; safe to
  * build once at module scope since it holds only locale-independent
  * structure (ids, data sources, styling, availability). Every getter below
  * applies `packages/web`'s own translation overlay (`layerTranslations.ts`)
  * to this registry's output *at call time*, so the display text it returns
  * always matches the current request's locale rather than whichever locale
- * happened to be active when this module first loaded — Cloudflare Workers
+ * happened to be active when this module first loaded; Cloudflare Workers
  * reuse isolates across requests, so baking translated text into a
  * module-scope value would leak one request's locale into every other
  * request handled by that isolate.
@@ -40,7 +40,7 @@ export function getLayerGroups(): readonly LayerGroup[] {
 /**
  * Returns every layer group's structural fields (`id`, `layerIds`,
  * `selectionMode`) without applying the translation overlay. `title`/
- * `description` come back in English regardless of locale — prefer
+ * `description` come back in English regardless of locale; prefer
  * `getLayerGroups()` for anything user-facing; this exists for callers
  * (e.g. group-membership checks) that only need structure, so they don't
  * pay for translation work whose result they'd never read.
@@ -53,7 +53,7 @@ export function getLayerGroupStructure(): readonly LayerGroup[] {
  * Returns every layer's structural fields (`id`, `defaultVisible`,
  * `dataSource`, etc.) without applying the translation overlay. `label`/
  * `description`/choropleth bucket labels come back in English regardless of
- * locale — prefer `getLayers()` for anything user-facing; this exists for
+ * locale; prefer `getLayers()` for anything user-facing; this exists for
  * callers (e.g. `defaultVisible` id lookups) that only need structure, so
  * they don't pay for translation work whose result they'd never read.
  */

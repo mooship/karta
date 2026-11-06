@@ -75,7 +75,7 @@ describe("worker fetch handler", () => {
 
   it("preserves a Content-Security-Policy the request handler's response already set, rather than overwriting it", async () => {
     // entry.server.tsx sets a per-request, nonce-bearing CSP on a real SSR
-    // response before workers/app.ts ever sees it — withSecurityHeaders
+    // response before workers/app.ts ever sees it; withSecurityHeaders
     // must leave that alone instead of replacing it with the nonce-free
     // static default meant for responses with no CSP of their own.
     requestHandlerMock.mockResolvedValueOnce(

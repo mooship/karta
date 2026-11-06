@@ -9,7 +9,7 @@ import { getLayer, getLayerGroups } from "../../layers/registry";
 import { m } from "../../paraglide/messages.js";
 import * as styles from "./LayerToggles.css";
 
-/** Download filename for one of a layer's `dataSource` URLs — suffixed with a 1-based index when the layer has more than one source, so filenames don't collide. */
+/** Download filename for one of a layer's `dataSource` URLs; suffixed with a 1-based index when the layer has more than one source, so filenames don't collide. */
 function downloadFileName(
   layer: Layer,
   sourceIndex: number,
@@ -113,7 +113,7 @@ function LayerTogglesComponent({
     /**
      * Built as two flat arrays (rather than nested inline `.map`s) so every
      * source's download link + CSV button pair can be grouped inside one
-     * `.downloads` wrapper — `margin-left: auto` on that single wrapper
+     * `.downloads` wrapper; `margin-left: auto` on that single wrapper
      * pushes the whole group to the row's right edge, where the same rule
      * applied to each icon individually split the row's free space between
      * every auto margin instead, scattering the icons across the row.
@@ -257,11 +257,11 @@ function LayerTogglesComponent({
  *   `dataSource` URL, so a visitor can save the exact GeoJSON the map
  *   renders, plus a CSV export button that fetches that same URL on click,
  *   flattens its properties (via `@karta/core`'s `featureCollectionToCsv`)
- *   and triggers a browser download — CSV isn't pre-generated like the
+ *   and triggers a browser download; CSV isn't pre-generated like the
  *   static GeoJSON files, since it's a spreadsheet-friendly convenience
  *   format rather than something the map itself consumes. The checkbox's
  *   `<label>` wraps only the checkbox/text/badges, not the download
- *   link/button — nesting them inside that label too would make clicking
+ *   link/button; nesting them inside that label too would make clicking
  *   them also toggle the checkbox, since a `<label>` forwards any click
  *   within it to its associated control. Memoized so unrelated re-renders of
  *   its parent (the info panel stays mounted, just `hidden`, so it re-renders

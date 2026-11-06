@@ -16,7 +16,7 @@ export interface RafScheduledValue<T> {
  * @remarks The shared implementation behind every "coalesce a burst of
  *   native pointermove/mousemove events into one state update per frame"
  *   spot in this package (`useSwipeToDismiss`'s drag offset,
- *   `MeasurementLayer`'s hover-preview point) — hand-rolling the same
+ *   `MeasurementLayer`'s hover-preview point); hand-rolling the same
  *   pending-ref/frame-ref bookkeeping at each call site meant a fix or
  *   subtlety found in one never reached the others.
  * @example

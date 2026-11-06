@@ -12,8 +12,8 @@ export type MeasurementMode = "distance" | "area";
 
 /**
  * `MeasurementControl`'s own overridable copy, all defaulting to English.
- * Factored out from `MeasurementControlProps` so `MapView` -- which renders
- * this internally -- can accept and forward the same set as one prop.
+ * Factored out from `MeasurementControlProps` so `MapView` (which renders
+ * this internally) can accept and forward the same set as one prop.
  */
 export interface MeasurementControlLabels {
   /** Accessible label of the idle toggle button while closed. Defaults to `"Measure distance and area"`. */
@@ -66,14 +66,14 @@ export interface MeasurementControlProps extends MeasurementControlLabels {
   /**
    * Whether the host app's own overlapping panel (if it has one) is open.
    * Defaults to `false`. While `panelOpen` is `true`, this control collapses
-   * to its idle toggle button regardless of `active` — with the host's sheet
+   * to its idle toggle button regardless of `active` (with the host's sheet
    * covering most of the map there's no room to show the full measurement
-   * panel or click a measurement point — but stays visible and tappable
+   * panel or click a measurement point) but stays visible and tappable
    * rather than disappearing outright: tapping it calls `onRequestPanelClose`
    * instead of `onToggleActive`, so it doubles as a way to dismiss the
    * host's panel and get the map back. `active`/`mode`/`points` stay owned
    * by the caller and untouched while collapsed, so a measurement in
-   * progress resumes exactly where it left off once the host panel closes —
+   * progress resumes exactly where it left off once the host panel closes;
    * the caller is expected to also stop listening for map clicks in the
    * meantime (see `MapView`'s `measurementInteractive`), so clicks on
    * whatever sliver of map stays visible don't silently add points nobody
@@ -83,7 +83,7 @@ export interface MeasurementControlProps extends MeasurementControlLabels {
   /**
    * Called when the idle toggle is tapped while `panelOpen` is `true`, in
    * place of `onToggleActive`. Omit if the caller has no overlapping panel
-   * (or no way to close it) — the toggle simply no-ops in that case rather
+   * (or no way to close it); the toggle simply no-ops in that case rather
    * than falling back to `onToggleActive`, which would start a measurement
    * behind a panel that's still covering the map.
    */
@@ -93,7 +93,7 @@ export interface MeasurementControlProps extends MeasurementControlLabels {
 /**
  * A map control for measuring straight-line distance or enclosed area by
  * clicking points on the map.
- * @remarks Purely presentational — the click-to-add-point behaviour and the
+ * @remarks Purely presentational; the click-to-add-point behaviour and the
  *   drawn preview line/polygon live in `MeasurementLayer`, which must be
  *   rendered inside the same `MapView`'s `MapContainer` and driven by the
  *   same `active`/`mode`/points state as this component. Every piece of its

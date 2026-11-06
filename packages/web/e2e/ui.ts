@@ -34,7 +34,7 @@ export async function ensurePanelClosed(page: Page) {
  * Fails the first request to each distinct *resource* matching `urlPattern`
  * with a 500, then lets every later request to that same resource through,
  * for tests asserting a load-error state and its retry recovery. Tracked by
- * pathname, not the full URL — `urlPattern` can match more than one real
+ * pathname, not the full URL; `urlPattern` can match more than one real
  * resource (e.g. a merged multi-region fetch), and each one gets its own
  * single failure rather than only the first request to be made at all; the
  * app's own retry path (`App.tsx`'s `cacheBust`) appends a `?retry=N` query

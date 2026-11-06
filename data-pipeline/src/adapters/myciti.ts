@@ -4,7 +4,7 @@ import { normalizeRelationTransitOverpass } from "./overpassNormalizers";
 
 // MyCiTi tags the route RELATION (standard OSM public-transport
 // route-relation convention, same as Rea Vaya), so this mirrors reaVaya.ts's
-// pattern rather than gautrain.ts's way-tag pattern — except MyCiTi's own
+// pattern rather than gautrain.ts's way-tag pattern; except MyCiTi's own
 // OSM data tags `network` as "Cape Town IRT" (the wider integrated rapid
 // transit programme) with `operator` set to "MyCiTi", rather than tagging
 // `network` as "MyCiTi" directly the way Rea Vaya's does, so this matches on

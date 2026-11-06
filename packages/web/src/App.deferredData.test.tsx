@@ -62,7 +62,7 @@ import { useMapUiStore } from "./stores/useMapUiStore";
 
 // The real "positron" basemap is now an OpenFreeMap vector basemap
 // (MapLibre GL, dynamically imported real "leaflet"/"maplibre-gl-leaflet"
-// packages) — exercising that real async/WebGL path isn't meaningful in
+// packages); exercising that real async/WebGL path isn't meaningful in
 // these jsdom unit tests and races awkwardly with tests that unmount before
 // other async work settles, so it's overridden here with a plain raster
 // stub matching react-leaflet's mocked `TileLayer`.

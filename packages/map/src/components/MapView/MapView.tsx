@@ -131,13 +131,13 @@ export interface MapViewProps<
    * label) whenever it changes, e.g. because `visibleLayerIds` or the
    * underlying feature data changed. Lets a caller feed these into its own
    * `LocationSearchControl` as `selectableFeatures`, so a visitor can search
-   * for a map feature by name from the same box used for place search --
+   * for a map feature by name from the same box used for place search;
    * `MapView` itself renders no feature-search UI of its own.
    */
   onSelectableFeaturesChange?: (
     entries: SelectableFeatureSearchEntry[],
   ) => void;
-  /** Renders a selected/clicked feature's popup content from its GeoJSON `properties`. Omit for no popup at all — see {@link bindSelectedFeaturePopup}. */
+  /** Renders a selected/clicked feature's popup content from its GeoJSON `properties`. Omit for no popup at all; see {@link bindSelectedFeaturePopup}. */
   renderFeaturePopup?: (properties: TProperties) => ReactNode;
   /** Called with the ids of overlay layers whose data failed to load, whenever that set changes. */
   onLayerDataError?: (failedLayerIds: string[]) => void;
@@ -147,12 +147,12 @@ export interface MapViewProps<
    */
   onBasemapError?: (basemap: Basemap, error: unknown) => void;
   /**
-   * Called once the active basemap has actually painted tiles/style —
+   * Called once the active basemap has actually painted tiles/style;
    * raster: the tile layer's `load` event (every tile currently required for
    * the view has loaded); vector: the underlying MapLibre map's own `load`
    * event.
    * @remarks Distinct from `onReady`, which fires as soon as Leaflet itself
-   *   has a view — well before a raster basemap's tiles, or a vector
+   *   has a view; well before a raster basemap's tiles, or a vector
    *   basemap's lazily-loaded MapLibre bundle and style, have actually
    *   rendered anything. A caller holding a full-viewport loading placeholder
    *   up until the map is genuinely visible (rather than just mounted) should
@@ -183,7 +183,7 @@ export interface MapViewProps<
   /** Overridable copy for that control, forwarded straight through to `MeasurementControl`. Every field defaults to English. */
   measurementLabels?: MeasurementControlLabels;
   /**
-   * Whether the caller's own overlapping panel (if it has one — e.g. an
+   * Whether the caller's own overlapping panel (if it has one; e.g. an
    * info/layers panel rendered alongside `MapView`) is currently open.
    * Passed straight through to the measurement tool's control (see
    * `MeasurementControl`'s `panelOpen` prop) so it collapses to its idle
@@ -205,10 +205,10 @@ export interface MapViewProps<
    * Externally requests the measurement tool show a specific line/polygon,
    * replacing any points already drawn and opening the tool if it's
    * currently closed. Has no effect while `measurementTool` is `false`,
-   * since there's no control to show the result in -- but isn't discarded
+   * since there's no control to show the result in; but isn't discarded
    * either, so a request received just before `measurementTool` turns `true`
    * still applies once it does. `token` must change (e.g. via `Date.now()`)
-   * each time a new request should apply -- mirroring `focusLocationTarget`
+   * each time a new request should apply; mirroring `focusLocationTarget`
    * -- since two requests with identical `mode`/`points` would otherwise be
    * indistinguishable from a no-op re-render.
    * @remarks Exists so a caller can drive the same on-screen tool a human's
@@ -332,7 +332,7 @@ function getBoundsOptions(desktop: boolean) {
  *   exists.
  * @remarks Imports `react-dom/server` dynamically, purely for payload:
  *   React's server renderer is ~70KB compressed and, statically imported, it
- *   lands in the same eagerly-fetched vendor chunk as `react`/`react-dom` —
+ *   lands in the same eagerly-fetched vendor chunk as `react`/`react-dom`;
  *   bytes every visitor pays for on the critical path to the map's first
  *   paint, to render markup that only exists once somebody clicks a
  *   feature. As its own chunk it is fetched on that first click instead; the
@@ -450,7 +450,7 @@ function evictStaleSelectableEntries(
  *   (see {@link useLatestRef}) and dereferenced when the event actually
  *   fires instead. `suppressFeatureClickRef` is read for the same reason and
  *   guards the same click: some other tool (currently just the measurement
- *   tool) can claim exclusive ownership of map clicks — while it does, a
+ *   tool) can claim exclusive ownership of map clicks; while it does, a
  *   click is meant to feed that tool, not also open this feature's popup and
  *   re-fit the map to it via `SelectedFeatureHighlight`, both of which would
  *   otherwise fire from Leaflet's default click bubbling and yank the view
@@ -548,7 +548,7 @@ interface SelectedFeatureHighlightProps<
  *   itself, via {@link useLatestRef}: an effect keyed only on
  *   `selectedFeatureId` reading the renderer directly would need it in its
  *   dependency array, re-firing (and snapping the map back to the selected
- *   feature) on every render where a caller passes an unmemoised renderer —
+ *   feature) on every render where a caller passes an unmemoised renderer;
  *   reading through the ref sidesteps that without asking every caller to
  *   memoise.
  */
@@ -627,7 +627,7 @@ function MapReadyNotifier({ onReady }: { onReady?: () => void }) {
     let cancelled = false;
     let frame: number | null = null;
     map.whenReady(() => {
-      // `whenReady`'s callback has no cancellation of its own — if the map
+      // `whenReady`'s callback has no cancellation of its own; if the map
       // isn't loaded yet, Leaflet just holds onto it via a `load` listener
       // until that event fires, however long after this effect's own
       // cleanup that turns out to be. `cancelled` is what stops a late
@@ -660,17 +660,17 @@ const ATTRIBUTION_LABEL = "Map data attribution";
  * Collapses Leaflet's default attribution control to a small, tappable
  * indicator by default, expanding to its full text on click/tap or Enter/
  * Space, and collapsing again the same way.
- * @remarks The full attribution text — required by this app's tile/style
- *   providers (OpenStreetMap, OpenFreeMap, Esri) — stays in the DOM and in
+ * @remarks The full attribution text (required by this app's tile/style
+ *   providers (OpenStreetMap, OpenFreeMap, Esri)) stays in the DOM and in
  *   the accessibility tree at all times; only its visible width/overflow
  *   changes (`styles.attributionExpanded` in `MapView.css.ts`), so
  *   collapsing it visually never removes the credit it's required to show.
- *   Listens on the control's own container element, not its inner content —
+ *   Listens on the control's own container element, not its inner content;
  *   Leaflet only replaces that content's `innerHTML` on
  *   `addAttribution`/`removeAttribution` (e.g. a basemap switch), so a
  *   listener on the container itself survives that without re-attaching.
  * @remarks Also toggles `styles.attributionCornerElevated` on the control's
- *   own parent — Leaflet's shared `.leaflet-bottom.leaflet-right` corner
+ *   own parent; Leaflet's shared `.leaflet-bottom.leaflet-right` corner
  *   container, which also holds the zoom control. That parent establishes
  *   its own stacking context at a fixed `z-index`, capping how high any
  *   control inside it (this one included) can ever paint relative to a
@@ -889,9 +889,9 @@ function FocusLocationTarget({
  *   content value as HTML (`node.innerHTML = content`) with no escaping,
  *   but appends anything else (an `HTMLElement`, per its `Content` type) as
  *   a child node instead. `name` here comes straight from fetched GeoJSON
- *   feature properties — public, sometimes externally-editable data (e.g.
+ *   feature properties; public, sometimes externally-editable data (e.g.
  *   OSM/Overpass-derived transit names) that a malicious or careless
- *   contributor could seed with markup — so building a plain element with
+ *   contributor could seed with markup; so building a plain element with
  *   `textContent` keeps any such markup inert, visible text rather than
  *   letting it execute as HTML. This mirrors {@link bindSelectedFeaturePopup}'s
  *   `renderToStaticMarkup`-escaped popup path.
@@ -1272,7 +1272,7 @@ function MapViewComponent<
   const { data: overlayData, failedLayerIds } = useLayerData(
     nonChoroplethLayerIds,
   );
-  // biome-ignore lint/correctness/useExhaustiveDependencies: onLayerDataError intentionally omitted -- it's a public prop with no stability guarantee, so including it could re-fire this effect on every render for callers that don't memoize it
+  // biome-ignore lint/correctness/useExhaustiveDependencies: onLayerDataError intentionally omitted; it's a public prop with no stability guarantee, so including it could re-fire this effect on every render for callers that don't memoize it
   useEffect(() => {
     onLayerDataError?.(failedLayerIds);
   }, [failedLayerIds]);
@@ -1414,7 +1414,7 @@ function MapViewComponent<
         : null,
     [selectableSearchEntries, selectedFeatureId],
   );
-  // biome-ignore lint/correctness/useExhaustiveDependencies: onSelectableFeaturesChange intentionally omitted -- it's a public prop with no stability guarantee, so including it could re-fire this effect on every render for callers that don't memoize it
+  // biome-ignore lint/correctness/useExhaustiveDependencies: onSelectableFeaturesChange intentionally omitted; it's a public prop with no stability guarantee, so including it could re-fire this effect on every render for callers that don't memoize it
   useEffect(() => {
     onSelectableFeaturesChange?.(selectableSearchEntries);
   }, [selectableSearchEntries]);
@@ -1460,8 +1460,8 @@ function MapViewComponent<
    * @remarks react-leaflet re-applies `pathOptions` with `setStyle` whenever
    *   the object's *identity* changes, and a `setStyle` on a `GeoJSON` layer
    *   walks every feature layer it holds. Built inline in the render below,
-   *   a fresh object every render meant every unrelated re-render — a zoom
-   *   tick, a theme change, data arriving for a different layer — restyled
+   *   a fresh object every render meant every unrelated re-render (a zoom
+   *   tick, a theme change, data arriving for a different layer) restyled
    *   all several thousand choropleth polygons.
    */
   const layerPathOptionsById = useMemo(

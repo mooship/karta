@@ -11,7 +11,7 @@ import { getLocale, locales } from "./paraglide/runtime.js";
 const OG_IMAGE_URL = `${SITE_URL}/og-image.png`;
 
 /**
- * Meta tags shared by every route regardless of its own title/description —
+ * Meta tags shared by every route regardless of its own title/description;
  * the OG image and its dimensions don't vary per page, and neither of these
  * is locale-dependent, so they're computed once rather than on every
  * `buildPageMeta` call.
@@ -55,13 +55,13 @@ const DATASET_JSON_LD_BASE = {
 
 /**
  * Builds the full `<title>`/`<meta>` tag set for one route from its own
- * title, description, and canonical URL — including every Open Graph,
+ * title, description, and canonical URL; including every Open Graph,
  * Twitter card, and Dataset JSON-LD tag derived from those three values.
  * @remarks Every route calls this directly with its own values, rather than
  *   exporting a `meta()` that only sets `title`/`description` and inheriting
  *   the rest from the root route via `matches`: React Router's per-route
  *   `meta()` replaces its parent's output entirely, and `title`/`description`
- *   aren't the only tags derived from a page's identity — `og:title`,
+ *   aren't the only tags derived from a page's identity; `og:title`,
  *   `og:description`, `og:url`, `og:image:alt`, `twitter:title`,
  *   `twitter:description`, and the JSON-LD `name`/`description`/`url` all
  *   are too. A route that only patched the first two would leave the rest

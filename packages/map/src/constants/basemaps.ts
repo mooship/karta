@@ -38,7 +38,7 @@ export interface VectorBasemapDefinition {
    * Attribution HTML added to Leaflet's attribution control while this
    * basemap is active.
    * @remarks Unlike a raster basemap's `attribution`, this isn't wired up by
-   *   Leaflet itself — a MapLibre GL style JSON's own `sources` typically
+   *   Leaflet itself; a MapLibre GL style JSON's own `sources` typically
    *   carry no `attribution` field (OpenFreeMap's don't), so
    *   `VectorBasemapLayer` adds/removes this text from
    *   `map.attributionControl` by hand instead.
@@ -67,14 +67,14 @@ const OPEN_FREE_MAP_STYLE_BASE = "https://tiles.openfreemap.org/styles";
 
 // CARTO's anonymous basemap tile endpoints (basemaps.cartocdn.com) now
 // return HTTP 200 with a baked-in "API KEY REQUIRED" watermark image rather
-// than an error, for every style (light_all, dark_all, rastertiles/voyager)
-// — so a paid CARTO account is required even for a 200 response, and
+// than an error, for every style (light_all, dark_all, rastertiles/voyager);
+// so a paid CARTO account is required even for a 200 response, and
 // Leaflet's error-based tile fallback never triggers since the request
 // technically "succeeds". `positron`/`liberty`/`dark` below use OpenFreeMap's
 // free, key-less, rate-limit-free vector styles instead (MapLibre GL,
-// lazy-loaded — see `VectorBasemapLayer`) as three independently selectable
+// lazy-loaded (see `VectorBasemapLayer`) as three independently selectable
 // basemaps, rather than one basemap that auto-swaps style with the UI theme
-// the way CARTO's light/dark pair used to — a basemap's own style and the
+// the way CARTO's light/dark pair used to) a basemap's own style and the
 // app's light/dark chrome preference are unrelated choices, and `dark` not
 // having a light counterpart (or `topo`/`satellite` not having a dark one)
 // is fine as-is, rather than approximating one with a CSS invert filter.
@@ -133,7 +133,7 @@ loadDefaultsInto(registry);
  * Registers (or overwrites) a basemap definition under `id`, making it
  * available to `BasemapToggle` and `MapView`.
  * @remarks Mutates `registry`, a plain module-scope `Map` shared by every
- *   caller in the process — there's no locking around it. Call this once at
+ *   caller in the process; there's no locking around it. Call this once at
  *   application bootstrap (module load / app initialisation), the same way
  *   this package's own built-in basemaps are seeded, never conditionally
  *   inside a per-request code path on a shared-isolate server runtime (e.g.
@@ -169,7 +169,7 @@ export function getBasemapDefinition(id: Basemap): BasemapDefinition {
 
 /**
  * Resets the registry to its built-in defaults.
- * @remarks For test isolation — the registry is a module-level singleton.
+ * @remarks For test isolation; the registry is a module-level singleton.
  */
 export function resetBasemapRegistry(): void {
   loadDefaultsInto(registry);
@@ -227,8 +227,8 @@ export function getBasemapTileSources(
 /**
  * Substitutes Leaflet's `{r}` tile-scale placeholder in `url` with `"@2x"`
  * when `retina` is `true`, and with nothing when it isn't.
- * @remarks Leaflet resolves `{r}` itself from `Browser.retina` — the
- *   *device's* pixel ratio — completely independently of the `detectRetina`
+ * @remarks Leaflet resolves `{r}` itself from `Browser.retina` (the
+ *   *device's* pixel ratio) completely independently of the `detectRetina`
  *   option, so a caller that decides against retina tiles still gets `@2x`
  *   URLs on any high-DPI screen. That is roughly two to three times the
  *   bytes per tile, which is exactly the wrong trade on the small, likely

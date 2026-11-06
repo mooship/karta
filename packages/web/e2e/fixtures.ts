@@ -11,7 +11,7 @@ const TRANSPARENT_PNG = Buffer.from(
 const TILE_HOST_PATTERN = /tile\.openstreetmap\.org|server\.arcgisonline\.com/;
 
 /**
- * A minimal, valid MapLibre GL style JSON — no sources, no layers — served
+ * A minimal, valid MapLibre GL style JSON (no sources, no layers) served
  * in place of the real Positron/Liberty/Dark basemaps' OpenFreeMap style
  * requests (matched generically by path, so it covers all three). This is
  * enough for MapLibre to initialise and paint an (empty) canvas without the

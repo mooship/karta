@@ -8,7 +8,7 @@ export const CLIENT_ERROR_REPORT_PATH = "/log-error";
 /**
  * Maximum length, in UTF-16 code units, allowed for each string field of a
  * client error report. Enforced on both ends: the client truncates to this
- * bound before sending, and the server-side route rejects anything longer —
+ * bound before sending, and the server-side route rejects anything longer;
  * so a malicious or malfunctioning client can't use the endpoint to write
  * unbounded text into Workers Logs.
  */

@@ -11,8 +11,8 @@ import * as styles from "./Legend.css";
 
 /**
  * `Legend`'s own overridable copy, all defaulting to English. Factored out
- * from `LegendProps` so `DesktopLegend`/`MobileLegend` -- which each render
- * a `Legend` internally -- can accept and forward the same set without
+ * from `LegendProps` so `DesktopLegend`/`MobileLegend` (which each render
+ * a `Legend` internally) can accept and forward the same set without
  * repeating every field.
  */
 export interface LegendLabels {

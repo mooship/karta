@@ -49,7 +49,7 @@ jobs:
           uploadArtifacts: true
           temporaryPublicStorage: true
 
-      # The action's own job log only prints assertions that fail or warn --
+      # The action's own job log only prints assertions that fail or warn;
       # a fully-passing category shows nothing at all. Print every category
       # score and a few key performance audits regardless of pass/fail, both
       # to the log and to the run's job summary, so scores are visible

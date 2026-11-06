@@ -5,7 +5,7 @@ import proj4, { type Converter } from "proj4";
 import { isUnlocatedFeature } from "../data/geoJsonSchemas";
 
 /**
- * GeoJSON's mandated coordinate reference system (RFC 7946 §4) — the target
+ * GeoJSON's mandated coordinate reference system (RFC 7946 §4); the target
  * every `reproject*` function converts into.
  */
 const WGS84 = "WGS84";
@@ -31,7 +31,7 @@ function applyConverter(converter: Converter, position: Position): Position {
  * @param sourceCrs - A proj4-compatible definition string (e.g. an `EPSG:*`
  *   code proj4 recognises by default, or a raw `+proj=...` definition).
  * @returns The equivalent `[lon, lat]` (or `[lon, lat, z]`) WGS84 position.
- *   A third elevation coordinate, if present, is carried through unchanged —
+ *   A third elevation coordinate, if present, is carried through unchanged;
  *   horizontal reprojection doesn't affect it.
  */
 export function reprojectPosition(
@@ -49,8 +49,8 @@ export function reprojectPosition(
  *   it supports (including `GeometryCollection`) is handled without a
  *   hand-written recursive case per type. Builds one converter for the whole
  *   geometry rather than re-parsing `sourceCrs` per coordinate. `geometry`'s
- *   type doesn't admit `null` — GeoJSON's `Feature.geometry` does, but a
- *   bare `Geometry` never should — so a caller passing `null` anyway (only
+ *   type doesn't admit `null` (GeoJSON's `Feature.geometry` does, but a
+ *   bare `Geometry` never should) so a caller passing `null` anyway (only
  *   reachable via a type assertion, as `reprojectFeatureCollection` used to
  *   do before it started skipping null-geometry features itself) is a
  *   misuse this throws on explicitly, rather than surfacing Turf's opaque
@@ -62,7 +62,7 @@ export function reprojectGeometry(
 ): Geometry {
   if (geometry === null) {
     throw new Error(
-      "reprojectGeometry: geometry must not be null — callers with a " +
+      "reprojectGeometry: geometry must not be null; callers with a " +
         "possibly-null Feature.geometry should use reprojectFeatureCollection, " +
         "which passes null-geometry features through unchanged.",
     );

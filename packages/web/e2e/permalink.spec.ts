@@ -59,7 +59,7 @@ test.describe("shareable map links", () => {
 
     // The feature list populates asynchronously after the search box itself
     // is already interactive, so wait for the option to appear before
-    // driving it by keyboard -- see map-feature-accessibility.spec.ts.
+    // driving it by keyboard; see map-feature-accessibility.spec.ts.
     await expect(
       page.getByRole("option", { name: "Botshabelo" }),
     ).toBeVisible();

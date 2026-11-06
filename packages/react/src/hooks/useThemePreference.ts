@@ -16,7 +16,7 @@ declare const process: { env?: { NODE_ENV?: string } } | undefined;
  *   which matters here: the effect it backs re-applies `data-theme` after a
  *   React hydration-mismatch recovery elsewhere in the tree can silently
  *   drop it (see `useThemePreference` below), and a plain `useEffect` is a
- *   passive effect that only runs *after* paint — leaving one visible frame
+ *   passive effect that only runs *after* paint; leaving one visible frame
  *   of the wrong theme before it catches up, exactly the flash this exists
  *   to prevent. `useLayoutEffect` itself is a no-op during SSR and logs a
  *   warning if called there, so this swaps to `useEffect` server-side rather
@@ -62,7 +62,7 @@ let warnedAboutMissingInit = false;
  * @remarks Call once at app bootstrap before any component renders. Re-reads
  *   the stored preference under the new `storageKey`, since the module's
  *   initial read (at import time, before `initTheme` can run) used whatever
- *   config was active then — typically the built-in default. Notifies any
+ *   config was active then; typically the built-in default. Notifies any
  *   already-subscribed components in case this runs after mount (e.g. HMR),
  *   so the store never holds a stale preference silently.
  * @example
@@ -156,7 +156,7 @@ function getServerSnapshot(): ThemePreference {
  * the document's `data-theme` attribute and theme-color meta tag.
  * @param preference - `"system"` removes any explicit override.
  * @remarks Persists through `safeStorage`, so a blocked or unavailable store
- *   (see its doc comment) doesn't throw -- the preference still takes effect
+ *   (see its doc comment) doesn't throw; the preference still takes effect
  *   in memory and on the document for the current session, it just won't
  *   survive a reload.
  */
@@ -181,12 +181,12 @@ export function setThemePreference(preference: ThemePreference) {
  *   Re-applies the `data-theme` attribute (and theme-color meta tag) to the
  *   document on mount and whenever the preference value itself changes,
  *   rather than trusting `initTheme`'s pre-hydration script-tag write to
- *   stick — a React hydration-mismatch recovery elsewhere in the tree can
+ *   stick; a React hydration-mismatch recovery elsewhere in the tree can
  *   rebuild `<html>`'s attributes from its own JSX-managed props alone,
  *   silently dropping this attribute since React never owned it. That
  *   in-memory preference itself survives any such recovery untouched, so
  *   this effect self-heals the DOM from it on this hook's next mount (e.g.
- *   the remount a mismatch recovery forces) or next `preference` change —
+ *   the remount a mismatch recovery forces) or next `preference` change;
  *   not on every unrelated render, since the effect's dependency array is
  *   `[preference]`; an attribute cleared by something that leaves both the
  *   component tree and `preference` untouched would need a fresh

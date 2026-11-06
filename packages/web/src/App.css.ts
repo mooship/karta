@@ -20,7 +20,7 @@ const desktopMediaQuery = `screen and (min-width: ${MOBILE_BREAKPOINT_PX + 1}px)
  * The mobile Explore sheet's live drag offset, applied imperatively via
  * `@vanilla-extract/dynamic`'s `setElementVars()` in `App.tsx` (replacing
  * an `as CSSProperties` cast that smuggled the same custom property past
- * React's types) — a CSSOM `style.setProperty()` call rather than a React
+ * React's types); a CSSOM `style.setProperty()` call rather than a React
  * `style` prop, so the value never appears as a literal attribute in
  * server-rendered HTML, which this app's `'unsafe-inline'`-free `style-src`
  * would otherwise refuse to apply once parsed.
@@ -35,7 +35,7 @@ export const app = style({
   /**
    * `mobileSafeTop` through `floatingControlZIndex` below (see
    * theme/app.css.ts's `appVars.mobileLayout`/`appVars.floatingControlZIndex`)
-   * fill two of `@karta/map`'s own documented CSS contracts --
+   * fill two of `@karta/map`'s own documented CSS contracts;
    * `MOBILE_LAYOUT_CSS_VAR_DEFAULTS` and `Z_INDEX_CSS_VAR_DEFAULTS`
    * (packages/map/src/constants/mobileLayoutTokens.ts and zIndexTokens.ts)
    * -- the values `MobileLegend`/`MeasurementControl`/`DesktopLegend` read
@@ -81,13 +81,13 @@ export const app = style({
     [appVars.mobileLayout.sheetHeightFull]: "min(84dvh, 45rem)",
     /**
      * How far down the search box's whole rendered footprint reaches (see
-     * MeasurementControl.css.ts's mobile `insetBlockStart`) -- shared so
+     * MeasurementControl.css.ts's mobile `insetBlockStart`); shared so
      * any other control stacking beneath the search box (the legend
      * trigger, when the info panel is open) can clamp itself to the same
      * boundary instead of hardcoding its own copy of this measurement.
      * 8.25rem leaves a comfortable double-digit-pixel gap beneath the
      * search box's ~116px mobile footprint (its `top` offset plus wrapper
-     * padding/border plus the app-name label and search field) -- 7.5rem
+     * padding/border plus the app-name label and search field); 7.5rem
      * left only a few pixels.
      */
     [appVars.mobileLayout.searchClearance]: "8.25rem",
@@ -119,7 +119,7 @@ export const mapLoading = style({
    * before hydration, and covers the whole map viewport, so it lets the
    * browser register a meaningful full-viewport paint immediately instead
    * of waiting ~5s for React to hydrate, `MapView` to lazy-load, and
-   * Leaflet to mount and fetch its first basemap tile -- measured via
+   * Leaflet to mount and fetch its first basemap tile; measured via
    * Lighthouse to move the reported LCP element (and its score) off that
    * first tile entirely.
    */
@@ -129,7 +129,7 @@ export const mapLoading = style({
   fontSize: appVars.fontSize.sm,
   animation: `${mapLoadingPulse} 1.6s ${vars.motion.easeStandard} infinite`,
   /**
-   * The fade-out itself must be visible (not an instant swap) -- this
+   * The fade-out itself must be visible (not an instant swap); this
    * placeholder is held past Leaflet's own mount until the basemap has
    * actually painted (see `App.tsx`'s `basemapVisuallyReady`), so by the
    * time it's cleared the real map is typically already filling the frame
@@ -145,7 +145,7 @@ export const mapLoading = style({
      * Once the real map has painted over this placeholder, stop rendering
      * it entirely rather than leaving its pulse animation compositing
      * forever on a full-viewport layer nobody sees. Safe to do well after
-     * paint -- Chrome only excludes an element from Largest Contentful
+     * paint; Chrome only excludes an element from Largest Contentful
      * Paint consideration when it's removed from the *DOM*, not when it's
      * hidden via `visibility`.
      */
@@ -266,14 +266,14 @@ export const panel = style({
    * itself). Without an entrance animation here the panel simply appeared
    * the instant `hidden` came off, which read as an abrupt pop.
    * `.panelViewport` (this element's own child) deliberately has no
-   * animation of its own -- an earlier version gave it a second,
+   * animation of its own; an earlier version gave it a second,
    * shorter-travel `panelIn` run in parallel, meant to read as a subtler
    * companion fade. Measured against a live trace of both elements'
    * computed `opacity` frame by frame, that instead compounded
    * multiplicatively (a child at 51% opacity inside a parent also at 51%
    * renders at 26%), badly front-loading an already front-loaded
    * Emphasized-decelerate curve into a near-instant flash followed by a
-   * long, barely-visible crawl to full opacity -- the "violent" pop this
+   * long, barely-visible crawl to full opacity; the "violent" pop this
    * animation exists to avoid, not fix. A single fade on this element
    * alone is what the child was always going to inherit anyway.
    */
@@ -289,15 +289,15 @@ export const panel = style({
     /**
      * Desktop only (the mobile sheet opens purely from a user tap, never
      * auto-opens, so it has no equivalent race to guard against).
-     * `panelOpen` itself flips synchronously on hydration -- see the
+     * `panelOpen` itself flips synchronously on hydration (see the
      * effect that sets it in App.tsx for why that has to stay
-     * deterministic -- but starting the whole app synchronously *and*
+     * deterministic) but starting the whole app synchronously *and*
      * animating the panel in the very same commit as `MapView`'s own
      * heaviest mount work is what originally made the entrance visibly
      * stutter. Freezing `panelIn` at its first frame here, then resuming
      * it once `mapReady` (`data-entrance-ready`), keeps `panelOpen`
      * itself immediate while the animation only starts *ticking* once
-     * that heavy work has settled -- nothing to visibly stutter while
+     * that heavy work has settled; nothing to visibly stutter while
      * it's paused, since a paused animation has no frame-to-frame changes
      * to repaint.
      */
@@ -323,7 +323,7 @@ export const panel = style({
       transition: `height 320ms ${vars.motion.easeStandard}, transform ${vars.motion.durationMedium} ${vars.motion.easeDecelerate}, box-shadow ${vars.motion.durationMedium} ${vars.motion.easeStandard}`,
       /**
        * The entrance itself (`panelIn`, above) is declared once,
-       * unconditionally -- this breakpoint only needs its own
+       * unconditionally; this breakpoint only needs its own
        * `animationPlayState` gate (a different readiness attribute, set
        * from a user tap rather than `mapReady`). An earlier version
        * instead gave this breakpoint its own `panelSheetIn` keyframes,
@@ -337,11 +337,11 @@ export const panel = style({
        * entrances feeling like the same motion; `transformOrigin: "bottom"`
        * above keeps the scale settling from the sheet's own anchored edge
        * rather than its center. The *exit* keeps its own full-height
-       * slide (`panelSheetOut` below) -- a completed downward drag needs
+       * slide (`panelSheetOut` below); a completed downward drag needs
        * to continue in the same direction the user's finger was already
        * moving it, not evaporate in place.
        *
-       * Paused at its first frame until `data-sheet-entrance-ready` -- set
+       * Paused at its first frame until `data-sheet-entrance-ready`; set
        * via `@karta/react`'s `useDeferredReadyAttribute` (see its own doc
        * comment for why), called from `handlePanelToggle` in App.tsx.
        * Same reasoning as the desktop entrance's own `data-entrance-ready`
@@ -423,7 +423,7 @@ export const panelViewport = style({
   /**
    * `overflowY: "auto"` implicitly computes `overflowX` to `"auto"` too
    * (per the CSS overflow spec), which clips anything that visually
-   * extends past this element's padding box -- including
+   * extends past this element's padding box; including
    * `:focus-visible`/`:hover` effects on full-width children like buttons
    * and inputs. This inline padding gives those effects room so they
    * don't get cut off at the edges.
@@ -568,7 +568,7 @@ export const panelTrigger = style({
        * spot above the sheet rather than climbing there. The sheet's own
        * entrance below is a quick in-place fade with no equivalent
        * physical climb to stay in lockstep with, but its *exit* still
-       * slides the full sheet height off-screen (`panelSheetOut`) --
+       * slides the full sheet height off-screen (`panelSheetOut`);
        * sharing that slide's own duration and easing
        * (`vars.motion.easeLargeSurface`, this trigger climbs the same
        * distance) is what keeps the trigger's climb and the sheet's
@@ -581,15 +581,15 @@ export const panelTrigger = style({
        *
        * This button is a `ControlButton`, whose own stylesheet
        * (`ControlButton.css.ts`) declares its own `transition` shorthand.
-       * CSS's `transition` shorthand doesn't merge across rules --
-       * whichever declaration wins the cascade wins outright, silently
-       * dropping the other's transitioned properties -- so setting
+       * CSS's `transition` shorthand doesn't merge across rules
+       * (whichever declaration wins the cascade wins outright, silently
+       * dropping the other's transitioned properties) so setting
        * `transition` again here would have one of the two lists silently
        * overwrite the other regardless of which "should" win.
        * `ControlButton` instead exposes a `--control-button-extra-transition`
        * custom property (defaulting to `none`) that it appends to its own
        * transition list, so this rule only ever sets that one custom
-       * property -- never `transition` itself -- and there's no rule for
+       * property (never `transition` itself) and there's no rule for
        * it to lose a race against.
        */
       vars: {
@@ -701,7 +701,7 @@ export const locationSearchControl = style({
 });
 
 /**
- * The only visible app name/title in the whole layout -- everything else
+ * The only visible app name/title in the whole layout; everything else
  * naming this app (the `<title>`, the page's own `<h1>`) is either in the
  * browser chrome or screen-reader-only, so a sighted first-time visitor had
  * no on-screen cue for what they were looking at. Placed inside the search

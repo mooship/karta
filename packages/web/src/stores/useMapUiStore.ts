@@ -21,7 +21,7 @@ function groupSiblings(id: string): string[] {
 
 /**
  * Every valid `PanelView`, the single source of truth `PanelView` derives
- * from -- so a caller needing the runtime value set (e.g. validating a
+ * from; so a caller needing the runtime value set (e.g. validating a
  * permalink's `?panel=` query param) doesn't hand-maintain a second copy of
  * this list that could drift from the type.
  */

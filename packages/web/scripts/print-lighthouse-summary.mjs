@@ -4,7 +4,7 @@ import { join } from "node:path";
 
 /**
  * Prints every category score and a handful of key performance audits from
- * an `lhci collect`/`autorun` results directory, for every run -- not just
+ * an `lhci collect`/`autorun` results directory, for every run; not just
  * the failing/warning ones the `treosh/lighthouse-ci-action` job log shows.
  * Also appends the same table to `$GITHUB_STEP_SUMMARY` when running in
  * GitHub Actions, so scores are visible on the run summary page without
@@ -21,7 +21,7 @@ const AUDIT_IDS = [
 
 function formatScore(score) {
   return score === null || score === undefined
-    ? "—"
+    ? "n/a"
     : String(Math.round(score * 100));
 }
 
@@ -51,7 +51,7 @@ function buildSummary(reports) {
   lines.push(`| --- | ${AUDIT_IDS.map(() => "---").join(" | ")} |`);
   for (const [index, report] of reports.entries()) {
     const values = AUDIT_IDS.map(
-      (id) => report.audits[id]?.displayValue ?? "—",
+      (id) => report.audits[id]?.displayValue ?? "n/a",
     );
     lines.push(`| ${index + 1} | ${values.join(" | ")} |`);
   }

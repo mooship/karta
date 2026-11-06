@@ -11,9 +11,9 @@ export interface ColorBucket {
    * CSS color used instead of `color` when dark theme is active. Optional: a
    * bucket with nothing to say here simply reuses `color` in both themes.
    * @remarks A palette tuned for contrast against a light basemap can invert
-   *   its own visual hierarchy against a dark one — e.g. a pale "near" color
+   *   its own visual hierarchy against a dark one; e.g. a pale "near" color
    *   reads brighter than a dark "far" color, the opposite of the emphasis
-   *   the bucket order intends — so a bucket whose color doesn't hold up
+   *   the bucket order intends; so a bucket whose color doesn't hold up
    *   against a dark basemap should set this instead of reusing `color`.
    */
   darkColor?: string;
@@ -123,7 +123,7 @@ export interface CategorizedStop<T> {
 /**
  * Classifies a numeric feature property into ranges, each mapped to a style value.
  * @remarks A value above every stop's `max` clamps to the highest-`max`
- *   stop's `value`, it does not fall back to `fallback` — see
+ *   stop's `value`, it does not fall back to `fallback`; see
  *   `resolveClassification`. `fallback` is used only when the property is
  *   missing or non-numeric, or when `stops` is empty.
  */
@@ -134,7 +134,7 @@ export interface GraduatedClassification<T> {
   stops: GraduatedStop<T>[];
   /**
    * Value used when the property is missing, non-numeric, or `stops` is
-   * empty. A value that exceeds every stop's `max` does not use this — it
+   * empty. A value that exceeds every stop's `max` does not use this; it
    * clamps to the highest-`max` stop's `value` instead.
    */
   fallback: T;
@@ -155,7 +155,7 @@ export interface CategorizedClassification<T> {
  * of type `T`, either by numeric range (`"graduated"`) or exact string match
  * (`"categorized"`).
  * @remarks Usable for any geometry kind's style fields (e.g. line color/weight,
- * point color/radius) — not limited to choropleth fill color.
+ * point color/radius); not limited to choropleth fill color.
  */
 export type Classification<T> =
   | GraduatedClassification<T>
@@ -169,7 +169,7 @@ export interface LayerInteraction {
   labelField?: string;
   /**
    * Feature properties relevant to this layer's popup content, for a caller's
-   * own reference. Not read by `@karta/core` or `@karta/map` — popup
+   * own reference. Not read by `@karta/core` or `@karta/map`; popup
    * content is entirely up to the caller's `renderFeaturePopup`.
    */
   popupFields?: string[];
@@ -199,7 +199,7 @@ export interface Layer {
   defaultVisible: boolean;
   /**
    * Whether this layer is offered at all. `false` hides it from layer
-   * toggles entirely — distinct from `defaultVisible`, which only controls
+   * toggles entirely; distinct from `defaultVisible`, which only controls
    * its initial visibility state once available.
    */
   available: boolean;

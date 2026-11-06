@@ -2,7 +2,7 @@
  * CSS custom properties `@karta/map`'s mobile floating-control components
  * (`MobileLegend`, `MeasurementControl`) read from an ancestor element to
  * position and time themselves around the rest of a host app's mobile
- * chrome — a search box, a bottom sheet/info panel, safe-area insets — that
+ * chrome (a search box, a bottom sheet/info panel, safe-area insets) that
  * only the host itself knows the shape of. Each is read via `var(--name,
  * <default>)` in those components' own stylesheets, using exactly the
  * default value listed here, so a host that defines none of them still gets
@@ -12,7 +12,7 @@
  * `MapView` and its sibling controls are mounted).
  * @remarks This is the mobile layout equivalent of the M3 colour/shape/
  *   elevation tokens documented in `docs/design-system.md` at the repo
- *   root — a contract this package declares and a host app may override —
+ *   root (a contract this package declares and a host app may override)
  *   except these describe app-composition geometry (where does *your*
  *   search box sit, how tall is *your* bottom sheet) rather than visual
  *   design tokens, so they're kept separate from that shared token set
@@ -23,7 +23,7 @@ export const MOBILE_LAYOUT_CSS_VAR_DEFAULTS = {
   "--mobile-control-edge": "0.75rem",
   /** Vertical offset of the lowest-stacked floating control from the viewport's bottom edge. */
   "--mobile-control-bottom": "calc(1.5rem + env(safe-area-inset-bottom))",
-  /** Width/height of a square floating icon control — also this package's own minimum touch target. */
+  /** Width/height of a square floating icon control; also this package's own minimum touch target. */
   "--mobile-control-size": "44px",
   /** Gap between floating controls stacked along the same edge. */
   "--mobile-control-gap": "0.625rem",

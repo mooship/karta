@@ -4,7 +4,7 @@ import { getTownshipGroup } from "../../constants/townships";
 
 /**
  * Region id this domain's Gauteng-only layers pull data from, typed against
- * `RegionId` (derived from `REGIONS`) rather than a bare string literal — if
+ * `RegionId` (derived from `REGIONS`) rather than a bare string literal; if
  * `REGIONS` is ever renamed, this fails typechecking instead of `dataUrl`
  * silently pointing at a directory `data-pipeline` no longer writes.
  */
@@ -14,7 +14,7 @@ const GAUTENG_REGION_ID: RegionId = "gauteng";
  * Every province-kind region id configured in `REGIONS`, in registry order.
  * @remarks Drives the `dataSource` of every layer whose data is published
  *   per-province (the township/area choropleths, `bus-rapid-transit`,
- *   `commuter-rail`) — sourced from `getProvinceRegionIds()`
+ *   `commuter-rail`); sourced from `getProvinceRegionIds()`
  *   (`../../constants/regions.ts`) rather than a hand-typed list, so a new
  *   `kind: "province"` region added to `REGIONS` (see
  *   `docs/adding-a-region.md`) flows into those layers automatically instead
@@ -24,7 +24,7 @@ const PROVINCE_REGION_IDS: readonly RegionId[] = getProvinceRegionIds();
 
 /**
  * Builds a single Gauteng-only `dataSource` URL.
- * @remarks Deliberately hardcoded to `GAUTENG_REGION_ID` — reserved for
+ * @remarks Deliberately hardcoded to `GAUTENG_REGION_ID`; reserved for
  *   layers with no Western Cape source configured (`rapid-rail`, `bus`).
  *   A layer whose data genuinely is published for every region must use
  *   `multiRegionDataUrls()` instead, as the three choropleth layers below
@@ -37,12 +37,12 @@ function dataUrl(fileName: string): string {
 /**
  * Builds one `dataSource` URL per given region for a transit layer whose
  * pipeline source is configured for more than one region (currently
- * `bus-rapid-transit` and `commuter-rail` — see
+ * `bus-rapid-transit` and `commuter-rail`; see
  * `data-pipeline/src/regions/gautengPipelineConfig.ts` and
  * `westernCapePipelineConfig.ts`). `MapView`'s `useLayerData` fetches every
  * URL in a layer's `dataSource` and merges the results, so listing more than
  * one region here is what makes a second region's transit features actually
- * appear on the map — see `docs/adding-a-region.md`.
+ * appear on the map; see `docs/adding-a-region.md`.
  */
 function multiRegionDataUrls(
   regionIds: readonly RegionId[],
@@ -108,7 +108,7 @@ const TOWNSHIP_DISPLAY_DATA_SOURCE = multiRegionDataUrls(
 /**
  * The `spatial-apartheid-legacy` domain's layer catalogue: three choropleth
  * layers (modelled car time, distance to nearest transit, and a combined
- * spatial-burden score weighting the two together — see
+ * spatial-burden score weighting the two together; see
  * `data-pipeline/src/spatialBurden.ts`) sharing the same township-area data,
  * and one line layer per transit network. `rapid-rail` and `commuter-rail`
  * set `hasPointGeometry: true` since real station/stop Point geometry only

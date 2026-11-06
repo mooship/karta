@@ -4,8 +4,8 @@ import { normalizeWayNodeTransitOverpass } from "./overpassNormalizers";
 
 // operator/network matching is a case-insensitive substring regex ("PRASA"/"Metrorail"),
 // not a fixed region name, so this same query matches PRASA/Metrorail tags in any region
-// (e.g. Gauteng's "Metrorail Gauteng" and the Western Cape's "Metrorail Western Cape")
-// — this is why fetchPrasaRail below is reused unmodified by both the Gauteng and
+// (e.g. Gauteng's "Metrorail Gauteng" and the Western Cape's "Metrorail Western Cape");
+// this is why fetchPrasaRail below is reused unmodified by both the Gauteng and
 // Western Cape pipeline configs rather than needing a per-region query.
 function prasaQuery(bbox: string): string {
   return `
@@ -33,7 +33,7 @@ export function normalizePrasaOverpass(
 
 /**
  * Fetches PRASA/Metrorail rail ways and station nodes within `bbox` via Overpass.
- * @remarks Region-agnostic (see `prasaQuery`'s comment) — reused as-is by both the
+ * @remarks Region-agnostic (see `prasaQuery`'s comment); reused as-is by both the
  *   Gauteng and Western Cape pipeline configs.
  */
 export async function fetchPrasaRail(bbox: string): Promise<OverpassResponse> {

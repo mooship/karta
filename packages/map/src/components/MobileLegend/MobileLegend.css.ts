@@ -36,18 +36,18 @@ export const container = style({
        * host's own bottom-sheet panel-toggle button is expected to use for
        * this identical kind of move, so the two controls climb/descend at
        * one shared speed rather than two hand-tuned durations drifting
-       * apart -- both fall back to the exact same defaults declared in
+       * apart; both fall back to the exact same defaults declared in
        * MOBILE_LAYOUT_CSS_VAR_DEFAULTS if a host defines neither.
        * `--motion-ease-large-surface` (falling back to M3's flatter
        * Standard curve, same as its host-side default) rather than an
-       * Emphasized curve -- this trigger climbs the same large distance as
+       * Emphasized curve; this trigger climbs the same large distance as
        * the host's own sheet, and Emphasized easing's front-loaded motion
        * reads as violent rather than smooth over a move this size (see a
        * host's own design-system docs, e.g. packages/web's Motion section,
        * for the full rationale). Matching curves, not just duration, is
        * what keeps this trigger's climb and the sheet's rise visually
        * arriving together rather than merely finishing at the same
-       * declared length -- a host's own equivalent trigger should use the
+       * declared length; a host's own equivalent trigger should use the
        * same curve as its sheet for the same reason. A host's
        * `data-panel-open` (or equivalent) should flip back to `false` the
        * moment its sheet *starts* closing, not once its exit animation has
@@ -63,7 +63,7 @@ export const container = style({
          * MeasurementControl.css.ts's `mobileSearchClearance`, the same
          * boundary that control's own toggle sits below) plus this
          * trigger's own height and `MeasurementControl`'s own idle toggle
-         * stacked beneath it -- on a "full" sheet there's so little
+         * stacked beneath it; on a "full" sheet there's so little
          * headroom left above it that an unclamped climb pushes the
          * trigger off the top of the screen entirely. `MeasurementControl`
          * collapses to its idle toggle whenever the host panel is open
@@ -123,7 +123,7 @@ export const sheet = style([
  * (`.sheet`'s default `bottom: calc(100% + 0.5rem)`), which is fine when
  * the trigger sits low, near the settings/basemap stack. Anchored from the
  * top instead while the host panel is open, opening upward would push it
- * off the top of the screen -- it opens downward, toward the map, instead.
+ * off the top of the screen; it opens downward, toward the map, instead.
  */
 globalStyle(`.${container}[data-panel-open="true"] .${sheet}`, {
   "@media": {

@@ -2,7 +2,7 @@ import type { Feature, FeatureCollection, Geometry, Position } from "geojson";
 import * as z from "zod/mini";
 
 /**
- * Whether `feature` is an "unlocated" GeoJSON feature — `geometry: null`, a
+ * Whether `feature` is an "unlocated" GeoJSON feature; `geometry: null`, a
  * shape RFC 7946 explicitly allows and {@link featureCollectionSchema}
  * validates as valid.
  * @remarks Shared by every caller that walks a `FeatureCollection`'s
@@ -22,7 +22,7 @@ export function isUnlocatedFeature(
  * numbers, with longitude and latitude (the first two elements) in RFC
  * 7946's valid range. A third element (elevation) is finite-checked like
  * any other coordinate but carries no range constraint, per the spec.
- * @remarks Hand-written rather than expressed as `z.array(z.number())` — see
+ * @remarks Hand-written rather than expressed as `z.array(z.number())`; see
  *   the note on {@link positionSchema} for why the coordinate interior of a
  *   geometry is validated by plain predicates instead of nested Zod schemas.
  *   `Number.isFinite` (rather than `typeof === "number"`) is what excludes
@@ -110,7 +110,7 @@ const lineStringCoordinatesSchema = z.custom<Position[]>(
  *   unlike `LineString`'s two-position minimum, so a single-point
  *   `MultiPoint` is valid GeoJSON and must parse. A minimum of 1 (rejecting
  *   an empty coordinates array) matches this file's existing convention of
- *   requiring a non-empty collection — see `isPolygonCoordinates`'s `>= 1`
+ *   requiring a non-empty collection; see `isPolygonCoordinates`'s `>= 1`
  *   ring check and `multiPolygonCoordinatesSchema`'s `>= 1` polygon check.
  */
 const multiPointCoordinatesSchema = z.custom<Position[]>(
@@ -174,8 +174,8 @@ export const multiPolygonGeometrySchema = z.looseObject({
  *   so every feature pays for up to 7 failed parses before (or instead of)
  *   a success. Discriminating on `type` lets Zod jump straight to the one
  *   matching branch, which matters at the same GeoJSON scale documented on
- *   {@link positionSchema}. `null` can't be a branch here — it has no `type`
- *   key to discriminate on — so it's handled as a separate outer branch by
+ *   {@link positionSchema}. `null` can't be a branch here (it has no `type`
+ *   key to discriminate on) so it's handled as a separate outer branch by
  *   {@link geometrySchema} instead.
  */
 const nonNullGeometrySchema: z.ZodMiniType<unknown> = z.discriminatedUnion(

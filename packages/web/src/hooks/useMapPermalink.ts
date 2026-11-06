@@ -32,11 +32,11 @@ export interface ParsedMapPermalink {
 /**
  * Parses a shared map link's query string into validated permalink fields.
  * @remarks Unknown layer ids, an unregistered basemap, or an unrecognised
- *   panel view are dropped rather than applied — a link can outlive a
+ *   panel view are dropped rather than applied; a link can outlive a
  *   domain's current layer catalogue or a since-removed basemap. A
  *   `selectedFeatureId` is returned as-is, unvalidated: unlike the other
  *   fields, there's no synchronously-known registry to check it against
- *   here — see `useMapPermalink`'s `knownFeatureIds` option, which applies
+ *   here; see `useMapPermalink`'s `knownFeatureIds` option, which applies
  *   the same "drop anything invalid" contract to it once the map's feature
  *   data has actually loaded.
  */
@@ -121,7 +121,7 @@ export function buildMapPermalinkSearch(
 export interface UseMapPermalinkOptions {
   /**
    * Whether the map's feature data has loaded. `selectedFeatureId` is only
-   * applied once this is `true` — the choropleth data driving feature
+   * applied once this is `true`; the choropleth data driving feature
    * lookups loads asynchronously after the map itself mounts, and Leaflet
    * has nothing to select until then.
    */
@@ -141,7 +141,7 @@ export interface UseMapPermalinkOptions {
  * from the page's URL on mount, then keeps the URL in sync with that state
  * afterwards, so the address bar always doubles as a shareable link to the
  * current view.
- * @remarks Uses `history.replaceState`, never `pushState` — every layer
+ * @remarks Uses `history.replaceState`, never `pushState`; every layer
  *   toggle or feature click would otherwise spam the back button with a new
  *   history entry.
  */
@@ -151,7 +151,7 @@ export function useMapPermalink({
 }: UseMapPermalinkOptions): void {
   /**
    * The registry's layer ids, in order. Memoized rather than recomputed in
-   * every effect below — the domain's layer catalogue is stable for the
+   * every effect below; the domain's layer catalogue is stable for the
    * app's whole lifetime. Uses the unlocalized `getLayerStructure()` rather
    * than `getLayers()`, since only `id` is needed here and running the
    * translation overlay just to discard its result would be wasted work.

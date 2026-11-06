@@ -72,14 +72,14 @@ const LAYER_GROUP_TEXT: Record<string, LayerGroupText> = {
 
 /**
  * Returns `layer` with its `label`/`description` translated to the current
- * locale, and — for a choropleth layer — each `style.buckets[].label`, or —
- * for a line/point layer — `style.legendLabel` mirroring the translated
+ * locale, and (for a choropleth layer) each `style.buckets[].label`, or
+ * (for a line/point layer) `style.legendLabel` mirroring the translated
  * `label` (the two are always identical in `@karta/app`'s English source).
  * `colorClassification`/`radiusClassification` stop labels are left
  * untouched: those are transit operators' actual brand names (e.g. "Rea
  * Vaya"), not descriptive copy, so they read the same in every locale.
  * @remarks Must be called fresh per request/render, never cached at module
- *   scope — see `localizeStory`'s remarks for why.
+ *   scope; see `localizeStory`'s remarks for why.
  */
 export function localizeLayer(layer: Layer): Layer {
   const text = LAYER_TEXT[layer.id];
@@ -129,7 +129,7 @@ export function localizeLayerGroup(group: LayerGroup): LayerGroup {
  * `undefined` if the domain has none.
  * @remarks Only one domain is published today, so this reads a single
  *   `domain_story_title`/`domain_story_body` message pair rather than a
- *   per-domain-id lookup like `LAYER_TEXT`/`LAYER_GROUP_TEXT` — extend this
+ *   per-domain-id lookup like `LAYER_TEXT`/`LAYER_GROUP_TEXT`; extend this
  *   to a lookup if a second domain ships. Must be called fresh per
  *   request/render: Cloudflare Workers reuse isolates across requests, so a
  *   value computed once at module scope would freeze in whichever locale

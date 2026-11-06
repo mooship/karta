@@ -13,7 +13,7 @@ describe("DomainStory", () => {
     expect(screen.getByText("Some context.")).toBeInTheDocument();
   });
 
-  it("doesn't render its own heading — the caller renders the story title", () => {
+  it("doesn't render its own heading, since the caller renders the story title", () => {
     render(
       <DomainStory
         story={{ title: "Why this map exists", body: "Some context." }}

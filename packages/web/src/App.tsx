@@ -77,7 +77,7 @@ type LatLngBoundsTuple = [[number, number], [number, number]];
 /**
  * Mainland South Africa's approximate extent. Used both to sanity-check
  * location search results (see `isWithinSearchCoverage`) and, passed
- * directly as `MapView`'s `bounds` prop, as the map's initial viewport — the
+ * directly as `MapView`'s `bounds` prop, as the map's initial viewport; the
  * mapped data itself only covers Gauteng and City of Cape Town (see
  * `@karta/app`'s `REGIONS`), but the basemap and search cover the whole
  * country, so the map opens framing all of it rather than just the mapped
@@ -92,7 +92,7 @@ const SEARCH_COVERAGE_BOUNDS: LatLngBoundsTuple = [
  * This app's own `LocationSearchControl` provider: Nominatim biased toward
  * South Africa, matching `SEARCH_COVERAGE_BOUNDS` above. `@karta/map`'s
  * default `nominatimGeocoderProvider` has no such bias, since a domain-
- * agnostic SDK component can't assume any host's coverage area — a search
+ * agnostic SDK component can't assume any host's coverage area; a search
  * for a common place name would otherwise rank same-named places elsewhere
  * in the world ahead of the South African one this app actually cares about.
  */
@@ -246,7 +246,7 @@ interface PanelViewContentProps {
 /**
  * Renders the info panel's active view: layer toggles, the domain's story
  * copy, or the selectable-feature browser.
- * @remarks Memoized like `LayerToggles`, its own child here -- `App`
+ * @remarks Memoized like `LayerToggles`, its own child here; `App`
  *   re-renders on every unrelated state change (e.g. the mobile bottom-sheet
  *   drag gesture's per-frame offset), and none of that should force this
  *   panel back through reconciliation.
@@ -306,20 +306,20 @@ const PanelViewContent = memo(function PanelViewContent({
  *   (tracked as `mapReady`) rather than starting at mount. Downloading,
  *   validating and handing Leaflet ~2,500 polygons is seconds of
  *   main-thread work on a mid-range phone, and none of it can be drawn
- *   before the map exists — started at mount it simply ran in front of the
+ *   before the map exists; started at mount it simply ran in front of the
  *   map's own first paint and delayed it by all of that. The retry path
  *   (`loadAttempt`) still works unchanged, since the map stays ready.
  *   The info panel shows layer toggles, plus a Story tab reading its
  *   copy from the domain's `story` (via `getStory()`) whenever the active
  *   domain defines one, plus a Browse tab listing every selectable feature
  *   (grouped by layer, via `FeatureBrowser`) whenever the active domain
- *   declares at least one `interaction.selectable` layer — a domain that
+ *   declares at least one `interaction.selectable` layer; a domain that
  *   omits `story` and defines no selectable layer gets no tab UI at all,
  *   matching today's single-view panel. `domain`/`panelViews`/`panelLabels`
  *   are computed inside the component body, not at module scope: their
  *   content is locale-dependent (`getLayers()`/`getLayerGroups()`/`getStory()`
  *   and the `m.panel_tab_*()` calls all read the current request's locale),
- *   and Cloudflare Workers reuse isolates across requests — a module-scope
+ *   and Cloudflare Workers reuse isolates across requests; a module-scope
  *   value would freeze in whichever locale first touched that isolate
  *   instead of reflecting each request's own. `domain` and `panelViews` are
  *   both wrapped in `useMemo` for referential stability across re-renders
@@ -331,7 +331,7 @@ const PanelViewContent = memo(function PanelViewContent({
  *   it entirely: `closePanel` plays an exit animation and `finishClose`
  *   (unmounting the panel from the a11y tree) fires from that animation's
  *   `animationend`, so the CSS duration in App.css.ts stays the single
- *   source of truth — except under `prefers-reduced-motion`/desktop, where
+ *   source of truth; except under `prefers-reduced-motion`/desktop, where
  *   no animation plays and `closePanel` calls `finishClose` immediately.
  *   `useMapModelContextTools` registers this app's layer/search/basemap/theme/
  *   story/measurement capabilities as WebMCP tools; `handleLocationSelect` is
@@ -351,17 +351,17 @@ const PanelViewContent = memo(function PanelViewContent({
  *   `!isDesktopViewport && panelOpen` is passed to `MapView` as
  *   `measurementPanelOpen`, and `closePanel` as `onMeasurementPanelClose`,
  *   so the measurement tool collapses to its idle toggle instead of
- *   competing with the mobile Explore sheet for the same sliver of screen
- *   -- tapping that toggle while the sheet is open closes the sheet (via
+ *   competing with the mobile Explore sheet for the same sliver of screen;
+ * tapping that toggle while the sheet is open closes the sheet (via
  *   the same `closePanel` used by Escape/outside-click) rather than
  *   disappearing outright, so there's always a visible way back to a
  *   measurement in progress. Gated to mobile because the desktop sidebar is
- *   open by default (see the hydration effect below) -- without that gate
+ *   open by default (see the hydration effect below); without that gate
  *   the measurement tool could never actually open on desktop, since its
  *   host panel is "open" from the moment the page loads.
  *   `MobileLegend`'s own `panelOpen` prop and the `.app` element's
  *   `data-panel-open` attribute are driven by the derived `panelVisuallyOpen`
- *   below, not raw `panelOpen` -- see that constant's own doc comment for why.
+ *   below, not raw `panelOpen`; see that constant's own doc comment for why.
  */
 export function App() {
   const [hydrated, setHydrated] = useState(false);
@@ -461,14 +461,14 @@ export function App() {
   );
   /**
    * Whether the active domain declares any `interaction.selectable` layer at
-   * all -- a structural fact about the domain's own layer catalogue, checked
+   * all; a structural fact about the domain's own layer catalogue, checked
    * the same way `MapView`'s own `selectableSearchEntries` does, not derived
    * from whether any such layer's data has actually loaded yet. Gating the
    * "Browse" tab on this (rather than on `selectableFeatures.length`, which
    * starts empty and only fills in once `MapView` reports data) keeps the
    * tab list itself deterministic from first render, matching how the
    * "Story" tab is gated on `domain.story` rather than on that copy having
-   * rendered -- the tab exists as soon as the domain says it should, and the
+   * rendered; the tab exists as soon as the domain says it should, and the
    * browser's own content (not the tab's presence) is what reflects data
    * still loading.
    */
@@ -479,7 +479,7 @@ export function App() {
   /**
    * Memoised (not just `story`/`hasSelectableLayers`-derived inline) so this
    * array keeps one identity across renders unless those inputs themselves
-   * change -- `handlePanelToggle`/`handleTabKeyDown` and the tab list render
+   * change; `handlePanelToggle`/`handleTabKeyDown` and the tab list render
    * both index into it directly, and a fresh array literal every render
    * would otherwise be reallocated for no reason on every unrelated render.
    */
@@ -530,20 +530,20 @@ export function App() {
   /**
    * Opens the desktop sidebar synchronously, in the same commit as
    * `hydrated` (which also starts `MapView`'s own lazy-load and Leaflet
-   * mount) -- deliberately, not deferred. An earlier version deferred this
+   * mount); deliberately, not deferred. An earlier version deferred this
    * (via `mapReady`, then via a couple of animation frames) specifically to
    * stop the panel's entrance animation from visibly competing with that
-   * mount for frames, but *any* deferral of `panelOpen` itself -- even a
-   * couple of frames -- turned out to be unsafe: under real load (a
+   * mount for frames, but *any* deferral of `panelOpen` itself (even a
+   * couple of frames) turned out to be unsafe: under real load (a
    * throttled CPU, contended CI) the gap between a test/user's `mousedown`
    * and the resulting `click` can outlast the deferral, so the auto-open
-   * could fire *in between* -- flipping `panelOpen` to `true` while that
+   * could fire *in between*; flipping `panelOpen` to `true` while that
    * click was still in flight, so by the time it landed, `handlePanelToggle`
    * saw an already-open panel and closed it instead. `panelOpen` itself
-   * (and everything downstream of it -- ARIA state, `useDismissableOverlay`'s
+   * (and everything downstream of it; ARIA state, `useDismissableOverlay`'s
    * Escape-stack position, what's clickable where on desktop) needs to be
    * deterministic, not racing a side effect. The entrance *animation* is
-   * still deferred, just not through `panelOpen` -- see the
+   * still deferred, just not through `panelOpen`; see the
    * `data-entrance-ready` attribute below, which starts every
    * `.panel`/`.panelViewport` animation paused at its first frame and only
    * resumes it once `mapReady`, so nothing is actively ticking (and so
@@ -590,7 +590,7 @@ export function App() {
 
       // A region failing to load here (e.g. its data hasn't been published
       // yet, see docs/adding-a-region.md) shouldn't blank out every other
-      // region's already-working data — only surface the retry banner once
+      // region's already-working data; only surface the retry banner once
       // every region's township data (the primary dataset the choropleth
       // and popups key off; `townshipAreas` is a companion display layer
       // with no useful properties of its own) failed to load.
@@ -641,8 +641,8 @@ export function App() {
   /**
    * `panelOpen` itself only flips to `false` once the mobile sheet's exit
    * animation has fully finished (see `finishClose`), so anything reactive
-   * to raw `panelOpen` -- the legend trigger's climb, the panel toggle's
-   * collapse to a small icon button -- stayed in its "open" position for the
+   * to raw `panelOpen` (the legend trigger's climb, the panel toggle's
+   * collapse to a small icon button) stayed in its "open" position for the
    * whole 280ms the sheet was already sliding away, then snapped back
    * down afterwards instead of moving with it. This flips the moment the
    * close animation *starts* instead, so those controls animate back in
@@ -653,7 +653,7 @@ export function App() {
    * Applies the live drag offset to the panel element imperatively, via
    * `setElementVars`' `style.setProperty()`, rather than through a React
    * `style` prop. A `style` prop would render as a literal `style="..."`
-   * attribute in the server-rendered HTML — parsed by the browser before
+   * attribute in the server-rendered HTML; parsed by the browser before
    * any script runs, which this app's strict `style-src` (no
    * `'unsafe-inline'`) refuses. A CSSOM mutation isn't subject to that
    * restriction, so setting it here, once mounted, keeps the panel
@@ -676,8 +676,8 @@ export function App() {
   /**
    * Renders a selected township's popup markup for `MapView`.
    * @remarks Memoised with no dependencies because nothing render-scoped is
-   *   captured here — `TownshipPopup` resolves its own translated copy when
-   *   the element it returns is actually rendered — so there's no reason to
+   *   captured here (`TownshipPopup` resolves its own translated copy when
+   *   the element it returns is actually rendered) so there's no reason to
    *   hand `MapView` a fresh closure every render. `MapView` itself no
    *   longer depends on this being stable for correctness (it reads the
    *   latest value through its own ref internally), but keeping it stable
@@ -730,7 +730,7 @@ export function App() {
 
   /**
    * Memoised (along with `closePanel` below) so `useDismissableOverlay`'s
-   * effect -- which lists `onClose` as a dependency -- only re-subscribes
+   * effect (which lists `onClose` as a dependency) only re-subscribes
    * its document-level listeners when what actually changed is relevant
    * (`isDesktopViewport`), not on every unrelated render. Left unmemoised,
    * this pair was recreated on every `App` render, including every
@@ -755,7 +755,7 @@ export function App() {
 
   /**
    * Closes the panel on Escape (from anywhere, matching `SettingsMenu`/
-   * `MobileLegend`'s own behaviour) or on an outside pointerdown -- but only
+   * `MobileLegend`'s own behaviour) or on an outside pointerdown; but only
    * on mobile, where the panel is a transient bottom sheet covering the map.
    * On desktop it's a persistent sidebar the user is expected to keep open
    * alongside ordinary map interaction, so a stray click on the map itself
@@ -781,15 +781,15 @@ export function App() {
   }
 
   /**
-   * Opening moves focus into the panel -- the active tab when tabs are
-   * shown, otherwise the single view's own container -- mirroring how
+   * Opening moves focus into the panel (the active tab when tabs are
+   * shown, otherwise the single view's own container) mirroring how
    * `finishClose` already returns focus to the trigger on the way out.
    * `hidden` comes off the `<aside>` in the same commit `setPanelOpen(true)`
    * causes, so by the next animation frame the target is focusable, the
    * same assumption `finishClose`'s own `requestAnimationFrame` call makes.
    *
    * `markSheetEntranceNotReady`/`markSheetEntranceReadyAfterPaint` reset and
-   * re-arm `data-sheet-entrance-ready` in that same commit -- see
+   * re-arm `data-sheet-entrance-ready` in that same commit; see
    * `useDeferredReadyAttribute`'s own doc comment (`@karta/react`) for why
    * the mobile sheet's own entrance fade (its CSS pauses on that attribute)
    * needs this rather than just starting immediately.

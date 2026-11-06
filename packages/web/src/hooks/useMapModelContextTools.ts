@@ -58,7 +58,7 @@ interface ResolvedMeasurementLocation {
  * `fetchLocationSearchResults`, taking the best match for each.
  * @returns Every resolved point, in the same order as `locations`, or the
  *   first (in `locations`' own order, not resolution order) query that had
- *   no match — `measure-distance`/`measure-area` stop there rather than
+ *   no match; `measure-distance`/`measure-area` stop there rather than
  *   silently measuring across whichever locations did resolve.
  * @remarks Firing the lookups concurrently, rather than one at a time,
  *   avoids paying each geocode's latency serially in the common case where
@@ -142,14 +142,14 @@ export interface UseMapModelContextToolsOptions {
    * returning a human-readable outcome for the calling agent.
    */
   onLocationSelect: (location: LocationSearchResult) => string;
-  /** The active domain's story copy, or `undefined` if it has none — gates whether a story-reading tool is registered at all. */
+  /** The active domain's story copy, or `undefined` if it has none; gates whether a story-reading tool is registered at all. */
   story: DomainStoryContent | undefined;
   /** Switches the info panel to the story view and opens it, so a sighted user watching the screen sees what the agent just read. */
   onShowStory: () => void;
   /**
    * Plots a measurement (a line for `"distance"`, a polygon for `"area"`)
    * through `points`, in order, on the map's own measuring tool, mirroring
-   * `MapView`'s `measurementRequest` prop — so a sighted user watching the
+   * `MapView`'s `measurementRequest` prop; so a sighted user watching the
    * screen sees what the agent just measured, the same way `onShowStory`
    * opens the Story panel for a read-map-story call.
    */
@@ -163,7 +163,7 @@ export interface UseMapModelContextToolsOptions {
  * Registers this app's capabilities as WebMCP tools via `document.modelContext`
  * (see `useModelContextTool`), so an in-browser AI agent can list and toggle
  * map layers, search for a place, switch the basemap or theme, read the
- * domain's story, and measure the distance or area across named locations —
+ * domain's story, and measure the distance or area across named locations;
  * without reverse-engineering the UI.
  * @remarks A no-op wherever WebMCP is unsupported; `useModelContextTool`
  *   handles that feature detection. Layer, basemap, and theme tools read and
@@ -201,9 +201,7 @@ export function useMapModelContextTools({
           const visibility = visibleLayerIds.includes(layer.id)
             ? m.webmcp_layer_state_visible()
             : m.webmcp_layer_state_hidden();
-          const description = layer.description
-            ? ` — ${layer.description}`
-            : "";
+          const description = layer.description ? `: ${layer.description}` : "";
           return `${layer.id}: ${layer.label}${description} (${visibility})`;
         });
       return textResult(

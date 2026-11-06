@@ -172,7 +172,7 @@ const sources: PipelineSource[] = [
 
 /**
  * The `gauteng` region's pipeline config: its nine metros, and one
- * `PipelineSource` per output layer — Gautrain rail (`rapid-rail`), PRASA
+ * `PipelineSource` per output layer; Gautrain rail (`rapid-rail`), PRASA
  * rail (`commuter-rail`), a combined `bus-rapid-transit` layer merging A Re
  * Yeng/Rea Vaya/Ekurhuleni IRPTN, and a combined `bus` layer merging
  * Gautrain Bus/Tshwane bus. Registered in `REGION_PIPELINE_CONFIGS`

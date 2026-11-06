@@ -84,7 +84,7 @@ export function normalizeEkurhuleniIrptn(
  * Requests a single Ekurhuleni IRPTN page, retrying with backoff (up to
  * `MAX_PAGE_FETCH_ATTEMPTS` attempts total) if the request itself fails
  * (e.g. a transient network error), rather than failing the whole paginated
- * fetch on one bad attempt. A non-`ok` HTTP response is not retried here —
+ * fetch on one bad attempt. A non-`ok` HTTP response is not retried here;
  * it's surfaced to the caller as-is, since it isn't necessarily transient.
  */
 async function fetchIrptnPage(

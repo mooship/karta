@@ -9,8 +9,8 @@ import { action } from "./log-error";
 /**
  * Builds a minimal request-like object for `action()`, rather than a real
  * `Request`: happy-dom's `Request`/`Headers` polyfill (this project's
- * default test environment) silently strips "forbidden" request headers —
- * `Origin` and `Content-Length` among them — the same way a real browser's
+ * default test environment) silently strips "forbidden" request headers
+ * (`Origin` and `Content-Length` among them) the same way a real browser's
  * own `fetch()` would for an *outgoing* request. That's the wrong
  * restriction here: this route reads headers off an *incoming* request as
  * a server receives them over the wire, where no such stripping happens.

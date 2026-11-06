@@ -133,7 +133,7 @@ function FeatureBrowserComponent({
  *   `useDomain()` (so it must be rendered inside a `DomainProvider`, same
  *   requirement as `Legend`/`MapView`) purely to resolve a `layerId` to that
  *   layer's `label` and to order groups the same way the registry orders its
- *   layers -- nothing here assumes townships, or any other concrete domain.
+ *   layers; nothing here assumes townships, or any other concrete domain.
  *   Clicking a row calls `onSelect` with that feature's id; the caller is
  *   expected to wire this to its own selected-feature state (e.g.
  *   `useMapUiStore`'s `setSelectedFeatureId` in the reference app), which
@@ -144,7 +144,7 @@ function FeatureBrowserComponent({
  *   raw id as its heading and sorts after every recognised group, rather
  *   than being dropped. The filter box matches case-insensitively against
  *   each entry's `label` via `matchesFeatureLabel`, the same predicate
- *   `LocationSearchControl` uses for its own feature search -- cheap even
+ *   `LocationSearchControl` uses for its own feature search; cheap even
  *   for a few thousand entries, and no debounce is needed since there's no
  *   network round trip. Its own copy (`filterLabel`, `filterPlaceholder`,
  *   `emptyMessage`) is an overridable prop defaulting to English, the same
@@ -158,6 +158,6 @@ function FeatureBrowserComponent({
  *   shares a parent that re-renders on unrelated UI state (e.g. a mobile
  *   drag-sheet's per-frame updates in the reference app); `styles.list`
  *   also gives each row's `<li>` `content-visibility: auto` for the same
- *   reason -- see `FeatureBrowser.css.ts`.
+ *   reason; see `FeatureBrowser.css.ts`.
  */
 export const FeatureBrowser = memo(FeatureBrowserComponent);

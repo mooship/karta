@@ -10,7 +10,7 @@ import {
 /**
  * Upgrades Paraglide's own cookie-based locale persistence (`setLocale()`,
  * called by `LanguageToggle`) to set `Secure` and `SameSite=Lax` on the
- * `PARAGLIDE_LOCALE` cookie — attributes the generated Paraglide runtime has
+ * `PARAGLIDE_LOCALE` cookie; attributes the generated Paraglide runtime has
  * no compiler option to configure (`@inlang/paraglide-js`'s
  * `CompilerOptions` exposes `cookieName`/`cookieMaxAge`/`cookieDomain`, but
  * nothing for the cookie's security attributes), since it writes the cookie
@@ -19,7 +19,7 @@ import {
  * extension point rather than hand-editing the generated
  * `src/paraglide/runtime.js`, which the next `messages:compile` run would
  * silently regenerate without this fix.
- * @remarks Must run once, before any `setLocale()` call — call it at
+ * @remarks Must run once, before any `setLocale()` call; call it at
  *   bootstrap, mirroring `initTheme()` in `entry.client.tsx`. Snapshots the
  *   pre-overwrite `setLocale` into a local variable first: `setLocale` is a
  *   live module binding, so reading it again *after* `overwriteSetLocale`

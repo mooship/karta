@@ -9,7 +9,7 @@ import {
 // Source: City of Tshwane Open Data / e-GIS ArcGIS Server, "Other_WS/BRT_A_Re_Yeng"
 // MapServer. Verified reachable and returning real route geometry via GeoJSON export
 // on 2026-07-28. Fetches all three service tiers so the layer isn't limited to trunk
-// corridors alone — many township areas are only reachable via feeder routes, and
+// corridors alone; many township areas are only reachable via feeder routes, and
 // showing trunk-only risked making those areas look unserved by transit when they
 // are not:
 //   - layer 8: trunk routes (3 features verified: Line 1A, Line 2A, Line 2B)

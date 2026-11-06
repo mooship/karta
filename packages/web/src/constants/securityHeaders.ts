@@ -6,7 +6,7 @@
  *   and by `workers/app.ts`'s 500 fallback (a plain-text body with nothing
  *   inline to allow).
  * @remarks The `sha256-` source keeps allowing `root.tsx`'s inlined
- *   `THEME_BOOTSTRAP_SCRIPT` — a genuinely static script authored directly
+ *   `THEME_BOOTSTRAP_SCRIPT`; a genuinely static script authored directly
  *   in JSX, not one React injects itself, so a hash (not a nonce) is the
  *   right fit for it. A nonce, once supplied, additionally covers the
  *   streaming/hydration `<script>` tags React itself injects during SSR,
@@ -17,7 +17,7 @@
  *   sides agree. `script-src` deliberately omits `https://ajax.cloudflare.com`
  *   (Rocket Loader): nothing in this app requests or documents that Speed
  *   feature, and it isn't a Workers Static Assets/SSR concept this codebase
- *   controls — if a zone-level Cloudflare setting enables Rocket Loader for
+ *   controls; if a zone-level Cloudflare setting enables Rocket Loader for
  *   this domain, it needs its own allowlist entry back, added deliberately
  *   alongside enabling that setting, not carried here as a standing default.
  *   `frame-src 'none'` is explicit rather than left to fall back through
@@ -70,14 +70,14 @@ export function generateNonce(): string {
  * @remarks The single source of truth for this app's security headers.
  *   `public/_headers`' `/*` block carries the exact same header/value pairs
  *   for Cloudflare's Workers Static Assets responses (its own `_headers`
- *   convention — a plain static file, not generated from this module) —
+ *   convention (a plain static file, not generated from this module))
  *   `securityHeaders.test.ts` parses that file and asserts it stays in sync
  *   with this constant. `workers/app.ts` applies this constant directly to
  *   its own SSR-rendered responses, which `_headers` does not reach: the
  *   `_headers` convention only covers responses served straight from the
  *   Workers Static Assets binding, not ones this Worker's own `fetch`
  *   handler dynamically renders. Its `Content-Security-Policy` entry is the
- *   nonce-free default from {@link buildContentSecurityPolicy} — the
+ *   nonce-free default from {@link buildContentSecurityPolicy}; the
  *   per-request, nonce-bearing policy `entry.server.tsx` sets on a
  *   successful SSR response takes precedence over this one, which only
  *   ends up applied to responses with no CSP of their own (see

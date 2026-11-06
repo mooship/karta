@@ -110,7 +110,7 @@ export async function rebuildTransitDisplay(
  * pipeline, per {@link REGION_PIPELINE_CONFIGS}.
  * @remarks Loops `config.metros` per region rather than the flat, global
  *   `METROS` list, so a metro registered for a region this helper hasn't
- *   been pointed at yet doesn't get processed here regardless — the same
+ *   been pointed at yet doesn't get processed here regardless; the same
  *   region-scoping `runRegion` (`src/run.ts`) already applies via
  *   `assertMetroSetup`.
  */

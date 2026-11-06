@@ -185,7 +185,7 @@ export async function fetchReverseGeocodeResult(
  * A pluggable place-search / reverse-geocoding backend.
  * @remarks Whichever provider a host app wires up issues `fetch` requests
  *   from the browser, so its origin must be allowlisted in that app's own
- *   Content-Security-Policy `connect-src` directive — the SDK has no
+ *   Content-Security-Policy `connect-src` directive; the SDK has no
  *   runtime hook into a host's CSP, so this is a deploy-config step the
  *   host is responsible for. `nominatimGeocoderProvider` requires
  *   `https://nominatim.openstreetmap.org`.
@@ -204,7 +204,7 @@ export interface GeocoderProvider {
  * @param searchOptions - Applied to every `search` call (not `reverse`,
  *   which is already coordinate-scoped and has no use for a country bias).
  * @remarks Requires `https://nominatim.openstreetmap.org` in the host app's
- *   CSP `connect-src` — see `GeocoderProvider`. Use this instead of the
+ *   CSP `connect-src`; see `GeocoderProvider`. Use this instead of the
  *   `nominatimGeocoderProvider` default when a host app's own coverage is
  *   narrower than "the whole world," e.g. `createNominatimGeocoderProvider({
  *   countryCodes: "za" })` for a South Africa-only app.
@@ -224,7 +224,7 @@ export function createNominatimGeocoderProvider(
  * geographic bias. Use `createNominatimGeocoderProvider` instead to bias
  * search results toward a host app's own coverage area.
  * @remarks Requires `https://nominatim.openstreetmap.org` in the host app's
- *   CSP `connect-src` — see `GeocoderProvider`.
+ *   CSP `connect-src`; see `GeocoderProvider`.
  */
 export const nominatimGeocoderProvider: GeocoderProvider =
   createNominatimGeocoderProvider();

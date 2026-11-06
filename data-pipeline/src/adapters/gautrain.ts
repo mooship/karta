@@ -73,7 +73,7 @@ export interface OverpassResponse {
 
 /**
  * Normalizes a Gautrain Overpass query's rail ways and station nodes into
- * `LineString`/`Point` features (relation elements are skipped — Gautrain
+ * `LineString`/`Point` features (relation elements are skipped; Gautrain
  * rail has no route relations, only tagged ways/nodes).
  */
 export function normalizeGautrainOverpass(

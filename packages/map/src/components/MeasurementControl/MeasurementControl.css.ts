@@ -15,13 +15,13 @@ import {
  * just below the toggle almost to the viewport's bottom edge); top-left
  * holds the search box; bottom-left stacks the basemap/theme settings and
  * the legend; bottom-right holds Leaflet's own zoom control. The one
- * reliably free strip is directly beneath the search box on the left --
+ * reliably free strip is directly beneath the search box on the left;
  * settings/legend sit much further down, so this control stacks there
  * instead of contesting a corner. 9rem clears the search box's whole
  * rendered footprint, not just its own content box: measured at ~128px
  * from the viewport edge (its `top` offset plus its wrapper's
  * padding/border plus the app-name label and search field it now stacks),
- * with a comfortable double-digit-pixel gap left beneath it -- the previous
+ * with a comfortable double-digit-pixel gap left beneath it; the previous
  * 7.5rem was measured before the app-name label was added above the
  * search field and had come to overlap it by a few pixels.
  */
@@ -36,7 +36,7 @@ export const root = style({
      * `@karta/map`'s own documented mobile layout contract (see
      * MOBILE_LAYOUT_CSS_VAR_DEFAULTS, ../../constants/mobileLayoutTokens.ts,
      * for the full set and their defaults, used via mapTokens.ts's typed
-     * helper below) -- a host app defines these to tell every mobile
+     * helper below); a host app defines these to tell every mobile
      * floating control where its own search box and safe-area insets
      * actually are, rather than each control needing its own bespoke prop
      * for the same handful of app-composition values.
