@@ -1,7 +1,7 @@
 /** The `<meta name="theme-color">` value for each theme, passed to `@karta/react`'s `initTheme`. */
 export const THEME_COLOR = {
-  light: "#f5f1e6",
-  dark: "#15110b",
+  light: "#f6f2e9",
+  dark: "#16130f",
 } as const;
 
 /**

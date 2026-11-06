@@ -1,102 +1,83 @@
 :root {
-  --font-display: "Inter Variable", sans-serif;
+  --font-display: "Source Serif 4 Variable", Georgia, serif;
   /*
    * `--font-body` here through `--focus-ring-width` further below (typography,
    * spacing, control sizing, drag handles) fill `@karta/map`'s own documented
-   * design-token contract -- see `DESIGN_TOKEN_CSS_VAR_DEFAULTS`,
-   * packages/map/src/constants/designTokenDefaults.ts. Unlike the M3
-   * colour/shape/elevation tokens below (an unconditional dependency with no
-   * sensible generic fallback), that contract's own defaults exist
-   * specifically so a host that hasn't adopted this app's exact type/spacing
-   * scale still gets a working (if generic) `@karta/map` UI. This app's own
-   * values happen to equal those defaults (they're what the defaults were
-   * drawn from), declared explicitly for the same reason
-   * `MOBILE_LAYOUT_CSS_VAR_DEFAULTS`' values are in App.module.css.
-   * `--font-display` just above is *not* part of that shared contract -- no
-   * `@karta/map` component reads it.
+   * design-token contract (see `DESIGN_TOKEN_CSS_VAR_DEFAULTS` in
+   * packages/map/src/constants/designTokenDefaults.ts). The colour, shape
+   * and elevation tokens below have no fallback; this contract does, so a
+   * host without this app's type and spacing scale still gets a working
+   * `@karta/map` UI. This app's values match those defaults and are
+   * declared anyway, so the two can't drift apart unnoticed.
+   * `--font-display` is not part of that contract; no `@karta/map`
+   * component reads it.
    */
-  --font-body: "Inter Variable", sans-serif;
-  --font-mono: "Martian Mono Variable", monospace;
+  --font-body: "Public Sans Variable", system-ui, sans-serif;
+  --font-mono:
+    ui-monospace, "Cascadia Mono", "SFMono-Regular", Menlo, Consolas, monospace;
 
-  /* GENERATED M3 LIGHT TOKENS — see scripts/generateM3Theme.ts */
-  --md-sys-color-primary: #00696d;
+  /* LIGHT COLOUR TOKENS: paper, ink and an ochre accent. Hand-picked and
+   * checked for WCAG AA contrast; see docs/design-system.md. */
+  --md-sys-color-primary: #8c520f;
   --md-sys-color-on-primary: #ffffff;
-  --md-sys-color-primary-container: #9cf0f5;
-  --md-sys-color-on-primary-container: #004f52;
-  --md-sys-color-secondary: #4a6364;
+  --md-sys-color-primary-container: #f1dfc0;
+  --md-sys-color-on-primary-container: #3d2405;
+  --md-sys-color-secondary: #4f4a42;
   --md-sys-color-on-secondary: #ffffff;
-  --md-sys-color-secondary-container: #cce8e9;
-  --md-sys-color-on-secondary-container: #324b4c;
-  --md-sys-color-tertiary: #4e5f7d;
+  --md-sys-color-secondary-container: #e8e1d3;
+  --md-sys-color-on-secondary-container: #2a2620;
+  --md-sys-color-tertiary: #2f5d7c;
   --md-sys-color-on-tertiary: #ffffff;
-  --md-sys-color-tertiary-container: #d5e3ff;
-  --md-sys-color-on-tertiary-container: #364764;
-  --md-sys-color-error: #ba1a1a;
+  --md-sys-color-tertiary-container: #d3e2ec;
+  --md-sys-color-on-tertiary-container: #102a3b;
+  --md-sys-color-error: #a3261b;
   --md-sys-color-on-error: #ffffff;
-  --md-sys-color-error-container: #ffdad6;
-  --md-sys-color-on-error-container: #93000a;
-  --md-sys-color-background: #f4fbfa;
-  --md-sys-color-on-background: #161d1d;
-  --md-sys-color-surface: #f4fbfa;
-  --md-sys-color-on-surface: #161d1d;
-  --md-sys-color-surface-variant: #dae4e5;
-  --md-sys-color-on-surface-variant: #3f4949;
-  --md-sys-color-outline: #6f7979;
-  --md-sys-color-outline-variant: #bec8c9;
+  --md-sys-color-error-container: #f8dad4;
+  --md-sys-color-on-error-container: #5c0e07;
+  --md-sys-color-background: #f6f2e9;
+  --md-sys-color-on-background: #1f1b16;
+  --md-sys-color-surface: #f6f2e9;
+  --md-sys-color-on-surface: #1f1b16;
+  --md-sys-color-surface-variant: #e9e3d6;
+  --md-sys-color-on-surface-variant: #4f4a42;
+  --md-sys-color-outline: #7f766a;
+  --md-sys-color-outline-variant: #cfc6b6;
   --md-sys-color-surface-container-lowest: #ffffff;
-  --md-sys-color-surface-container-low: #eff5f5;
-  --md-sys-color-surface-container: #e9efef;
-  --md-sys-color-surface-container-high: #e3e9e9;
-  --md-sys-color-surface-container-highest: #dde4e4;
-  --md-sys-color-surface-dim: #d5dbdb;
-  --md-sys-color-surface-bright: #f4fbfa;
-  --md-sys-color-inverse-surface: #2b3232;
-  --md-sys-color-inverse-on-surface: #ecf2f2;
-  --md-sys-color-inverse-primary: #80d4d9;
+  --md-sys-color-surface-container-low: #fffcf5;
+  --md-sys-color-surface-container: #fbf7ef;
+  --md-sys-color-surface-container-high: #f4efe5;
+  --md-sys-color-surface-container-highest: #eee8dc;
+  --md-sys-color-surface-dim: #e4ded2;
+  --md-sys-color-surface-bright: #fffcf5;
+  --md-sys-color-inverse-surface: #33302a;
+  --md-sys-color-inverse-on-surface: #f6f2e9;
+  --md-sys-color-inverse-primary: #e3a85a;
   --md-sys-color-scrim: #000000;
   --md-sys-color-shadow: #000000;
-  --md-sys-color-surface-tint: #00696d;
-  /* END GENERATED M3 LIGHT TOKENS */
+  --md-sys-color-surface-tint: #8c520f;
+  /* END LIGHT COLOUR TOKENS */
 
-  /* M3 baseline shape scale. */
+  /* Square, print-like corners: 2px on controls, 4px on panels. Only
+   * chips and round markers use the full radius. */
   --md-sys-shape-corner-none: 0px;
-  --md-sys-shape-corner-extra-small: 4px;
-  --md-sys-shape-corner-small: 8px;
-  --md-sys-shape-corner-medium: 12px;
-  --md-sys-shape-corner-large: 16px;
-  --md-sys-shape-corner-extra-large: 28px;
+  --md-sys-shape-corner-extra-small: 2px;
+  --md-sys-shape-corner-small: 2px;
+  --md-sys-shape-corner-medium: 4px;
+  --md-sys-shape-corner-large: 4px;
+  --md-sys-shape-corner-extra-large: 4px;
   --md-sys-shape-corner-full: 9999px;
 
-  /* Elevation levels 1-3 as static box-shadow values, for Leaflet's own
-   * popup/control markup (which this app styles globally rather than
-   * replacing). The two-shadow, 30%/15% opacity split mirrors Material
-   * 3's own elevation formula (a key shadow plus a softer ambient one)
-   * rather than an invented approximation; the two tint tokens below
-   * factor out the repeated color-mix() calls all three tiers share. */
-  --md-sys-elevation-tint-key: color-mix(
-    in srgb,
-    var(--md-sys-color-shadow) 30%,
-    transparent
-  );
-  --md-sys-elevation-tint-ambient: color-mix(
-    in srgb,
-    var(--md-sys-color-shadow) 15%,
-    transparent
-  );
-  --md-sys-elevation-shadow-1:
-    0px 1px 2px 0px var(--md-sys-elevation-tint-key),
-    0px 1px 3px 1px var(--md-sys-elevation-tint-ambient);
-  --md-sys-elevation-shadow-2:
-    0px 1px 2px 0px var(--md-sys-elevation-tint-key),
-    0px 2px 6px 2px var(--md-sys-elevation-tint-ambient);
+  /* Panels sit on a 1px hairline rule rather than a drop shadow, like the
+   * margin of a printed sheet. Level 3 adds a faint shadow for menus that
+   * float over the map. */
+  --md-sys-elevation-shadow-1: 0 0 0 1px var(--md-sys-color-outline-variant);
+  --md-sys-elevation-shadow-2: 0 0 0 1px var(--md-sys-color-outline-variant);
   --md-sys-elevation-shadow-3:
-    0px 1px 3px 0px var(--md-sys-elevation-tint-key),
-    0px 4px 8px 3px var(--md-sys-elevation-tint-ambient);
+    0 0 0 1px var(--md-sys-color-outline-variant),
+    0 2px 6px 0 color-mix(in srgb, var(--md-sys-color-shadow) 12%, transparent);
 
-  /* State layers: a flat opacity overlay tinting whatever surface it's
-   * applied to, using the same hover/pressed/selected opacities Material 3
-   * ripples use internally, for chrome that isn't a real md-* component
-   * (which handles its own state layer). */
+  /* State layers: a flat tint over whatever surface they sit on, for
+   * hover, pressed and selected states. */
   --state-hover: color-mix(
     in srgb,
     var(--md-sys-color-on-surface) 8%,
@@ -125,9 +106,8 @@
     var(--md-sys-color-on-surface) 8%
   );
 
-  /* App-specific composite tokens layered on the M3 roles above — not
-   * part of the M3 spec itself, but built from it rather than from raw
-   * hex values, so they stay theme-adaptive automatically. */
+  /* App-specific tokens built from the colour roles above rather than raw
+   * hex, so they follow the theme. */
   --color-map-label-surface: color-mix(
     in srgb,
     var(--md-sys-color-surface-container-low) 92%,
@@ -162,15 +142,12 @@
   --space-3: 0.75rem;
   --space-4: 1rem;
 
-  /* Compact UI-chrome type scale. This app has no long-form reading
-   * typography, only dense map controls/labels, so it stays a small
-   * app-specific scale rather than the full M3 typescale (display/
-   * headline/title roles sized for hero text this app never shows). */
-  --font-size-xs: 0.625rem;
-  --font-size-sm: 0.6875rem;
-  --font-size-md: 0.75rem;
-  --font-size-base: 0.8125rem;
-  --font-size-lg: 1.05rem;
+  /* Compact type scale for map chrome. Nothing goes below 12px. */
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.75rem;
+  --font-size-md: 0.8125rem;
+  --font-size-base: 0.875rem;
+  --font-size-lg: 1.125rem;
 
   --control-height: 44px;
   --control-height-compact: 40px;
@@ -184,27 +161,21 @@
   --motion-duration-short: 150ms;
   --motion-duration-medium: 180ms;
 
-  /* M3 easing curves (developer.android.com/develop/ui/views/animations/motion).
-   * standard suits hover/press feedback that can repeat rapidly; decelerate/
-   * accelerate use M3's Emphasized set for one-shot entrances/exits over a
-   * short distance; spring is a small-overshoot curve for isolated
-   * punctuation. See docs/design-system.md's "Motion" section for the full
-   * rationale and usage rules for each. */
+  /* Easing curves. standard is for hover and press feedback that can repeat
+   * quickly; decelerate and accelerate are for one-shot entrances and exits
+   * over a short distance; spring is a small overshoot for rare emphasis.
+   * See the "Motion" section of docs/design-system.md. */
   --motion-ease-standard: cubic-bezier(0.2, 0, 0, 1);
   --motion-ease-decelerate: cubic-bezier(0.05, 0.7, 0.1, 1);
   --motion-ease-accelerate: cubic-bezier(0.3, 0, 0.8, 0.15);
   --motion-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-  /* Named alias, not a distinct curve -- an Emphasized curve's front-loaded
-   * motion reads as violent over a long travel (see the Motion section), so
-   * anything moving a large surface a long distance in one motion (the
-   * mobile Explore sheet's own full-height close slide -- its open entrance
-   * is instead a short in-place fade, at Emphasized-decelerate -- and the
-   * triggers that climb in lockstep with that close slide) reaches for this
-   * name instead of reasoning about `--motion-ease-standard` fresh at each
-   * call site. */
+  /* An alias, not a new curve. The front-loaded decelerate curve looks
+   * violent over a long travel, so anything that moves a large surface a
+   * long way (the mobile Explore sheet's full-height close slide, and the
+   * triggers that move with it) uses this name. */
   --motion-ease-large-surface: var(--motion-ease-standard);
 
-  /* Focus ring magnitude only — colour stays contextual (a component on a
+  /* Focus ring width only. Colour stays contextual (a component on a
    * light surface needs a dark ring and vice versa) and offset stays
    * contextual (inset vs. outset varies with the control's geometry). */
   --focus-ring-width: 2px;
@@ -214,90 +185,90 @@
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    /* GENERATED M3 DARK TOKENS — see scripts/generateM3Theme.ts */
-    --md-sys-color-primary: #80d4d9;
-    --md-sys-color-on-primary: #003739;
-    --md-sys-color-primary-container: #004f52;
-    --md-sys-color-on-primary-container: #9cf0f5;
-    --md-sys-color-secondary: #b1cccd;
-    --md-sys-color-on-secondary: #1b3436;
-    --md-sys-color-secondary-container: #324b4c;
-    --md-sys-color-on-secondary-container: #cce8e9;
-    --md-sys-color-tertiary: #b5c7e9;
-    --md-sys-color-on-tertiary: #1f314c;
-    --md-sys-color-tertiary-container: #364764;
-    --md-sys-color-on-tertiary-container: #d5e3ff;
-    --md-sys-color-error: #ffb4ab;
-    --md-sys-color-on-error: #690005;
-    --md-sys-color-error-container: #93000a;
-    --md-sys-color-on-error-container: #ffdad6;
-    --md-sys-color-background: #0e1415;
-    --md-sys-color-on-background: #dde4e4;
-    --md-sys-color-surface: #0e1415;
-    --md-sys-color-on-surface: #dde4e4;
-    --md-sys-color-surface-variant: #3f4949;
-    --md-sys-color-on-surface-variant: #bec8c9;
-    --md-sys-color-outline: #899393;
-    --md-sys-color-outline-variant: #3f4949;
-    --md-sys-color-surface-container-lowest: #090f10;
-    --md-sys-color-surface-container-low: #161d1d;
-    --md-sys-color-surface-container: #1a2121;
-    --md-sys-color-surface-container-high: #252b2b;
-    --md-sys-color-surface-container-highest: #303636;
-    --md-sys-color-surface-dim: #0e1415;
-    --md-sys-color-surface-bright: #343a3b;
-    --md-sys-color-inverse-surface: #dde4e4;
-    --md-sys-color-inverse-on-surface: #2b3232;
-    --md-sys-color-inverse-primary: #00696d;
+    /* DARK COLOUR TOKENS: keep both dark blocks in step. */
+    --md-sys-color-primary: #e3a85a;
+    --md-sys-color-on-primary: #2e1a03;
+    --md-sys-color-primary-container: #5a3608;
+    --md-sys-color-on-primary-container: #f6ddb8;
+    --md-sys-color-secondary: #bdb4a6;
+    --md-sys-color-on-secondary: #2a2620;
+    --md-sys-color-secondary-container: #3b362f;
+    --md-sys-color-on-secondary-container: #e8e1d3;
+    --md-sys-color-tertiary: #9cc3de;
+    --md-sys-color-on-tertiary: #0f2a3b;
+    --md-sys-color-tertiary-container: #23465e;
+    --md-sys-color-on-tertiary-container: #d3e2ec;
+    --md-sys-color-error: #ff9c8f;
+    --md-sys-color-on-error: #4a0a04;
+    --md-sys-color-error-container: #7a1d14;
+    --md-sys-color-on-error-container: #f8dad4;
+    --md-sys-color-background: #16130f;
+    --md-sys-color-on-background: #ede6da;
+    --md-sys-color-surface: #16130f;
+    --md-sys-color-on-surface: #ede6da;
+    --md-sys-color-surface-variant: #3b362f;
+    --md-sys-color-on-surface-variant: #bdb4a6;
+    --md-sys-color-outline: #8e8579;
+    --md-sys-color-outline-variant: #48423a;
+    --md-sys-color-surface-container-lowest: #110e0b;
+    --md-sys-color-surface-container-low: #1b1712;
+    --md-sys-color-surface-container: #211c16;
+    --md-sys-color-surface-container-high: #2a241d;
+    --md-sys-color-surface-container-highest: #342d25;
+    --md-sys-color-surface-dim: #16130f;
+    --md-sys-color-surface-bright: #3a332a;
+    --md-sys-color-inverse-surface: #ede6da;
+    --md-sys-color-inverse-on-surface: #33302a;
+    --md-sys-color-inverse-primary: #8c520f;
     --md-sys-color-scrim: #000000;
     --md-sys-color-shadow: #000000;
-    --md-sys-color-surface-tint: #80d4d9;
-    /* END GENERATED M3 DARK TOKENS */
+    --md-sys-color-surface-tint: #e3a85a;
+    /* END DARK COLOUR TOKENS */
 
     color-scheme: dark;
   }
 }
 
 :root[data-theme="dark"] {
-  /* GENERATED M3 DARK TOKENS — see scripts/generateM3Theme.ts */
-  --md-sys-color-primary: #80d4d9;
-  --md-sys-color-on-primary: #003739;
-  --md-sys-color-primary-container: #004f52;
-  --md-sys-color-on-primary-container: #9cf0f5;
-  --md-sys-color-secondary: #b1cccd;
-  --md-sys-color-on-secondary: #1b3436;
-  --md-sys-color-secondary-container: #324b4c;
-  --md-sys-color-on-secondary-container: #cce8e9;
-  --md-sys-color-tertiary: #b5c7e9;
-  --md-sys-color-on-tertiary: #1f314c;
-  --md-sys-color-tertiary-container: #364764;
-  --md-sys-color-on-tertiary-container: #d5e3ff;
-  --md-sys-color-error: #ffb4ab;
-  --md-sys-color-on-error: #690005;
-  --md-sys-color-error-container: #93000a;
-  --md-sys-color-on-error-container: #ffdad6;
-  --md-sys-color-background: #0e1415;
-  --md-sys-color-on-background: #dde4e4;
-  --md-sys-color-surface: #0e1415;
-  --md-sys-color-on-surface: #dde4e4;
-  --md-sys-color-surface-variant: #3f4949;
-  --md-sys-color-on-surface-variant: #bec8c9;
-  --md-sys-color-outline: #899393;
-  --md-sys-color-outline-variant: #3f4949;
-  --md-sys-color-surface-container-lowest: #090f10;
-  --md-sys-color-surface-container-low: #161d1d;
-  --md-sys-color-surface-container: #1a2121;
-  --md-sys-color-surface-container-high: #252b2b;
-  --md-sys-color-surface-container-highest: #303636;
-  --md-sys-color-surface-dim: #0e1415;
-  --md-sys-color-surface-bright: #343a3b;
-  --md-sys-color-inverse-surface: #dde4e4;
-  --md-sys-color-inverse-on-surface: #2b3232;
-  --md-sys-color-inverse-primary: #00696d;
+  /* DARK COLOUR TOKENS: keep both dark blocks in step. */
+  --md-sys-color-primary: #e3a85a;
+  --md-sys-color-on-primary: #2e1a03;
+  --md-sys-color-primary-container: #5a3608;
+  --md-sys-color-on-primary-container: #f6ddb8;
+  --md-sys-color-secondary: #bdb4a6;
+  --md-sys-color-on-secondary: #2a2620;
+  --md-sys-color-secondary-container: #3b362f;
+  --md-sys-color-on-secondary-container: #e8e1d3;
+  --md-sys-color-tertiary: #9cc3de;
+  --md-sys-color-on-tertiary: #0f2a3b;
+  --md-sys-color-tertiary-container: #23465e;
+  --md-sys-color-on-tertiary-container: #d3e2ec;
+  --md-sys-color-error: #ff9c8f;
+  --md-sys-color-on-error: #4a0a04;
+  --md-sys-color-error-container: #7a1d14;
+  --md-sys-color-on-error-container: #f8dad4;
+  --md-sys-color-background: #16130f;
+  --md-sys-color-on-background: #ede6da;
+  --md-sys-color-surface: #16130f;
+  --md-sys-color-on-surface: #ede6da;
+  --md-sys-color-surface-variant: #3b362f;
+  --md-sys-color-on-surface-variant: #bdb4a6;
+  --md-sys-color-outline: #8e8579;
+  --md-sys-color-outline-variant: #48423a;
+  --md-sys-color-surface-container-lowest: #110e0b;
+  --md-sys-color-surface-container-low: #1b1712;
+  --md-sys-color-surface-container: #211c16;
+  --md-sys-color-surface-container-high: #2a241d;
+  --md-sys-color-surface-container-highest: #342d25;
+  --md-sys-color-surface-dim: #16130f;
+  --md-sys-color-surface-bright: #3a332a;
+  --md-sys-color-inverse-surface: #ede6da;
+  --md-sys-color-inverse-on-surface: #33302a;
+  --md-sys-color-inverse-primary: #8c520f;
   --md-sys-color-scrim: #000000;
   --md-sys-color-shadow: #000000;
-  --md-sys-color-surface-tint: #80d4d9;
-  /* END GENERATED M3 DARK TOKENS */
+  --md-sys-color-surface-tint: #e3a85a;
+  /* END DARK COLOUR TOKENS */
 
   color-scheme: dark;
 }
@@ -449,11 +420,11 @@ body {
   *,
   *::before,
   *::after {
-    /* biome-ignore lint/complexity/noImportantStyles: accessibility requirement — must override any other rule's animation/transition duration, regardless of specificity, for users who need reduced motion */
+    /* biome-ignore lint/complexity/noImportantStyles: accessibility requirement; must override any other rule's animation/transition duration, regardless of specificity, for users who need reduced motion */
     animation-duration: 0.01ms !important;
-    /* biome-ignore lint/complexity/noImportantStyles: accessibility requirement — must override any other rule's animation/transition duration, regardless of specificity, for users who need reduced motion */
+    /* biome-ignore lint/complexity/noImportantStyles: accessibility requirement; must override any other rule's animation/transition duration, regardless of specificity, for users who need reduced motion */
     animation-iteration-count: 1 !important;
-    /* biome-ignore lint/complexity/noImportantStyles: accessibility requirement — must override any other rule's animation/transition duration, regardless of specificity, for users who need reduced motion */
+    /* biome-ignore lint/complexity/noImportantStyles: accessibility requirement; must override any other rule's animation/transition duration, regardless of specificity, for users who need reduced motion */
     transition-duration: 0.01ms !important;
   }
 }

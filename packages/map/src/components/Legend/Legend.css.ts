@@ -30,11 +30,9 @@ export const fullWidthGroup = style({
 export const groupTitle = style({
   margin: "0 0 0.5rem",
   color: vars.color.onSurfaceVariant,
-  fontFamily: designTokens.fontMono,
+  fontFamily: designTokens.fontBody,
   fontSize: designTokens.fontSizeSm,
   fontWeight: 600,
-  letterSpacing: 0,
-  textTransform: "uppercase",
 });
 
 export const legend = style({

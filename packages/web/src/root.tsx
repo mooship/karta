@@ -1,5 +1,5 @@
-import "@fontsource-variable/inter/index.css";
-import "@fontsource-variable/martian-mono/index.css";
+import "@fontsource-variable/public-sans/wght.css";
+import "@fontsource-variable/source-serif-4/wght.css";
 import "leaflet/dist/leaflet.css";
 import {
   isRouteErrorResponse,

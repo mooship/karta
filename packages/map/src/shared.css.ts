@@ -4,25 +4,17 @@ import { designTokens } from "./theme/mapTokens";
 
 /**
  * Small style utilities shared across this package's own vanilla-extract
- * style files via array composition (`style([shared.x, {...}])`) -- this
- * package's convention for a rule set two or more components need
+ * style files via array composition (`style([shared.x, {...}])`). That is
+ * this package's convention for a rule set two or more components need
  * identically, in place of hand-copying it. Add to this file rather than
  * re-copying an existing component's rules.
- * @remarks `color` and `font-size` are deliberately left out of
- *   {@link eyebrowLabel}: they vary per consumer. Under CSS Modules'
- *   `composes:` that split existed because overriding a composed property
- *   would have relied on cascade order between two same-specificity class
- *   selectors -- order the spec didn't actually guarantee. vanilla-extract's
- *   `style([base, overrides])` has deterministic, well-defined ordering
- *   (the array's later entries win), so that constraint no longer applies
- *   -- but the split itself is kept as-is here since removing it isn't
- *   this migration's job.
+ * @remarks `color` and `font-size` are left out of {@link eyebrowLabel}
+ *   because they vary per consumer.
  */
 export const eyebrowLabel = style({
   margin: 0,
-  fontFamily: designTokens.fontMono,
-  letterSpacing: "0.08em",
-  textTransform: "uppercase",
+  fontFamily: designTokens.fontBody,
+  fontWeight: 600,
 });
 
 export const customScrollbar = style({

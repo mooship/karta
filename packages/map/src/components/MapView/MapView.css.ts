@@ -28,15 +28,12 @@ export const darkTile = style({
 });
 
 /**
- * Approximates a dark variant for a cartographic (non-imagery) basemap that
- * has no official dark tile set, so it doesn't sit jarringly bright under
- * an otherwise dark UI: inverting lightness and rotating hue back to its
- * original angle turns a light basemap dark while roughly preserving its
- * relative colours, then brightness/contrast are tempered to avoid a
- * harsh, over-inverted look.
+ * Dims a basemap that has no dark tile set so it doesn't glare under the
+ * dark UI. Plain dimming keeps the tiles' own colours; inverting them
+ * turned terrain and imagery to mud.
  */
 export const dimmedTile = style({
-  filter: "invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%)",
+  filter: "brightness(0.6) saturate(0.7)",
 });
 
 /**
@@ -160,12 +157,11 @@ export const areaLabel = style({
   border: `1px solid ${mapLabelVars.outline}`,
   borderRadius: vars.shape.cornerSmall,
   background: mapLabelVars.surface,
-  boxShadow: vars.elevation.shadow1,
   color: mapLabelVars.text,
-  fontFamily: designTokens.fontMono,
+  fontFamily: designTokens.fontBody,
   fontSize: designTokens.fontSizeMd,
-  fontWeight: 700,
-  letterSpacing: 0,
+  fontWeight: 600,
+  textShadow: `0 0 2px ${mapLabelVars.surface}, 0 0 2px ${mapLabelVars.surface}`,
   pointerEvents: "none",
   selectors: {
     "&::before": {

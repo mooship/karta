@@ -1,228 +1,173 @@
-# Karta Design System
+# Design system
 
-Karta adopts Google's Material 3 (M3) design language directly, rather than
-an app-owned system with its own vocabulary. Every component is Karta's own
-plain React, styled with vanilla-extract entirely from M3 tokens — colour
-roles, shape scale, elevation, state layers — so the visual result is
-faithfully Material 3 without depending on Google's own component library
-(see "Component library" below for why). Tokens use Material's own naming
-(`--md-sys-color-primary`, `--md-sys-shape-corner-medium`, …) rather than
-app-invented names, so the system stays legible to anyone who already
-knows Material 3. See "Styling implementation" below for how those tokens
-reach component style files.
+Karta should look like a survey office map or a good atlas plate: paper,
+ink and one warm accent. The map carries the evidence, and the interface
+stays quiet around it.
 
-## Design direction
+All tokens live in `packages/web/src/index.css`. Components are plain
+React styled with vanilla-extract (`*.css.ts` beside each component) and
+read those tokens through `@karta/theme`. See "Styling implementation"
+below.
 
-- Adopt Material 3's system wholesale rather than reinventing it: colour
-	roles, shape scale, elevation, and state layers all follow the M3 spec's
-	own token names and values.
-- Brand identity lives in one place — the seed colour a theme is generated
-	from, and the typeface tokens — not in bespoke token architecture.
-- Preserve map-first communication: interface chrome must support evidence
-	and place-reading, never dominate it. Floating controls, rounded pill
-	search fields, and a bottom-sheet-style info panel take cues from
-	consumer map products' conventions for this — content fills the frame,
-	controls float, and a drag handle exposes more detail on demand.
+## Principles
 
-## Colour tokens — generated from a single seed
+- The map comes first. Chrome supports reading the map and never competes
+  with the data layers.
+- One accent. Ochre marks the current selection, focus and links. Data
+  colours belong to the map layers, not the interface.
+- Hairlines over shadows. Panels sit on a 1px rule, like the margin of a
+  printed sheet.
+- Sentence case everywhere, including small labels. No uppercase or
+  letter-spaced eyebrow labels.
 
-Every `--md-sys-color-*` role is generated from one brand seed colour (a
-deep teal, `#0E8388`, chosen over the app's original ochre for a bolder,
-more distinctive identity while still reading as serious civic
-infrastructure rather than a consumer product) using Material Color
-Utilities' HCT-based tonal palette algorithm — the same engine behind
-Android's Material You dynamic theming. `packages/web/scripts/generateM3Theme.ts`
-owns this: it builds a `SchemeTonalSpot` (light and dark) from the seed via
-`MaterialDynamicColors`, and writes the resolved hex values into the
-generated token block in `packages/web/src/index.css`.
+## Colour
 
-To change Karta's brand colour, edit `SEED_COLOR_HEX` in that script and
-re-run `npm run generate:theme -w @karta/web` — never hand-edit
-the hex values inside the `/* GENERATED M3 ... TOKENS */` markers directly,
-since the next run overwrites them.
+The token names (`--md-sys-color-primary`, `--md-sys-color-surface` and so
+on) are kept from the app's earlier Material 3 theme so components didn't
+need renaming. The values are Karta's own and are written by hand inside
+the `LIGHT COLOUR TOKENS` and `DARK COLOUR TOKENS` blocks of `index.css`.
+There are two dark blocks (one for `prefers-color-scheme: dark`, one for
+`:root[data-theme="dark"]`); keep them in step.
 
-The generated role set covers the full M3 2021+ scheme:
+| Role | Light | Dark |
+| --- | --- | --- |
+| Surface (paper) | `#f6f2e9` | `#16130f` |
+| On surface (ink) | `#1f1b16` | `#ede6da` |
+| On surface variant | `#4f4a42` | `#bdb4a6` |
+| Primary (ochre) | `#8c520f` | `#e3a85a` |
+| Outline | `#7f766a` | `#8e8579` |
+| Outline variant (hairline) | `#cfc6b6` | `#48423a` |
+| Error | `#a3261b` | `#ff9c8f` |
 
-`primary`/`onPrimary`/`primaryContainer`/`onPrimaryContainer`,
-`secondary`/`onSecondary`/`secondaryContainer`/`onSecondaryContainer`,
-`tertiary`/`onTertiary`/`tertiaryContainer`/`onTertiaryContainer`,
-`error`/`onError`/`errorContainer`/`onErrorContainer`,
-`background`/`onBackground`, `surface`/`onSurface`,
-`surfaceVariant`/`onSurfaceVariant`, `outline`/`outlineVariant`,
-`surfaceContainerLowest` → `surfaceContainerHighest`, `surfaceDim`/`surfaceBright`,
-`inverseSurface`/`inverseOnSurface`/`inversePrimary`, `scrim`, `shadow`,
-`surfaceTint`.
+Every text pairing meets WCAG 2.2 AA (4.5:1) on every surface container in
+both modes, and outlines used as control boundaries meet 3:1. Check any
+new pairing before adding it.
 
-Karta's old semantic names (`--color-primary`, `--color-paper`, `--color-line`, …)
-have been fully retired in favour of the M3 role names directly — there is
-no alias layer, so a component either uses an M3 role or an explicit
-app-specific composite token (below).
+`error` and `error-container` are used for failure and warning states,
+such as a layer that failed to load or a search outside the covered area.
 
-### Redearth → error
+App-specific tokens are built from these roles with `color-mix()`, so they
+follow the theme: `--color-map-label-surface`,
+`--color-map-label-surface-secondary`, `--color-map-label-outline`,
+`--color-map-label-text` and `--leaflet-zoom-divider`.
 
-The old `--color-redearth` accent was only ever used to signal a failure or
-warning state (a data-load-failure badge, an out-of-coverage message), so
-it maps directly onto M3's `error`/`errorContainer` roles rather than
-surviving as a separate custom colour — the semantic role already existed
-in M3, Karta just hadn't been using it.
+### Map layer colours
 
-### App-specific composite tokens
+Layer colours are set per domain in `layers.ts`, not in `index.css`.
 
-A handful of tokens are genuinely app-specific (map label rendering isn't
-part of the M3 spec) and stay under Karta's own names, but are built from
-M3 roles rather than raw hex values, so they stay theme-adaptive:
-`--color-map-label-surface`, `--color-map-label-surface-secondary`,
-`--color-map-label-outline`, `--color-map-label-text`, `--leaflet-zoom-divider`.
-
-## Shape, elevation, and state
-
-- **Shape**: `--md-sys-shape-corner-none` through `-extra-large` and `-full`
-	use M3's own baseline shape scale (4/8/12/16/28px, 9999px for pills),
-	rather than app-chosen radii.
-- **Elevation**: `--md-sys-elevation-shadow-1/2/3` holds a static box-shadow
-	computed with the same two-layer 30%/15%-opacity formula Material 3's own
-	`<md-elevation>` component uses internally (studied from
-	`@material/web/elevation/internal/elevation-styles.css` — see
-	"Component library" below for why that's a reference, not a dependency),
-	not an invented approximation.
-- **State layers**: `--state-hover` (8%), `--state-pressed` (12%), and
-	`--state-selected` (12%, tinted with `--md-sys-color-primary` instead of
-	`--md-sys-color-on-surface`) match M3's own ripple/state-layer opacities.
-- **Motion**: `--motion-ease-decelerate`/`--motion-ease-accelerate` use M3's
-	*Emphasized* easing set (not the flatter Standard curves) for elements
-	entering/settling or leaving the screen once over a **short** distance —
-	popovers, error toasts, the info panel's own few-pixel fade (shared by
-	the desktop sidebar and the mobile Explore sheet, which fades+scales in
-	place on open rather than sliding), legend/layer-list entrance stagger —
-	so chrome feels more alive without adding a second, app-invented motion
-	vocabulary. `--motion-ease-accelerate` is currently reserved rather than
-	wired up anywhere (no exit in this app is both one-shot and
-	short-distance yet), kept alongside decelerate as the named pair M3's
-	Emphasized set actually defines. Emphasized's curve front-loads most of
-	its travel into roughly the first 15% of the duration; over a few pixels
-	that reads as a snappy, smooth settle, but over a long travel it reads as
-	a violent whip followed by a long, barely-visible crawl. So anything
-	that moves a large surface a long distance in one motion — the mobile
-	Explore sheet's own full-height *close* slide (its open entrance is the
-	short in-place fade above; only a completed downward drag or an explicit
-	close continues that same slide off-screen), and the panel-toggle/legend
-	triggers that climb the same distance in lockstep with it — reaches for
-	`--motion-ease-large-surface` instead, even though it's also
-	entering/leaving the screen once. That's a named
-	alias for `--motion-ease-standard`, not a third curve, so a future
-	large-surface mover states that fact directly rather than re-deriving
-	"Emphasized is wrong here because the distance is large" from scratch at
-	its own call site. `--motion-ease-standard` is the default otherwise
-	too: hover/press feedback and anything that can repeat in quick
-	succession, where Emphasized's extra emphasis
-	would read as jitter rather than character. `--motion-ease-spring` is a
-	small-overshoot curve reserved for isolated, one-shot punctuation (a
-	`SegmentedControl` option popping into place on selection) — not part of
-	the M3 spec's named easing sets, but in the spirit of Material You's own
-	spring-based motion physics, and never used on anything that repeats
-	rapidly or moves a large surface. All of it still collapses under
-	`prefers-reduced-motion` via the existing global rule (see "Accessibility
-	policy" below).
+- Sequential layers (travel times) use ordered single-hue ramps that run
+  light to dark, so more always means darker.
+- Transit lines are told apart by pattern and weight as well as colour:
+  rapid rail is a solid ink line, commuter rail is dashed, buses are a
+  fine dotted grey line, and BRT routes have a paper casing so they hold
+  up against both basemaps.
+- Line colours are checked for 3:1 against the light basemap. Lines with
+  a `darkColor` switch in dark mode.
 
 ## Typography
 
-Karta keeps its own type families — Inter Variable and Martian Mono
-Variable — rather than switching to Roboto. The compact
-`--font-size-xs` → `--font-size-lg` scale stays app-specific rather than
-adopting M3's full typescale (display/headline/title roles sized for hero
-text this dense map-chrome app never shows).
+| Token | Family | Use |
+| --- | --- | --- |
+| `--font-display` | Source Serif 4 | Panel headings, place names in popups, the privacy page |
+| `--font-body` | Public Sans | Everything else |
+| `--font-mono` | System monospace | The map scale bar only |
+
+Both web fonts are OFL and self-hosted from `@fontsource-variable`
+packages, imported in `root.tsx`. Figures that need to line up use
+`font-variant-numeric: tabular-nums` in Public Sans rather than a mono
+face.
+
+The type scale for map chrome is compact and never goes below 12px:
+`--font-size-xs` and `--font-size-sm` are 12px, `--font-size-md` is 13px,
+`--font-size-base` is 14px and `--font-size-lg` is 18px. Small labels are
+12px, weight 600, sentence case, with no extra tracking.
+
+## Shape, elevation and state
+
+- **Shape:** 2px for controls (`corner-extra-small`, `corner-small`) and
+  4px for panels (`corner-medium` and up). `corner-full` is only for chips,
+  round markers and the drag handle.
+- **Elevation:** `--md-sys-elevation-shadow-1` and `-2` are a 1px hairline.
+  `-3` adds a faint shadow for menus that float over the map.
+- **State:** `--state-hover` (8%) and `--state-pressed` (12%) tint with
+  on-surface. `--state-selected` (12%) tints with the primary colour.
+  `--md-sys-color-surface-container-hover` is an opaque hover colour for
+  controls that can't show the surface through a transparent tint.
+
+## Motion
+
+- `--motion-ease-standard` is the default, for hover and press feedback
+  and anything that can repeat quickly.
+- `--motion-ease-decelerate` is for one-shot entrances over a short
+  distance: popovers, error toasts, the info panel's fade and the staggered
+  entrance of the legend and layer list. `--motion-ease-accelerate` is its
+  exit pair and isn't used yet.
+- `--motion-ease-large-surface` is an alias for the standard curve. Use it
+  for anything that moves a large surface a long way, such as the mobile
+  Explore sheet's close slide. The decelerate curve front-loads its
+  travel, which looks violent over a long distance.
+- `--motion-ease-spring` is a small overshoot for rare, one-off emphasis
+  (a `SegmentedControl` option settling into place). Don't use it on
+  anything that repeats or moves a large surface.
+
+`prefers-reduced-motion` collapses every animation and transition.
 
 ## Component library
 
-Karta implements Material 3 components itself, as plain React styled with
-vanilla-extract against the tokens above, rather than depending on
-`@material/web` (Google's own Shadow DOM custom element library). That
-was tried first and reverted: `@material/web`'s components are Lit-based
-custom elements, and getting them safe under this app's Cloudflare
-Workers SSR required a real workaround (importing them at all throws
-`ReferenceError: HTMLElement is not defined` under workerd), which in
-turn meant a client-only-mount gate for every single primitive to avoid a
-React hydration mismatch, an `ElementInternals` polyfill for unit tests
-(happy-dom has none), and unit tests that couldn't use ARIA-role queries
-at all (`getByRole` can't see into a Shadow DOM happy-dom never renders).
-That's real, compounding friction for every future component, not a
-one-off cost — and none of it is specific to Material 3 as a *design
-system*, only to `@material/web`'s specific Shadow DOM delivery
-mechanism. A plain React implementation gets the same HCT-generated
-colours, same shape scale, same elevation formula, with none of it:
-normal SSR, normal hydration, normal `getByRole` tests, no extra runtime
-weight.
+Components are written in plain React, not `@material/web`. That library
+was tried and reverted: its Lit custom elements throw
+`ReferenceError: HTMLElement is not defined` under the Cloudflare Workers
+SSR, so each component needed a client-only mount gate, which caused a
+hydration mismatch. Unit tests also couldn't use `getByRole`, because
+happy-dom doesn't render Shadow DOM. Plain React has none of those
+problems.
 
 ## Styling implementation
 
-Component styles are written in [vanilla-extract](https://vanilla-extract.style/)
-(`*.css.ts`, colocated beside each component, replacing an earlier CSS
-Modules approach) — a zero-runtime, type-safe CSS-in-JS library that
-compiles to static CSS at build time, chosen specifically because it stays
-compatible with the SSR requirement that ruled out `@material/web` above.
+Component styles use [vanilla-extract](https://vanilla-extract.style/),
+which compiles to static CSS at build time and works with the SSR setup.
 
-**`@karta/theme`** is a small, dependency-free SDK package holding a typed,
-compile-time-checked view onto the M3 tokens: `vars` (colour/shape/
-elevation/state/motion) and `mapLabelVars` (the app-specific composite map
-label tokens), both built with vanilla-extract's `createGlobalThemeContract`.
-That API declares no values and emits no CSS — `packages/web/src/index.css`
-stays the single source of truth for every token's actual value and for
-light/dark switching (the dual `@media (prefers-color-scheme: dark)` +
-`:root[data-theme="dark"]` mechanism described above), exactly as before
-this migration. The contract exists purely so a `.css.ts` file can write
-`vars.color.primary` instead of hand-typing `"var(--md-sys-color-primary)"`,
-where a typo fails silently rather than at compile time.
+`@karta/theme` gives `.css.ts` files typed access to the tokens: `vars`
+(colour, shape, elevation, state and motion) and `mapLabelVars` (the map
+label tokens). Both use `createGlobalThemeContract`, which declares no
+values and emits no CSS. `index.css` stays the only place values and
+light and dark switching are defined. The point is that
+`vars.color.primary` fails at compile time if mistyped, where a
+hand-typed `var(--md-sys-color-primary)` string fails silently.
 
-This produces a two-tier token model:
+There are two kinds of token:
 
-- **Fallback-free** (`@karta/theme`'s `vars`/`mapLabelVars`, and
-  `packages/web/src/theme/app.css.ts`'s `appVars` for this app's own local
-  tokens — spacing, font sizes, mobile layout geometry): an unconditional
-  dependency with no sensible generic default, used by whichever package
-  actually defines the values (this app, for both).
-- **Fallback-preserving** (`packages/map/src/theme/mapTokens.ts`'s
-  `designTokens`/`zIndexTokens`/`mobileLayoutTokens`): `@karta/map`'s own
-  bespoke typography/spacing/control-sizing/z-index/mobile-layout contract,
-  each entry built as `var(name, documentedDefault)` so a host that hasn't
-  adopted Karta's tokens still gets a working, if generic, `@karta/map` UI.
-  Wrapping the pairing in one helper function means a `.css.ts` file can
-  never reference one of these tokens and forget its fallback.
+- **No fallback:** `@karta/theme`'s `vars` and `mapLabelVars`, and
+  `appVars` in `packages/web/src/theme/app.css.ts` (spacing, font sizes,
+  mobile layout). The host app must define these.
+- **With fallback:** `designTokens`, `zIndexTokens` and
+  `mobileLayoutTokens` in `packages/map/src/theme/mapTokens.ts`. Each is
+  `var(name, default)`, so a host that hasn't adopted Karta's tokens still
+  gets a working `@karta/map` UI. One helper builds every entry, so a
+  `.css.ts` file can't use one of these and forget its fallback.
 
-**SDK integration requirement**: `@karta/map` and `@karta/theme` ship
-source with no build step, so `@vanilla-extract/css` is a real runtime
-`dependencies` entry of both packages (and of `@karta/web`) — any host
-application embedding `@karta/map` components must register
+`@karta/map` and `@karta/theme` ship source with no build step, so
+`@vanilla-extract/css` is a runtime dependency of both (and of
+`@karta/web`). A host that embeds `@karta/map` must register
 `@vanilla-extract/vite-plugin`'s `vanillaExtractPlugin()` in its own Vite
-config for their styles to resolve at all. This is a breaking integration
-change from the CSS-Modules-based version of the SDK.
+config.
 
-## Accessibility policy
+## Accessibility
 
-- Minimum 44px touch targets for all interactive controls.
-- Keyboard operation and visible focus remain mandatory for all controls.
-- Honour reduced motion: `prefers-reduced-motion` collapses animation/transition
-	durations globally.
-- `prefers-contrast: more` strengthens `--md-sys-color-outline`/`-outline-variant`
-	to `--md-sys-color-on-surface`.
-- Preserve or improve current Lighthouse accessibility score.
+- Touch targets are at least 44px.
+- Every control works from the keyboard and shows a visible focus ring.
+- Text meets 4.5:1 and UI boundaries and map lines meet 3:1, in both
+  themes.
+- Map layers never rely on colour alone: transit lines also differ by
+  pattern, and every value shown on the map is also available in the
+  popup and the Browse list.
+- `prefers-reduced-motion` collapses animation and transition durations.
+- `prefers-contrast: more` darkens `outline` and `outline-variant` to
+  `on-surface`.
 
-## Implementation guardrails
+## Guardrails
 
-- One design system: don't reintroduce app-invented token names for
-	anything the M3 spec already names — extend the generated M3 tokens
-	instead.
-- Don't hand-edit generated hex values in `index.css`'s `GENERATED M3 ...
-	TOKENS` blocks; change the seed colour and re-run `generate:theme`.
-- No `@material/web` (or any other Shadow DOM custom element component
-	library) dependency — see "Component library" above. Build new controls
-	as plain React styled with vanilla-extract against the M3 tokens (see
-	"Styling implementation" above).
-- Avoid visual novelty that competes with evidence layers.
-
-## Success criteria
-
-- Chrome feels cohesive as one floating Material control layer over the map.
-- Mobile sheet drag and snap feel physically continuous and interruptible.
-- Typography hierarchy is clearer at all sizes without visual noise.
-- Reduced-motion mode remains fully usable.
-- Existing unit and e2e behaviour is preserved or improved.
+- Use the existing tokens. Don't add a second set of token names for
+  something that already has one.
+- Don't add `@material/web` or any other Shadow DOM component library.
+- Keep new chrome quiet. If it competes with the map layers, cut it back.

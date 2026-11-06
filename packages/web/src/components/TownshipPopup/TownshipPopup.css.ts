@@ -25,9 +25,8 @@ export const rows = style({
 
 globalStyle(`.${rows} dt`, {
   color: vars.color.onSurfaceVariant,
-  textTransform: "uppercase",
-  letterSpacing: "0.04em",
   fontSize: appVars.fontSize.sm,
+  fontWeight: 600,
   alignSelf: "center",
 });
 
@@ -37,6 +36,5 @@ globalStyle(`.${rows} dd`, {
 });
 
 export const value = style({
-  fontFamily: appVars.font.mono,
   fontVariantNumeric: "tabular-nums",
 });

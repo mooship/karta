@@ -56,7 +56,7 @@ test.describe("settings menu", () => {
       .toBe("dark");
     await expect(
       page.locator('meta[name="theme-color"][data-theme-override]'),
-    ).toHaveAttribute("content", "#15110b");
+    ).toHaveAttribute("content", "#16130f");
 
     await page.reload();
     await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");

@@ -89,7 +89,7 @@ export const resultRow = style({
 
 export const result = style({
   color: vars.color.onSurface,
-  fontFamily: designTokens.fontMono,
   fontSize: designTokens.fontSizeBase,
-  fontWeight: 700,
+  fontWeight: 600,
+  fontVariantNumeric: "tabular-nums",
 });

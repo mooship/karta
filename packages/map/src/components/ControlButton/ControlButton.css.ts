@@ -43,7 +43,7 @@ export const button = style({
     },
     '&[data-shape="pill"]': {
       padding: "0 1.125rem",
-      borderRadius: vars.shape.cornerFull,
+      borderRadius: vars.shape.cornerMedium,
     },
     '&[data-variant="embedded"]': {
       borderColor: "transparent",

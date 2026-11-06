@@ -125,9 +125,8 @@ export const mapLoading = style({
    */
   backgroundImage: `linear-gradient(180deg, ${vars.color.surface} 0%, ${vars.color.surfaceContainerLow} 100%)`,
   color: vars.color.onSurfaceVariant,
-  fontFamily: appVars.font.mono,
+  fontFamily: appVars.font.body,
   fontSize: appVars.fontSize.sm,
-  textTransform: "uppercase",
   animation: `${mapLoadingPulse} 1.6s ${vars.motion.easeStandard} infinite`,
   /**
    * The fade-out itself must be visible (not an instant swap) -- this
@@ -509,10 +508,9 @@ export const panelTab = style({
   borderRadius: `${vars.shape.cornerSmall} ${vars.shape.cornerSmall} 0 0`,
   background: "transparent",
   color: vars.color.onSurfaceVariant,
-  fontFamily: appVars.font.mono,
-  fontSize: appVars.fontSize.sm,
-  letterSpacing: "0.06em",
-  textTransform: "uppercase",
+  fontFamily: appVars.font.body,
+  fontSize: appVars.fontSize.base,
+  fontWeight: 600,
   cursor: "pointer",
   whiteSpace: "nowrap",
   overflow: "hidden",
@@ -539,7 +537,14 @@ export const section = style({
   gap: "0.75rem",
 });
 
-export const sectionTitle = eyebrowLabel;
+export const sectionTitle = style({
+  margin: 0,
+  color: vars.color.onSurface,
+  fontFamily: appVars.font.display,
+  fontSize: appVars.fontSize.lg,
+  fontWeight: 600,
+  lineHeight: 1.25,
+});
 
 export const panelTrigger = style({
   position: "absolute",

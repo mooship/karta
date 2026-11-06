@@ -163,10 +163,8 @@ export const description = style({
 export const badge = style({
   flexShrink: 0,
   marginLeft: "2.875rem",
-  fontFamily: appVars.font.mono,
   fontSize: appVars.fontSize.sm,
-  letterSpacing: "0.04em",
-  textTransform: "uppercase",
+  fontWeight: 600,
   whiteSpace: "nowrap",
   color: vars.color.onSurfaceVariant,
   border: `1px solid ${vars.color.outlineVariant}`,

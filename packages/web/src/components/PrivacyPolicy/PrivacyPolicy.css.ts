@@ -14,7 +14,9 @@ export const page = style({
 
 export const heading = style({
   margin: `0 0 ${appVars.space.space2}`,
-  fontSize: "1.5rem",
+  fontFamily: appVars.font.display,
+  fontSize: "1.75rem",
+  fontWeight: 600,
 });
 
 export const updated = style({
@@ -25,7 +27,8 @@ export const updated = style({
 
 export const sectionTitle = style({
   margin: `${appVars.space.space4} 0 ${appVars.space.space1}`,
-  fontSize: "1.125rem",
+  fontFamily: appVars.font.display,
+  fontSize: "1.25rem",
   fontWeight: 600,
 });
 
