@@ -78,7 +78,9 @@ describe("root meta", () => {
   it("sets the page title, description, and viewport", () => {
     const tags = meta({} as never);
 
-    expect(tags).toContainEqual({ title: "Karta: Gauteng spatial legacy map" });
+    expect(tags).toContainEqual({
+      title: "Karta: spatial legacy map of Gauteng and Cape Town",
+    });
     expect(tags).toContainEqual(
       expect.objectContaining({ name: "description" }),
     );

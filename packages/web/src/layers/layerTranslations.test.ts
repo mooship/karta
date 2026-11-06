@@ -44,17 +44,17 @@ const CHOROPLETH_LAYER: Layer = {
 
 const LINE_LAYER: Layer = {
   id: "rapid-rail",
-  label: "Rapid Rail",
+  label: "Rapid rail",
   dataSource: ["/data/gauteng/rapid-rail.geojson"],
   geometryKind: "line",
   defaultVisible: false,
   available: true,
-  style: { kind: "line", color: "#000", weight: 3, legendLabel: "Rapid Rail" },
+  style: { kind: "line", color: "#000", weight: 3, legendLabel: "Rapid rail" },
 };
 
 const BRT_LAYER: Layer = {
   id: "bus-rapid-transit",
-  label: "Bus Rapid Transit",
+  label: "Bus rapid transit",
   dataSource: ["/data/gauteng/bus-rapid-transit.geojson"],
   geometryKind: "line",
   defaultVisible: false,
@@ -63,7 +63,7 @@ const BRT_LAYER: Layer = {
     kind: "line",
     color: "#000",
     weight: 3,
-    legendLabel: "Bus Rapid Transit",
+    legendLabel: "Bus rapid transit",
     colorClassification: {
       kind: "categorized",
       propertyKey: "network",

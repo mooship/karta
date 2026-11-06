@@ -10,7 +10,7 @@ import { getLocale, experimentalStaticLocale } from '../runtime.js';
 /**
 * | output |
 * | --- |
-* | "Visualising how apartheid-era spatial planning still shapes commute times and access to jobs across Gauteng." |
+* | "Visualising how apartheid-era spatial planning still shapes commute times and access to jobs in Gauteng and Cape Town." |
 *
 * @param {Meta_DescriptionInputs} inputs
 * @param {{ locale?: "en" | "af" }} options
@@ -19,6 +19,6 @@ import { getLocale, experimentalStaticLocale } from '../runtime.js';
 export const meta_description = /** @type {((inputs?: Meta_DescriptionInputs, options?: { locale?: "en" | "af" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Meta_DescriptionInputs, { locale?: "en" | "af" }, {}>} */ ((inputs = {}, options = {}) => {
 	void inputs;
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "af") return /** @type {LocalizedString} */ ("Wys hoe ruimtelike beplanning uit die apartheidsera steeds reistye en toegang tot werk regoor Gauteng bepaal.")
-	return /** @type {LocalizedString} */ ("Visualising how apartheid-era spatial planning still shapes commute times and access to jobs across Gauteng.")
+	if (locale === "af") return /** @type {LocalizedString} */ ("Wys hoe ruimtelike beplanning uit die apartheidsera steeds reistye en toegang tot werk in Gauteng en Kaapstad bepaal.")
+	return /** @type {LocalizedString} */ ("Visualising how apartheid-era spatial planning still shapes commute times and access to jobs in Gauteng and Cape Town.")
 });

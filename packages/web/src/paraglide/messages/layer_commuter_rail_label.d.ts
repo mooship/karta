@@ -5,7 +5,7 @@ export type Layer_Commuter_Rail_LabelInputs = {};
 /**
 * | output |
 * | --- |
-* | "Commuter Rail" |
+* | "Commuter rail" |
 *
 * @param {Layer_Commuter_Rail_LabelInputs} inputs
 * @param {{ locale?: "en" | "af" }} options

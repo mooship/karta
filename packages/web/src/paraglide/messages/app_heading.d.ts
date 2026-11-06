@@ -5,7 +5,7 @@ export type App_HeadingInputs = {};
 /**
 * | output |
 * | --- |
-* | "Karta: Gauteng spatial legacy map" |
+* | "Karta: spatial legacy map of Gauteng and Cape Town" |
 *
 * @param {App_HeadingInputs} inputs
 * @param {{ locale?: "en" | "af" }} options

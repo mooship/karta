@@ -5,7 +5,7 @@ export type Layer_Failed_BadgeInputs = {};
 /**
 * | output |
 * | --- |
-* | "Failed to load — toggle off and on to retry" |
+* | "Failed to load. Turn the layer off and on to retry." |
 *
 * @param {Layer_Failed_BadgeInputs} inputs
 * @param {{ locale?: "en" | "af" }} options

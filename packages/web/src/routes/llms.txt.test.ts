@@ -12,7 +12,7 @@ describe("/llms.txt route", () => {
     );
     expect(body).toContain(`[Map](${SITE_URL}/)`);
     expect(body).toContain(`[Privacy Policy](${SITE_URL}/privacy)`);
-    expect(body).toContain("Rapid Rail");
+    expect(body).toContain("Rapid rail");
     expect(body).toContain("Why this map exists");
   });
 });

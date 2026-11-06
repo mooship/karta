@@ -5,7 +5,7 @@ export type Layer_Rapid_Rail_LabelInputs = {};
 /**
 * | output |
 * | --- |
-* | "Rapid Rail" |
+* | "Rapid rail" |
 *
 * @param {Layer_Rapid_Rail_LabelInputs} inputs
 * @param {{ locale?: "en" | "af" }} options

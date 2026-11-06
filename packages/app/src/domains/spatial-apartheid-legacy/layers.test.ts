@@ -234,7 +234,7 @@ describe("SPATIAL_APARTHEID_LEGACY_LAYERS", () => {
       }
       return layer;
     };
-    expect(findLayer("rapid-rail").label).toBe("Rapid Rail");
+    expect(findLayer("rapid-rail").label).toBe("Rapid rail");
     expect(findLayer("rapid-rail").dataSource).toEqual([
       "/data/gauteng/rapid-rail.display.v1.geojson",
     ]);
@@ -242,13 +242,13 @@ describe("SPATIAL_APARTHEID_LEGACY_LAYERS", () => {
       kind: "line",
       color: "#E69F00",
       weight: 3,
-      legendLabel: "Rapid Rail",
+      legendLabel: "Rapid rail",
     });
     expect(findLayer("bus-rapid-transit").style).toEqual({
       kind: "line",
       color: "#009E73",
       weight: 3,
-      legendLabel: "Bus Rapid Transit",
+      legendLabel: "Bus rapid transit",
       colorClassification: {
         kind: "categorized",
         propertyKey: "network",
@@ -269,7 +269,7 @@ describe("SPATIAL_APARTHEID_LEGACY_LAYERS", () => {
       kind: "line",
       color: "#D55E00",
       weight: 2,
-      legendLabel: "Commuter Rail",
+      legendLabel: "Commuter rail",
     });
     expect(findLayer("bus").style).toEqual({
       kind: "line",

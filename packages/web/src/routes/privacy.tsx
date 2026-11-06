@@ -21,7 +21,7 @@ const PRIVACY_URL = `${SITE_URL}/privacy`;
  */
 export const meta: MetaFunction = () =>
   buildPageMeta({
-    title: `${PRIVACY_POLICY_TITLE} — Karta`,
+    title: `${PRIVACY_POLICY_TITLE} | Karta`,
     description: PRIVACY_POLICY_DESCRIPTION,
     url: PRIVACY_URL,
   });

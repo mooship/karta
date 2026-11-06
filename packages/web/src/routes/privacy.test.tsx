@@ -16,7 +16,7 @@ describe("privacy route meta", () => {
   it("sets its own title and description rather than the root route's", () => {
     const tags = meta({} as never);
 
-    expect(tags).toContainEqual({ title: "Privacy policy — Karta" });
+    expect(tags).toContainEqual({ title: "Privacy policy | Karta" });
     expect(tags).toContainEqual(
       expect.objectContaining({
         name: "description",
@@ -34,14 +34,14 @@ describe("privacy route meta", () => {
     });
     expect(tags).toContainEqual({
       property: "og:title",
-      content: "Privacy policy — Karta",
+      content: "Privacy policy | Karta",
     });
 
     const jsonLdTag = tags.find((tag) => "script:ld+json" in tag) as
       | { "script:ld+json": Record<string, unknown> }
       | undefined;
     expect(jsonLdTag?.["script:ld+json"]).toMatchObject({
-      name: "Privacy policy — Karta",
+      name: "Privacy policy | Karta",
       url: "https://karta.timothybrits.co.za/privacy",
     });
   });

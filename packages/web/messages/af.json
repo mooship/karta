@@ -1,8 +1,8 @@
 {
   "$schema": "https://inlang.com/schema/inlang-message-format",
   "app_title": "Karta",
-  "app_heading": "Karta: Gauteng se ruimtelike erfeniskaart",
-  "meta_description": "Wys hoe ruimtelike beplanning uit die apartheidsera steeds reistye en toegang tot werk regoor Gauteng bepaal.",
+  "app_heading": "Karta: ruimtelike erfeniskaart van Gauteng en Kaapstad",
+  "meta_description": "Wys hoe ruimtelike beplanning uit die apartheidsera steeds reistye en toegang tot werk in Gauteng en Kaapstad bepaal.",
 
   "skip_to_map_information": "Spring na kaartinligting",
   "loading_map": "Kaart laai tans",
@@ -60,7 +60,7 @@
   "panel_tablist_aria_label": "Kaartpaneel",
 
   "layer_unavailable_badge": "Nog nie beskikbaar nie",
-  "layer_failed_badge": "Kon nie laai nie — skakel af en aan om weer te probeer",
+  "layer_failed_badge": "Kon nie laai nie. Skakel die laag af en aan om weer te probeer.",
   "layer_download_aria_label": "Laai {label}-data af (GeoJSON)",
   "layer_download_csv_aria_label": "Laai {label}-data af (CSV)",
   "layer_csv_export_error": "Kon nie die CSV-lêer voorberei nie. Probeer weer.",
@@ -101,7 +101,7 @@
   "layer_group_transit_networks_title": "Vervoernetwerke",
 
   "domain_story_title": "Waarom hierdie kaart bestaan",
-  "domain_story_body": "Suid-Afrika se Groepsgebiedewet (1950) het nie net gesegregeer waar mense kon woon nie — dit het afstand as beleid ontwerp. Swart, Kleurling- en Indiër-gemeenskappe is gedwonge verwyder van grond naby stadsentrums en op die stedelike buiterand hervestig, dikwels agter doelbewuste bufferstroke van snelweë, nywerheidsonering, of onbeboude grond, wat hulle die verste van die werk en dienste wat daardie sentrums gebied het, geplaas het. Daardie geografie het nie saam met apartheid se wette in 1994 geëindig nie: lokasies wat as buiterande gebou is, is vandag steeds buiterande. Hierdie kaart meet drie dele van daardie nalatenskap — gemodelleerde motortyd na groot werksentrums, reguitlynafstand na die naaste formele vervoerroete, en 'n gekombineerde telling wat wys waar albei laste saamval — om die blywende vorm van 'n beleidsbesluit sigbaar te maak, nie net onthou nie.",
+  "domain_story_body": "Suid-Afrika se Groepsgebiedewet (1950) het gesegregeer waar mense kon woon en afstand as beleid gebruik. Swart, Kleurling- en Indiër-gemeenskappe is gedwonge verwyder van grond naby stadsentrums en op die stedelike buiterand hervestig, dikwels agter bufferstroke van snelweë, nywerheidsonering of onbeboude grond, ver van die werk en dienste in daardie sentrums. Apartheid se wette het in 1994 geëindig, maar die lokasies wat op die buiterand gebou is, is steeds daar. Hierdie kaart wys gemodelleerde motortyd na groot werksentrums, reguitlynafstand na die naaste formele vervoerroete, en 'n gekombineerde telling vir gebiede waar albei hoog is.",
 
   "bucket_car_time_short": "Kort (≤ 20 min)",
   "bucket_car_time_moderate": "Matig (21–40 min)",

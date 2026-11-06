@@ -5,7 +5,7 @@ export type Domain_Story_BodyInputs = {};
 /**
 * | output |
 * | --- |
-* | "South Africa's Group Areas Act (1950) didn't just segregate where people could live — it engineered distance as policy. Black, Coloured and Indian communitie..." |
+* | "South Africa's Group Areas Act (1950) segregated where people could live and used distance as policy. Black, Coloured and Indian communities were forcibly re..." |
 *
 * @param {Domain_Story_BodyInputs} inputs
 * @param {{ locale?: "en" | "af" }} options

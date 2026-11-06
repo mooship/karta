@@ -10,7 +10,7 @@ import { getLocale, experimentalStaticLocale } from '../runtime.js';
 /**
 * | output |
 * | --- |
-* | "Commuter Rail" |
+* | "Commuter rail" |
 *
 * @param {Layer_Commuter_Rail_LabelInputs} inputs
 * @param {{ locale?: "en" | "af" }} options
@@ -20,5 +20,5 @@ export const layer_commuter_rail_label = /** @type {((inputs?: Layer_Commuter_Ra
 	void inputs;
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "af") return /** @type {LocalizedString} */ ("Pendelspoor")
-	return /** @type {LocalizedString} */ ("Commuter Rail")
+	return /** @type {LocalizedString} */ ("Commuter rail")
 });

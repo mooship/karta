@@ -10,7 +10,7 @@ import { getLocale, experimentalStaticLocale } from '../runtime.js';
 /**
 * | output |
 * | --- |
-* | "Bus Rapid Transit" |
+* | "Bus rapid transit" |
 *
 * @param {Layer_Bus_Rapid_Transit_LabelInputs} inputs
 * @param {{ locale?: "en" | "af" }} options
@@ -20,5 +20,5 @@ export const layer_bus_rapid_transit_label = /** @type {((inputs?: Layer_Bus_Rap
 	void inputs;
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "af") return /** @type {LocalizedString} */ ("Snelbus")
-	return /** @type {LocalizedString} */ ("Bus Rapid Transit")
+	return /** @type {LocalizedString} */ ("Bus rapid transit")
 });

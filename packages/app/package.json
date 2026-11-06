@@ -1,7 +1,7 @@
 {
   "name": "@karta/app",
   "version": "1.0.0",
-  "description": "Gauteng spatial legacy domain data, the SDK's reference implementation",
+  "description": "Spatial legacy domain data for Gauteng and Cape Town, the SDK's reference implementation",
   "license": "AGPL-3.0-only",
   "private": true,
   "type": "module",

@@ -46,7 +46,7 @@ describe("registry", () => {
   });
 
   it("looks up a single layer by id", () => {
-    expect(getLayer("rapid-rail")?.label).toBe("Rapid Rail");
+    expect(getLayer("rapid-rail")?.label).toBe("Rapid rail");
     expect(getLayer("does-not-exist")).toBeUndefined();
   });
 

@@ -209,7 +209,7 @@ export const SPATIAL_APARTHEID_LEGACY_LAYERS: readonly Layer[] = [
   },
   {
     id: "rapid-rail",
-    label: "Rapid Rail",
+    label: "Rapid rail",
     dataSource: [dataUrl("rapid-rail.display.v1.geojson")],
     geometryKind: "line",
     defaultVisible: false,
@@ -219,12 +219,12 @@ export const SPATIAL_APARTHEID_LEGACY_LAYERS: readonly Layer[] = [
       kind: "line",
       color: "#E69F00",
       weight: 3,
-      legendLabel: "Rapid Rail",
+      legendLabel: "Rapid rail",
     },
   },
   {
     id: "bus-rapid-transit",
-    label: "Bus Rapid Transit",
+    label: "Bus rapid transit",
     dataSource: multiRegionDataUrls(
       PROVINCE_REGION_IDS,
       "bus-rapid-transit.display.v1.geojson",
@@ -236,7 +236,7 @@ export const SPATIAL_APARTHEID_LEGACY_LAYERS: readonly Layer[] = [
       kind: "line",
       color: "#009E73",
       weight: 3,
-      legendLabel: "Bus Rapid Transit",
+      legendLabel: "Bus rapid transit",
       colorClassification: {
         kind: "categorized",
         propertyKey: "network",
@@ -256,7 +256,7 @@ export const SPATIAL_APARTHEID_LEGACY_LAYERS: readonly Layer[] = [
   },
   {
     id: "commuter-rail",
-    label: "Commuter Rail",
+    label: "Commuter rail",
     dataSource: multiRegionDataUrls(
       PROVINCE_REGION_IDS,
       "commuter-rail.display.v1.geojson",
@@ -269,7 +269,7 @@ export const SPATIAL_APARTHEID_LEGACY_LAYERS: readonly Layer[] = [
       kind: "line",
       color: "#D55E00",
       weight: 2,
-      legendLabel: "Commuter Rail",
+      legendLabel: "Commuter rail",
     },
   },
   {

@@ -10,7 +10,7 @@ import { getLocale, experimentalStaticLocale } from '../runtime.js';
 /**
 * | output |
 * | --- |
-* | "Rapid Rail" |
+* | "Rapid rail" |
 *
 * @param {Layer_Rapid_Rail_LabelInputs} inputs
 * @param {{ locale?: "en" | "af" }} options
@@ -20,5 +20,5 @@ export const layer_rapid_rail_label = /** @type {((inputs?: Layer_Rapid_Rail_Lab
 	void inputs;
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "af") return /** @type {LocalizedString} */ ("Snelspoor")
-	return /** @type {LocalizedString} */ ("Rapid Rail")
+	return /** @type {LocalizedString} */ ("Rapid rail")
 });

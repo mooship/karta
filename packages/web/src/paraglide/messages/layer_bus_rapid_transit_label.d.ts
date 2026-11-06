@@ -5,7 +5,7 @@ export type Layer_Bus_Rapid_Transit_LabelInputs = {};
 /**
 * | output |
 * | --- |
-* | "Bus Rapid Transit" |
+* | "Bus rapid transit" |
 *
 * @param {Layer_Bus_Rapid_Transit_LabelInputs} inputs
 * @param {{ locale?: "en" | "af" }} options
