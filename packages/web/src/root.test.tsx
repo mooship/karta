@@ -61,6 +61,15 @@ describe("root links", () => {
     expect(hrefs).toContain("https://tiles.openfreemap.org");
   });
 
+  it("skips preconnects to tile hosts the default basemap doesn't use", () => {
+    const hrefs = links()
+      .filter((link) => "rel" in link && link.rel === "preconnect")
+      .map((link) => ("href" in link ? link.href : ""));
+
+    expect(hrefs).not.toContain("https://tile.openstreetmap.org");
+    expect(hrefs).not.toContain("https://server.arcgisonline.com");
+  });
+
   it("leaves the canonical link to each leaf route, since a shared one here would apply to every page", () => {
     const rels = links().map((link) => ("rel" in link ? link.rel : ""));
 

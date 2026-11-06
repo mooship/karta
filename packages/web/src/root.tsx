@@ -1,6 +1,5 @@
 import "@fontsource-variable/public-sans/wght.css";
 import "@fontsource-variable/source-serif-4/wght.css";
-import "leaflet/dist/leaflet.css";
 import {
   isRouteErrorResponse,
   Links,
@@ -52,8 +51,10 @@ export const meta: MetaFunction = () =>
   });
 
 /**
- * React Router route module export: `<link>` tags — self-hosted font/style
- * stylesheets, favicons, and basemap-provider preconnects.
+ * React Router route module export: `<link>` tags for favicons, the
+ * manifest and a preconnect to the default basemap's tile host. Esri tiles
+ * are only needed after the reader switches basemap, so they get no
+ * preconnect.
  * @remarks Deliberately preloads no layer GeoJSON, not even a
  *   `defaultVisible` layer's. Nothing can consume that data until the map
  *   bundle has downloaded, hydrated, and mounted Leaflet, so a `preload`
@@ -81,8 +82,6 @@ export const links: LinksFunction = () => [
   },
   { rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon.png" },
   { rel: "manifest", href: "/site.webmanifest" },
-  { rel: "preconnect", href: "https://tile.openstreetmap.org" },
-  { rel: "preconnect", href: "https://server.arcgisonline.com" },
   { rel: "preconnect", href: "https://tiles.openfreemap.org" },
 ];
 

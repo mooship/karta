@@ -61,8 +61,13 @@ import { getLayerGroups, getLayers, getStory } from "./layers/registry";
 import { m } from "./paraglide/messages.js";
 import { type PanelView, useMapUiStore } from "./stores/useMapUiStore";
 
+// Leaflet's stylesheet loads with the map chunk, so routes without a map
+// (such as /privacy) don't block on it.
 const MapView = lazy(async () => {
-  const { MapView } = await import("@karta/map/MapView");
+  const [{ MapView }] = await Promise.all([
+    import("@karta/map/MapView"),
+    import("leaflet/dist/leaflet.css"),
+  ]);
   return { default: MapView };
 });
 
