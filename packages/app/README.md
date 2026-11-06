@@ -1,26 +1,26 @@
 # `@karta/app`
 
-Domain-specific data and constants for `spatial-apartheid-legacy`, the reference implementation proving out Karta's SDK, built on the domain-agnostic model in `@karta/core`.
+Data and constants for `spatial-apartheid-legacy`, the reference domain for Karta's SDK, built on the layer model in `@karta/core`.
 
 ## What belongs here
 
-- **`domains/spatial-apartheid-legacy/`** (`layers.ts`, `layerGroups.ts`, `index.ts` exporting `SPATIAL_APARTHEID_LEGACY_DOMAIN`) — the layer catalogue (recognised township choropleth, nearest-transit choropleth, combined spatial-burden choropleth, and one line layer per transit network), layer groups, and a `story` (`{ title: "Why this map exists", body }`) — `@karta/core`'s optional `DomainConfig.story` field, surfaced by `@karta/web` as a Story tab. `layers.ts` imports `Layer` directly from `@karta/core`.
-- **`constants/metros.ts`** — `METROS`, the nine Gauteng municipalities plus City of Cape Town, each tagged with a `regionId`.
-- **`constants/regions.ts`** — `REGIONS`, the registry driving per-region output directories and data-fetch URLs (`gauteng` and `western-cape`, both kind `province`).
-- **`constants/townships.ts`** — included township-area groupings per metro.
-- **`types/`** — domain-specific GeoJSON/transit contracts (`TownshipFeature`, `TownshipProperties`, transit layer id lists), plus `types/genericLayer.ts`, which re-exports the `Layer`/`LayerGroup` contracts from `@karta/core` for any other domain built the same way.
-- **`domains/heritage-sites/`** — a second, national-scope domain (`HERITAGE_SITES_LAYERS`, `HERITAGE_SITES_LAYER_GROUPS`, `HERITAGE_SITES_DOMAIN`): a single hand-authored Point layer of publicly documented anti-apartheid and democracy heritage sites, with no `data-pipeline` source behind it. It exists to prove `DomainConfig`/`Layer` carry no region or metro assumption — see its own `index.ts` for a worked second example — and is deliberately not wired into `packages/web`, which still publishes only `spatial-apartheid-legacy`.
+| Path | Contents |
+|---|---|
+| `domains/spatial-apartheid-legacy/` | `layers.ts`, `layerGroups.ts` and `index.ts`, which exports `SPATIAL_APARTHEID_LEGACY_DOMAIN`. The layers are the recognised township, nearest-transit and combined spatial-burden choropleths, plus one line layer per transit network. The domain's `story` appears as the Story tab in `@karta/web`. |
+| `constants/metros.ts` | `METROS`: the nine Gauteng municipalities and the City of Cape Town, each with a `regionId`. |
+| `constants/regions.ts` | `REGIONS`: the per-region output directories and data URLs for `gauteng` and `western-cape`. |
+| `constants/townships.ts` | Included township-area groupings per metro. |
+| `types/` | GeoJSON and transit contracts for this domain (`TownshipFeature`, `TownshipProperties`, transit layer ids). `types/genericLayer.ts` re-exports `Layer` and `LayerGroup` from `@karta/core`. |
+| `domains/heritage-sites/` | A second, national domain (`HERITAGE_SITES_DOMAIN`): one hand-authored point layer of publicly documented anti-apartheid and democracy heritage sites, with no `data-pipeline` source. It shows that `DomainConfig` and `Layer` assume no region or metro. `packages/web` doesn't publish it. |
 
 ## What doesn't belong here
 
-- Generic layer/style types, `createLayerConfig`, `createRegistry`, or geodata fetch/schema utilities — those live in `@karta/core`.
-- Map rendering components or UI primitives — those live in `@karta/map`.
-- Generic React hooks — those live in `@karta/react`.
+- Generic layer and style types, `createLayerConfig`, `createRegistry`, and the geodata fetch and schema utilities. Those are in `@karta/core`.
+- Map rendering components and UI primitives (`@karta/map`).
+- Generic React hooks (`@karta/react`).
 
 ## Usage
 
 ```ts
 import { SPATIAL_APARTHEID_LEGACY_DOMAIN, METROS, REGIONS } from "@karta/app";
 ```
-
-Renamed from `packages/shared`/`@karta/shared`.

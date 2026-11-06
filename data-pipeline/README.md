@@ -1,6 +1,6 @@
-# Data Pipeline
+# Data pipeline
 
-Offline scripts that produce the static GeoJSON files served by the web app. Not an npm workspace — run manually.
+Offline scripts that produce the static GeoJSON files served by the web app. It is not an npm workspace; run it by hand.
 
 ## Run
 
@@ -16,16 +16,16 @@ Runs a build for every `province`-kind region in `@karta/app`'s `REGIONS` regist
 npm run run -- --region gauteng
 ```
 
-Each region build (`runRegion(regionId)`) loops over the `METROS` tagged with that `regionId` (currently the nine Gauteng municipalities — Tshwane, Johannesburg, Ekurhuleni, Emfuleni, Midvaal, Lesedi, Mogale City, Rand West City, and Merafong City — for `gauteng`, and City of Cape Town for `western-cape`) to fetch and process each metro's boundaries and job-center routing, then writes a combined output to `packages/web/public/data/<regionId>/`.
+Each region build (`runRegion(regionId)`) loops over the `METROS` tagged with that `regionId` (currently the nine Gauteng municipalities for `gauteng`: Tshwane, Johannesburg, Ekurhuleni, Emfuleni, Midvaal, Lesedi, Mogale City, Rand West City and Merafong City, and the City of Cape Town for `western-cape`). It fetches and processes each metro's boundaries and job-centre routing, then writes a combined output to `packages/web/public/data/<regionId>/`.
 
-Every region publishes display-optimized GeoJSON files only, always
+Every region publishes display-optimised GeoJSON files only, always
 including `townships.display.v1.geojson` and `township-areas.display.v1.geojson`,
 plus one file per transit layer its `RegionPipelineConfig.sources` declares.
-`gauteng` produces all four transit layers — `rapid-rail.display.v1.geojson`,
+`gauteng` produces all four transit layers: `rapid-rail.display.v1.geojson`,
 `bus-rapid-transit.display.v1.geojson`, `commuter-rail.display.v1.geojson`,
 and `bus.display.v1.geojson`. `western-cape` produces only
 `bus-rapid-transit.display.v1.geojson` (MyCiTi) and
-`commuter-rail.display.v1.geojson` (PRASA rail) — it has no equivalent
+`commuter-rail.display.v1.geojson` (PRASA rail). It has no equivalent
 source configured for `rapid-rail`/`bus`.
 
 Builds are fail-closed: the pipeline validates all required output files,
@@ -47,7 +47,7 @@ npm run cache:clean                # remove the whole cache directory
 tsx src/cleanCache.ts --max-age-days 2
 ```
 
-All published files are display-optimized `.display.v1.geojson` artifacts used
+All published files are display-optimised `.display.v1.geojson` artifacts used
 by the browser.
 
 ## Adding a new metro
@@ -64,7 +64,7 @@ methodology). `run.ts` loops over the region's `METROS` automatically and
 merges them into that region's output.
 
 This is for adding a metro to an existing region (e.g. another Gauteng
-municipality). For a wholly new region — a different province or country —
+municipality). For a new region, such as a different province or country,
 see [`docs/adding-a-region.md`](../docs/adding-a-region.md).
 
 ## Adding a new transit operator
@@ -73,11 +73,11 @@ Follow `src/adapters/gautrain.ts`, `src/adapters/aReYeng.ts`,
 `src/adapters/reaVaya.ts`, `src/adapters/ekurhuleniIrptn.ts`, or
 `src/adapters/myciti.ts` (mirroring `reaVaya.ts`'s Overpass route-relation
 pattern) as a template: one adapter file with a `fetchX(bbox)` +
-`normalizeX()` pair, normalizing into the shared
+`normalizeX()` pair, normalising into the shared
 `TransitLayerFeatureCollection` shape. Wire the adapter into that region's
 `RegionPipelineConfig` (e.g. `src/regions/gautengPipelineConfig.ts` or
 `src/regions/westernCapePipelineConfig.ts`) as a new or merged
-`PipelineSource` — `{ layerId, fetch, outputFileName }` — and add its
+`PipelineSource` (`{ layerId, fetch, outputFileName }`), and add its
 network name to `requiredNetworks` if every publish must include it.
 `run.ts` fetches every `PipelineSource` in `config.sources` automatically;
 it doesn't need editing. Then re-run the pipeline.
@@ -102,7 +102,7 @@ layers.
 
 ## Rate limits
 
-Drive-time computation uses the public `router.project-osrm.org` demo server, batched at 50 origins per request (against all job centers in the same table request) with a 1s delay between batches and retry-with-backoff on HTTP 429. Overpass queries retry with backoff and rotate across a small list of public mirrors (`overpass.private.coffee` first, then `overpass-api.de`, then `maps.mail.ru` — see `src/constants/serviceUrls.ts`) before giving up, since a single public instance can be temporarily rate-limited (429) or overloaded (504) under sustained pipeline use. Both OSRM and Overpass responses are cached locally under `data-pipeline/.cache` to speed up repeat runs and improve resilience to transient upstream failures.
+Drive-time computation uses the public `router.project-osrm.org` demo server, batched at 50 origins per request (against all job centres in the same table request) with a 1s delay between batches and retry-with-backoff on HTTP 429. Overpass queries retry with backoff and rotate across a small list of public mirrors (`overpass.private.coffee` first, then `overpass-api.de`, then `maps.mail.ru`; see `src/constants/serviceUrls.ts`) before giving up, since a single public instance can be temporarily rate-limited (429) or overloaded (504) under sustained pipeline use. Both OSRM and Overpass responses are cached locally under `data-pipeline/.cache` to speed up repeat runs and improve resilience to transient upstream failures.
 
 ## Running locally without rate limits
 
@@ -123,4 +123,4 @@ For heavy iteration (e.g. re-running the whole pipeline repeatedly while develop
    OSRM_BASE_URL=http://localhost:5000 OVERPASS_URL=http://localhost:12345/api/interpreter npm run run
    ```
 
-Only `src/constants/serviceUrls.ts` reads these environment variables — no other pipeline code needs to change to use local infrastructure instead of the public defaults. You can also set `OVERPASS_URLS` (comma-separated) to control mirror priority explicitly.
+Only `src/constants/serviceUrls.ts` reads these environment variables, so no other pipeline code needs to change to use local infrastructure instead of the public defaults. You can also set `OVERPASS_URLS` (comma-separated) to control mirror priority explicitly.

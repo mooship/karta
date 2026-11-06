@@ -1,24 +1,32 @@
 # `@karta/core`
 
-Domain-agnostic layer model and geodata utilities for Karta. Has no dependency on `@karta/app`, `@karta/map`, `@karta/react`, `@karta/web`, or React — the first package extracted towards a reusable SDK for geospatial layer platforms beyond Karta's own reference domain.
+The layer model and geodata utilities for Karta. It has no dependency on `@karta/app`, `@karta/map`, `@karta/react`, `@karta/web` or React. It was the first package split out of the app on the way to a reusable SDK.
 
 ## What belongs here
 
-- **Layer/domain types** (`types/layer.ts`) — `Layer`, `LayerGroup`, `DomainConfig`, `DomainStory`, and every style config type (`ChoroplethLayerStyle`, `LineLayerStyle`, `PointLayerStyle`, `ColorBucket`, `LayerInteraction`, `LayerGroupSelectionMode`). `LineLayerStyle`/`PointLayerStyle` also accept an optional `Classification<T>` (`GraduatedClassification` for numeric ranges, `CategorizedClassification` for exact string match) on `colorClassification`/`weightClassification`/`radiusClassification`, for data-driven styling of any geometry kind — not just choropleth fill color. The flat `color`/`weight`/`radius` fields remain required as the fallback/no-classification value. `DomainConfig`'s `story` field (`DomainStory`, `{ title, body }`) is optional — a domain with nothing to say there simply omits it.
-- **`resolveClassification(classification, properties)`** (`layers/classification.ts`) — resolves a feature's properties through a `Classification<T>` to its style output value; used internally by `createLayerConfig` and exported for direct use (e.g. custom legend rendering).
-- **`createLayerConfig(layer, options?)`** (`layers/createLayerConfig.ts`) — converts a `Layer` descriptor into a Leaflet `pathOptions`/`styleFn` configuration. `options` is `{ noDataColor?, dark? }`: `noDataColor` is the CSS color for a choropleth feature with no value, and `dark` prefers each choropleth bucket's `darkColor` over `color` (see `ColorBucket`). Returns a `styleFn` for choropleth layers (resolving fill color through the same `resolveClassification` machinery, via an internal `buckets`-to-`GraduatedClassification` adapter) and for `line`/`point` layers that declare a classification; otherwise static `pathOptions`. `resolveThemedColor(color, darkColor, dark)` is the small shared "prefer darkColor when dark" rule this uses internally, also exported for direct use (e.g. `@karta/map`'s `Legend`, so a legend swatch always agrees with the fill it labels).
-- **`createRegistry(domain)`** (`layers/createRegistry.ts`) — a read-only `getLayers`/`getLayer`/`getLayerGroups`/`getStory` accessor over a `DomainConfig`; `getStory()` returns `undefined` for a domain without one.
-- **Geodata utils** (`data/`) — `fetchFeatureCollection` (caches successful results in-memory by URL, evicting the least-recently-used entry once the cache exceeds 50 entries; `clearFeatureCollectionCache()` resets it, mainly for tests), `mergeFeatureCollections`, `featureCollectionToCsv` (exports a `FeatureCollection` to CSV — one row per feature, one column per property key seen across the collection, plus trailing `centroid_lon`/`centroid_lat` columns so every feature gets a plottable location regardless of geometry type), and the Zod schemas in `geoJsonSchemas.ts` (`featureCollectionSchema` — including `GeometryCollection` — `polygonGeometrySchema`, `multiPolygonGeometrySchema`, `createFeatureCollectionParser`).
-- **Spatial primitives** (`spatial/`) — Turf/proj4-backed geodata utilities with no Leaflet or domain dependency: `nearestFeatureDistance` (straight-line km from a point to the nearest of a set of Point/LineString geometries, falling back to nearest-point-on-line for routes), `isPointInPolygon` (point-in-polygon over a `Polygon`/`MultiPolygon` or a `Feature` wrapping one), `unionBoundingBoxes`/`featureCollectionBounds` (bbox union and extent, both `[minLng, minLat, maxLng, maxLat]`), `measureLineDistance`/`measurePolygonArea` (backing `@karta/map`'s measuring tool), and `reprojectPosition`/`reprojectGeometry`/`reprojectFeatureCollection` (proj4-backed reprojection of an arbitrary source CRS into WGS84, GeoJSON's RFC 7946-mandated CRS).
-- **`partitionSettled(results)`** (`async/partitionSettled.ts`) — splits `Promise.allSettled` results into fulfilled values and rejection reasons in a single pass, so a caller merging multiple independent sources (e.g. one per region) can render whatever succeeded instead of discarding everything the moment any one source fails.
+| Export | Where | Purpose |
+|---|---|---|
+| Layer and domain types | `types/layer.ts` | `Layer`, `LayerGroup`, `DomainConfig`, `DomainStory` and the style config types (`ChoroplethLayerStyle`, `LineLayerStyle`, `PointLayerStyle`, `ColorBucket`, `LayerInteraction`, `LayerGroupSelectionMode`). |
+| `resolveClassification(classification, properties)` | `layers/classification.ts` | Resolves a feature's properties through a `Classification<T>` to a style value. |
+| `createLayerConfig(layer, options?)` | `layers/createLayerConfig.ts` | Turns a `Layer` into Leaflet `pathOptions` or a `styleFn`. |
+| `resolveThemedColor(color, darkColor, dark)` | `layers/createLayerConfig.ts` | Picks `darkColor` in dark mode, so legend swatches match the fills they label. |
+| `createRegistry(domain)` | `layers/createRegistry.ts` | Read-only `getLayers`, `getLayer`, `getLayerGroups` and `getStory` over a `DomainConfig`. |
+| Geodata utilities | `data/` | `fetchFeatureCollection` (with a 50-entry LRU cache), `mergeFeatureCollections`, `featureCollectionToCsv` and the Zod schemas in `geoJsonSchemas.ts`. |
+| Spatial primitives | `spatial/` | Turf and proj4 helpers: nearest-feature distance, point in polygon, bounding boxes, line and area measurement, and reprojection to WGS84. |
+| `partitionSettled(results)` | `async/partitionSettled.ts` | Splits `Promise.allSettled` results into values and errors, so a caller can render whichever sources loaded. |
 
-Every export is JSDoc-documented (TSDoc-compatible).
+A few details worth knowing:
+
+- `LineLayerStyle` and `PointLayerStyle` accept an optional `Classification<T>` on `colorClassification`, `weightClassification` and `radiusClassification`, so any geometry kind can be styled from its data. The flat `color`, `weight` and `radius` fields are still required as the fallback.
+- `LineLayerStyle` also takes an optional `dashArray` and `casing`, so line layers can be told apart by pattern as well as colour.
+- `story` is optional on `DomainConfig`.
+- `featureCollectionToCsv` writes one row per feature and one column per property, plus `centroid_lon` and `centroid_lat` columns.
 
 ## What doesn't belong here
 
-- React or Leaflet runtime rendering code (see `@karta/map`).
-- Anything specific to the reference domain — job centres, township names, transit operator names, colour choices for a particular map (see `@karta/app`).
-- Browser-only hooks like dark-mode/theme detection (see `@karta/react`).
+- React or Leaflet rendering code (see `@karta/map`).
+- Anything specific to the reference domain, such as job centres, township names, transit operators or a particular map's colours (see `@karta/app`).
+- Browser-only hooks like dark-mode and theme detection (see `@karta/react`).
 
 ## Usage
 

@@ -1,57 +1,58 @@
 # `@karta/map`
 
-Generic map rendering and UI components (React + Leaflet) for Karta, built on `@karta/core`, `@karta/react`, and `@karta/theme`. Has no dependency on `@karta/app` or `@karta/web` — components take a `DomainConfig`/`Layer` values via context or props instead of a hardcoded domain.
+Map rendering and UI components (React and Leaflet) for Karta, built on `@karta/core`, `@karta/react` and `@karta/theme`. It has no dependency on `@karta/app` or `@karta/web`. Components get their `DomainConfig` and `Layer` values from context or props, never from a hardcoded domain.
 
 ## What belongs here
 
-- **`DomainProvider({ domain, children })` / `useDomain(): DomainRegistry`** (`context/DomainContext.tsx`) — a React context wrapping `createRegistry` from `@karta/core`. Any component that calls `useDomain()`, directly or transitively, must be rendered inside a `DomainProvider`; `useDomain()` throws otherwise.
-- **`MapView`** — the Leaflet map itself: tile basemap, choropleth and transit overlays resolved from the active `DomainProvider`, area-boundary-style outline labels, feature selection/keyboard interaction, and location-search fly-to behaviour. Takes a `bounds` prop (no baked-in region bounds), a required `ariaLabel` prop (no hardcoded accessible name), and a `renderFeaturePopup` callback (no hardcoded popup component), so it stays domain-agnostic. An optional `locationContextMenu` prop (default `false`) opens a small context menu — offering to reverse-geocode that point — on right-click (desktop) or long-press (mobile), via the `LocationContextMenu` sub-component; it listens for Leaflet's `contextmenu` event rather than `click`, so it doesn't fire as a side effect of double-tap-to-zoom, and still opens over a selectable feature rather than losing to that feature's own tap-to-select popup. Exported from a dedicated `@karta/map/MapView` subpath — see below.
-- **`Legend`, `DesktopLegend`, `MobileLegend`** — choropleth and transit layer legend entries, resolved from `useDomain()`.
-- **`LocationSearchControl`** — a debounced, keyboard-navigable place search box, with a configurable `placeholder` and an optional `provider` (a `GeocoderProvider`), defaulting to `nominatimGeocoderProvider` (OpenStreetMap Nominatim).
-- **`FeatureBrowser`** — a filterable list of every selectable map feature (from `MapView`'s `onSelectableFeaturesChange`), grouped and ordered by the active domain's layers via `useDomain()`. Domain-agnostic, like `Legend`/`MapView`; a caller wires its `onSelect` to its own selected-feature state, which `MapView`'s `SelectedFeatureHighlight` turns into a fly-to-and-open-popup.
-- **`MeasurementControl` / `MeasurementLayer`** — a distance/area measuring tool built into `MapView` itself (not a standalone export consumed on its own): `MeasurementControl` is the floating panel UI, `MeasurementLayer` draws the click-to-add-point preview line/polygon, both driven by `MapView`'s `measurementTool`/`measurementPanelOpen`/`onMeasurementPanelClose` props and backed by `@karta/core`'s `measureLineDistance` and area functions.
-- **UI primitives** — `IconButton`, `SegmentedControl`, `ControlButton`, `ThemeToggle`, `BasemapToggle`, `SettingsMenu`.
-- **Leaflet-specific utilities** — `constants/basemaps.ts` (an extensible basemap registry: `registerBasemap`, `getBasemapDefinition`, `getRegisteredBasemapIds`, `getBasemapTileSources`, `Basemap`, `BasemapDefinition`; ships `positron`/`liberty`/`dark` (OpenFreeMap, `"vector"`-kind basemaps rendered via `VectorBasemapLayer` — MapLibre GL, lazy-loaded on selection)/`satellite`/`topo` (both Esri World Imagery/Topographic raster basemaps) by default — all five are free, key-less tile services, and none auto-swaps style with the UI's light/dark theme; any consumer can `registerBasemap` a further raster or vector one), `constants/mapStyles.ts` (`AREA_OUTLINE`), `data/locationSearch.ts` (`fetchLocationSearchResults`, `fetchReverseGeocodeResult`, `nominatimGeocoderProvider`, `GeocoderProvider`, `LocationSearchResult`).
+| Export | Purpose |
+|---|---|
+| `DomainProvider({ domain, children })`, `useDomain()` | React context around `createRegistry` from `@karta/core` (`context/DomainContext.tsx`). `useDomain()` throws outside a `DomainProvider`. |
+| `MapView` | The Leaflet map: basemap, choropleth and transit overlays from the active domain, area outline labels, feature selection with keyboard support, and fly-to for location search. Exported from the `@karta/map/MapView` subpath (see below). |
+| `Legend`, `DesktopLegend`, `MobileLegend` | Legend entries for choropleth and transit layers, read from `useDomain()`. |
+| `LocationSearchControl` | Debounced place search with keyboard navigation. Takes a `placeholder` and an optional `GeocoderProvider`, defaulting to OpenStreetMap Nominatim. |
+| `FeatureBrowser` | Filterable list of every selectable feature, grouped by the domain's layers. The caller wires `onSelect` to its own selected-feature state. |
+| `MeasurementControl`, `MeasurementLayer` | The distance and area tool inside `MapView`: the floating panel and the preview line or polygon. Driven by `MapView`'s `measurementTool`, `measurementPanelOpen` and `onMeasurementPanelClose` props. |
+| UI primitives | `IconButton`, `SegmentedControl`, `ControlButton`, `ThemeToggle`, `BasemapToggle`, `SettingsMenu`. |
+| Basemap registry | `constants/basemaps.ts`: `registerBasemap`, `getBasemapDefinition`, `getRegisteredBasemapIds`, `getBasemapTileSources`, `Basemap`, `BasemapDefinition`. |
+| Other Leaflet utilities | `constants/mapStyles.ts` (`AREA_OUTLINE`) and `data/locationSearch.ts` (`fetchLocationSearchResults`, `fetchReverseGeocodeResult`, `nominatimGeocoderProvider`, `GeocoderProvider`, `LocationSearchResult`). |
+
+`MapView` props worth knowing about:
+
+- `bounds`, `ariaLabel` and `renderFeaturePopup` are required, so the map carries no region, accessible name or popup of its own.
+- `locationContextMenu` (default `false`) opens a small menu on right-click or long-press that offers to reverse-geocode the point. It listens for Leaflet's `contextmenu` event, so double-tap-to-zoom doesn't trigger it, and it still opens over a selectable feature.
+
+The registry ships five free, key-less basemaps. `positron`, `liberty` and `dark` are OpenFreeMap vector styles, drawn with MapLibre GL through `VectorBasemapLayer` and loaded only when selected. `satellite` and `topo` are Esri raster tiles. None of them switches style with the UI theme. Any consumer can register another raster or vector basemap.
 
 ## What doesn't belong here
 
-- Domain-specific components like a township popup or township browser — those read domain-specific properties (`nearestJobCenter`, `commuteMinutes`, …) that don't exist on a generic `Layer`. Pass a `renderFeaturePopup` callback into `MapView` instead.
-- Domain-specific accessible copy — `MapView` takes a required `ariaLabel` prop rather than a baked-in accessible name, since what the map depicts is domain-specific.
-- The reference domain's data (`SPATIAL_APARTHEID_LEGACY_DOMAIN`, metros, townships) — see `@karta/app`.
+- Domain-specific components such as a township popup or browser. They read properties (`nearestJobCenter`, `commuteMinutes` and so on) that a generic `Layer` doesn't have. Pass a `renderFeaturePopup` callback into `MapView` instead.
+- Domain-specific accessible copy. `MapView` takes `ariaLabel` because what the map shows depends on the domain.
+- The reference domain's data (`SPATIAL_APARTHEID_LEGACY_DOMAIN`, metros, townships). See `@karta/app`.
 
-## Styling
+## Setup
 
-Every component's styles are written in [vanilla-extract](https://vanilla-extract.style/)
-(`*.css.ts`, colocated beside each component) and reach the M3 design
-tokens through `@karta/theme`'s typed contract — see `docs/design-system.md`'s
-"Styling implementation" section in the root of this repo for the full
-token model. Because this package ships source with no build step,
-`@vanilla-extract/css` is a real runtime `dependencies` entry, not an
-implementation detail hidden behind a build artifact: **any host
-application embedding `@karta/map` components must register
-`@vanilla-extract/vite-plugin`'s `vanillaExtractPlugin()` in its own Vite
-config**, or `.css.ts` imports will fail to resolve. This is a breaking
-integration change for any consumer of an earlier, CSS-Modules-based
-version of this package.
+Component styles are written in [vanilla-extract](https://vanilla-extract.style/) (`*.css.ts` files next to each component) and read the design tokens through `@karta/theme`'s typed contract. See "Styling implementation" in `docs/design-system.md` for the token model.
 
-```ts
-// vite.config.ts
-import { vanillaExtractPlugin } from "@vanilla-extract/vite-plugin";
+This package ships source with no build step, so `@vanilla-extract/css` is a runtime dependency. A host app must:
 
-export default defineConfig({
-  plugins: [vanillaExtractPlugin() /* , ...your other plugins */],
-});
-```
+1. Register `vanillaExtractPlugin()` from `@vanilla-extract/vite-plugin` in its Vite config, or `.css.ts` imports won't resolve.
 
-A consuming app must also define every `--md-sys-color-*`/`-shape-*`/
-`-elevation-*`/`--state-*`/`--motion-*` custom property `@karta/theme`'s
-`vars` contract declares (see `packages/web/src/index.css` for a complete
-reference implementation, including light/dark switching) — the contract
-itself emits no CSS and has no fallback values.
+   ```ts
+   // vite.config.ts
+   import { vanillaExtractPlugin } from "@vanilla-extract/vite-plugin";
+
+   export default defineConfig({
+     plugins: [vanillaExtractPlugin() /* , ...your other plugins */],
+   });
+   ```
+
+2. Define every `--md-sys-color-*`, `-shape-*`, `-elevation-*`, `--state-*` and `--motion-*` custom property that `@karta/theme`'s `vars` contract declares. The contract emits no CSS and has no fallbacks. `packages/web/src/index.css` is a complete example, including light and dark switching.
+
+Apps built against the older CSS Modules version of this package need both steps.
 
 ## `MapView` and code-splitting
 
-`MapView` is **not** re-exported from the package's main entry point (`@karta/map`) — it pulls in `leaflet` and `react-leaflet`, and apps that lazy-load it to keep that out of their main bundle need a dedicated module boundary. Import it from the `@karta/map/MapView` subpath:
+`MapView` is not re-exported from the main `@karta/map` entry point. It pulls in `leaflet` and `react-leaflet`, and an app that lazy-loads it needs a separate module boundary to keep them out of the main bundle. Import it from the `@karta/map/MapView` subpath:
 
 ```tsx
 const MapView = lazy(async () => {
@@ -60,7 +61,7 @@ const MapView = lazy(async () => {
 });
 ```
 
-Importing `MapView` (even just its type) from the main `@karta/map` barrel alongside other components makes it statically reachable from that barrel's whole module graph, which defeats the point of a dynamic `import()` — bundlers will fold it into the main chunk anyway.
+If `MapView`, or even its type, is imported from the main barrel, the bundler can reach it statically and folds it into the main chunk, which undoes the dynamic `import()`.
 
 ## Usage
 
@@ -84,6 +85,3 @@ const MapView = lazy(async () => {
   <Legend mode="active" visibleLayerIds={["townships"]} />
 </DomainProvider>;
 ```
-
-`MapView` is imported from the `@karta/map/MapView` subpath, not the main
-barrel — see "`MapView` and code-splitting" above.
