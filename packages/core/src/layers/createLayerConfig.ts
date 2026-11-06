@@ -5,6 +5,7 @@ import type {
   Classification,
   GraduatedClassification,
   Layer,
+  LineLayerStyle,
 } from "../types/layer";
 import { resolveClassification } from "./classification";
 
@@ -22,6 +23,12 @@ export interface LeafletLayerConfig {
   styleFn?: (
     feature?: Feature,
   ) => PathOptions & { noClip?: boolean; radius?: number };
+  /**
+   * Style for the outline drawn beneath a line layer, set only when the
+   * layer's style has a `casing`. Always a function, so a classified line
+   * weight widens its casing to match.
+   */
+  casingStyleFn?: (feature?: Feature) => PathOptions & { noClip?: boolean };
 }
 
 /**
@@ -82,6 +89,34 @@ function bucketsToClassification(
 }
 
 /**
+ * Builds the casing style for a line layer: the line's own width plus
+ * `casing.width` on each side, in the casing colour, never dashed.
+ */
+function lineCasingStyleFn(
+  style: LineLayerStyle,
+  dark: boolean,
+): LeafletLayerConfig["casingStyleFn"] {
+  const casing = style.casing;
+  if (!casing) {
+    return undefined;
+  }
+  const color = resolveThemedColor(casing.color, casing.darkColor, dark);
+  return (feature) => ({
+    ...LINE_PATH_DEFAULTS,
+    opacity: 1,
+    color,
+    weight:
+      resolveStyleValue(
+        style.weightClassification,
+        feature?.properties,
+        style.weight,
+      ) +
+      casing.width * 2,
+    interactive: false,
+  });
+}
+
+/**
  * Resolves a per-feature style value from a `Classification` when one is
  * configured, falling back to the layer's static style value otherwise.
  */
@@ -103,7 +138,8 @@ export interface CreateLayerConfigOptions {
   darkNoDataColor?: string;
   /**
    * When `true`, choropleth buckets prefer their `darkColor` over `color`
-   * (see `ColorBucket`). Defaults to `false`.
+   * (see `ColorBucket`), and line layers prefer their `darkColor` and
+   * `casing.darkColor`. Defaults to `false`.
    */
   dark?: boolean;
 }
@@ -151,14 +187,19 @@ export function createLayerConfig(
       };
     }
     case "line": {
+      const color = resolveThemedColor(style.color, style.darkColor, dark);
+      const dash = style.dashArray ? { dashArray: style.dashArray } : {};
+      const casingStyleFn = lineCasingStyleFn(style, dark);
+      const casing = casingStyleFn ? { casingStyleFn } : {};
       if (style.colorClassification || style.weightClassification) {
         return {
           styleFn: (feature) => ({
             ...LINE_PATH_DEFAULTS,
+            ...dash,
             color: resolveStyleValue(
               style.colorClassification,
               feature?.properties,
-              style.color,
+              color,
             ),
             weight: resolveStyleValue(
               style.weightClassification,
@@ -166,14 +207,17 @@ export function createLayerConfig(
               style.weight,
             ),
           }),
+          ...casing,
         };
       }
       return {
         pathOptions: {
           ...LINE_PATH_DEFAULTS,
-          color: style.color,
+          ...dash,
+          color,
           weight: style.weight,
         },
+        ...casing,
       };
     }
     case "point": {

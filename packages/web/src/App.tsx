@@ -1042,7 +1042,10 @@ export function App() {
           ) : null}
         </main>
 
-        <div className={clsx(styles.locationSearchControl, styles.surface)}>
+        <search
+          className={clsx(styles.locationSearchControl, styles.surface)}
+          aria-label={m.search_label()}
+        >
           <p className={styles.appName} data-testid="app-name">
             {m.app_title()}
           </p>
@@ -1071,7 +1074,7 @@ export function App() {
               })}
             </output>
           ) : null}
-        </div>
+        </search>
 
         <ControlButton
           ref={panelTriggerRef}
@@ -1112,6 +1115,7 @@ export function App() {
 
         <aside
           id="map-controls"
+          aria-label={m.panel_tablist_aria_label()}
           ref={panelRef}
           className={clsx(styles.panel, styles.surface)}
           data-testid="panel-container"
@@ -1190,7 +1194,10 @@ export function App() {
           )}
         </aside>
 
-        <div className={styles.settingsControl}>
+        <section
+          className={styles.settingsControl}
+          aria-label={m.settings_region_label()}
+        >
           <SettingsMenu
             basemap={basemap}
             onBasemapChange={setBasemap}
@@ -1201,7 +1208,7 @@ export function App() {
             <LanguageToggle />
             <PrivacyLink />
           </SettingsMenu>
-        </div>
+        </section>
       </div>
     </DomainProvider>
   );

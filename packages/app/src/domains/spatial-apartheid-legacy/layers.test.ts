@@ -126,17 +126,33 @@ describe("SPATIAL_APARTHEID_LEGACY_LAYERS", () => {
     }
     expect(style.propertyKey).toBe("commuteMinutes");
     expect(style.buckets).toEqual([
-      { max: 20, color: "#7A9B6E", label: "Short (≤ 20 min)" },
-      { max: 40, color: "#C9A227", label: "Moderate (21–40 min)" },
-      { max: 60, color: "#D6703F", label: "Long (41–60 min)" },
+      {
+        max: 20,
+        color: "#F3E3C3",
+        darkColor: "#3A2A17",
+        label: "Short (≤ 20 min)",
+      },
+      {
+        max: 40,
+        color: "#DDB06B",
+        darkColor: "#6B4A22",
+        label: "Moderate (21–40 min)",
+      },
+      {
+        max: 60,
+        color: "#B36F2A",
+        darkColor: "#A8722F",
+        label: "Long (41–60 min)",
+      },
       {
         max: Number.POSITIVE_INFINITY,
-        color: "#C1502E",
+        color: "#6B3A12",
+        darkColor: "#E7B46B",
         label: "Very long (> 60 min)",
       },
     ]);
-    expect(style.baseOpacity).toBe(0.18);
-    expect(style.emphasisOpacity).toBe(0.78);
+    expect(style.baseOpacity).toBe(0.55);
+    expect(style.emphasisOpacity).toBe(0.85);
     expect(style.resolveEmphasis?.({ name: "Mamelodi", id: "1" })).toBe(true);
     expect(style.resolveEmphasis?.({ name: "Not A Real Place" })).toBe(false);
     expect(style.resolveEmphasis?.({ id: "1" })).toBe(false);
@@ -160,31 +176,31 @@ describe("SPATIAL_APARTHEID_LEGACY_LAYERS", () => {
     expect(style.buckets).toEqual([
       {
         max: 1,
-        color: "#CFE3F5",
+        color: "#BCD3E6",
         darkColor: "#274A66",
         label: "Near (≤ 1 km)",
       },
       {
         max: 3,
-        color: "#7FB2E5",
+        color: "#7FA6C9",
         darkColor: "#3E75A8",
         label: "Moderate (1–3 km)",
       },
       {
         max: 8,
-        color: "#3673B8",
+        color: "#3F6E9B",
         darkColor: "#5FA8DE",
         label: "Far (3–8 km)",
       },
       {
         max: Number.POSITIVE_INFINITY,
-        color: "#123F6E",
+        color: "#173E63",
         darkColor: "#9ED4FF",
         label: "Very far (> 8 km)",
       },
     ]);
-    expect(style.baseOpacity).toBe(0.18);
-    expect(style.emphasisOpacity).toBe(0.78);
+    expect(style.baseOpacity).toBe(0.55);
+    expect(style.emphasisOpacity).toBe(0.85);
     expect(style.resolveEmphasis?.({ name: "Mamelodi", id: "1" })).toBe(true);
     expect(style.resolveEmphasis?.({ name: "Not A Real Place" })).toBe(false);
     expect(style.resolveEmphasis?.({ id: "1" })).toBe(false);
@@ -207,7 +223,7 @@ describe("SPATIAL_APARTHEID_LEGACY_LAYERS", () => {
     }
     expect(style.propertyKey).toBe("spatialBurdenScore");
     expect(style.buckets).toEqual([
-      { max: 0.25, color: "#E6D9F5", darkColor: "#3D2A5C", label: "Low" },
+      { max: 0.25, color: "#D3C2EC", darkColor: "#3D2A5C", label: "Low" },
       {
         max: 0.5,
         color: "#B99FE0",
@@ -222,8 +238,8 @@ describe("SPATIAL_APARTHEID_LEGACY_LAYERS", () => {
         label: "Severe",
       },
     ]);
-    expect(style.baseOpacity).toBe(0.18);
-    expect(style.emphasisOpacity).toBe(0.78);
+    expect(style.baseOpacity).toBe(0.55);
+    expect(style.emphasisOpacity).toBe(0.85);
   });
 
   it("matches today's 4 transit line layers exactly", () => {
@@ -240,42 +256,51 @@ describe("SPATIAL_APARTHEID_LEGACY_LAYERS", () => {
     ]);
     expect(findLayer("rapid-rail").style).toEqual({
       kind: "line",
-      color: "#E69F00",
+      color: "#1F1B16",
+      darkColor: "#EDE6DA",
       weight: 3,
       legendLabel: "Rapid rail",
+      casing: { color: "#F6F2E9", darkColor: "#16130F", width: 1.5 },
     });
     expect(findLayer("bus-rapid-transit").style).toEqual({
       kind: "line",
-      color: "#009E73",
+      color: "#B5172D",
       weight: 3,
       legendLabel: "Bus rapid transit",
+      casing: { color: "#F6F2E9", width: 1.5 },
       colorClassification: {
         kind: "categorized",
         propertyKey: "network",
         stops: [
-          { match: "A Re Yeng", value: "#56B4E9", label: "A Re Yeng" },
-          { match: "Rea Vaya", value: "#009E73", label: "Rea Vaya" },
+          { match: "A Re Yeng", value: "#0F6E6E", label: "A Re Yeng" },
+          { match: "Rea Vaya", value: "#B5172D", label: "Rea Vaya" },
           {
             match: "Ekurhuleni IRPTN",
-            value: "#0072B2",
+            value: "#6B4FA0",
             label: "Ekurhuleni IRPTN",
           },
-          { match: "MyCiTi", value: "#E69F00", label: "MyCiTi" },
+          { match: "MyCiTi", value: "#1D4E9E", label: "MyCiTi" },
         ],
-        fallback: "#009E73",
+        fallback: "#B5172D",
       },
     });
     expect(findLayer("commuter-rail").style).toEqual({
       kind: "line",
-      color: "#D55E00",
+      color: "#1F1B16",
+      darkColor: "#EDE6DA",
       weight: 2,
       legendLabel: "Commuter rail",
+      dashArray: "10 4",
+      casing: { color: "#F6F2E9", darkColor: "#16130F", width: 1.5 },
     });
     expect(findLayer("bus").style).toEqual({
       kind: "line",
-      color: "#CC79A7",
-      weight: 3,
+      color: "#4F4A42",
+      darkColor: "#BDB4A6",
+      weight: 1.5,
       legendLabel: "Bus",
+      dashArray: "2 3",
+      casing: { color: "#F6F2E9", darkColor: "#16130F", width: 1.5 },
     });
     for (const id of [
       "rapid-rail",

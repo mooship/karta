@@ -107,6 +107,56 @@ describe("Legend", () => {
     );
   });
 
+  it("draws each transit swatch as an SVG line with the layer's dash, casing and themed colour", () => {
+    const patternDomain: DomainConfig = {
+      layers: [
+        {
+          id: "commuter",
+          label: "Commuter",
+          dataSource: ["/data/commuter.geojson"],
+          geometryKind: "line",
+          defaultVisible: true,
+          available: true,
+          style: {
+            kind: "line",
+            color: "#1F1B16",
+            darkColor: "#EDE6DA",
+            weight: 2,
+            legendLabel: "Commuter",
+            dashArray: "10 4",
+            casing: { color: "#F6F2E9", darkColor: "#16130F", width: 1.5 },
+          },
+        },
+      ],
+      layerGroups: [],
+    };
+    const lines = () =>
+      screen.getByText("Commuter").closest("li")?.querySelectorAll("line") ??
+      [];
+
+    stubMatchMedia(false);
+    const { unmount } = render(
+      <DomainProvider domain={patternDomain}>
+        <Legend />
+      </DomainProvider>,
+    );
+    const [casing, line] = lines();
+    expect(casing).toHaveAttribute("stroke", "#F6F2E9");
+    expect(line).toHaveAttribute("stroke", "#1F1B16");
+    expect(line).toHaveAttribute("stroke-dasharray", "10 4");
+    unmount();
+
+    stubMatchMedia(true);
+    render(
+      <DomainProvider domain={patternDomain}>
+        <Legend />
+      </DomainProvider>,
+    );
+    const [darkCasing, darkLine] = lines();
+    expect(darkCasing).toHaveAttribute("stroke", "#16130F");
+    expect(darkLine).toHaveAttribute("stroke", "#EDE6DA");
+  });
+
   it("renders one entry per operator for a line layer with a categorized color classification", () => {
     render(withDomain(<Legend />));
     expect(screen.getByText("North Line")).toBeInTheDocument();

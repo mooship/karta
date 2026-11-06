@@ -92,10 +92,10 @@ export const swatch = style({
 
 export const lineSwatch = style({
   display: "inline-block",
-  width: "1.125rem",
-  height: "0.25rem",
+  width: "1.5rem",
+  height: "0.5rem",
   flexShrink: 0,
-  borderRadius: "1px",
+  overflow: "visible",
 });
 
 export const symbolGroup = style({

@@ -148,6 +148,16 @@ describe("App", () => {
     expect(heading).toBeInTheDocument();
     expect(screen.getByRole("banner")).toContainElement(heading);
     expect(screen.getByRole("main")).toHaveAttribute("id", "map-information");
+    expect(
+      document.querySelector('search[aria-label="Search place"]'),
+    ).not.toBeNull();
+    expect(
+      document.querySelector('section[aria-label="Settings"]'),
+    ).not.toBeNull();
+    expect(document.getElementById("map-controls")).toHaveAttribute(
+      "aria-label",
+      "Map panel",
+    );
     await waitFor(() =>
       expect(screen.getByTestId("geojson-layer")).toBeInTheDocument(),
     );

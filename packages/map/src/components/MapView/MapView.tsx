@@ -654,8 +654,7 @@ function MapReadyNotifier({ onReady }: { onReady?: () => void }) {
   return null;
 }
 
-const ATTRIBUTION_COLLAPSED_LABEL = "Map data attribution, collapsed";
-const ATTRIBUTION_EXPANDED_LABEL = "Map data attribution";
+const ATTRIBUTION_LABEL = "Map data attribution";
 
 /**
  * Collapses Leaflet's default attribution control to a small, tappable
@@ -694,15 +693,12 @@ function CollapsibleAttribution() {
 
     const setExpanded = (expanded: boolean) => {
       container.setAttribute("aria-expanded", String(expanded));
-      container.setAttribute(
-        "aria-label",
-        expanded ? ATTRIBUTION_EXPANDED_LABEL : ATTRIBUTION_COLLAPSED_LABEL,
-      );
       container.classList.toggle(styles.attributionExpanded, expanded);
       corner?.classList.toggle(styles.attributionCornerElevated, expanded);
     };
 
     container.setAttribute("role", "button");
+    container.setAttribute("aria-label", ATTRIBUTION_LABEL);
     container.setAttribute("tabindex", "0");
     setExpanded(false);
 
@@ -1047,7 +1043,7 @@ function renderVisibleLayer({
     return null;
   }
 
-  return (
+  const layerGeoJson = (
     <GeoJSON
       key={layer.id}
       data={data}
@@ -1063,6 +1059,31 @@ function renderVisibleLayer({
         isChoropleth ? undefined : transitPointToLayerById.get(layer.id)
       }
     />
+  );
+  if (!config.casingStyleFn) {
+    return layerGeoJson;
+  }
+  return [
+    <GeoJSON
+      key={`${layer.id}-casing`}
+      data={data}
+      smoothFactor={1}
+      style={config.casingStyleFn}
+      pathOptions={CASING_PATH_OPTIONS}
+      filter={isNotPointFeature}
+      interactive={false}
+    />,
+    layerGeoJson,
+  ];
+}
+
+const CASING_PATH_OPTIONS = { pane: TRANSIT_PANE, interactive: false };
+
+/** Keeps stop and station points out of a line layer's casing. */
+function isNotPointFeature(feature: Feature): boolean {
+  return (
+    feature.geometry?.type !== "Point" &&
+    feature.geometry?.type !== "MultiPoint"
   );
 }
 
@@ -1472,6 +1493,7 @@ function MapViewComponent<
               (_feature: Feature, latlng: LatLng) =>
                 circleMarker(latlng, {
                   ...config?.pathOptions,
+                  dashArray: undefined,
                   pane: TRANSIT_PANE,
                   radius: transitStopRadius,
                   fillColor: config?.pathOptions?.color,

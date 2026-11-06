@@ -90,7 +90,8 @@ function choroplethLegends(
 
 function getTransitEntries(
   layers: readonly Layer[],
-  visibleLayerIds?: string[],
+  visibleLayerIds: string[] | undefined,
+  dark: boolean,
 ) {
   return layers.flatMap((layer) => {
     if (
@@ -103,17 +104,74 @@ function getTransitEntries(
 
     const { style } = layer;
     const hasStations = layer.hasPointGeometry === true;
+    const pattern = {
+      dashArray: style.dashArray,
+      casingColor: style.casing
+        ? resolveThemedColor(style.casing.color, style.casing.darkColor, dark)
+        : undefined,
+    };
 
     if (style.colorClassification) {
       return style.colorClassification.stops.map((stop) => ({
         label: stop.label,
         color: stop.value,
         hasStations,
+        ...pattern,
       }));
     }
 
-    return [{ label: style.legendLabel, color: style.color, hasStations }];
+    return [
+      {
+        label: style.legendLabel,
+        color: resolveThemedColor(style.color, style.darkColor, dark),
+        hasStations,
+        ...pattern,
+      },
+    ];
   });
+}
+
+/**
+ * A short sample of a transit line, drawn as SVG so the legend shows the
+ * same dash pattern and casing as the map.
+ */
+function LineSwatch({
+  color,
+  dashArray,
+  casingColor,
+}: {
+  color: string;
+  dashArray?: string;
+  casingColor?: string;
+}) {
+  return (
+    <svg
+      className={styles.lineSwatch}
+      viewBox="0 0 24 8"
+      aria-hidden="true"
+      focusable="false"
+    >
+      {casingColor ? (
+        <line
+          x1="1"
+          y1="4"
+          x2="23"
+          y2="4"
+          stroke={casingColor}
+          strokeWidth="6"
+        />
+      ) : null}
+      <line
+        x1="1"
+        y1="4"
+        x2="23"
+        y2="4"
+        stroke={color}
+        strokeWidth="3"
+        strokeDasharray={dashArray}
+      />
+    </svg>
+  );
 }
 
 function getLegendAriaLabel(
@@ -157,8 +215,8 @@ function LegendComponent({
     [layers, activeLayerIds, resolvedDark, noDataLabel],
   );
   const transitEntries = useMemo(
-    () => getTransitEntries(layers, activeLayerIds),
-    [layers, activeLayerIds],
+    () => getTransitEntries(layers, activeLayerIds, resolvedDark),
+    [layers, activeLayerIds, resolvedDark],
   );
   const hasAnyLegendSection =
     choroplethSections.length > 0 || transitEntries.length > 0;
@@ -203,9 +261,10 @@ function LegendComponent({
             {transitEntries.map((entry) => (
               <li key={entry.label} className={styles.entry}>
                 <span className={styles.symbolGroup} aria-hidden="true">
-                  <span
-                    className={styles.lineSwatch}
-                    style={{ backgroundColor: entry.color }}
+                  <LineSwatch
+                    color={entry.color}
+                    dashArray={entry.dashArray}
+                    casingColor={entry.casingColor}
                   />
                   {entry.hasStations ? (
                     <span

@@ -275,6 +275,82 @@ describe("createLayerConfig", () => {
       lineJoin: "round",
     });
     expect(config.styleFn).toBeUndefined();
+    expect(config.casingStyleFn).toBeUndefined();
+  });
+
+  it("adds the dash pattern and dark colour to a line layer's pathOptions", () => {
+    const style: LineLayerStyle = {
+      kind: "line",
+      color: "#1F1B16",
+      darkColor: "#EDE6DA",
+      weight: 2,
+      legendLabel: "Commuter rail",
+      dashArray: "10 4",
+    };
+
+    expect(createLayerConfig(lineLayer(style)).pathOptions).toMatchObject({
+      color: "#1F1B16",
+      dashArray: "10 4",
+    });
+    expect(
+      createLayerConfig(lineLayer(style), { dark: true }).pathOptions,
+    ).toMatchObject({ color: "#EDE6DA", dashArray: "10 4" });
+  });
+
+  it("builds a casing wider than the line, themed and never dashed", () => {
+    const style: LineLayerStyle = {
+      kind: "line",
+      color: "#1F1B16",
+      weight: 3,
+      legendLabel: "Rapid rail",
+      dashArray: "2 3",
+      casing: { color: "#F6F2E9", darkColor: "#16130F", width: 1.5 },
+    };
+
+    const light = createLayerConfig(lineLayer(style)).casingStyleFn?.();
+    const dark = createLayerConfig(lineLayer(style), {
+      dark: true,
+    }).casingStyleFn?.();
+
+    expect(light).toMatchObject({
+      color: "#F6F2E9",
+      weight: 6,
+      opacity: 1,
+      interactive: false,
+    });
+    expect(light).not.toHaveProperty("dashArray");
+    expect(dark).toMatchObject({ color: "#16130F" });
+  });
+
+  it("widens a classified line's casing with its classified weight", () => {
+    const config = createLayerConfig(
+      lineLayer({
+        kind: "line",
+        color: "#8A93A5",
+        weight: 1,
+        legendLabel: "Corridors",
+        dashArray: "4 2",
+        casing: { color: "#FFFFFF", width: 1 },
+        weightClassification: {
+          kind: "categorized",
+          propertyKey: "operator",
+          stops: [{ match: "gautrain", value: 5, label: "Gautrain" }],
+          fallback: 1,
+        },
+      }),
+      { dark: true },
+    );
+    const feature = {
+      type: "Feature",
+      properties: { operator: "gautrain" },
+      geometry: null,
+    } as unknown as Feature;
+
+    expect(config.styleFn?.(feature)).toMatchObject({ dashArray: "4 2" });
+    expect(config.casingStyleFn?.(feature)).toMatchObject({
+      color: "#FFFFFF",
+      weight: 7,
+    });
   });
 
   it("produces static pathOptions for a point layer", () => {

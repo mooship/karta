@@ -52,14 +52,33 @@ export interface LineLayerStyle {
   kind: "line";
   /** Fallback color, used when `colorClassification` is absent or unmatched. */
   color: string;
+  /** Used instead of `color` while dark theme is active. */
+  darkColor?: string;
   /** Fallback weight, used when `weightClassification` is absent or unmatched. */
   weight: number;
   /** Label shown in the layer's legend entry. */
   legendLabel: string;
+  /**
+   * SVG dash pattern, e.g. `"10 4"`. Lets a line be told apart by pattern
+   * as well as colour. Solid when unset.
+   */
+  dashArray?: string;
+  /** Optional outline drawn under the line so it stands off any basemap. */
+  casing?: LineCasing;
   /** Optional per-feature color classification, overriding `color`. */
   colorClassification?: Classification<string>;
   /** Optional per-feature weight classification, overriding `weight`. */
   weightClassification?: Classification<number>;
+}
+
+/** An outline drawn beneath a line layer. */
+export interface LineCasing {
+  /** CSS color of the outline. */
+  color: string;
+  /** Used instead of `color` while dark theme is active. */
+  darkColor?: string;
+  /** Outline width in pixels on each side of the line. */
+  width: number;
 }
 
 /** Style configuration for a point/circle-marker layer. */

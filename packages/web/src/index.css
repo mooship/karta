@@ -353,7 +353,12 @@ body {
 }
 
 .leaflet-container a.leaflet-popup-close-button {
-  color: var(--md-sys-color-outline-variant);
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+.leaflet-container a.leaflet-popup-close-button:hover,
+.leaflet-container a.leaflet-popup-close-button:focus-visible {
+  color: var(--md-sys-color-on-surface);
 }
 
 .leaflet-control-scale-line {

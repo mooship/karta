@@ -35,6 +35,8 @@ const mapMocks = vi.hoisted(() => ({
       // biome-ignore lint/suspicious/noExplicitAny: see above
       pointToLayer?: (feature: any, latlng: any) => unknown;
       smoothFactor?: number;
+      // biome-ignore lint/suspicious/noExplicitAny: see above
+      filter?: (feature: any) => boolean;
     }
   >,
   zoom: 9,
@@ -150,17 +152,30 @@ vi.mock("react-leaflet", () => ({
       // biome-ignore lint/suspicious/noExplicitAny: see above
       pointToLayer?: (feature: any, latlng: any) => unknown;
       smoothFactor?: number;
+      // biome-ignore lint/suspicious/noExplicitAny: see above
+      filter?: (feature: any) => boolean;
     }
   >(
     (
-      { data, pathOptions, onEachFeature, style, pointToLayer, smoothFactor },
+      {
+        data,
+        pathOptions,
+        onEachFeature,
+        style,
+        pointToLayer,
+        smoothFactor,
+        filter,
+      },
       ref,
     ) => {
       if (pathOptions?.pane) {
-        mapMocks.geoJsonProps[pathOptions.pane] = {
+        // A line's casing shares its pane, so it's keyed apart by its filter.
+        const key = filter ? `${pathOptions.pane}:casing` : pathOptions.pane;
+        mapMocks.geoJsonProps[key] = {
           style,
           pointToLayer,
           smoothFactor,
+          filter,
         };
       }
 
@@ -1372,6 +1387,64 @@ describe("MapView", () => {
 
     expect(await screen.findByText("1 features")).toBeInTheDocument();
     expect(mapMocks.geoJsonProps.transit?.smoothFactor).toBe(1);
+  });
+
+  it("draws a cased line layer's casing beneath it, leaving stop points out", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({
+          type: "FeatureCollection",
+          features: [{ type: "Feature", properties: {}, geometry: null }],
+        }),
+      }),
+    );
+    const casedDomain: DomainConfig = {
+      layers: [
+        {
+          id: "cased-rail",
+          label: "Cased rail",
+          dataSource: ["/data/example/cased-rail.display.v1.geojson"],
+          geometryKind: "line",
+          defaultVisible: true,
+          available: true,
+          style: {
+            kind: "line",
+            color: "#1F1B16",
+            weight: 2,
+            legendLabel: "Cased rail",
+            dashArray: "10 4",
+            casing: { color: "#F6F2E9", width: 1.5 },
+          },
+        },
+      ],
+      layerGroups: [],
+    };
+
+    render(
+      <DomainProvider domain={casedDomain}>
+        <MapView
+          {...DEFAULT_MAP_VIEW_PROPS}
+          areas={[]}
+          visibleLayerIds={["cased-rail"]}
+        />
+      </DomainProvider>,
+    );
+
+    expect(await screen.findAllByText("1 features")).toHaveLength(2);
+    const casing = mapMocks.geoJsonProps["transit:casing"];
+    expect(casing?.style?.()).toMatchObject({ color: "#F6F2E9", weight: 5 });
+    expect(
+      casing?.filter?.({ geometry: { type: "LineString", coordinates: [] } }),
+    ).toBe(true);
+    expect(casing?.filter?.({ geometry: { type: "Point" } })).toBe(false);
+    expect(casing?.filter?.({ geometry: { type: "MultiPoint" } })).toBe(false);
+    const marker = mapMocks.geoJsonProps.transit?.pointToLayer?.(
+      { type: "Feature", properties: {}, geometry: null },
+      { lat: 0, lng: 0 },
+    ) as { options: Record<string, unknown> } | undefined;
+    expect(marker?.options.dashArray).toBeUndefined();
   });
 
   it("does not render a layer that has no data available yet", () => {
