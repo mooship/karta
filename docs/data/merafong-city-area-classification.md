@@ -1,4 +1,4 @@
-# Merafong City Included-Area Classification
+# Merafong City included-area classification
 
 Date: 2026-07-31
 Status: Working classification

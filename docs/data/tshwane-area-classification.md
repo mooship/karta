@@ -1,4 +1,4 @@
-# Tshwane Included-Area Classification
+# Tshwane included-area classification
 
 Date: 2026-07-28
 Status: Working classification
@@ -14,7 +14,7 @@ Stats SA does not publish a `township` boundary type in this dataset. The inclus
 
 ## Why Census 2011, not Census 2022
 
-Census 2022 replaced the 2011 "sub-place" geography with a finer "Small Area Layer" (SAL). A public, scriptable boundary export for Tshwane's SAL geometry could not be found: Stats SA's own download pages return 404s or fail to serve scriptable content, and the only working public endpoints found are either restricted behind an ArcGIS token (`SMALL_AREA_2022...FeatureServer`) or aggregated to municipality level only (DPME's `Census2022` `MapServer`, one polygon per municipality, no sub-municipal geometry). Census 2011's sub-place shapefile remains the only source with a working, license-compatible, scriptable mirror (`SP_SA_2011` via the `j-norwood-young/SA-Maps` GitHub mirror), so this project continues to use it. This should be revisited if a public SAL boundary export becomes available.
+Census 2022 replaced the 2011 "sub-place" geography with a finer "Small Area Layer" (SAL). A public, scriptable boundary export for Tshwane's SAL geometry could not be found: Stats SA's own download pages return 404s or fail to serve scriptable content, and the only working public endpoints found are either restricted behind an ArcGIS token (`SMALL_AREA_2022...FeatureServer`) or aggregated to municipality level only (DPME's `Census2022` `MapServer`, one polygon per municipality, no sub-municipal geometry). Census 2011's sub-place shapefile remains the only source with a working, licence-compatible, scriptable mirror (`SP_SA_2011` via the `j-norwood-young/SA-Maps` GitHub mirror), so this project continues to use it. This should be revisited if a public SAL boundary export becomes available.
 
 ## Selection rules
 
@@ -72,7 +72,7 @@ Four regional anchors retain permanent overview labels: Atteridgeville, Mamelodi
 
 Inclusion does not establish a legal apartheid-era classification, a date of proclamation, demographic composition, or uniform settlement history. Main-place membership is a practical spatial grouping, not historical proof. Some rural villages, informal settlements, later housing developments, and historically displaced communities remain outside the current set pending better historical and municipal evidence.
 
-For example, Itumeleng Informal Settlement does not appear as a distinct named sub-place anywhere in the Census 2011 `SP_SA_2011` shapefile used by this project (checked directly against all 591 City of Tshwane sub-place names) — Stats SA's 2011 sub-place geography does not delineate it separately, so it cannot be added to the inclusion set from this data source. It may be captured within a neighbouring sub-place's boundary, or it may have formed/grown after the 2011 enumeration. A finer or newer geography (such as a scriptable Census 2022 Small Area Layer boundary export, if one becomes publicly available) would be needed to represent it.
+For example, Itumeleng Informal Settlement does not appear as a distinct named sub-place anywhere in the Census 2011 `SP_SA_2011` shapefile used by this project (checked directly against all 591 City of Tshwane sub-place names). Stats SA's 2011 sub-place geography does not delineate it separately, so it cannot be added to the inclusion set from this data source. It may be captured within a neighbouring sub-place's boundary, or it may have formed/grown after the 2011 enumeration. A finer or newer geography (such as a scriptable Census 2022 Small Area Layer boundary export, if one becomes publicly available) would be needed to represent it.
 
 The classification should be extended only when an area has:
 

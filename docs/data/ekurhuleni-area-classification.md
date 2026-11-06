@@ -1,4 +1,4 @@
-# Ekurhuleni Included-Area Classification
+# Ekurhuleni included-area classification
 
 Date: 2026-08-10
 Status: Working classification
@@ -61,7 +61,7 @@ Tembisa, Katlehong, Thokoza, Vosloorus, Daveyton, Wattville, KwaThema, Duduza, T
 
 ## Corrections made during the 2026-08-10 audit
 
-A cross-check of every defined area's `subPlaceNamePrefixes`/`censusMainPlaceCodes` against the real Census 2011 sub-place names in the published `packages/web/public/data/gauteng/*.geojson` output found that 10 areas across the domain matched zero sub-places — meaning `data-pipeline/src/townshipAreas.ts` silently dropped them from the map, since it treats a zero-match area exactly like a genuinely-excluded one. `data-pipeline/src/townshipAreas.ts`'s `assertNoUnmatchedTownshipAreas` (wired into `run.ts`) now fails the pipeline loudly on any future zero-match area, so this can't recur silently.
+A cross-check of every defined area's `subPlaceNamePrefixes`/`censusMainPlaceCodes` against the real Census 2011 sub-place names in the published `packages/web/public/data/gauteng/*.geojson` output found that 10 areas across the domain matched zero sub-places. `data-pipeline/src/townshipAreas.ts` had silently dropped them from the map, since it treats a zero-match area exactly like a genuinely-excluded one. `data-pipeline/src/townshipAreas.ts`'s `assertNoUnmatchedTownshipAreas` (wired into `run.ts`) now fails the pipeline loudly on any future zero-match area, so this can't recur silently.
 
 Three of the ten were fixable name mismatches, corrected in place:
 
@@ -69,20 +69,20 @@ Three of the ten were fixable name mismatches, corrected in place:
 - `chief-albert-luthuli-park`'s prefix was `"Chief Albert Luthuli Park"`; the actual sub-place names abbreviate to `"Chief A Luthuli Park"` (`SP`/`X1`/`X4`). Fixed accordingly; the display name keeps "Albert" in full.
 - `ulana-park`'s prefix was `"Ulana Park"`; the actual Census 2011 sub-place is named just `"Ulana"` (no "Park" suffix). Fixed accordingly; the display name keeps "Ulana Park", the name used in municipal housing-project documentation for the same community.
 
-One was a genuine data error rather than an Ekurhuleni issue: Midvaal's `midvaal-evaton` area (`docs/data/midvaal-area-classification.md`) had `censusMainPlaceCodes: ["761009"]`, which is actually the main place named "Lakeside" — an unrelated place. Midvaal's small Evaton-area main place is `761008`. Corrected there.
+One was a genuine data error rather than an Ekurhuleni issue: Midvaal's `midvaal-evaton` area (`docs/data/midvaal-area-classification.md`) had `censusMainPlaceCodes: ["761009"]`, which is actually the main place named "Lakeside", an unrelated place. Midvaal's small Evaton-area main place is `761008`. Corrected there.
 
-Six were removed rather than force-matched, after confirming each is a real, documented Ekurhuleni community with no corresponding Census 2011 sub-place boundary under any name checked in the published shapefile mirror — the same situation as Tshwane's already-documented Itumeleng exclusion:
+Six were removed rather than force-matched, after confirming each is a real, documented Ekurhuleni community with no corresponding Census 2011 sub-place boundary under any name checked in the published shapefile mirror. This is the same situation as Tshwane's already-documented Itumeleng exclusion:
 
-- **Makause** — a well-documented informal settlement in Primrose, Germiston, established in the mid-1990s on the former Driefontein Farm.
-- **Kalamazoo** — an informal settlement in Boksburg, one of the communities named in the City of Ekurhuleni's Leeuwpoort Mega Human Settlement relocation project.
-- **Skoon Plaas** (Skoonplaas) — an informal settlement near Tsakane, settled since 1974.
-- **Crossroads** (also documented as "Roodekop Ext 3") — another Leeuwpoort project beneficiary community; a main place named bare "Roodekop" exists in the Census 2011 data, but nothing corresponding to the "Ext 3"/informal "Crossroads" portion could be confirmed, so it was left out rather than mislabelling the older "Roodekop" main place as "Crossroads".
-- **Duduza North** — no Census 2011 sub-place starting with "Duduza North" was found; Duduza's own main place (already included as `duduza`) covers only two sub-places (`Duduza`, `Duduza SP`) in this data source.
-- **Emandleni** — a well-documented informal settlement on the Wattville/Actonville border, subject to a City of Ekurhuleni reblocking programme from 2017; no matching Census 2011 sub-place name was found nearby.
+- Makause: a well-documented informal settlement in Primrose, Germiston, established in the mid-1990s on the former Driefontein Farm.
+- Kalamazoo: an informal settlement in Boksburg, one of the communities named in the City of Ekurhuleni's Leeuwpoort Mega Human Settlement relocation project.
+- Skoon Plaas (Skoonplaas): an informal settlement near Tsakane, settled since 1974.
+- Crossroads (also documented as "Roodekop Ext 3"): another Leeuwpoort project beneficiary community; a main place named bare "Roodekop" exists in the Census 2011 data, but nothing corresponding to the "Ext 3"/informal "Crossroads" portion could be confirmed, so it was left out rather than mislabelling the older "Roodekop" main place as "Crossroads".
+- Duduza North: no Census 2011 sub-place starting with "Duduza North" was found; Duduza's own main place (already included as `duduza`) covers only two sub-places (`Duduza`, `Duduza SP`) in this data source.
+- Emandleni: a well-documented informal settlement on the Wattville/Actonville border, subject to a City of Ekurhuleni reblocking programme from 2017; no matching Census 2011 sub-place name was found nearby.
 
 ## Limitations
 
-Inclusion does not establish a legal apartheid-era classification, a date of proclamation, demographic composition, or uniform settlement history. Main-place/sub-place membership is a practical spatial grouping, not historical proof. The six communities listed above are real, still remain outside the current set, and should be added once a finer or newer boundary source (such as a scriptable Census 2022 Small Area Layer export, if one becomes publicly available — see `docs/data/tshwane-area-classification.md`'s "Why Census 2011, not Census 2022" section) delineates them separately.
+Inclusion does not establish a legal apartheid-era classification, a date of proclamation, demographic composition, or uniform settlement history. Main-place/sub-place membership is a practical spatial grouping, not historical proof. The six communities listed above are real, still remain outside the current set, and should be added once a finer or newer boundary source (such as a scriptable Census 2022 Small Area Layer export, if one becomes publicly available; see "Why Census 2011, not Census 2022" in `docs/data/tshwane-area-classification.md`) delineates them separately.
 
 The classification should be extended only when an area has:
 

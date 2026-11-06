@@ -11,7 +11,7 @@
 - TDD: write the failing test before implementation, every task.
 - No code comments unless capturing a non-obvious *why*.
 - British English in user-facing copy only (not identifiers).
-- Existing e2e specs and `App.test.tsx` must keep passing or be updated in the same task that changes their assumptions — no task leaves the suite red.
+- Existing e2e specs and `App.test.tsx` must keep passing or be updated in the same task that changes their assumptions: no task leaves the suite red.
 - `npm run test` (root) and `npm run typecheck` must pass after every task's commit.
 
 ---
@@ -62,7 +62,7 @@ describe("domains registry", () => {
 - [ ] **Step 2: Run test to verify it fails**
 
 Run: `npx vitest run packages/shared/src/constants/domains.test.ts`
-Expected: FAIL — `./domains` has no exported member (file doesn't exist yet).
+Expected: FAIL: `./domains` has no exported member (file doesn't exist yet).
 
 - [ ] **Step 3: Write minimal implementation**
 
@@ -134,7 +134,7 @@ export * from "./constants/domains";
 Run: `npx vitest run packages/shared/src/constants/domains.test.ts`
 Expected: PASS (4 tests)
 
-Also run: `npm run typecheck --workspace @karta/shared` — expect no errors (confirms `GAUTENG_SPATIAL_LEGACY_DOMAIN` satisfies `Domain`).
+Also run: `npm run typecheck --workspace @karta/shared`: expect no errors (confirms `GAUTENG_SPATIAL_LEGACY_DOMAIN` satisfies `Domain`).
 
 - [ ] **Step 5: Commit**
 
@@ -153,7 +153,7 @@ git commit -m "feat(shared): add Domain type and DOMAINS registry"
 
 **Interfaces:**
 - Consumes: `getDomain(domainId)` from Task 1.
-- Produces: `getLayers(domainId: string): readonly Layer[]`, `getLayer(domainId: string, id: string): Layer | undefined`, `getLayerGroups(domainId: string): readonly LayerGroup[]` — **signature change**, every caller in Tasks 3–7 must pass `domainId` as the first argument.
+- Produces: `getLayers(domainId: string): readonly Layer[]`, `getLayer(domainId: string, id: string): Layer | undefined`, `getLayerGroups(domainId: string): readonly LayerGroup[]`: **signature change**, every caller in Tasks 3–7 must pass `domainId` as the first argument.
 
 - [ ] **Step 1: Write the failing test**
 
@@ -210,7 +210,7 @@ describe("registry", () => {
 - [ ] **Step 2: Run test to verify it fails**
 
 Run: `npx vitest run packages/web/src/layers/registry.test.ts`
-Expected: FAIL — `getLayers("gauteng-spatial-legacy")` type error / old signature ignores the argument, `getLayers("does-not-exist")` returns the full Gauteng array instead of `[]`.
+Expected: FAIL: `getLayers("gauteng-spatial-legacy")` type error / old signature ignores the argument, `getLayers("does-not-exist")` returns the full Gauteng array instead of `[]`.
 
 - [ ] **Step 3: Write minimal implementation**
 
@@ -235,7 +235,7 @@ export function getLayerGroups(domainId: string): readonly LayerGroup[] {
 - [ ] **Step 4: Run test to verify it passes**
 
 Run: `npx vitest run packages/web/src/layers/registry.test.ts`
-Expected: PASS (5 tests). Note: `packages/web` will not typecheck as a whole until Tasks 3–7 update every caller — that's expected and fixed by those tasks, not this one.
+Expected: PASS (5 tests). Note: `packages/web` will not typecheck as a whole until Tasks 3–7 update every caller: that's expected and fixed by those tasks, not this one.
 
 - [ ] **Step 5: Commit**
 
@@ -254,11 +254,11 @@ git commit -m "feat(web): make layer registry domain-parameterized"
 
 **Interfaces:**
 - Consumes: `getLayer(domainId, id)` from Task 2.
-- Produces: `useLayerData(domainId: string, layerIds: string[]): { data: LayerDataMap; companionData: LayerDataMap }` — **breaking change** from `useLayerData(layerIds): LayerDataMap`. `LayerDataMap = Partial<Record<string, FeatureCollection>>` (unchanged shape, now nested under `.data`/`.companionData`).
+- Produces: `useLayerData(domainId: string, layerIds: string[]): { data: LayerDataMap; companionData: LayerDataMap }`: **breaking change** from `useLayerData(layerIds): LayerDataMap`. `LayerDataMap = Partial<Record<string, FeatureCollection>>` (unchanged shape, now nested under `.data`/`.companionData`).
 
 - [ ] **Step 1: Write the failing test**
 
-Add to `packages/web/src/hooks/useLayerData.test.ts` (alongside existing tests, all of which get a `"gauteng-spatial-legacy"` domainId argument added to their `useLayerData(...)` calls and `.data`/`result.current.data` instead of `result.current` — apply that rename across every existing `it` block in this file as part of this step):
+Add to `packages/web/src/hooks/useLayerData.test.ts` (alongside existing tests, all of which get a `"gauteng-spatial-legacy"` domainId argument added to their `useLayerData(...)` calls and `.data`/`result.current.data` instead of `result.current`: apply that rename across every existing `it` block in this file as part of this step):
 
 ```ts
 it("also fetches a layer's companionSource and exposes it separately", async () => {
@@ -284,7 +284,7 @@ it("also fetches a layer's companionSource and exposes it separately", async () 
 - [ ] **Step 2: Run test to verify it fails**
 
 Run: `npx vitest run packages/web/src/hooks/useLayerData.test.ts`
-Expected: FAIL — `result.current.companionData` is `undefined` (hook doesn't return that shape yet), and existing tests fail to compile/typecheck against the new `domainId` argument until Step 3.
+Expected: FAIL: `result.current.companionData` is `undefined` (hook doesn't return that shape yet), and existing tests fail to compile/typecheck against the new `domainId` argument until Step 3.
 
 - [ ] **Step 3: Write minimal implementation**
 
@@ -403,16 +403,16 @@ git commit -m "feat(web): thread domainId through useLayerData and fetch compani
 - Modify: `packages/web/src/stores/useMapUiStore.ts`
 - Modify: `packages/web/src/stores/useMapUiStore.test.ts`
 
-**Why this shape:** `createInitialState()` currently calls `getLayers()` at *module import time* (`useMapUiStore.ts:39–53`, before this task). Once `getLayers` needs a `domainId`, that call can't happen at import time — there is no domain yet. Cloudflare Workers can serve concurrent requests within one isolate, so a module-level "current domain" would be a cross-request race; the domain must live in the store's own state, set explicitly by the component once it knows which route matched.
+**Why this shape:** `createInitialState()` currently calls `getLayers()` at *module import time* (`useMapUiStore.ts:39–53`, before this task). Once `getLayers` needs a `domainId`, that call can't happen at import time: there is no domain yet. Cloudflare Workers can serve concurrent requests within one isolate, so a module-level "current domain" would be a cross-request race; the domain must live in the store's own state, set explicitly by the component once it knows which route matched.
 
 **Interfaces:**
 - Consumes: `getLayerGroups(domainId)`, `getLayers(domainId)` from Task 2.
-- Produces: new store field `domainId: string | null`, new action `initializeForDomain(domainId: string): void` (sets `domainId` and recomputes `visibleLayerIds` from that domain's default-visible layers). `toggleLayer` unchanged in name/signature but now reads `domainId` from store state internally. **Breaking change:** initial `visibleLayerIds` is now `[]` until `initializeForDomain` runs — callers (Task 6/7's `App.tsx`) must call it on mount.
+- Produces: new store field `domainId: string | null`, new action `initializeForDomain(domainId: string): void` (sets `domainId` and recomputes `visibleLayerIds` from that domain's default-visible layers). `toggleLayer` unchanged in name/signature but now reads `domainId` from store state internally. **Breaking change:** initial `visibleLayerIds` is now `[]` until `initializeForDomain` runs: callers (Task 6/7's `App.tsx`) must call it on mount.
 
 - [ ] **Step 1: Write the failing test**
 
 ```ts
-// packages/web/src/stores/useMapUiStore.test.ts — replace the "initializes with default state" test and add:
+// packages/web/src/stores/useMapUiStore.test.ts: replace the "initializes with default state" test and add:
 it("has no layers visible before a domain is initialized", () => {
   const state = useMapUiStore.getState();
   expect(state).toMatchObject({
@@ -440,7 +440,7 @@ Also update the two existing tests ("toggles layer visibility", "keeps modeled c
 - [ ] **Step 2: Run test to verify it fails**
 
 Run: `npx vitest run packages/web/src/stores/useMapUiStore.test.ts`
-Expected: FAIL — `initializeForDomain` is not a function; `domainId` is `undefined`, not `null`.
+Expected: FAIL: `initializeForDomain` is not a function; `domainId` is `undefined`, not `null`.
 
 - [ ] **Step 3: Write minimal implementation**
 
@@ -613,7 +613,7 @@ describe("home route loader", () => {
 - [ ] **Step 2: Run test to verify it fails**
 
 Run: `npx vitest run packages/web/src/routes/domain.test.tsx packages/web/src/routes/home.test.tsx`
-Expected: FAIL — `./domain` module doesn't exist; `home.tsx` exports no `loader`.
+Expected: FAIL: `./domain` module doesn't exist; `home.tsx` exports no `loader`.
 
 - [ ] **Step 3: Write minimal implementation**
 
@@ -645,7 +645,7 @@ export async function loader({ params }: Route.LoaderArgs) {
 export const meta: MetaFunction = ({ params }) => {
   const domain = getDomain(params.domainId ?? "");
   return [
-    { title: domain ? `Karta — ${domain.story.title}` : "Karta" },
+    { title: domain ? `${domain.story.title} | Karta` : "Karta" },
     { name: "description", content: domain?.story.body ?? "" },
   ];
 };
@@ -674,7 +674,7 @@ export default function HomeRoute() {
 Run: `npx vitest run packages/web/src/routes/domain.test.tsx packages/web/src/routes/home.test.tsx`
 Expected: PASS
 
-Also run: `npm run typecheck --workspace @karta/web` — the `Route` typegen types regenerate from `routes.ts`; if `+types/domain` isn't found, run `npm run dev --workspace @karta/web -- --once` or the project's typegen script first (check `packages/web/package.json` for a `react-router typegen` script) before typechecking again.
+Also run: `npm run typecheck --workspace @karta/web`: the `Route` typegen types regenerate from `routes.ts`; if `+types/domain` isn't found, run `npm run dev --workspace @karta/web -- --once` or the project's typegen script first (check `packages/web/package.json` for a `react-router typegen` script) before typechecking again.
 
 - [ ] **Step 5: Commit**
 
@@ -690,7 +690,7 @@ git commit -m "feat(web): add /d/:domainId route, redirect / to the default doma
 **Files:**
 - Modify: `packages/web/src/root.tsx`
 
-**Why:** `LinksFunction` in this React Router version takes no arguments (`() => LinkDescriptor[]`, confirmed against `node_modules/react-router/dist/development/lib/types/route-module-annotations.d.ts`) — it cannot read `params.domainId`. Per-domain GeoJSON preload therefore can't be made fully correct in `root.tsx` itself; this task keeps root's preload scoped to the default domain (correct for `/` → redirect → default domain, the common case) and documents the gap rather than silently leaving stale copy. Per-domain `<title>`/description already comes from `routes/domain.tsx`'s `meta` export (Task 5), which *does* receive `params`/`loaderData` and overrides root's fallback meta.
+**Why:** `LinksFunction` in this React Router version takes no arguments (`() => LinkDescriptor[]`, confirmed against `node_modules/react-router/dist/development/lib/types/route-module-annotations.d.ts`): it cannot read `params.domainId`. Per-domain GeoJSON preload therefore can't be made fully correct in `root.tsx` itself; this task keeps root's preload scoped to the default domain (correct for `/` → redirect → default domain, the common case) and documents the gap rather than silently leaving stale copy. Per-domain `<title>`/description already comes from `routes/domain.tsx`'s `meta` export (Task 5), which *does* receive `params`/`loaderData` and overrides root's fallback meta.
 
 - [ ] **Step 1: Write the failing test**
 
@@ -725,7 +725,7 @@ describe("root", () => {
 - [ ] **Step 2: Run test to verify it fails**
 
 Run: `npx vitest run packages/web/src/root.test.tsx`
-Expected: FAIL — `getGeoJsonPreloadLinks()` still calls the old zero-arg `getLayers()` (now returns `[]` post-Task 2, since `domainId` is required), so no hrefs are produced; `meta` still returns the apartheid-specific description.
+Expected: FAIL: `getGeoJsonPreloadLinks()` still calls the old zero-arg `getLayers()` (now returns `[]` post-Task 2, since `domainId` is required), so no hrefs are produced; `meta` still returns the apartheid-specific description.
 
 - [ ] **Step 3: Write minimal implementation**
 
@@ -860,13 +860,13 @@ git commit -m "feat(web): default-domain geojson preload, domain-agnostic fallba
 
 **Interfaces:**
 - Consumes: `getDomain(domainId)` (`@karta/shared`), `useLayerData(domainId, layerIds)` (Task 3, returns `{data, companionData}`), `useMapUiStore().initializeForDomain(domainId)` (Task 4).
-- Produces: `App({ domainId }: { domainId: string })` — **breaking change** from the current no-props `App()`. `HomeRoute`/`DomainRoute` (Task 5) are the only callers.
+- Produces: `App({ domainId }: { domainId: string })`: **breaking change** from the current no-props `App()`. `HomeRoute`/`DomainRoute` (Task 5) are the only callers.
 
-**Note on scope:** this task removes the bespoke `useEffect`/`buildRegionDataUrls`/`createTownshipDataRepository` fetch path and the direct `GAUTENG_SPATIAL_LEGACY_DOMAIN` import. It does **not** generalize `TownshipBrowser`/`EvidenceSummary` into domain-agnostic components — that's the follow-up "FeatureBrowser generalization" plan. For this task, the "places" tab and the job-center evidence copy stay conditional on `domainId === "gauteng-spatial-legacy"`, a small and honest bridge, not a hidden hardcode: every other domain simply doesn't get a "places" tab or job-center count until the follow-up plan lands.
+**Note on scope:** this task removes the bespoke `useEffect`/`buildRegionDataUrls`/`createTownshipDataRepository` fetch path and the direct `GAUTENG_SPATIAL_LEGACY_DOMAIN` import. It does **not** generalize `TownshipBrowser`/`EvidenceSummary` into domain-agnostic components: that's the follow-up "FeatureBrowser generalization" plan. For this task, the "places" tab and the job-center evidence copy stay conditional on `domainId === "gauteng-spatial-legacy"`, a small and honest bridge, not a hidden hardcode: every other domain simply doesn't get a "places" tab or job-center count until the follow-up plan lands.
 
 - [ ] **Step 1: Write the failing test**
 
-Modify `packages/web/src/App.test.tsx`: every `render(<App />)` call becomes `render(<App domainId="gauteng-spatial-legacy" />)` (apply across the whole file — this is a mechanical rename, not new test logic). Add:
+Modify `packages/web/src/App.test.tsx`: every `render(<App />)` call becomes `render(<App domainId="gauteng-spatial-legacy" />)` (apply across the whole file: this is a mechanical rename, not new test logic). Add:
 
 ```tsx
 it("calls initializeForDomain with the given domainId on mount", async () => {
@@ -890,13 +890,13 @@ it("fetches township data via useLayerData's companionSource, not a bespoke effe
 - [ ] **Step 2: Run test to verify it fails**
 
 Run: `npx vitest run packages/web/src/App.test.tsx`
-Expected: FAIL — `App` doesn't accept a `domainId` prop yet; existing bespoke fetch path doesn't call `initializeForDomain`.
+Expected: FAIL: `App` doesn't accept a `domainId` prop yet; existing bespoke fetch path doesn't call `initializeForDomain`.
 
 - [ ] **Step 3: Write minimal implementation**
 
 Modify `packages/web/src/App.tsx`:
 
-Replace the import block (lines 1–39 in the pre-task file) — drop `GAUTENG_SPATIAL_LEGACY_DOMAIN`, `METROS`, `TownshipFeature`, `buildRegionDataUrls`, `createTownshipDataRepository`, `fetchFeatureCollection`, `mergeFeatureCollections`:
+Replace the import block (lines 1–39 in the pre-task file): drop `GAUTENG_SPATIAL_LEGACY_DOMAIN`, `METROS`, `TownshipFeature`, `buildRegionDataUrls`, `createTownshipDataRepository`, `fetchFeatureCollection`, `mergeFeatureCollections`:
 
 ```tsx
 import { getDomain } from "@karta/shared";
@@ -932,7 +932,7 @@ import { useLayerData } from "./hooks/useLayerData";
 import { type PanelView, useMapUiStore } from "./stores/useMapUiStore";
 ```
 
-Replace `NATIONAL_JOB_CENTER_COUNT` (removed — job-center evidence is Gauteng-specific and no longer computed at module scope from `METROS`) and add:
+Replace `NATIONAL_JOB_CENTER_COUNT` (removed: job-center evidence is Gauteng-specific and no longer computed at module scope from `METROS`) and add:
 
 ```tsx
 const GAUTENG_JOB_CENTER_COUNT = 58;
@@ -998,9 +998,9 @@ export function App({ domainId }: { domainId: string }) {
   }, [setPanelOpen]);
 ```
 
-(the `prefers-reduced-transparency` effect, the panel-close effect, and the drag-frame cleanup effect are unchanged — keep them as-is from the pre-task file.)
+(the `prefers-reduced-transparency` effect, the panel-close effect, and the drag-frame cleanup effect are unchanged: keep them as-is from the pre-task file.)
 
-Delete the retry button's `onClick={() => setLoadAttempt((value) => value + 1)}` — `loadAttempt` no longer exists; replace with `onClick={() => initializeForDomain(domainId)}` (re-running `initializeForDomain` re-triggers `useLayerData` since `visibleLayerIds` is recomputed, which changes `useLayerData`'s `key` and retries the fetch).
+Delete the retry button's `onClick={() => setLoadAttempt((value) => value + 1)}`: `loadAttempt` no longer exists; replace with `onClick={() => initializeForDomain(domainId)}` (re-running `initializeForDomain` re-triggers `useLayerData` since `visibleLayerIds` is recomputed, which changes `useLayerData`'s `key` and retries the fetch).
 
 Gate the "places" tab (per the scope note above):
 
@@ -1011,7 +1011,7 @@ const PANEL_VIEWS =
     : (["story", "layers"] as const);
 ```
 
-(move this from module scope into the component body, since it now depends on `domainId`; `handleTabKeyDown`'s references to the module-scoped `PANEL_VIEWS` constant become references to this local `const` instead — no other change needed there.)
+(move this from module scope into the component body, since it now depends on `domainId`; `handleTabKeyDown`'s references to the module-scoped `PANEL_VIEWS` constant become references to this local `const` instead: no other change needed there.)
 
 Update the story panel section to use `domain` instead of the removed import:
 
@@ -1035,7 +1035,7 @@ Update the story panel section to use `domain` instead of the removed import:
 `EvidenceSummary`'s `jobCenterCount` prop is currently `jobCenterCount: number` (required) in `packages/web/src/components/EvidenceSummary/EvidenceSummary.tsx:4`. Change it to `jobCenterCount?: number` and wrap its one usage:
 
 ```tsx
-// packages/web/src/components/EvidenceSummary/EvidenceSummary.tsx — inside the component, replace the <div className={styles.limitation}> block
+// packages/web/src/components/EvidenceSummary/EvidenceSummary.tsx: inside the component, replace the <div className={styles.limitation}> block
 {jobCenterCount !== undefined ? (
   <div className={styles.limitation}>
     <strong>Car time is only a baseline proxy.</strong>
@@ -1072,7 +1072,7 @@ git commit -m "feat(web): App takes domainId prop, drops bespoke township fetch"
 
 **Interfaces:**
 - Consumes: `DOMAINS` (`@karta/shared`, Task 1).
-- Produces: `DomainSwitcher({ activeDomainId }: { activeDomainId: string })` — renders one `<Link>` per domain in `DOMAINS`.
+- Produces: `DomainSwitcher({ activeDomainId }: { activeDomainId: string })`: renders one `<Link>` per domain in `DOMAINS`.
 
 - [ ] **Step 1: Write the failing test**
 
@@ -1111,7 +1111,7 @@ describe("DomainSwitcher", () => {
 - [ ] **Step 2: Run test to verify it fails**
 
 Run: `npx vitest run packages/web/src/components/DomainSwitcher/DomainSwitcher.test.tsx`
-Expected: FAIL — module doesn't exist.
+Expected: FAIL: module doesn't exist.
 
 - [ ] **Step 3: Write minimal implementation**
 
@@ -1223,4 +1223,4 @@ git commit -m "feat(web): add keyboard-accessible domain switcher"
 
 - **FeatureBrowser/FeaturePopup generalization** (generalizes `TownshipBrowser`/`TownshipPopup`, removes the `domainId === "gauteng-spatial-legacy"` places-tab gate from Task 7, adds `browsable` config to `Layer`).
 - **`gauteng-socioeconomic` domain** (data-pipeline `join` hook per the amended spec §4, new `PipelineSource`, new domain package, registered in `DOMAINS`).
-- Per-domain GeoJSON preload correctness (Task 6's documented gap) — revisit if a non-default domain's LCP becomes a measured problem.
+- Per-domain GeoJSON preload correctness (Task 6's documented gap): revisit if a non-default domain's LCP becomes a measured problem.

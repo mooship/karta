@@ -1,4 +1,4 @@
-# Cape Town Included-Area Classification
+# Cape Town included-area classification
 
 Date: 2026-08-28
 Status: Working classification
@@ -14,16 +14,16 @@ Stats SA does not publish a `township` boundary type in this dataset. The inclus
 
 ## Why Census 2011, not Census 2022
 
-See `docs/data/tshwane-area-classification.md`'s "Why Census 2011, not Census 2022" section — the same reasoning (no working, scriptable, license-compatible Census 2022 Small Area Layer boundary export was found) applies here; both metros are drawn from the same national `SP_SA_2011` shapefile mirror.
+See `docs/data/tshwane-area-classification.md`'s "Why Census 2011, not Census 2022" section. The same reasoning (no working, scriptable, licence-compatible Census 2022 Small Area Layer boundary export was found) applies here; both metros are drawn from the same national `SP_SA_2011` shapefile mirror.
 
 ## Selection rules
 
 Each included area is defined in `packages/app/src/constants/townships.ts` using one of two reproducible rules, the same two Tshwane/Johannesburg use:
 
-1. `census-main-place`: include sub-places whose Census code begins with one or more specified main-place codes. Used for Langa, Nyanga, Gugulethu, Khayelitsha, Mitchells Plain, and Bishop Lavis — each has its own distinct Census main place.
-2. `named-sub-places`: include only sub-places matching specified name prefixes where the Census main place is mixed and cannot safely be included wholesale. Used for Manenberg, Bonteheuwel, Heideveld, and Hanover Park, which are distinct sub-places within Census main place "Athlone" (main-place code 199028) — a broad Coloured group area under apartheid that also contains many sub-places (Rylands, Gatesville, Kewtown, and others) that are not part of this classification's inclusion set. Also used for Elsies River, matching only the "Elsies Rivier SP" sub-place under main place "Elsies Rivier" (code 199025); that main place's other sub-place, "Elsies River Industrial", is excluded (see below) since it is a separate, non-residential area, not part of the historic residential township.
+1. `census-main-place`: include sub-places whose Census code begins with one or more specified main-place codes. Used for Langa, Nyanga, Gugulethu, Khayelitsha, Mitchells Plain and Bishop Lavis, each of which has its own distinct Census main place.
+2. `named-sub-places`: include only sub-places matching specified name prefixes where the Census main place is mixed and cannot safely be included wholesale. Used for Manenberg, Bonteheuwel, Heideveld, and Hanover Park, which are distinct sub-places within Census main place "Athlone" (main-place code 199028), a broad Coloured group area under apartheid that also contains many sub-places (Rylands, Gatesville, Kewtown, and others) that are not part of this classification's inclusion set. Also used for Elsies River, matching only the "Elsies Rivier SP" sub-place under main place "Elsies Rivier" (code 199025); that main place's other sub-place, "Elsies River Industrial", is excluded (see below) since it is a separate, non-residential area, not part of the historic residential township.
 
-Explicit exclusions remove known non-residential anomalies from otherwise useful Census groups. The current exclusion is Elsies River Industrial from Elsies River — its sub-place name (English spelling, "Elsies River...") otherwise starts with the area's own display name ("Elsies River"), which would match it by name fallback even though its `subPlaceNamePrefixes` selector (Afrikaans spelling, "Elsies Rivier") does not.
+Explicit exclusions remove known non-residential anomalies from otherwise useful Census groups. The current exclusion is Elsies River Industrial from Elsies River. Its sub-place name (English spelling, "Elsies River...") otherwise starts with the area's own display name ("Elsies River"), which would match it by name fallback even though its `subPlaceNamePrefixes` selector (Afrikaans spelling, "Elsies Rivier") does not.
 
 ## Current inclusion set
 
@@ -49,6 +49,6 @@ Langa and Khayelitsha retain permanent overview labels; other areas use quieter 
 
 Inclusion does not establish a legal apartheid-era classification, a date of proclamation, demographic composition, or uniform settlement history. Main-place/sub-place membership is a practical spatial grouping, not historical proof.
 
-This is a first-pass, deliberately non-exhaustive set. Well-documented Cape Flats areas not yet included — Delft (built mostly post-1994, so of uncertain fit for an "apartheid-era" classification), Philippi and Crossroads (largely informal-settlement growth and forced-removal resistance history rather than formally proclaimed townships), and others — are left out pending further review rather than included speculatively. The classification should be extended only under the same conditions `docs/data/tshwane-area-classification.md` sets out: a stable Census code or explicit sub-place selector, a documented reason for inclusion, a check for mixed land uses and non-residential anomalies, and a review of how the area's label and boundary behave at desktop and mobile scales.
+This is a first-pass, deliberately non-exhaustive set. Well-documented Cape Flats areas not yet included, such as Delft (built mostly post-1994, so of uncertain fit for an "apartheid-era" classification), Philippi and Crossroads (largely informal-settlement growth and forced-removal resistance history rather than formally proclaimed townships), are left out pending further review rather than included speculatively. The classification should be extended only under the same conditions `docs/data/tshwane-area-classification.md` sets out: a stable Census code or explicit sub-place selector, a documented reason for inclusion, a check for mixed land uses and non-residential anomalies, and a review of how the area's label and boundary behave at desktop and mobile scales.
 
 Future archival work should add dated proclamation or forced-removal geographies as separate evidence layers rather than silently treating this working classification as historical fact.

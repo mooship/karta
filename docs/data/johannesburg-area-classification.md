@@ -1,4 +1,4 @@
-# Johannesburg Included-Area Classification
+# Johannesburg included-area classification
 
 Date: 2026-07-29
 Status: Working classification
@@ -59,9 +59,9 @@ The current version includes 33 areas:
 - Westbury
 - Zandspruit
 
-Four regional anchors retain permanent overview labels: Alexandra, Soweto, Diepsloot, and Orange Farm — Johannesburg's largest and most historically significant township areas, analogous to Atteridgeville/Mamelodi/Soshanguve/Temba in Tshwane. Other areas use quieter secondary outlines. All areas remain available in the text browser.
+Four regional anchors retain permanent overview labels: Alexandra, Soweto, Diepsloot and Orange Farm. They are Johannesburg's largest and most historically significant township areas, analogous to Atteridgeville/Mamelodi/Soshanguve/Temba in Tshwane. Other areas use quieter secondary outlines. All areas remain available in the text browser.
 
-Ivory Park, Kaalfontein, Ebony Park, Rabie Ridge, and Mayibuye form a contiguous corridor of townships and informal settlements straddling the Midrand/Tembisa border, each with its own distinct Census main-place code. Lenasia, Lenasia South, Lehae, Vlakfontein, Ennerdale, Drie Ziek, Stretford, Lakeside, Lawley, Kanana Park, and Poortjie form a second contiguous corridor south of Soweto, historically the area designated for Indian and Coloured residents under apartheid (Lenasia) alongside later informal settlements and relocations (Orange Farm and its surrounding extensions). Cosmo City, Zandspruit, and Kya Sand are named sub-places within the mixed Roodepoort main place. Newclare, Bosmont, Riverlea, Westbury, and Coronationville are historic Coloured townships whose sub-places are split across the mixed Randburg and Johannesburg main places — the same `named-sub-places` pattern used for Tshwane's Lotus Gardens.
+Ivory Park, Kaalfontein, Ebony Park, Rabie Ridge, and Mayibuye form a contiguous corridor of townships and informal settlements straddling the Midrand/Tembisa border, each with its own distinct Census main-place code. Lenasia, Lenasia South, Lehae, Vlakfontein, Ennerdale, Drie Ziek, Stretford, Lakeside, Lawley, Kanana Park, and Poortjie form a second contiguous corridor south of Soweto, historically the area designated for Indian and Coloured residents under apartheid (Lenasia) alongside later informal settlements and relocations (Orange Farm and its surrounding extensions). Cosmo City, Zandspruit, and Kya Sand are named sub-places within the mixed Roodepoort main place. Newclare, Bosmont, Riverlea, Westbury, and Coronationville are historic Coloured townships whose sub-places are split across the mixed Randburg and Johannesburg main places, using the same `named-sub-places` pattern used for Tshwane's Lotus Gardens.
 
 ## Limitations
 

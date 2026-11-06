@@ -1,4 +1,4 @@
-# Rand West City Included-Area Classification
+# Rand West City included-area classification
 
 Date: 2026-07-31
 Status: Working classification

@@ -36,6 +36,6 @@ npm run dev -w @karta/web
 
 [`CONTRIBUTING.md`](CONTRIBUTING.md) covers setup, project conventions and how to propose data changes. [`SECURITY.md`](SECURITY.md) explains how to report a suspected vulnerability privately. [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md) sets expectations for behaviour in project spaces.
 
-## License
+## Licence
 
 Licensed under [AGPL-3.0](LICENSE). If you host a modified version, you must publish its source. See [`ATTRIBUTIONS.md`](ATTRIBUTIONS.md) for data and software attributions and [`PRIVACY.md`](PRIVACY.md) for the privacy policy.

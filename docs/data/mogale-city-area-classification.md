@@ -1,4 +1,4 @@
-# Mogale City Included-Area Classification
+# Mogale City included-area classification
 
 Date: 2026-07-31
 Status: Working classification
