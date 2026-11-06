@@ -1,18 +1,20 @@
-# Security Policy
+# Security policy
 
 _Last updated: 2026-07-29_
 
 ## Scope
 
-Karta is a static, client-side single-page application. There is no
-backend, no database, no accounts, no authentication, and no user-submitted
-data. The deployed surface is Cloudflare Workers serving pre-built static assets
-(HTML, JS, CSS, fonts, and GeoJSON files).
+Karta is server-rendered on Cloudflare Workers. There is no database, no
+accounts and no authentication. The only data accepted from users is the
+automatic error report described in [`PRIVACY.md`](PRIVACY.md), which is
+written to Cloudflare's logs and not stored anywhere else. Everything else
+the Worker serves is either rendered HTML or a static asset (JS, CSS, fonts
+and GeoJSON).
 
-In practice this means the realistic security surface is small, and reports are
-most useful when they concern:
+The security surface is small. Reports are most useful when they concern:
 
 - Cross-site scripting or other injection in the web app (`packages/web`)
+- Abuse of the error-report endpoint (`packages/web/src/routes/log-error.ts`)
 - Weaknesses in the Content Security Policy or other response headers
   (`packages/web/public/_headers`)
 - Supply-chain issues in dependencies that actually reach the shipped bundle
@@ -23,7 +25,7 @@ most useful when they concern:
 ## Supported versions
 
 Only the currently deployed `main` branch is supported. There are no long-lived
-release branches and no backports — fixes land on `main` and are deployed from
+release branches and no backports. Fixes land on `main` and are deployed from
 there.
 
 ## Reporting a vulnerability
@@ -52,9 +54,9 @@ The following are not treated as vulnerabilities in this project:
 - Missing security headers on third-party hosts (tile providers, data sources)
 - Reports generated solely by an automated scanner with no demonstrated impact
 - Denial of service against public third-party APIs used by the offline pipeline
-  (OSRM, Overpass) — these are not our infrastructure, and abusing them is
+  (OSRM, Overpass). These are not our infrastructure, and abusing them is
   explicitly discouraged
-- Rate limiting, brute force, or account enumeration — there are no accounts
+- Rate limiting, brute force or account enumeration, since there are no accounts
 - Volumetric denial of service against the static host
 - Inaccuracy or staleness of the mapped data itself; that is a data quality
   issue, so please open a normal issue instead

@@ -1,16 +1,15 @@
 # Contributing to Karta
 
-Thanks for your interest. Karta is a reusable SDK for public-interest
-geospatial layer platforms; its reference implementation, Spatial apartheid
-legacy, maps the spatial legacy of apartheid-era planning across South
-African cities. Contributions are welcome — to the SDK itself, and to the
-reference app: better data sources, accessibility improvements, and
-corrections to how areas are classified or described.
+Karta is an SDK for public-interest map layer platforms. Its reference
+implementation, Spatial apartheid legacy, maps the legacy of apartheid-era
+planning in South African cities. Contributions to the SDK and to the
+reference app are welcome, including better data sources, accessibility
+fixes and corrections to how areas are classified or described.
 
 Please read [`README.md`](README.md) first for what the project is and where
 the documentation lives, and
 [`docs/domains/spatial-apartheid-legacy.md`](docs/domains/spatial-apartheid-legacy.md)
-for what the reference domain's data can — and can't yet — establish.
+for what the reference data can and can't show yet.
 
 This project follows [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md). By
 participating, you agree to uphold those standards.
@@ -40,11 +39,11 @@ npm run display    # legacy helper: rebuilds compact display files for per-metro
 ```
 
 See [`data-pipeline/README.md`](data-pipeline/README.md) before running the full
-pipeline — it calls public third-party APIs.
+pipeline. It calls public third-party APIs.
 
-A lefthook pre-commit hook runs Biome on staged files, dependency-cruiser
-(architecture boundaries between packages), and the full Vitest suite, so
-expect all three on every commit. CI runs lint, typecheck, test, and build on
+A lefthook pre-commit hook runs Biome on staged files and dependency-cruiser
+(architecture boundaries between packages) on every commit. Run the tests
+yourself before pushing. CI runs lint, typecheck, test, and build on
 every pull request, and Playwright end-to-end tests run in a dedicated
 workflow.
 
@@ -60,16 +59,14 @@ The codebase is split into six packages: `packages/core` (domain-agnostic
 layer model, Leaflet config factory, registry factory, geodata utils),
 `packages/map` (generic map rendering components and UI primitives, built on
 `packages/core`, `packages/react`, and `packages/theme`), `packages/react`
-(generic React hooks — dark-mode detection, theme preference),
-`packages/theme` (a typed, compile-time-checked view onto the Material 3
-design tokens), `packages/app` (the reference domain's data and constants,
+(generic React hooks for dark-mode detection and theme preference),
+`packages/theme` (a typed, compile-time-checked view of the design tokens), `packages/app` (the reference domain's data and constants,
 built on `packages/core`), and `packages/web` (the SSR app that wires the
 other five together for the published `spatial-apartheid-legacy` domain).
 `.dependency-cruiser.cjs` (run via `npm run depcruise`, part of `npm run lint`)
-enforces that dependency direction mechanically — see AGENTS.md's SOLID
-convention.
+enforces that dependency direction. See the SOLID convention in AGENTS.md.
 
-Two consequences worth knowing before you start:
+Two things follow from this:
 
 - Adding a transit layer usually means one new adapter in
   `data-pipeline/src/adapters/`, wired into a `PipelineSource` entry in that
@@ -84,26 +81,23 @@ Two consequences worth knowing before you start:
 
 These are enforced in review, and some in CI:
 
-- **Test first.** Write the failing test before the implementation, for bug fixes
-  as well as features.
-- **SOLID, DRY, KISS, YAGNI.** Prefer the simplest design that satisfies the
-  current requirement. Don't build for hypothetical future needs.
-- **No code comments** unless they capture a genuinely non-obvious *why* — a
-  constraint, a workaround, an invariant. Never restate what the code says.
-- **Braced, expanded `if` statements**, never single-line or braceless. Biome's
-  `useBlockStatements` rule enforces this; don't disable it.
-- **Accessibility is a requirement, not a nice-to-have.** Semantic HTML, keyboard
-  navigation, visible focus states, and colour contrast are part of every UI
-  change. The project holds a Lighthouse accessibility score of 100.
-- **British English** in user-facing copy — UI text, labels, error messages. Code
-  identifiers stay as they are.
-- **Use the existing design system.** Karta adopts Google's Material 3 (M3)
-  directly — colour tokens are `--md-sys-color-*` CSS custom properties
-  (`--md-sys-color-primary`, `--md-sys-color-surface`, and friends) generated
-  from a single brand seed colour into `packages/web/src/index.css` with light
-  and dark values (see `docs/design-system.md`). Fonts are Inter Variable and
-  Martian Mono Variable, self-hosted. Don't introduce new ad hoc colours or
-  fonts.
+- Write the failing test before the implementation, for bug fixes as well as
+  features.
+- Follow SOLID, DRY, KISS and YAGNI. Prefer the simplest design that meets the
+  current requirement, and don't build for hypothetical future needs.
+- Only comment code to explain a non-obvious *why*, such as a constraint, a
+  workaround or an invariant. Never restate what the code says.
+- Write braced, expanded `if` statements, never single-line or braceless ones.
+  Biome's `useBlockStatements` rule enforces this; don't disable it.
+- Accessibility is required: semantic HTML, keyboard navigation, visible focus
+  states and WCAG 2.2 AA colour contrast are part of every UI change. The
+  project holds a Lighthouse accessibility score of 100.
+- Use British English in user-facing copy (UI text, labels, error messages) and
+  docs. Code identifiers stay as they are.
+- Use the existing design system. Colours are `--md-sys-color-*` CSS custom
+  properties with hand-picked light and dark values in
+  `packages/web/src/index.css` (see `docs/design-system.md`). Fonts are Public
+  Sans and Source Serif 4, self-hosted. Don't add ad hoc colours or fonts.
 
 ## Contributing data or claims
 
@@ -116,7 +110,7 @@ meaning rather than its code:
   reproducible.
 - Changes to which areas count as included township areas belong in
   `packages/app/src/constants/townships.ts`, and the reasoning belongs in
-  that metro's `docs/data/<metro>-area-classification.md` doc — see
+  that metro's `docs/data/<metro>-area-classification.md` doc. See
   [`docs/domains/spatial-apartheid-legacy.md`](docs/domains/spatial-apartheid-legacy.md#area-classification-by-metro)
   for the full list, one per metro across both published regions.
 - Don't overstate what the data supports. Keep copy within the limits
