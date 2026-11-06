@@ -16,7 +16,7 @@
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { chromium } from "@playwright/test";
 import {
   OG_IMAGE_HEIGHT,
@@ -81,12 +81,12 @@ const TEMPLATE = `<!doctype html>
 <style>
   @font-face {
     font-family: "Source Serif 4 Variable";
-    src: url("file://${SERIF_FONT_PATH}") format("woff2");
+    src: url("${pathToFileURL(SERIF_FONT_PATH).href}") format("woff2");
     font-weight: 200 900;
   }
   @font-face {
     font-family: "Public Sans Variable";
-    src: url("file://${SANS_FONT_PATH}") format("woff2");
+    src: url("${pathToFileURL(SANS_FONT_PATH).href}") format("woff2");
     font-weight: 100 900;
   }
   * {
@@ -181,7 +181,7 @@ async function generateOgImage(): Promise<void> {
     const page = await browser.newPage({
       viewport: { width: OG_IMAGE_WIDTH, height: OG_IMAGE_HEIGHT },
     });
-    await page.goto(`file://${tempHtmlPath}`);
+    await page.goto(pathToFileURL(tempHtmlPath).href);
     await page.evaluate(() => document.fonts.ready);
     await page.screenshot({ path: OUTPUT_PATH });
   } finally {
