@@ -30,7 +30,7 @@
   "devDependencies": {
     "@types/adm-zip": "0.6.0",
     "@types/geojson": "7946.0.16",
-    "@types/node": "26.6.5",
+    "@types/node": "26.6.6",
     "@types/shapefile": "0.6.4",
     "@types/topojson-client": "3.1.5",
     "@types/topojson-server": "3.0.4",
@@ -38,7 +38,7 @@
     "@types/topojson-specification": "1.0.5",
     "tsx": "4.23.15",
     "typescript": "7.0.2",
-    "vitest": "5.0.5"
+    "vitest": "5.1.0"
   },
   "allowScripts": {
     "esbuild": true
